@@ -29,7 +29,6 @@
 </template>
 
 <script>
-import axios from 'axios'
 
 export default {
   name: 'JobCard',
@@ -39,11 +38,6 @@ export default {
   data: ()=>{return {
     info: {}
   }},
-  mounted () {
-    axios
-      .get('http://localhost:3000/jobs.json')
-      .then(response => (this.info = response.data))
-  }
 }
 </script>
 

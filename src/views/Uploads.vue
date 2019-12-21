@@ -27,7 +27,7 @@
 // @ is an alias to /src
 const xlsx = require('./../libs/xlsx.full.min')
 import axios from 'axios'
-
+const config = require('./../configs/main_config')
 
 
 import JobsList from '@/components/organisms/JobsList.vue'
@@ -58,7 +58,7 @@ export default {
         this.uploadStatus = 'Идет загрузка...'
         console.log(this.parsed)
         axios
-          .post('http://127.0.0.1:3000/entrance', this.parsed, {headers: {'Content-Type' : 'application/json' }, withCredentials: true,})
+          .post(config.jobsUrl + '/entrance', this.parsed, {headers: {'Content-Type' : 'application/json' }, withCredentials: true,})
           .then(response => {
             if (response.data === 'OK') {
               this.uploadStatus = 'Вакансии загружены и опубликованы, готов к работе'

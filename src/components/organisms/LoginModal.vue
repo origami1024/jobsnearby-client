@@ -17,6 +17,7 @@
 
 <script>
 import axios from 'axios'
+const config = require('./../../configs/main_config')
 
 export default {
   name: 'LoginModal',
@@ -36,7 +37,7 @@ export default {
       let validation = true
       if (validation) {
         axios
-          .post('http://127.0.0.1:3000/login', [this.mail, this.pw], {headers: {'Content-Type' : 'application/json' }, withCredentials: true,})
+          .post(config.jobsUrl + '/login', [this.mail, this.pw], {headers: {'Content-Type' : 'application/json' }, withCredentials: true,})
           .then(response => {
             //fix: need to send auth data on login
             if (response.data && response.data[0] === 'OK' && response.data.length === 3) {

@@ -11,7 +11,6 @@
 </template>
 
 <script>
-import axios from 'axios'
 import JobCard from './../molecules/JobCard'
 
 export default {

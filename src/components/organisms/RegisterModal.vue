@@ -19,6 +19,7 @@
 
 <script>
 import axios from 'axios'
+const config = require('./../../configs/main_config')
 
 export default {
   name: 'RegisterModal',
@@ -40,7 +41,7 @@ export default {
       let validation = true
       if (validation) {
         axios
-          .post('http://localhost:3000/reg', [this.mail, this.pw], {headers: {'Content-Type' : 'application/json' }})
+          .post(config.jobsUrl + '/reg', [this.mail, this.pw], {headers: {'Content-Type' : 'application/json' }})
           .then(response => {
             if (response.data == 'OK') {
               this.status = 'Регистрация удалась'
