@@ -4,7 +4,6 @@
       <span>Загрузите вакансии из .xlsx файла (ссылка на пример файла)</span>
       <input ref="fileUploader" type="file" @change="parseFile" id="fileUploader" class="fileUploader" name="fileUploader" accept=".xls, .xlsx"/>
       <div>
-        <p>Вакансии здесь</p>
         <table>
           <tr v-for="item in parsed" :key="item.id">
             <td v-for="(property, index) in Object.keys(item)" :key="index">
@@ -15,6 +14,7 @@
       </div>
       <p>Статус: {{uploadStatus}}</p>
       <button @click="sendNewJobs" :disabled="parsed.length < 1">Отправить на сервер</button>
+      <hr>
       <JobsList :jobslist="myjobslist" ref="joblist" msg="Опубликованные"/>
     </div>
     <div v-else>
@@ -25,9 +25,9 @@
 
 <script>
 // @ is an alias to /src
-const xlsx = require('./../libs/xlsx.mini.min')
+const xlsx = require('@/libs/xlsx.mini.min')
 import axios from 'axios'
-const config = require('./../configs/main_config')
+const config = require('@/configs/main_config')
 
 
 import JobsList from '@/components/organisms/JobsList.vue'

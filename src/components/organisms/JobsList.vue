@@ -3,7 +3,6 @@
     <h3>
       {{msg}} : {{jobslist.length}}
     </h3>
-    <hr>
     <div>
       <JobCard :job="item" v-for="item in jobslist" :key="item.id"></JobCard>
     </div>

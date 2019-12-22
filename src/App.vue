@@ -34,7 +34,7 @@ export default {
     status: 'Вход не выполнен',
     user: 'Гость',
     token: undefined,
-    user_id: -2,
+    user_id: -1,
     jobslist: []
   }},
   components: {

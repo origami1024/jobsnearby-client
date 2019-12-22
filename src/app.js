@@ -12,7 +12,7 @@ const path = require('path')
 
 var cors = require('cors');
 app.use(cors({
-  origin: 'https://herokuapp.com',
+  origin: process.argv.includes('-development') ? 'http://127.0.0.1:8081' : 'https://herokuapp.com',
   credentials: true,
   exposedHeaders: ['session','user']
 }))
@@ -24,6 +24,8 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 
 app.use(serveStatic(path.join(__dirname, './../dist')));
+
+
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))
 
@@ -47,7 +49,7 @@ app.post('/reg', reg)
 app.post('/out', out)
 
 app.get('/jobs.json', db.getJobs)
-app.get('/jobs/:id', db.getJobById)
+app.get('/job/:id', db.getJobById)
 app.post('/entrance', db.addJobs)
 
 async function out(req, res) {
@@ -165,7 +167,8 @@ const SupremeValidator = {
     return bcrypt.compareSync(password, hashPassword);
   },
   isValidEmail(email) {
-    return /\S+@\S+\.\S+/.test(email);
+    //return /\S+@\S+\.\S+/.test(email);
+    return /(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/.test(email)
   },
   isValidPW(pw) {
     return (pw.length>4 && pw.length<31)

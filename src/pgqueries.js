@@ -24,11 +24,17 @@ const getJobs = (request, response) => {
 
 const getJobById = (request, response) => {
   const id = parseInt(request.params.id)
+  console.log(id)
+  if (isNaN(id)) {response.send('Error: wrong id'); return false}
   pool.query('SELECT * FROM jobs WHERE job_id = $1', [id], (error, results) => {
     if (error) {
-      throw error
+      console.log(error)
+      response.status(400).send('unknown error')
+      return false
+      //throw error
     }
-    response.status(200).json(results.rows)
+    if (results.rows.length === 1) response.status(200).json(results.rows[0])
+    else response.status(200).send('entry does not exist')
   })
 }
 
