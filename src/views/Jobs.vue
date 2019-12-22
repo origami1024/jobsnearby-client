@@ -9,7 +9,7 @@
 import JobsList from '@/components/organisms/JobsList.vue'
 
 export default {
-  name: 'jobs',
+  name: 'Jobs',
   props: {
     jobslist: Array
   },

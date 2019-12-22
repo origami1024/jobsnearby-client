@@ -2,7 +2,7 @@
   <div id="app">
     <div id="nav">
       <router-link to="/">Главная</router-link> |
-      <router-link to="/jobs">Вакансии</router-link> |
+      <router-link to="/jobslist">Вакансии</router-link> |
       <router-link to="/uploads">Публикация вакансий</router-link> |
       <router-link to="/about">Контакты</router-link>
     </div>

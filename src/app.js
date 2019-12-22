@@ -1,0 +1,186 @@
+const pageParts = require('./pageParts')
+const db = require('./pgqueries')
+//
+
+const express = require('express')
+const app = express()
+const port = process.env.PORT || 7777
+const cookieParser = require('cookie-parser')
+
+const serveStatic = require("serve-static")
+const path = require('path')
+
+var cors = require('cors');
+app.use(cors({
+  origin: 'http://127.0.0.1:7777',
+  credentials: true,
+  exposedHeaders: ['session','user']
+}))
+
+app.use(cookieParser())
+const bodyParser = require('body-parser');
+app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({ extended: true }));
+
+
+app.use(serveStatic(path.join(__dirname, './../dist')));
+
+app.listen(port, () => console.log(`Example app listening on port ${port}!`))
+
+
+
+
+let pages = {}
+let navlinks = [{href: '/', title: 'Главная'}, {href: '/jobs', title: 'Вакансии'}, {href: '/about', title: 'О сайте'}]
+pages.main = pageParts.head + pageParts.navbar(navlinks) + pageParts.demo + pageParts.foot
+pages.about      = pageParts.head + pageParts.navbar(navlinks) + 'Работай!' + pageParts.foot
+pages.jobListing = pageParts.head + pageParts.navbar(navlinks) + pageParts.demo + pageParts.foot
+
+
+//app.get('/', (req, res) => res.send(pages.main))
+//redirect from the main
+
+app.get('/about', (req, res) => res.send(pages.about))
+app.post('/auth', auth)//auth by cookie
+app.post('/login', login)
+app.post('/reg', reg)
+app.post('/out', out)
+
+app.get('/jobs.json', db.getJobs)
+app.get('/jobs/:id', db.getJobById)
+app.post('/entrance', db.addJobs)
+
+async function out(req, res) {
+  //maybe delete stuff in db and write some statistics down
+  //for now just reset cookies and send back OK
+  console.log('user logout')
+  res.cookie('session', '', {expires: new Date(Date.now())})
+  res.send('get out then')
+}
+
+async function auth(req, res) {
+  console.log(req.cookies.session)
+  if (req.cookies.session && req.cookies.session.length > 50) {
+    let profile = await db.checkAuthGetProfile(req.cookies.session).catch(error => {
+      console.log(error)
+      return false
+    })
+    if (profile === false) {
+      res.cookie('session', '', {expires: new Date(Date.now())})
+      res.send('fail')
+      return false
+    } else {
+      console.log('cp11: ', profile)
+      res.send([profile.email, profile.userId])
+    }
+  } else {
+    res.cookie('session', '', {expires: new Date(Date.now())})
+    res.send('fail')
+  }
+}
+
+async function login(req, res) {
+  console.log('cp login: ', req.cookies)
+  let mail = req.body[0]
+  let pw = req.body[1]
+  if (SupremeValidator.isValidEmail(mail) && SupremeValidator.isValidPW(pw)) {
+    console.log('user validated')
+    //get hash from db checking if mail exists
+    let userData = await db.tryGetLoginData(mail).catch(error => {
+      res.send('step2')
+      return undefined
+    })
+    if (userData) {
+      //is the pw right?
+      let authed = bcrypt.compareSync(pw, userData.pwHash)
+      console.log('authed cp: ', authed)
+      if (authed) {
+        //generate and store a cookie
+        let jwtoken = SupremeValidator.generateJSONWebToken(mail)
+        //send the cookie and send the ok
+        //console.log(req.cookies)
+        let laststage = await db.tryInsertAuthToken(userData.userId, jwtoken).catch(error => {
+          res.send('step3')
+          return undefined
+        })
+        if (laststage === undefined) return false
+        console.log('success, sending')
+        res.cookie('session', jwtoken, {expires: new Date(Date.now() + 900000)})
+        res.send(['OK', mail, userData.userId])
+      } else res.send('step2')
+      
+
+    } else {console.log('user does not exist?', userData); return false}
+
+    //res.send('OK')
+  } else {res.send('step1'); console.log('not valid mail or wrong pw')}
+  
+}
+
+
+async function reg(req, res) {
+  console.log('cp register', req.body)
+  //first server-side literal validation
+  let mail = req.body[0]
+  let pw = req.body[1]
+  if (SupremeValidator.isValidEmail(mail) && SupremeValidator.isValidPW(pw)) {
+    //try to insert the email//if fails then error
+    let userId = await db.tryInsertEmail(mail).catch(error => {
+      res.send('step2')
+      return -1
+    })
+    if (userId === -1) return false
+    console.log('step2 passed, email inserted:', userId)
+    //if all before is successful, id of new user in emailIn
+    //go on
+    //hash the pw with pw and salt
+    let hash = bcrypt.hashSync(pw, bcrypt.genSaltSync(9))
+    //store rest of the new user
+    console.log('huh shiet cp')
+    let isDone = await db.registerFinish(userId, hash).catch(error => {
+      console.log('STEP3', error)
+      res.send('step3')
+      return false
+    })
+    if (isDone === false) return false
+    console.log('it is successful registraion at this point')
+    //send back ok or not ok
+    res.send('OK')
+  } else {res.send('step1'); console.log('not valid mail or wrong pw')}
+  
+}
+
+
+
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken')
+
+const SupremeValidator = {
+  /**
+   * Hash Password Method
+   * @param {string} password
+   * @returns {string} returns hashed password
+   */
+  comparePassword(hashPassword, password) {
+    return bcrypt.compareSync(password, hashPassword);
+  },
+  isValidEmail(email) {
+    return /\S+@\S+\.\S+/.test(email);
+  },
+  isValidPW(pw) {
+    return (pw.length>4 && pw.length<31)
+  },
+  generateJSONWebToken(mail){
+    const signature = 'YoiRG3rots' + Math.random()
+    const expiration = '6h'
+    return jwt.sign({ mail }, signature, { expiresIn: expiration }).substr(0, 165)
+  },
+  generateToken(id) {
+    const token = jwt.sign({
+      user_id: id
+    },
+      process.env.SECRET, { expiresIn: '7d' }
+    );
+    return token;
+  }
+}
