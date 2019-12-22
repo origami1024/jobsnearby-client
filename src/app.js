@@ -12,7 +12,7 @@ const path = require('path')
 
 var cors = require('cors');
 app.use(cors({
-  origin: 'http://127.0.0.1:7777',
+  origin: 'https://herokuapp.com',
   credentials: true,
   exposedHeaders: ['session','user']
 }))
