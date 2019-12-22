@@ -34,12 +34,15 @@ export default {
     status: 'Вход не выполнен',
     user: 'Гость',
     token: undefined,
-    user_id: -1,
+    user_id: -2,
     jobslist: []
   }},
   components: {
     LoginModal,
     RegisterModal
+  },
+  created() {
+    
   },
   mounted() {
     //this.$on('loginclosed', this.showLogin = false)
@@ -51,9 +54,10 @@ export default {
       .then(response => {
         console.log('auth resp: ', response.data)
         if (response.data === 'fail') {
-          this.status = 'Вход не выполнен',
+          this.status = 'Вход не выполнен'
           this.token = undefined
           this.user = 'Гость'
+          this.user_id = -1
         } else if (response.data && response.data[0] && response.data[1]) {
           this.authIt(response.data)
         }
