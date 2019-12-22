@@ -25,7 +25,7 @@
 
 <script>
 // @ is an alias to /src
-const xlsx = require('./../libs/xlsx.full.min')
+const xlsx = require('./../libs/xlsx.mini.min')
 import axios from 'axios'
 const config = require('./../configs/main_config')
 
