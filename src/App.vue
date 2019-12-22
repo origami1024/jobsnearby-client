@@ -7,9 +7,9 @@
       <router-link to="/about">Контакты</router-link>
     </div>
     <div id="authmenu">
-      <button @click="modalShown = modalShown === 'login' ? 'none' : 'login'">Войти</button>
-      <button @click="modalShown = modalShown === 'reg' ? 'none' : 'reg'">Регистрация</button>
-      <button @click="logout">Выйти</button>
+      <button v-show="user_id === -1" @click="modalShown = modalShown === 'login' ? 'none' : 'login'">Войти</button>
+      <button v-show="user_id === -1" @click="modalShown = modalShown === 'reg' ? 'none' : 'reg'">Регистрация</button>
+      <button v-show="user_id !== -1" @click="logout">Выйти</button>
       <span> Статус: {{status}} </span>
       <span> Пользователь: {{user}} ({{user_id}})</span>
     </div>
