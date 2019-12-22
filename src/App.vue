@@ -104,4 +104,12 @@ export default {
   margin-top 20px
   font-size 13px
   line-height 11px
+  a
+    color blue
+    &:visited
+      color blue
+  .router-link-exact-active
+    color orange
+    &:visited
+      color orange
 </style>

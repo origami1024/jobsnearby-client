@@ -138,7 +138,6 @@ async function reg(req, res) {
     //hash the pw with pw and salt
     let hash = bcrypt.hashSync(pw, bcrypt.genSaltSync(9))
     //store rest of the new user
-    console.log('huh shiet cp')
     let isDone = await db.registerFinish(userId, hash).catch(error => {
       console.log('STEP3', error)
       res.send('step3')
