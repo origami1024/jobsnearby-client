@@ -15,6 +15,7 @@ const getJobs = (request, response) => {
   
   pool.query('SELECT * FROM jobs ORDER BY job_id ASC', (error, results) => {
     if (error) {
+      console.log(error)
       throw error
     }
     response.status(200).json(results.rows)
