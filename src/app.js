@@ -125,6 +125,9 @@ async function reg(req, res) {
   //first server-side literal validation
   let mail = req.body[0]
   let pw = req.body[1]
+  let usertype = req.body[2]
+  let arg1 = req.body[3]
+  let arg2 = req.body[4]
   if (SupremeValidator.isValidEmail(mail) && SupremeValidator.isValidPW(pw)) {
     //try to insert the email//if fails then error
     let userId = await db.tryInsertEmail(mail).catch(error => {

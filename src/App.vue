@@ -4,7 +4,8 @@
       <router-link to="/">Главная</router-link> |
       <router-link to="/jobslist">Вакансии</router-link> |
       <router-link to="/uploads">Публикация вакансий</router-link> |
-      <router-link to="/about">Контакты</router-link>
+      <router-link to="/about">Контакты</router-link> |
+      <router-link to="/subprofile">Личный кабинет</router-link>
     </div>
     <div id="authmenu">
       <button v-show="user_id === -1" @click="modalShown = modalShown === 'login' ? 'none' : 'login'">Войти</button>
@@ -14,7 +15,7 @@
       <span> Пользователь: {{user}} ({{user_id}})</span>
     </div>
     <hr>
-    <router-view :jobslist="jobslist" @refresh="refreshjobs" :uid="user_id" :authed="user_id !== -1" />
+    <router-view  :username="username" :surname="surname" :jobslist="jobslist" @refresh="refreshjobs" :uid="user_id" :authed="user_id !== -1" />
     <!-- <footer>Origami1024, Dec 2019</footer> -->
     <LoginModal @authed="authIt" @loginclosed="modalShown = 'none'" :isShown="modalShown === 'login'"></LoginModal>
     <RegisterModal @regclosed="modalShown = 'none'" :isShown="modalShown === 'reg'"></RegisterModal>
@@ -32,6 +33,8 @@ export default {
   data: ()=>{return {
     modalShown: 'none',
     status: 'Вход не выполнен',
+    username: 'abc',
+    surname: 'def',
     user: 'Гость',
     token: undefined,
     user_id: -1,

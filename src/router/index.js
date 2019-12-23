@@ -2,6 +2,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
 import Jobs from '../views/Jobs.vue'
+import SubProfile from '../views/SubProfile.vue'
 
 
 Vue.use(VueRouter)
@@ -11,6 +12,11 @@ const routes = [
     path: '/',
     name: 'home',
     component: Home
+  },
+  {
+    path: '/subprofile',
+    name: 'subprofile',
+    component: SubProfile
   },
   {
     path: '/about',

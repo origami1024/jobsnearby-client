@@ -13,7 +13,7 @@ const pool = new Pool({
 
 const getJobs = (request, response) => {
   
-  pool.query('SELECT * FROM jobs ORDER BY job_id ASC', (error, results) => {
+  pool.query('SELECT * FROM jobs ORDER BY job_id DESC', (error, results) => {
     if (error) {
       console.log(error)
       throw error

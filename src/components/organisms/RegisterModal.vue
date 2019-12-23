@@ -104,7 +104,7 @@ export default {
         this.showErrors = false
         this.status = 'Попытка регистрации'
         axios
-          .post(config.jobsUrl + '/reg', [this.mail, this.pw], {headers: {'Content-Type' : 'application/json' }})
+          .post(config.jobsUrl + '/reg', [this.mail, this.pw, this.usertype, this.usertype === 'subscriber' ? this.name : this.company, this.usertype, this.usertype === 'subscriber' ? this.surname : this.agency], {headers: {'Content-Type' : 'application/json' }})
           .then(response => {
             if (response.data == 'OK') {
               this.status = 'Регистрация удалась'
@@ -113,6 +113,10 @@ export default {
               this.pw = ''
               this.pwc = ''
               this.rules = ''
+              this.name = ''
+              this.surname = ''
+              this.company = ''
+              this.agency = ''
               this.$emit('regclosed')
             }
             else if (response.data == 'step3') {
@@ -199,7 +203,14 @@ export default {
       if (this.validation.mail === '' && 
           this.validation.pw === '' && 
           this.validation.pwc === '' && 
-          this.validation.rules === '')
+          this.validation.rules === '' &&
+          ( ( this.usertype === 'subscriber' &&
+              this.validation.name === '' && 
+              this.validation.surname === '')
+            ||
+            ( this.usertype === 'company' &&
+              this.validation.company === '')
+          ))
         return true
       return false
     }
