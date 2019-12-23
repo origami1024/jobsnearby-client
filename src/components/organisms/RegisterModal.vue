@@ -3,6 +3,35 @@
     <button @click="$emit('regclosed')">X</button>
     <form action="#" @submit.prevent="tryreg">
       <h4>Регистрация</h4>
+      <div class="line">
+        <input type="radio" v-model="usertype" id="r1" name="usertype" value="subscriber">
+        <label class="twolined" for="r1">Специалист (Соискатель)</label>
+        <input type="radio" v-model="usertype" id="r2" name="usertype" value="company">
+        <label class="twolined" for="r2">Компания (Работодатель)</label>
+      </div>
+      <div class="col" v-show="usertype === 'company'">
+        <div class="row">
+          <label for="company">Компания</label>
+          <span v-show="showErrors" class="err_span">{{validation.company}}</span>
+        </div>
+        <input v-model="company" id="company" placeholder="Название компании">
+        <div class="row">
+          <input v-model="agency" type="checkbox" id="agency">
+          <label for="agency">Кадровое агенство</label>
+        </div>
+      </div>
+      <div class="col" v-show="usertype === 'subscriber'">
+        <div class="row">
+          <label for="name">Имя</label>
+          <span v-show="showErrors" class="err_span">{{validation.name}}</span>
+        </div>
+        <input v-model="name" id="name" placeholder="Имя">
+        <div class="row">
+          <label for="surname">Фамилия</label>
+          <span v-show="showErrors" class="err_span">{{validation.surname}}</span>
+        </div>
+        <input v-model="surname" id="surname" placeholder="Фамилия">
+      </div>
       <div class="col">
         <div class="row">
           <label for="email">Email</label>
@@ -49,13 +78,21 @@ export default {
     pw: '',
     pwc: '',
     rules: false,
+    usertype: 'subscriber',
+    company: '',
+    agency: false,
+    name: '',
+    surname: '',
     status: '',
     showErrors: false,
     validation: {
       mail: 'Введите email',
       pw: 'Введите пароль',
       pwc: 'Подтвердите пароль',
-      rules: 'Ознакомтесь с правилами'
+      rules: 'Ознакомтесь с правилами',
+      company: 'Введите название',
+      name: 'Введите имя',
+      surname: 'Введите фамилию'
     }
   }},
   methods: {
@@ -97,11 +134,50 @@ export default {
     },
     validate(){
       let mailregex = /(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/
-      if (this.mail.length === 0) 
+      let nameregex = /^[\wа-яА-Я]+$/
+      if (this.mail.length === 0)
         this.validation.mail = 'Введите email'
       else if (!mailregex.test(this.mail)) 
         this.validation.mail = 'Неправильный формат адреса'
       else this.validation.mail = ''
+
+      if (this.usertype === 'subscriber') {
+        // this.validation.company = ''
+        
+        if (this.name.length === 0)
+          this.validation.name = 'Введите имя'
+        else if (this.name.length < 3)
+          this.validation.name = 'Минимальная длина 3 символа'
+        else if (this.name.length > 60)
+          this.validation.name = 'Максимальная длина 60 символов'
+        else if (!nameregex.test(this.name))
+          this.validation.name = 'Неправильный формат имени'
+        else this.validation.name = ''
+
+        if (this.surname.length === 0)
+          this.validation.surname = 'Введите фамилию'
+        else if (this.surname.length < 3)
+          this.validation.surname = 'Минимальная длина 3 символа'
+        else if (this.surname.length > 60)
+          this.validation.surname = 'Максимальная длина 60 символов'
+        else if (!nameregex.test(this.surname))
+          this.validation.surname = 'Неправильный формат фамилии'
+        else this.validation.surname = ''
+      } else {
+        // this.validation.name =  ''
+        // this.validation.surname =  ''
+
+        if (this.company.length === 0)
+          this.validation.company = 'Введите название'
+        else if (this.company.length < 3)
+          this.validation.company = 'Минимальная длина 3 символа'
+        else if (this.company.length > 60)
+          this.validation.company = 'Максимальная длина 60 символов'
+        else if (!nameregex.test(this.company))
+          this.validation.company = 'Неправильный формат названия'
+        else this.validation.company = ''
+      }
+
 
       if (this.pw.length === 0)
         this.validation.pw = 'Введите пароль'
@@ -140,7 +216,7 @@ export default {
   box-shadow 0 0 5px 1px gray
   background-color #ddd
   position fixed
-  top 35%
+  top 50%
   right 0%
   transform translate3d(-10%, -82%, 0)
   text-align right
@@ -148,6 +224,9 @@ export default {
     display flex
     flex-direction column
     text-align left
+    .twolined
+      display flex
+      flex-wrap wrap
     .line
       display flex
       padding 5px

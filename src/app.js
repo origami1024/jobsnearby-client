@@ -12,7 +12,7 @@ const path = require('path')
 
 var cors = require('cors');
 app.use(cors({
-  origin: process.argv.includes('-development') ? 'http://127.0.0.1:8081' : 'https://herokuapp.com',
+  origin: process.argv.includes('-development') ? 'http://127.0.0.1:8080' : 'https://herokuapp.com',
   credentials: true,
   exposedHeaders: ['session','user']
 }))
@@ -28,7 +28,7 @@ app.use(serveStatic(path.join(__dirname, './../dist')));
 
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))
-
+if (process.argv.includes('-development')) console.log('development mode on')
 
 
 
