@@ -3,9 +3,9 @@
     <div id="nav">
       <router-link to="/">Главная</router-link> |
       <router-link to="/jobslist">Вакансии</router-link> |
-      <router-link to="/uploads">Публикация вакансий</router-link> |
+      <router-link v-if="role === 'company'" to="/uploads">Публикация вакансий</router-link> |
       <router-link to="/about">Контакты</router-link> |
-      <router-link to="/subprofile">Личный кабинет</router-link>
+      <router-link v-if="role === 'subscriber'" to="/subprofile">Личный кабинет</router-link>
     </div>
     <div id="authmenu">
       <button v-show="user_id === -1" @click="modalShown = modalShown === 'login' ? 'none' : 'login'">Войти</button>
@@ -15,7 +15,7 @@
       <span> Пользователь: {{user}} ({{user_id}})</span>
     </div>
     <hr>
-    <router-view  :username="username" :surname="surname" :jobslist="jobslist" @refresh="refreshjobs" :uid="user_id" :authed="user_id !== -1" />
+    <router-view :role="role" :username="username" :surname="surname" :insearch="insearch" :company="company" :isagency="isagency" :jobslist="jobslist" @refresh="refreshjobs" :uid="user_id" :authed="user_id !== -1" />
     <!-- <footer>Origami1024, Dec 2019</footer> -->
     <LoginModal @authed="authIt" @loginclosed="modalShown = 'none'" :isShown="modalShown === 'login'"></LoginModal>
     <RegisterModal @regclosed="modalShown = 'none'" :isShown="modalShown === 'reg'"></RegisterModal>
@@ -35,9 +35,13 @@ export default {
     status: 'Вход не выполнен',
     username: 'abc',
     surname: 'def',
+    insearch: false,
+    role: 'guest',
     user: 'Гость',
     token: undefined,
     user_id: -1,
+    company: '',
+    isagency: false,
     jobslist: []
   }},
   components: {
@@ -48,9 +52,6 @@ export default {
     
   },
   mounted() {
-    //this.$on('loginclosed', this.showLogin = false)
-    //this.$on('regclosed', this.showReg = false)
-    console.log('app mounted')
     //send auth by cookies request
     axios
       .post(config.jobsUrl + '/auth', [], {withCredentials: true,})
@@ -61,7 +62,13 @@ export default {
           this.token = undefined
           this.user = 'Гость'
           this.user_id = -1
-        } else if (response.data && response.data[0] && response.data[1]) {
+          this.role = 'guest'
+          this.surname = ''
+          this.username = ''
+          this.company = ''
+          this.isagency = false
+          this.insearch = false
+        } else if (response.data && response.data[0] && response.data[1] && response.data[2]) {
           this.authIt(response.data)
         }
       })
@@ -73,13 +80,24 @@ export default {
       this.status = 'Вход выполнен'//имя пользователя?
       this.user = token[0]
       this.user_id = token[1]
+      this.role = token[2]
       this.modalShown = 'none'
+      if (token[2] === 'subscriber') {
+        this.username = token[3]
+        this.surname = token[4]
+        this.insearch = token[5]
+      } else
+      if (token[2] === 'company') {
+        this.company = token[3]
+        this.isagency = token[4]
+      }
     },
     logout: function() {
       if (this.user_id !== -1) {
         this.status = 'Выход...'//имя пользователя?
         this.user = 'Гость'
         this.user_id = -1
+        this.role = 'guest'
         axios
           .post(config.jobsUrl + '/out', [], {withCredentials: true})
           .then(response => {

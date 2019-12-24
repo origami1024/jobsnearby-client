@@ -75,7 +75,7 @@ async function addJobs (req, res) {
 }
 
 async function tryGetLoginData (mail) {
-  let que = `SELECT pwhash, user_id FROM "users" WHERE "email" = ($1)`
+  let que = `SELECT pwhash, user_id, role, name, surname, insearch, company, isagency FROM "users" WHERE "email" = ($1)`
   let params = [mail]
   let result = await pool.query(que, params).catch(error => {
     console.log(error)  
@@ -83,7 +83,25 @@ async function tryGetLoginData (mail) {
   })
   //console.log('r: ', result.rows)
   //console.log('r: ', result.rows[0])
-  return {'pwHash': result.rows[0].pwhash, 'userId': result.rows[0].user_id}
+  if (result.rowCount !== 1) return false
+  else {
+    let res = {
+      'pwHash': result.rows[0].pwhash,
+      'userId': result.rows[0].user_id,
+      'role': result.rows[0].role,
+    }
+    if (result.rows[0].role === 'subscriber') {
+      res['name'] = result.rows[0].name
+      res['surname'] = result.rows[0].surname
+      res['insearch'] = result.rows[0].insearch
+    } else
+    if (result.rows[0].role === 'company') {
+      res['cname'] = result.rows[0].company
+      res['isagency'] = result.rows[0].isagency
+    }
+    return res
+  }
+  //return {'pwHash': result.rows[0].pwhash, 'userId': result.rows[0].user_id, 'role': result.rows[0].role}
 }
 
 async function tryInsertEmail (mail) {
@@ -98,10 +116,16 @@ async function tryInsertEmail (mail) {
   //console.log('tryingInsert in the end: ', result.rows[0])
   return result.rows[0].user_id
 }
-async function registerFinish (id, hash) {
-  let que = `UPDATE "users" SET pwhash = $1 where user_id = $2`
-  let params = [hash, id]
+async function registerFinish (id, hash, usertype, arg1, arg2) {
+  let insert = ''
+  console.log(usertype)
+  if (usertype === 'subscriber') insert = `, name = $4, surname = $5`
+  else if (usertype === 'company') insert = `, company = $4, isagency = $5`
+  let que = `UPDATE "users" SET pwhash = $1, role = $3${insert} where user_id = $2`
+  console.log(que)
+  let params = [hash, id, usertype, arg1, arg2]
   let result = await pool.query(que, params).catch(error => {
+    console.log(error)
     throw new Error('user update fail')
   })
   return true
@@ -120,15 +144,31 @@ async function tryInsertAuthToken(id,token) {
   return true
 }
 async function checkAuthGetProfile(token) {
-  let que = `SELECT email, user_id FROM "users" WHERE "auth_cookie" = ($1)`
+  let que = `SELECT email, user_id, role, name, surname, insearch, company, isagency FROM "users" WHERE "auth_cookie" = ($1)`
   let params = [token]
   let result = await pool.query(que, params).catch(error => {
     console.log(error)
     throw new Error('auth check failed')
   })
   console.log('cp10: ', result.rowCount)
-
-  return result.rowCount === 1 ? {'email': result.rows[0].email, 'userId': result.rows[0].user_id} : false
+  if (result.rowCount !== 1) return false
+  else {
+    let res = {
+      'email': result.rows[0].email,
+      'userId': result.rows[0].user_id,
+      'role': result.rows[0].role,
+    }
+    if (result.rows[0].role === 'subscriber') {
+      res['name'] = result.rows[0].name
+      res['surname'] = result.rows[0].surname
+      res['insearch'] = result.rows[0].insearch
+    } else
+    if (result.rows[0].role === 'company') {
+      res['cname'] = result.rows[0].company
+      res['isagency'] = result.rows[0].isagency
+    }
+    return res
+  }
 }
 
 module.exports = {

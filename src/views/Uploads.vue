@@ -1,6 +1,6 @@
 <template>
   <div class="jobs">
-    <div v-if="authed" class="authed">
+    <div v-if="role === 'company'" class="authed">
       <span>Загрузите вакансии из .xlsx файла (ссылка на пример файла)</span>
       <input ref="fileUploader" type="file" @change="parseFile" id="fileUploader" class="fileUploader" name="fileUploader" accept=".xls, .xlsx"/>
       <div>
@@ -38,7 +38,8 @@ export default {
   props: {
     jobslist: Array,
     uid: Number,
-    authed: {type: Boolean, default: false}
+    authed: {type: Boolean, default: false},
+    role: String
   },
   data() {
     return {

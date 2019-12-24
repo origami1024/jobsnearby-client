@@ -59,7 +59,7 @@ export default {
           .post(config.jobsUrl + '/login', [this.mail, this.pw], {headers: {'Content-Type' : 'application/json' }, withCredentials: true,})
           .then(response => {
             //fix: need to send auth data on login
-            if (response.data && response.data[0] === 'OK' && response.data.length === 3) {
+            if (response.data && response.data[0] === 'OK' && response.data.length > 3) {
               this.status = 'Вход осуществлен'
               console.log(this.status)
               this.$emit('authed', response.data.slice(1))

@@ -72,8 +72,8 @@ async function auth(req, res) {
       res.send('fail')
       return false
     } else {
-      console.log('cp11: ', profile)
-      res.send([profile.email, profile.userId])
+      console.log('cp14: ', profile)
+      res.send(Object.values(profile))
     }
   } else {
     res.cookie('session', '', {expires: new Date(Date.now())})
@@ -107,8 +107,23 @@ async function login(req, res) {
         })
         if (laststage === undefined) return false
         console.log('success, sending')
+        let data = [
+          'OK',
+          mail,
+          userData.userId,
+          userData.role
+        ]
+        if (userData.role === 'subscriber') {
+          data.push(userData.name)
+          data.push(userData.surname)
+          data.push(userData.insearch)
+        } else
+        if (userData.role === 'company') {
+          data.push(userData.cname)
+          data.push(userData.isagency)
+        }
         res.cookie('session', jwtoken, {expires: new Date(Date.now() + 900000)})
-        res.send(['OK', mail, userData.userId])
+        res.send(data)
       } else res.send('step2')
       
 
@@ -128,6 +143,36 @@ async function reg(req, res) {
   let usertype = req.body[2]
   let arg1 = req.body[3]
   let arg2 = req.body[4]
+  console.log('cp9: ', arg2)
+  //check type
+  console.log(usertype)
+  if (usertype !== 'subscriber' && usertype !== 'company') {
+    res.send('step3')
+    return -1
+  }
+  console.log('ok1')
+  //check arg1
+  let nameregex = /^[\wа-яА-Я]+$/
+  if (arg1 < 3 ||
+     (arg1 > 60 && usertype === 'subscriber') ||
+     (arg1 > 80 && usertype === 'company') ||
+      !nameregex.test(arg1)
+    ) {
+    res.send('step3')
+    return -1
+  }
+  console.log('ok2')
+  console.log('cp11: ', arg2)
+  //check arg2
+  if ((arg2 < 3 && usertype === 'subscriber') ||
+      (arg2 > 60 && usertype === 'subscriber') ||
+      (!nameregex.test(arg2) && usertype === 'subscriber') ||
+      ((arg2 != true && arg2 != false && arg2 != 'true' && arg2 != 'false') && usertype === 'company')
+    ) {
+    res.send('step3')
+    return -1
+  }
+  console.log('tops validated')
   if (SupremeValidator.isValidEmail(mail) && SupremeValidator.isValidPW(pw)) {
     //try to insert the email//if fails then error
     let userId = await db.tryInsertEmail(mail).catch(error => {
@@ -141,7 +186,7 @@ async function reg(req, res) {
     //hash the pw with pw and salt
     let hash = bcrypt.hashSync(pw, bcrypt.genSaltSync(9))
     //store rest of the new user
-    let isDone = await db.registerFinish(userId, hash).catch(error => {
+    let isDone = await db.registerFinish(userId, hash, usertype, arg1, arg2).catch(error => {
       console.log('STEP3', error)
       res.send('step3')
       return false
