@@ -12,12 +12,16 @@ const pool = new Pool({
 
 
 const getJobs = (request, response) => {
-  
-  pool.query('SELECT * FROM jobs ORDER BY job_id DESC', (error, results) => {
+  let que = `SELECT jobs.author_id, users.company as author, jobs.job_id, jobs.city, jobs.experience, jobs.jobtype, jobs.title, jobs.salary, jobs.description, jobs.worktime1, jobs.worktime2, jobs.age1, jobs.age2, jobs.langs, jobs.time_published as published, jobs.time_updated as updated
+  FROM jobs, users
+  WHERE jobs.author_id = users.user_id ORDER BY jobs.job_id DESC`
+  queold = `SELECT * FROM jobs ORDER BY job_id DESC`
+  pool.query(que, (error, results) => {
     if (error) {
       console.log(error)
       throw error
     }
+    console.log('cp16: ', results.rows)
     response.status(200).json(results.rows)
   })
 }
