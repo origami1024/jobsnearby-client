@@ -2,9 +2,10 @@
   <div class="jobslist">
     <h3>
       {{msg}} : {{jobslist.length}}
+      Отфильтрованные : <strong>{{jobslistFiltered.length}}</strong>
     </h3>
     <div>
-      <JobCard :job="item" v-for="item in jobslist" :key="item.id"></JobCard>
+      <JobCard :job="item" v-for="item in jobslistFiltered" :key="item.id"></JobCard>
     </div>
   </div>
 </template>
@@ -16,7 +17,13 @@ export default {
   name: 'JobsList',
   props: {
     msg: String,
-    jobslist: {type: Array, default: ()=>[]}
+    jobslist: {type: Array, default: ()=>[]},
+    salaryFilter: {type: Array, default: ()=>[-Infinity, Infinity]},
+  },
+  computed: {
+    jobslistFiltered: function() {
+      return this.jobslist.filter(job=>(job.salary >= this.salaryFilter[0] && job.salary <= this.salaryFilter[1]))
+    }
   },
   components:{
     JobCard

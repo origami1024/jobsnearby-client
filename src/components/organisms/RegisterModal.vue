@@ -233,7 +233,8 @@ export default {
   right 0%
   transform translate3d(-10%, -82%, 0)
   text-align right
-  
+  input
+    z-index 6
   form
     display flex
     flex-direction column

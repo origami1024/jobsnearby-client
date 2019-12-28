@@ -15,7 +15,9 @@
       <span> Пользователь: {{user}} ({{user_id}})</span>
     </div>
     <hr>
-    <router-view :role="role" :username="username" :surname="surname" :insearch="insearch" :company="company" :isagency="isagency" :jobslist="jobslist" @refresh="refreshjobs" :uid="user_id" :authed="user_id !== -1" />
+    <keep-alive>
+      <router-view :role="role" :username="username" :surname="surname" :insearch="insearch" :company="company" :isagency="isagency" :jobslist="jobslist" @refresh="refreshjobs" :uid="user_id" :authed="user_id !== -1" />
+    </keep-alive>
     <!-- <footer>Origami1024, Dec 2019</footer> -->
     <LoginModal @authed="authIt" @loginclosed="modalShown = 'none'" :isShown="modalShown === 'login'"></LoginModal>
     <RegisterModal @regclosed="modalShown = 'none'" :isShown="modalShown === 'reg'"></RegisterModal>
@@ -27,7 +29,6 @@ import LoginModal from './components/organisms/LoginModal'
 import RegisterModal from './components/organisms/RegisterModal'
 import axios from 'axios'
 const config = require('./configs/main_config')
-
 export default {
   name: 'App',
   data: ()=>{return {
@@ -125,6 +126,9 @@ export default {
   margin-top 20px
   font-size 13px
   line-height 11px
+  h1,h2,h3,h4,h5,h6
+    font-size 14px
+    line-height 1
   a
     color blue
     &:visited

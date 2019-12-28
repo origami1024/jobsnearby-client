@@ -1,8 +1,9 @@
 <template>
   <div class="doubleRange">
+    {{test1}}
     <div ref="ruler" class="ruler">
-      <div class="thumb" :style="{left: ((minThumb - lowest) * 100 / range) + '%'}">{{minThumb}}</div>
-      <div class="thumb" :style="{left: ((maxThumb - lowest) * 100 / range) + '%'}">{{maxThumb}}</div>
+      <div class="thumb" @click="activeThumb = 1" @mousemove="thumbMinMove" @mousedown="thumbMinMD" @mouseup="thumbMinMU" :style="{left: ((minThumb - lowest) * 100 / range) + '%', backgroundColor: activeThumb == 1 ? 'red' : '#000b'}">{{minThumb}}</div>
+      <div class="thumb" @click="activeThumb = 2" :style="{left: ((maxThumb - lowest) * 100 / range) + '%', backgroundColor: activeThumb == 2 ? 'red' : '#000b'}">{{maxThumb}}</div>
     </div>
     <div class="scalebar">
       <div class="valueLabel">{{lowest}}</div>
@@ -16,22 +17,54 @@
 export default {
   name: 'DoubleRange',
   props: {
+    lowest: {type: Number, default: 150},
+    highest: {type: Number, default: 550}
   },
   data: ()=>{return {
-    lowest: 150,
-    highest: 550,
     minThumb: 155,
-    maxThumb: 339
+    maxThumb: 339,
+    mousedownMin: false,
+    test1: -1,
+    activeThumb: 0
   }},
   computed: {
     range: function() {
       return this.highest - this.lowest
     },
   },
+  created: function() {
+    if (this.minThumb >= this.maxThumb) this.maxThumb = this.minThumb + 1
+    if (this.lowest > this.minThumb) this.minThumb = this.lowest
+    if (this.lowest > this.maxThumb) this.maxThumb = this.lowest + 100
+    if (this.highest < this.minThumb) this.minThumb = this.highest
+    if (this.highest < this.maxThumb) this.maxThumb = this.highest
+  },
   methods: {
     piece: function() {
       return this.$refs.ruler.offsetWidth / this.range
     },
+    thumbMinMD: function(e) {
+      this.mousedownMin = true
+    },
+    thumbMinMU: function(e) {
+      this.mousedownMin = false
+    },
+    thumbMinMove: function(e) {
+      if (this.mousedownMin = true) {
+        
+      }
+    }
+  },
+  watch: {
+    lowest: function() {
+      if (this.minThumb >= this.maxThumb) this.maxThumb = this.minThumb + 1
+      if (this.lowest > this.minThumb) this.minThumb = this.lowest
+      if (this.lowest > this.maxThumb) this.maxThumb = this.lowest + (this.range / 2)  
+    },
+    highest: function() {
+      if (this.highest < this.minThumb) this.minThumb = this.highest
+      if (this.highest < this.maxThumb) this.maxThumb = this.highest
+    }
   }
 }
 </script>
@@ -59,11 +92,12 @@ export default {
     max-width var(--thumbHeight)
     line-height var(--thumbHeight)
     border-radius 100%
-    background-color #0005
+    background-color #000b
     box-shadow 0 0 3px 0px #999
     cursor pointer
     position absolute
     color white
+    font-size 9px
     &:hover
       box-shadow 0 0 3px 1px white
   *

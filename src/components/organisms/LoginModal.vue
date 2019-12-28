@@ -108,6 +108,7 @@ export default {
 *
   margin 0
 .loginModal
+  z-index 5
   width 260px
   box-sizing border-box
   padding 4px
