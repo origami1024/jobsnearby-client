@@ -22,11 +22,11 @@ const bodyParser = require('body-parser');
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }));
 
-//var history = require('connect-history-api-fallback')
-//app.use(history({}))
+var history = require('connect-history-api-fallback')
+app.use(history({}))
 
-//const serveStatic = require("serve-static")
-//app.use(serveStatic(path.join(__dirname, './../dist')));
+const serveStatic = require("serve-static")
+app.use(serveStatic(path.join(__dirname, './../dist')));
 
 
 
@@ -53,10 +53,10 @@ app.get('/jobs.json', db.getJobs)
 app.get('/job/:id', db.getJobById)
 
 
-app.get('*', function (req, res) {
-  console.log('cp reached')
-  res.sendFile(path.join(__dirname, './../dist'))
-})
+// app.get('/*', function (req, res) {
+//   console.log('cp reached', path.join(__dirname, './../dist'))
+//   serveStatic(path.join(__dirname, './../dist'))
+// })
 async function out(req, res) {
   //maybe delete stuff in db and write some statistics down
   //for now just reset cookies and send back OK
@@ -66,7 +66,7 @@ async function out(req, res) {
 }
 
 async function auth(req, res) {
-  console.log(req.cookies.session)
+  console.log('auth try', req.cookies.session)
   if (req.cookies.session && req.cookies.session.length > 50) {
     let profile = await db.checkAuthGetProfile(req.cookies.session).catch(error => {
       console.log(error)
@@ -151,7 +151,6 @@ async function reg(req, res) {
   let arg2 = req.body[4]
   console.log('cp9: ', arg2)
   //check type
-  console.log(usertype)
   if (usertype !== 'subscriber' && usertype !== 'company') {
     res.send('step3')
     return -1

@@ -21,7 +21,7 @@ const getJobs = (request, response) => {
       console.log(error)
       throw error
     }
-    console.log('cp16: ', results.rows)
+    //console.log('cp16: ', results.rows)
     response.status(200).json(results.rows)
   })
 }
