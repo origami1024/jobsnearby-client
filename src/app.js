@@ -152,7 +152,7 @@ async function reg(req, res) {
   }
   console.log('ok1')
   //check arg1
-  let nameregex = /^[\wа-яА-Я]+$/
+  let nameregex = /^[\wа-яА-Я/s]+$/
   if (arg1 < 3 ||
      (arg1 > 60 && usertype === 'subscriber') ||
      (arg1 > 80 && usertype === 'company') ||
