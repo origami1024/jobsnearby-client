@@ -19,7 +19,7 @@ export default {
     jobslist: Array,
   },
   data: ()=>{return {
-    salaryVals: [0, 1000],
+    salaryVals: [-Infinity, Infinity],
     maxSal: 100000,
     minSal: 0,
   }},

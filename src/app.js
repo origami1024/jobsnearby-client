@@ -7,7 +7,7 @@ const app = express()
 const port = process.env.PORT || 7777
 const cookieParser = require('cookie-parser')
 
-const serveStatic = require("serve-static")
+
 const path = require('path')
 
 var cors = require('cors');
@@ -22,8 +22,11 @@ const bodyParser = require('body-parser');
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }));
 
+//var history = require('connect-history-api-fallback')
+//app.use(history({}))
 
-app.use(serveStatic(path.join(__dirname, './../dist')));
+//const serveStatic = require("serve-static")
+//app.use(serveStatic(path.join(__dirname, './../dist')));
 
 
 
@@ -39,19 +42,20 @@ pages.about      = pageParts.head + pageParts.navbar(navlinks) + 'Работай
 pages.jobListing = pageParts.head + pageParts.navbar(navlinks) + pageParts.demo + pageParts.foot
 
 
-//app.get('/', (req, res) => res.send(pages.main))
-//redirect from the main
-
-app.get('/about', (req, res) => res.send(pages.about))
 app.post('/auth', auth)//auth by cookie
 app.post('/login', login)
 app.post('/reg', reg)
 app.post('/out', out)
 
-app.get('/jobs.json', db.getJobs)
-app.get('/job/:id', db.getJobById)
 app.post('/entrance', db.addJobs)
 
+app.get('/jobs.json', db.getJobs)
+app.get('/job/:id', db.getJobById)
+
+
+app.get('*', function (req, res) {
+  res.sendFile(path.join(__dirname, './../dist'))
+})
 async function out(req, res) {
   //maybe delete stuff in db and write some statistics down
   //for now just reset cookies and send back OK
