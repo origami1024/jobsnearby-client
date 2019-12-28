@@ -1,10 +1,32 @@
 <template>
   <div class="jobs">
-    <div>
-      <div>Сортировка: Новые | Зарплата нисх | Наибольшее совпадение</div>
-      <JobsList :salaryFilter="salaryVals" :jobslist="jobslist" msg="Все вакансии"/>
+    <div class="search">
+      <p>Поиск на сервере(не работает)</p>
+      <input type="text">
+      <p>Фильтры данных с сервера</p>
+      <input type="checkbox" checked>
+      <input type="checkbox">
+      <input type="checkbox" checked>
     </div>
-    <JobsFilter @slideEnd="slideEnd" :highest="maxSal" :lowest="minSal"></JobsFilter>
+    <div class="jobs__main">
+      <div>
+        <div>Сортировка:</div>
+        <q-btn-toggle
+          v-model="sort"
+          toggle-color="primary"
+          no-caps
+          :options="[
+            {label: 'Новые', value: 'time'},
+            {label: 'Зарпалата', value: 'salary'},
+            {label: 'Что-то', value: 'else'}
+          ]"
+        />
+        <br>
+        <br>
+        <JobsList :langsFilter="langsFilter" :sort="sort" :salaryFilter="salaryVals" :jobslist="jobslist" msg="Все вакансии"/>
+      </div>
+      <JobsFilter :langOptions="langOptions" @updLangs="updLangs" @slideEnd="slideEnd" :highest="maxSal" :lowest="minSal"></JobsFilter>
+    </div>
   </div>
 </template>
 
@@ -19,9 +41,12 @@ export default {
     jobslist: Array,
   },
   data: ()=>{return {
+    sort: 'time',//time, salary, else
     salaryVals: [-Infinity, Infinity],
+    langsFilter: [],
     maxSal: 100000,
     minSal: 0,
+    langOptions: ["Русский", "Английский", "Немецкий", "Французкий"],
   }},
   components: {
     JobsFilter,
@@ -41,21 +66,26 @@ export default {
     jobslist: function(newj, oldj) {
       let max1 = Math.max.apply(Math, newj.map(function(o) { return o.salary }))
       let min1 = Math.min.apply(Math, newj.map(function(o) { return o.salary }))
-      this.maxSal = max1 + ((max1 - min1) / 10)
-      this.minSal = min1 - ((max1 - min1) / 10)
+      this.maxSal = max1 + ((max1 - min1) / 10) | 0
+      this.minSal = min1 - ((max1 - min1) / 10) | 0
       this.salaryVals = [this.minSal, this.maxSal]
+      this.langOptions = Array.from(new Set(this.jobslist.flatMap(j=>j.langs)))
     }
   },
   mounted: function() {
     let max1 = Math.max.apply(Math, this.jobslist.map(function(o) { return o.salary }))
     let min1 = Math.min.apply(Math, this.jobslist.map(function(o) { return o.salary }))
-    this.maxSal = max1 + ((max1 - min1) / 10)
-    this.minSal = min1 - ((max1 - min1) / 10)
+    this.maxSal = max1 + ((max1 - min1) / 10) | 0
+    this.minSal = min1 - ((max1 - min1) / 10) | 0
   },
   methods: {
     slideEnd: function(vals) {
       console.log('cp10: ', vals)
       this.salaryVals = vals
+    },
+    updLangs: function(vals) {
+      console.log('cp11: ', vals)
+      this.langsFilter = vals
     }
   }
 }
@@ -64,7 +94,10 @@ export default {
 <style scoped lang="stylus">
 .jobs
   display flex
-  justify-content space-around
+  flex-direction column
+  .jobs__main
+    display flex
+    justify-content space-around
   *
     margin 0
 

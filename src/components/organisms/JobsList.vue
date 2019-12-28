@@ -19,10 +19,27 @@ export default {
     msg: String,
     jobslist: {type: Array, default: ()=>[]},
     salaryFilter: {type: Array, default: ()=>[-Infinity, Infinity]},
+    sort: String,
+    langsFilter: {type: Array, default: ()=>[]},
   },
   computed: {
     jobslistFiltered: function() {
-      return this.jobslist.filter(job=>(job.salary >= this.salaryFilter[0] && job.salary <= this.salaryFilter[1]))
+      let filtered = this.jobslist.filter(job=>(job.salary >= this.salaryFilter[0] && job.salary <= this.salaryFilter[1]))
+      if (this.langsFilter.length > 0) {
+        filtered = filtered.filter(job=>{
+          let result = false
+          job.langs.forEach(lang=>{
+            if (this.langsFilter.includes(lang)) result = true
+          })
+          return result
+        })
+      }
+      
+      let sorted
+      if (this.sort == 'salary') {
+        sorted = filtered.sort((a,b)=>Number(a.salary) < Number(b.salary) ? 1 : -1)
+      } else sorted = filtered
+      return sorted
     }
   },
   components:{

@@ -1,8 +1,12 @@
 <template>
   <div class="jobsfilter">
-    <p>Фильтры</p>
+    <p class="header">Фильтры</p>
+    <br>
+    <p>Фильтр полученных данных по тексту(не работает):</p>
+    <input type="text">
+    <br>
+    <br>
     <p>Зарплата:</p>
-    <!-- <b-slider :min="lowest" :max="highest" v-model="value" lazy></b-slider> -->
     <q-range
       :key="lowest"
       :value="rangeValues"
@@ -10,6 +14,20 @@
       :min="lowest"
       :max="highest"
       label-always
+    />
+    <br>
+    <p>Языки:</p>
+    <q-select
+      clearable
+      multiple
+
+      use-chips
+      chips-bg-color="red"
+      label="Подходящие языки"
+      v-model="langsSelected"
+      :options="langOptions"
+      @input="updateLangs"
+      
     />
   </div>
 </template>
@@ -25,7 +43,8 @@ export default {
   name: 'JobsFilter',
   props: {
     lowest: {type: Number, default: 0},
-    highest: {type: Number, default: 99550}
+    highest: {type: Number, default: 99550},
+    langOptions: {type: Array, default: ()=>[]},
   },
   data: ()=>{return {
     col: 'red',
@@ -35,11 +54,18 @@ export default {
       min: 1600,
       max: 8000
     },
+    langsSelected: [],
+    //langOptions: ["Русский", "Английский", "Немецкий", "Французкий"],
   }},
   methods: {
     updateAndSave: function(val) {
       this.rangeValues = val
       this.$emit('slideEnd', [val.min, val.max])
+    },
+    updateLangs: function(val) {
+      if (val==null) {
+        this.$emit('updLangs', [])
+      } else this.$emit('updLangs', val)
     }
   },
   computed: {
@@ -80,13 +106,14 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="stylus">
 .jobsfilter
-  flex 0 1 30%
-  #inspire
-    padding 20px
+  flex 0 1 35%
+  max-width 400px
+  border 1px solid black
+  padding 15px
+  .header
+    background-color #ddd
   *
     margin 0
-  .vuetify-rangeslider
-    color black
   .line
     display flex
     justify-content space-between
