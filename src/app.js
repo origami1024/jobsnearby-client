@@ -54,6 +54,7 @@ app.get('/job/:id', db.getJobById)
 
 
 app.get('*', function (req, res) {
+  console.log('cp reached')
   res.sendFile(path.join(__dirname, './../dist'))
 })
 async function out(req, res) {
