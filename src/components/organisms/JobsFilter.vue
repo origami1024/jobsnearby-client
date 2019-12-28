@@ -20,9 +20,7 @@
     <q-select
       clearable
       multiple
-
       use-chips
-      chips-bg-color="red"
       label="Подходящие языки"
       v-model="langsSelected"
       :options="langOptions"
