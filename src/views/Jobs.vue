@@ -43,6 +43,7 @@ export default {
       let min1 = Math.min.apply(Math, newj.map(function(o) { return o.salary }))
       this.maxSal = max1 + ((max1 - min1) / 10)
       this.minSal = min1 - ((max1 - min1) / 10)
+      this.salaryVals = [this.minSal, this.maxSal]
     }
   },
   mounted: function() {

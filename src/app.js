@@ -92,6 +92,7 @@ async function login(req, res) {
       res.send('step2')
       return undefined
     })
+    console.log('cp77', userData)
     if (userData) {
       //is the pw right?
       let authed = bcrypt.compareSync(pw, userData.pwHash)
@@ -127,7 +128,7 @@ async function login(req, res) {
       } else res.send('step2')
       
 
-    } else {console.log('user does not exist?', userData); return false}
+    } else {console.log('user does not exist?', userData); res.send('step2'); return false}
 
     //res.send('OK')
   } else {res.send('step1'); console.log('not valid mail or wrong pw')}
@@ -152,7 +153,8 @@ async function reg(req, res) {
   }
   console.log('ok1')
   //check arg1
-  let nameregex = /^[\wа-яА-Я/s]+$/
+  //add /s but not from beginning or end
+  let nameregex = /^[\wа-яА-Я]+$/
   if (arg1 < 3 ||
      (arg1 > 60 && usertype === 'subscriber') ||
      (arg1 > 80 && usertype === 'company') ||
