@@ -67,7 +67,7 @@ export default {
       } else return this.job.title
     },
     filteredAuthor: function() {
-      if (this.searchFilter.length > 1 && this.job.author.includes(this.searchFilter)) {
+      if (this.searchFilter.length > 1 && this.job.author.toLowerCase().includes(this.searchFilter)) {
         let i = this.job.author.toLowerCase().indexOf(this.searchFilter)
         return this.job.author.substr(0, i) + 
         '<span class="searched">' + this.job.author.substr(i, this.searchFilter.length) + '</span>' + 
