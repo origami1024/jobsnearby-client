@@ -1,26 +1,11 @@
 <template>
   <div class="jobs">
-    <div class="search">
-      <p>Поиск на сервере(не работает)</p>
-      <input type="text">
-      <p>Фильтры данных с сервера</p>
-      <input type="checkbox" checked>
-      <input type="checkbox">
-      <input type="checkbox" checked>
+    <div class="jobs__top">
+      <p>Заголовок 1 1 1</p>
     </div>
     <div class="jobs__main">
       <div>
-        <div>Сортировка:</div>
-        <q-btn-toggle
-          v-model="sort"
-          toggle-color="primary"
-          no-caps
-          :options="[
-            {label: 'Новые', value: 'time'},
-            {label: 'Зарпалата', value: 'salary'},
-            {label: 'Что-то', value: 'else'}
-          ]"
-        />
+        
         <br>
         <br>
         <JobsList :searchFilter="searchFilter" :langsFilter="langsFilter" :sort="sort" :salaryFilter="salaryVals" :jobslist="jobslist" msg="Все вакансии"/>
@@ -99,9 +84,12 @@ export default {
 .jobs
   display flex
   flex-direction column
+  position relative
+  padding 0px 10px
   .jobs__main
     display flex
-    justify-content space-around
+    position relative
+    // justify-content space-around
   *
     margin 0
 

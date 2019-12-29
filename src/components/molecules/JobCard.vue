@@ -7,7 +7,7 @@
       <div>автор: <strong v-html="filteredAuthor"></strong></div>
     </div>
     <table>
-      <tr>
+      <tr v-if="lenses == 'full'">
         <td>Требуемый опыт</td>
         <td>{{job.experience}} месяцев</td>
       </tr>
@@ -15,7 +15,7 @@
         <td>Город</td>
         <td>{{job.city}}</td>
       </tr>
-      <tr>
+      <tr v-if="lenses == 'full'">
         <td>Тип работы</td>
         <td>{{job.jobType}}</td>
       </tr>
@@ -23,19 +23,19 @@
         <td>Зарплата</td>
         <td>{{job.salary}}</td>
       </tr>
-      <tr>
+      <tr v-if="lenses == 'full'">
         <td>График работы</td>
         <td>с {{job.worktime1}} до {{job.worktime2}}</td>
       </tr>
-      <tr>
+      <tr v-if="lenses == 'full'">
         <td>Языки</td>
         <td>{{job.langs}}</td>
       </tr>
-      <tr>
+      <tr v-if="lenses == 'full'">
         <td>Возраст</td>
         <td>от {{job.age1}} до {{job.age2}}</td>
       </tr>
-      <tr>
+      <tr v-if="lenses == 'full'">
         <td>Описание</td>
         <td>{{job.description}}</td>
       </tr>
@@ -52,7 +52,8 @@ export default {
   name: 'JobCard',
   props: {
     job: Object,
-    searchFilter: {type: String, default: ''}
+    searchFilter: {type: String, default: ''},
+    lenses: {type: String, default: 'full'},
   },
   data: ()=>{return {
     info: {}

@@ -1,11 +1,22 @@
 <template>
   <div class="jobslist">
-    <h3>
-      {{msg}} : {{jobslist.length}}
-      Отфильтрованные : <strong>{{jobslistFiltered.length}}</strong>
-    </h3>
+    <div class="line">
+      <h3>
+        {{msg}} : {{jobslist.length}}
+        Отфильтрованные : <strong>{{jobslistFiltered.length}}</strong>
+      </h3>
+      
+      <q-btn-toggle
+        v-model="lenses"
+        toggle-color="primary"
+        size="sm"
+        dense
+        :options="[ {value: 'short', icon: 'list', tooltip: 'hihi'},
+                    {value: 'full', icon: 'code'},]"
+      />
+    </div>
     <div>
-      <JobCard :searchFilter="searchFilter" :job="item" v-for="item in jobslistFiltered" :key="item.id"></JobCard>
+      <JobCard :lenses="lenses" :searchFilter="searchFilter" :job="item" v-for="item in jobslistFiltered" :key="item.id"></JobCard>
     </div>
   </div>
 </template>
@@ -23,6 +34,9 @@ export default {
     langsFilter: {type: Array, default: ()=>[]},
     searchFilter: {type: String, default: ''}
   },
+  data: ()=>{return {
+    lenses: 'short'
+  }},
   computed: {
     jobslistFiltered: function() {
       //salary filter
@@ -61,6 +75,12 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="stylus">
+.jobslist
+  .line
+    display flex
+    align-items center
+    border 1px solid gray
+    padding 5px
 *
   margin 0
 
