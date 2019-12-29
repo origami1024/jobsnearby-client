@@ -11,7 +11,7 @@
         toggle-color="primary"
         size="sm"
         dense
-        :options="[ {value: 'short', icon: 'list', tooltip: 'hihi'},
+        :options="[ {value: 'short', icon: 'list'},
                     {value: 'full', icon: 'code'},]"
       />
     </div>
@@ -35,7 +35,7 @@ export default {
     searchFilter: {type: String, default: ''}
   },
   data: ()=>{return {
-    lenses: 'short'
+    lenses: 'full'
   }},
   computed: {
     jobslistFiltered: function() {

@@ -226,7 +226,7 @@ export default {
   *
     margin 0
   div, span, svg
-    line-height 1.5
+    line-height 1.6
   .line
     display flex
     justify-content space-between
