@@ -5,7 +5,7 @@
       Отфильтрованные : <strong>{{jobslistFiltered.length}}</strong>
     </h3>
     <div>
-      <JobCard :job="item" v-for="item in jobslistFiltered" :key="item.id"></JobCard>
+      <JobCard :searchFilter="searchFilter" :job="item" v-for="item in jobslistFiltered" :key="item.id"></JobCard>
     </div>
   </div>
 </template>
@@ -21,10 +21,14 @@ export default {
     salaryFilter: {type: Array, default: ()=>[-Infinity, Infinity]},
     sort: String,
     langsFilter: {type: Array, default: ()=>[]},
+    searchFilter: {type: String, default: ''}
   },
   computed: {
     jobslistFiltered: function() {
+      //salary filter
       let filtered = this.jobslist.filter(job=>(job.salary >= this.salaryFilter[0] && job.salary <= this.salaryFilter[1]))
+
+      //lang filter
       if (this.langsFilter.length > 0) {
         filtered = filtered.filter(job=>{
           let result = false
@@ -33,6 +37,13 @@ export default {
           })
           return result
         })
+      }
+      //text filter
+      if (this.searchFilter.length > 1) {
+        filtered = filtered.filter(job=>(
+          job.title.toLowerCase().includes(this.searchFilter) ||
+          job.author.toLowerCase().includes(this.searchFilter)
+        ))
       }
       
       let sorted

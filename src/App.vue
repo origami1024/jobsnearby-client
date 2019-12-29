@@ -137,4 +137,6 @@ export default {
     color orange
     &:visited
       color orange
+  .searched
+    background-color yellow
 </style>

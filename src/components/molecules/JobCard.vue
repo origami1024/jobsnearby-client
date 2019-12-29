@@ -2,9 +2,9 @@
   <div class="jobscard">
     <div class="line">
       <h4 class="cardHeader">
-        <strong>{{job.title}}</strong>
+        <strong v-html="filteredTitle"></strong>
       </h4>
-      <div>автор: <strong>{{job.author}}</strong></div>
+      <div>автор: <strong v-html="filteredAuthor"></strong></div>
     </div>
     <table>
       <tr>
@@ -42,6 +42,7 @@
     </table>
     <p class="alignRight">Опубликована: {{new Date(job.published).toLocaleDateString()}} в {{new Date(job.published).toLocaleTimeString([],{hour: '2-digit', minute:'2-digit'})}}</p>
     <p class="alignRight">Обновлена: {{new Date(job.updated).toLocaleDateString()}} в {{new Date(job.updated).toLocaleTimeString([],{hour: '2-digit', minute:'2-digit'})}}</p>
+    <!-- <div v-html="filteredTitle"></div> -->
   </div>
 </template>
 
@@ -50,11 +51,30 @@
 export default {
   name: 'JobCard',
   props: {
-    job: Object
+    job: Object,
+    searchFilter: {type: String, default: ''}
   },
   data: ()=>{return {
     info: {}
   }},
+  computed: {
+    filteredTitle: function() {
+      if (this.searchFilter.length > 1 && this.job.title.toLowerCase().includes(this.searchFilter)) {
+        let i = this.job.title.toLowerCase().indexOf(this.searchFilter)
+        return this.job.title.substr(0, i) + 
+        '<span class="searched">' + this.job.title.substr(i, this.searchFilter.length) + '</span>' + 
+        this.job.title.substr(i + this.searchFilter.length)
+      } else return this.job.title
+    },
+    filteredAuthor: function() {
+      if (this.searchFilter.length > 1 && this.job.author.includes(this.searchFilter)) {
+        let i = this.job.author.toLowerCase().indexOf(this.searchFilter)
+        return this.job.author.substr(0, i) + 
+        '<span class="searched">' + this.job.author.substr(i, this.searchFilter.length) + '</span>' + 
+        this.job.author.substr(i + this.searchFilter.length)
+      } else return this.job.author
+    },
+  }
 }
 </script>
 

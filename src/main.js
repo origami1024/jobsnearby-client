@@ -10,6 +10,10 @@ import '@mdi/font/css/materialdesignicons.css'
 
 import './quasar'
 
+
+import Throttle from 'vue-throttle'
+Vue.use(Throttle)
+
 Vue.config.productionTip = false
 
 

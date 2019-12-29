@@ -23,9 +23,9 @@
         />
         <br>
         <br>
-        <JobsList :langsFilter="langsFilter" :sort="sort" :salaryFilter="salaryVals" :jobslist="jobslist" msg="Все вакансии"/>
+        <JobsList :searchFilter="searchFilter" :langsFilter="langsFilter" :sort="sort" :salaryFilter="salaryVals" :jobslist="jobslist" msg="Все вакансии"/>
       </div>
-      <JobsFilter :langOptions="langOptions" @updLangs="updLangs" @slideEnd="slideEnd" :highest="maxSal" :lowest="minSal"></JobsFilter>
+      <JobsFilter @updSearch="updSearch" :langOptions="langOptions" @updLangs="updLangs" @slideEnd="slideEnd" :highest="maxSal" :lowest="minSal"></JobsFilter>
     </div>
   </div>
 </template>
@@ -42,6 +42,7 @@ export default {
   },
   data: ()=>{return {
     sort: 'time',//time, salary, else
+    searchFilter: '',
     salaryVals: [-Infinity, Infinity],
     langsFilter: [],
     maxSal: 100000,
@@ -86,6 +87,9 @@ export default {
     updLangs: function(vals) {
       console.log('cp11: ', vals)
       this.langsFilter = vals
+    },
+    updSearch: function(str) {
+      this.searchFilter = str
     }
   }
 }

@@ -2,10 +2,11 @@
   <div class="jobsfilter">
     <p class="header">Фильтры</p>
     <br>
-    <p>Фильтр полученных данных по тексту(не работает):</p>
-    <input type="text">
-    <br>
-    <br>
+    <p>Фильтр полученных данных по тексту(название и автор):</p>
+    <Throttle :time="350" events="input" :isDebounce="true">
+      <input type="text" :value="search" @input="searchUpd" class="jobsfilter__search">
+    </Throttle>
+    <br><br>
     <p>Зарплата:</p>
     <q-range
       :key="lowest"
@@ -45,7 +46,7 @@ export default {
     langOptions: {type: Array, default: ()=>[]},
   },
   data: ()=>{return {
-    col: 'red',
+    search: '',
     value: [1600,2000],
     reinit: true, //when loaded first time - need to set the rangeValues equal to low and high
     rangeValues: {
@@ -64,6 +65,11 @@ export default {
       if (val==null) {
         this.$emit('updLangs', [])
       } else this.$emit('updLangs', val)
+    },
+    searchUpd: function(e) {
+      //console.log(val.target.value)
+      this.search = e.target.value
+      this.$emit('updSearch', e.target.value.toLowerCase())
     }
   },
   computed: {
@@ -108,6 +114,8 @@ export default {
   max-width 400px
   border 1px solid black
   padding 15px
+  &__search
+    width 100%
   .header
     background-color #ddd
   *
