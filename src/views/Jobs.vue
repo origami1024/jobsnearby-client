@@ -10,7 +10,7 @@
         <br>
         <JobsList :searchFilter="searchFilter" :langsFilter="langsFilter" :sort="sort" :salaryFilter="salaryVals" :jobslist="jobslist" msg="Все вакансии"/>
       </div>
-      <JobsFilter @updSearch="updSearch" :langOptions="langOptions" @updLangs="updLangs" @slideEnd="slideEnd" :highest="maxSal" :lowest="minSal"></JobsFilter>
+      <JobsFilter @updQue="updQue" @updSearch="updSearch" :langOptions="langOptions" @updLangs="updLangs" @slideEnd="slideEnd" :highest="maxSal" :lowest="minSal"></JobsFilter>
     </div>
   </div>
 </template>
@@ -75,6 +75,10 @@ export default {
     },
     updSearch: function(str) {
       this.searchFilter = str
+    },
+    updQue: function(params) {
+      console.log('cpUpdQue1: ', params)
+      this.$emit('updQue', params)
     }
   }
 }

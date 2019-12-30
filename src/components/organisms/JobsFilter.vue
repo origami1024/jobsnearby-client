@@ -13,7 +13,7 @@
         class="jobsfilter__search"
         :rules="[val => /^[\wа-яА-Я\s]*$/.test(val) || 'некорректная строка поиска']"
       />
-      <q-btn class="jobsfilter__search-btn" icon="search" color="primary" :loading="pending"></q-btn>
+      <q-btn icon="search" color="primary" :loading="pending" class="jobsfilter__search-btn"></q-btn>
     </div>
     <!-- <Throttle :time="350" events="input" :isDebounce="true">
       <input type="text" :value="search" @input="searchUpd" class="jobsfilter__search">
@@ -128,7 +128,7 @@ export default {
     city: '',
     perpage: '25',
     timerange: 'mon',
-    pending: true,
+    pending: false,
     txt: '',
     sort: 'new',
     search: '',
@@ -161,7 +161,6 @@ export default {
   computed: {
     query() {
       //санитайз здесь и на сервере
-      let que = ''
       let params = []
       if (this.txt !== '' && /^[\wа-яА-Я\s]*$/.test(this.txt)) params.push('txt=' + this.txt)
       if (this.sort !== 'new') params.push('sort=' + this.sort)
@@ -173,7 +172,9 @@ export default {
       if (this.nosal === false) params.push('nosal=' + '0')
       if (this.exp !== 'Не имеет значения') params.push('exp=' + this.exp)
       if (this.langsSelected.length > 0) params.push('langs=' + this.langsSelected)
-      return params.length == 0 ? '' : '?' + params.join('&')
+      let que = params.length == 0 ? '' : '?' + params.join('&')
+      this.$emit('updQue', que)
+      return que
     }
     // lthumb: function() {
     //   return this.lowest

@@ -14,9 +14,16 @@
       <span> Статус: {{status}} </span>
       <span> Пользователь: {{user}} ({{user_id}})</span>
     </div>
+    <!-- <button @click="refreshjobs">refresh jobs debug</button> -->
+    <q-btn :loading="ajaxLoading" dense size="sm" color="primary" @click="refreshjobs">refresh jobs debug</q-btn>
+     <q-ajax-bar
+      position="bottom"
+      color="accent"
+      size="10px"
+    />
     <hr>
     <keep-alive>
-      <router-view :role="role" :username="username" :surname="surname" :insearch="insearch" :company="company" :isagency="isagency" :jobslist="jobslist" @refresh="refreshjobs" :uid="user_id" :authed="user_id !== -1" />
+      <router-view @updQue="updQue" :role="role" :username="username" :surname="surname" :insearch="insearch" :company="company" :isagency="isagency" :jobslist="jobslist" @refresh="refreshjobs" :uid="user_id" :authed="user_id !== -1" />
     </keep-alive>
     <!-- <footer>Origami1024, Dec 2019</footer> -->
     <LoginModal @authed="authIt" @loginclosed="modalShown = 'none'" :isShown="modalShown === 'login'"></LoginModal>
@@ -43,7 +50,9 @@ export default {
     user_id: -1,
     company: '',
     isagency: false,
-    jobslist: []
+    jobslist: [],
+    query: '',
+    ajaxLoading: false
   }},
   components: {
     LoginModal,
@@ -108,9 +117,17 @@ export default {
     },
     refreshjobs: function () {
       console.log('refresh jobs app level')
+      this.ajaxLoading = true
       axios
-        .get(config.jobsUrl + '/jobs.json', null, {headers: {'Content-Type' : 'application/json' }})
-        .then(response => {this.jobslist = response.data; console.log('cp1')})
+        .get(config.jobsUrl + '/jobs.json' + this.query, null, {headers: {'Content-Type' : 'application/json' }})
+        .then(response => {
+          this.jobslist = response.data
+          console.log('cp1')
+          this.ajaxLoading = false
+        })
+    },
+    updQue(params) {
+      this.query = params
     }
   }
 }

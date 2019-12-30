@@ -9,6 +9,8 @@ const cookieParser = require('cookie-parser')
 
 
 const path = require('path')
+//const url = require('url');
+//const querystring = require('querystring');
 
 var cors = require('cors');
 app.use(cors({
@@ -49,9 +51,13 @@ app.post('/out', out)
 
 app.post('/entrance', db.addJobs)
 
+app.get('/jobsu.json', params1)
 app.get('/jobs.json', db.getJobs)
 app.get('/job/:id', db.getJobById)
 
+function params1(request, response) {
+  console.log('cp555: ', request.query)
+}
 
 // app.get('/*', function (req, res) {
 //   console.log('cp reached', path.join(__dirname, './../dist'))
