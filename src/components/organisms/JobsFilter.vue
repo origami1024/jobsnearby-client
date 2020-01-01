@@ -1,8 +1,9 @@
 <template>
   <div class="jobsfilter">
     <p :style="{maxWidth: '330px'}">query: {{query}}</p>
+    <button @click="resetFields">Сбросить фильтры</button>
     <p class="header">Поиск</p>
-    <p>Фильтр полученных данных по тексту(название и автор):</p>
+    <p>Фильтр полученных данных по тексту(название, автор, город, описание):</p>
     <div class="line">
       <!-- <input type="text" v-model="txt" class="jobsfilter__search"> -->
       <q-input
@@ -19,47 +20,63 @@
     <!-- <Throttle :time="350" events="input" :isDebounce="true">
       <input type="text" :value="search" @input="searchUpd" class="jobsfilter__search">
     </Throttle> -->
-    
-    <p class="header">Сортировка</p>
-    <q-btn-toggle
-      v-model="sort"
-      toggle-color="primary"
-      no-caps
-      dense
-      :options="[
-        {label: 'Новые', value: 'new'},
-        {label: 'Зарплата-убыв', value: 'saldesc'},
-        {label: 'Зарплата-возр', value: 'salasc'}
-      ]"
-    />
-    <br><br>
-    <p class="header">Данные за</p>
-    <q-btn-toggle
-      v-model="timerange"
-      toggle-color="primary"
-      no-caps
-      dense
-      :options="[
-        {label: 'Месяц', value: 'mon'},
-        {label: 'Неделю', value: 'wee'},
-        {label: 'Сутки', value: 'day'}
-      ]"
-    />
-    <br><br>
-    <p class="header">На странице</p>
-    <q-btn-toggle
-      v-model="perpage"
-      toggle-color="primary"
-      no-caps
-      dense
-      :options="[
-        {label: '25', value: '25'},
-        {label: '50', value: '50'},
-        {label: '100', value: '100'}
-      ]"
-    />
-    <br><br>
+    <div class="line">
+      <div class="borders">
+        <p class="header">Сортировка</p>
+        <q-btn-toggle
+          size="sm"
+          v-model="sort"
+          toggle-color="primary"
+          no-caps
+          dense
+          :options="[
+            {label: 'Новые', value: 'new'},
+            {label: 'Зарплата-убыв', value: 'saldesc'},
+            {label: 'Зарплата-возр', value: 'salasc'}
+          ]"
+        />
+      </div>
+      <div class="borders">
+        <p class="header">Данные за</p>
+        <q-btn-toggle
+          size="sm"
+          v-model="timerange"
+          toggle-color="primary"
+          no-caps
+          dense
+          :options="[
+            {label: 'Месяц', value: 'mon'},
+            {label: 'Неделю', value: 'wee'},
+            {label: 'Сутки', value: 'day'}
+          ]"
+        />
+      </div>
+      <div class="borders">
+        <p class="header">На странице</p>
+        <q-btn-toggle
+          size="sm"
+          v-model="perpage"
+          toggle-color="primary"
+          no-caps
+          dense
+          :options="[
+            {label: '25', value: '25'},
+            {label: '50', value: '50'},
+            {label: '100', value: '100'}
+          ]"
+        />
+      </div>
+    </div>
+    <br>
     <p class="header">Фильтры</p>
+    <div class="line">
+      <q-item-section>
+        <p :style="{textAlign: 'left'}">Скрыть вакансии без указания зп</p>
+      </q-item-section>
+      <q-item-section avatar>
+        <q-toggle color="blue" v-model="nosal" checked-icon="check" />
+      </q-item-section>
+    </div>
     <br>
     <p>Зарплата:</p>
     <div class="line">
@@ -76,14 +93,6 @@
           label
           label-always
         />
-      </q-item-section>
-    </div>
-    <div class="line">
-      <q-item-section>
-        <p :style="{textAlign: 'left'}">Показывать вакансии без зп</p>
-      </q-item-section>
-      <q-item-section avatar>
-        <q-toggle color="blue" v-model="nosal" checked-icon="check" />
       </q-item-section>
     </div>
     <q-input
@@ -126,7 +135,7 @@ export default {
   },
   data: ()=>{return {
     exp: 'Не имеет значения',
-    nosal: true,
+    nosal: false,
     city: '',
     perpage: '25',
     timerange: 'mon',
@@ -144,6 +153,17 @@ export default {
     expOptions: ["Не имеет значения", "Нет опыта", "от 1 до 3 лет", "от 3 до 5", "от 5 лет"]
   }},
   methods: {
+    resetFields(){
+      this.exp = 'Не имеет значения'
+      this.nosal = false
+      this.city = ''
+      this.perpage = '25'
+      this.timerange = 'mon'
+      this.txt = ''
+      this.sort = 'new'
+      this.search = ''
+      //rangeValues???
+    },
     updateAndSave: function(val) {
       this.rangeValues = val
       this.$emit('slideEnd', [val.min, val.max])
@@ -236,6 +256,8 @@ export default {
   .line
     display flex
     justify-content space-between
+  .borders
+    padding 0 2px
   .alignRight
     align-self flex-end
 .jobsfilter__search-btn

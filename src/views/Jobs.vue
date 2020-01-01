@@ -8,7 +8,7 @@
         
         <br>
         <br>
-        <JobsList :searchFilter="searchFilter" :langsFilter="langsFilter" :sort="sort" :salaryFilter="salaryVals" :jobslist="jobslist" msg="Полученные"/>
+        <JobsList :searchFilter="searchFilter" :jobslist="jobslist" msg="Полученные"/>
       </div>
       <JobsFilter :pending="pending" @refresh="$emit('refresh')" @updQue="updQue" @updSearch="updSearch" :langOptions="langOptions" @updLangs="updLangs" @slideEnd="slideEnd" :highest="maxSal" :lowest="minSal"></JobsFilter>
     </div>

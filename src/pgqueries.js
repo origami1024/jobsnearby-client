@@ -21,16 +21,24 @@ const getJobs = (req, res) => {
       /^[\wа-яА-Я\s]*$/.test(req.query.txt)) {
     txt = '%' + req.query.txt.toLowerCase() + '%'
   }
-  
+  let sort = 'ORDER BY jobs.time_updated DESC'
+  if (req.query.sort === 'salasc') sort = 'ORDER BY jobs.salary::int ASC'
+  else if (req.query.sort === 'saldesc') sort = 'ORDER BY jobs.salary::int DESC'
   console.log('cp_getJobs1: ', perpage)
+  let timerange = ` AND jobs.time_updated > now() - interval '1 month'`
+  if (req.query.timerange === 'wee') timerange = ` AND jobs.time_updated > now() - interval '1 week'`
+  else if (req.query.timerange === 'day') timerange = ` AND jobs.time_updated > now() - interval '1 day'`
+  //console.log('cp787: ', req.query.timerange, ', ', timerange)
   let que =  `SELECT jobs.author_id, users.company as author, jobs.job_id, jobs.city, jobs.experience, jobs.jobtype, jobs.title, jobs.salary, jobs.description, jobs.worktime1, jobs.worktime2, jobs.age1, jobs.age2, jobs.langs, jobs.time_published as published, jobs.time_updated as updated
               FROM jobs, users
-              WHERE jobs.author_id = users.user_id ${txt != undefined ? `AND
-                    (LOWER(jobs.title) LIKE $2 OR
-                    LOWER(users.company) LIKE $2 OR
-                    LOWER(jobs.description) LIKE $2 OR
-                    LOWER(jobs.city) LIKE $2)` : ''}
-              ORDER BY jobs.job_id DESC
+              WHERE jobs.author_id = users.user_id
+                  ${timerange} 
+                  ${txt != undefined ? ` AND
+                  (LOWER(jobs.title) LIKE $2 OR
+                  LOWER(users.company) LIKE $2 OR
+                  LOWER(jobs.description) LIKE $2 OR
+                  LOWER(jobs.city) LIKE $2)` : ''}
+              ${sort} 
               LIMIT $1`
   //console.log('cp_getJobs2: ', que)
   let qparams = [perpage]
