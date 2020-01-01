@@ -13,7 +13,7 @@
       </tr>
       <tr>
         <td>Город</td>
-        <td>{{job.city}}</td>
+        <td v-html="filteredCity"></td>
       </tr>
       <tr v-if="lenses == 'full'">
         <td>Тип работы</td>
@@ -37,7 +37,7 @@
       </tr>
       <tr v-if="lenses == 'full'">
         <td>Описание</td>
-        <td>{{job.description}}</td>
+        <td v-html="filteredDesc"></td>
       </tr>
     </table>
     <p class="alignRight">Опубликована: {{new Date(job.published).toLocaleDateString()}} в {{new Date(job.published).toLocaleTimeString([],{hour: '2-digit', minute:'2-digit'})}}</p>
@@ -74,6 +74,22 @@ export default {
         '<span class="searched">' + this.job.author.substr(i, this.searchFilter.length) + '</span>' + 
         this.job.author.substr(i + this.searchFilter.length)
       } else return this.job.author
+    },
+    filteredCity: function() {
+      if (this.searchFilter.length > 1 && this.job.city.toLowerCase().includes(this.searchFilter)) {
+        let i = this.job.city.toLowerCase().indexOf(this.searchFilter)
+        return this.job.city.substr(0, i) + 
+        '<span class="searched">' + this.job.city.substr(i, this.searchFilter.length) + '</span>' + 
+        this.job.city.substr(i + this.searchFilter.length)
+      } else return this.job.city
+    },
+    filteredDesc: function() {
+      if (this.searchFilter.length > 1 && this.job.description.toLowerCase().includes(this.searchFilter)) {
+        let i = this.job.description.toLowerCase().indexOf(this.searchFilter)
+        return this.job.description.substr(0, i) + 
+        '<span class="searched">' + this.job.description.substr(i, this.searchFilter.length) + '</span>' + 
+        this.job.description.substr(i + this.searchFilter.length)
+      } else return this.job.description
     },
   }
 }

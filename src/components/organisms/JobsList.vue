@@ -40,25 +40,30 @@ export default {
   computed: {
     jobslistFiltered: function() {
       //salary filter
-      let filtered = this.jobslist.filter(job=>(job.salary >= this.salaryFilter[0] && job.salary <= this.salaryFilter[1]))
+      let filtered = this.jobslist.map(job=>{
+        !job.city ? job.city='': null
+        !job.description ? job.description='': null
+        return job
+      })
+      filtered = filtered.filter(job=>(job.salary >= this.salaryFilter[0] && job.salary <= this.salaryFilter[1]))
 
       //lang filter
-      if (this.langsFilter.length > 0) {
-        filtered = filtered.filter(job=>{
-          let result = false
-          job.langs.forEach(lang=>{
-            if (this.langsFilter.includes(lang)) result = true
-          })
-          return result
-        })
-      }
+      // if (this.langsFilter.length > 0) {
+      //   filtered = filtered.filter(job=>{
+      //     let result = false
+      //     job.langs.forEach(lang=>{
+      //       if (this.langsFilter.includes(lang)) result = true
+      //     })
+      //     return result
+      //   })
+      // }
       //text filter
-      if (this.searchFilter.length > 1) {
-        filtered = filtered.filter(job=>(
-          job.title.toLowerCase().includes(this.searchFilter) ||
-          job.author.toLowerCase().includes(this.searchFilter)
-        ))
-      }
+      // if (this.searchFilter.length > 1) {
+      //   filtered = filtered.filter(job=>(
+      //     job.title.toLowerCase().includes(this.searchFilter) ||
+      //     job.author.toLowerCase().includes(this.searchFilter)
+      //   ))
+      // }
       
       let sorted
       if (this.sort == 'salary') {
