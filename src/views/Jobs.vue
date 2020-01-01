@@ -8,9 +8,9 @@
         
         <br>
         <br>
-        <JobsList :searchFilter="searchFilter" :langsFilter="langsFilter" :sort="sort" :salaryFilter="salaryVals" :jobslist="jobslist" msg="Все вакансии"/>
+        <JobsList :searchFilter="searchFilter" :langsFilter="langsFilter" :sort="sort" :salaryFilter="salaryVals" :jobslist="jobslist" msg="Полученные"/>
       </div>
-      <JobsFilter @updQue="updQue" @updSearch="updSearch" :langOptions="langOptions" @updLangs="updLangs" @slideEnd="slideEnd" :highest="maxSal" :lowest="minSal"></JobsFilter>
+      <JobsFilter :pending="pending" @refresh="$emit('refresh')" @updQue="updQue" @updSearch="updSearch" :langOptions="langOptions" @updLangs="updLangs" @slideEnd="slideEnd" :highest="maxSal" :lowest="minSal"></JobsFilter>
     </div>
   </div>
 </template>
@@ -24,6 +24,7 @@ export default {
   name: 'Jobs',
   props: {
     jobslist: Array,
+    pending: {type: Boolean, default: false},
   },
   data: ()=>{return {
     sort: 'time',//time, salary, else

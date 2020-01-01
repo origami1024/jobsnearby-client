@@ -12,8 +12,9 @@
         label="Поиск"
         class="jobsfilter__search"
         :rules="[val => /^[\wа-яА-Я\s]*$/.test(val) || 'некорректная строка поиска']"
+        @keyup.enter="refreshPlus"
       />
-      <q-btn icon="search" color="primary" :loading="pending" class="jobsfilter__search-btn"></q-btn>
+      <q-btn @click="refreshPlus" icon="search" color="primary" :loading="pending" class="jobsfilter__search-btn"></q-btn>
     </div>
     <!-- <Throttle :time="350" events="input" :isDebounce="true">
       <input type="text" :value="search" @input="searchUpd" class="jobsfilter__search">
@@ -121,6 +122,7 @@ export default {
     lowest: {type: Number, default: 0},
     highest: {type: Number, default: 99550},
     langOptions: {type: Array, default: ()=>[]},
+    pending: {type: Boolean, default: false},
   },
   data: ()=>{return {
     exp: 'Не имеет значения',
@@ -128,7 +130,6 @@ export default {
     city: '',
     perpage: '25',
     timerange: 'mon',
-    pending: false,
     txt: '',
     sort: 'new',
     search: '',
@@ -156,6 +157,10 @@ export default {
       //console.log(val.target.value)
       this.search = e.target.value
       this.$emit('updSearch', e.target.value.toLowerCase())
+    },
+    refreshPlus(){
+      this.$emit('updSearch', this.txt.toLowerCase())
+      this.$emit('refresh')
     }
   },
   computed: {

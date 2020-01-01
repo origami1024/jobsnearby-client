@@ -15,12 +15,27 @@ const getJobs = (req, res) => {
   let perpage = '25'
   if (req.query.perpage === '50') perpage = '50'
   else if (req.query.perpage === '100') perpage = '100'
+  let txt = undefined
+  if (req.query.txt != undefined && 
+      req.query.txt.length > 0 && 
+      /^[\wа-яА-Я\s]*$/.test(req.query.txt)) {
+    txt = '%' + req.query.txt.toLowerCase() + '%'
+  }
+  
   console.log('cp_getJobs1: ', perpage)
   let que =  `SELECT jobs.author_id, users.company as author, jobs.job_id, jobs.city, jobs.experience, jobs.jobtype, jobs.title, jobs.salary, jobs.description, jobs.worktime1, jobs.worktime2, jobs.age1, jobs.age2, jobs.langs, jobs.time_published as published, jobs.time_updated as updated
               FROM jobs, users
-              WHERE jobs.author_id = users.user_id ORDER BY jobs.job_id DESC
+              WHERE jobs.author_id = users.user_id ${txt != undefined ? `AND
+                    (LOWER(jobs.title) LIKE $2 OR
+                    LOWER(users.company) LIKE $2 OR
+                    LOWER(jobs.description) LIKE $2 OR
+                    LOWER(jobs.city) LIKE $2)` : ''}
+              ORDER BY jobs.job_id DESC
               LIMIT $1`
-  pool.query(que, [perpage], (error, results) => {
+  //console.log('cp_getJobs2: ', que)
+  let qparams = [perpage]
+  if (txt) qparams.push(txt)
+  pool.query(que, qparams, (error, results) => {
     if (error) {
       console.log(error)
       throw error
