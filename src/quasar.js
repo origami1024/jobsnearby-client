@@ -27,7 +27,8 @@ import {
   QRange,
   QCarousel,
   QCarouselControl,
-  QCarouselSlide
+  QCarouselSlide,
+  QPagination
 } from 'quasar'
 
 Vue.use(Quasar, {
@@ -56,7 +57,8 @@ Vue.use(Quasar, {
     QItemLabel,
     QCarousel,
     QCarouselControl,
-    QCarouselSlide
+    QCarouselSlide,
+    QPagination
   },
   directives: {
   },

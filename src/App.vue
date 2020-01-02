@@ -5,6 +5,7 @@
       <router-link to="/jobslist">Вакансии</router-link> |
       <router-link v-if="role === 'company'" to="/uploads">Публикация вакансий</router-link> |
       <router-link to="/about">Контакты</router-link> |
+      <router-link to="/registration">Регистрация</router-link> |
       <router-link v-if="role === 'subscriber'" to="/subprofile">Личный кабинет</router-link>
     </div>
     <div id="authmenu">
@@ -23,7 +24,7 @@
     />
     <hr>
     <keep-alive>
-      <router-view :featuredJobslist="featuredJobslist" :pending="ajaxLoading" @updQue="updQue" :role="role" :username="username" :surname="surname" :insearch="insearch" :company="company" :isagency="isagency" :jobslist="jobslist" @refresh="refreshjobs" :uid="user_id" :authed="user_id !== -1" />
+      <router-view :page_current="page_current" :pages="pages_count" :featuredJobslist="featuredJobslist" :pending="ajaxLoading" @updQue="updQue" :role="role" :username="username" :surname="surname" :insearch="insearch" :company="company" :isagency="isagency" :jobslist="jobslist" @refresh="refreshjobs" :uid="user_id" :authed="user_id !== -1" />
     </keep-alive>
     <!-- <footer>Origami1024, Dec 2019</footer> -->
     <LoginModal @authed="authIt" @loginclosed="modalShown = 'none'" :isShown="modalShown === 'login'"></LoginModal>
@@ -51,10 +52,18 @@ export default {
     company: '',
     isagency: false,
     jobslist: [],
+    jobsFullcount: 0,
+    perpage: 25,
+    page_current: 1,
     featuredJobslist: [],
     query: '',
     ajaxLoading: false
   }},
+  computed: {
+    pages_count() {
+      return Math.ceil(this.jobsFullcount / this.perpage)
+    }
+  },
   components: {
     LoginModal,
     RegisterModal
@@ -116,21 +125,37 @@ export default {
           })
       }
     },
-    refreshjobs: function (param) {
-      console.log('refresh jobs app level')
+    refreshjobs: function (param, param2) {
+      console.log('refresh jobs app level', param2)
       let jobslistUrl = config.jobsUrl + '/jobs.json'
-      if (param !== 'init') jobslistUrl += this.query
+      if (param !== 'init') {
+        jobslistUrl += this.query
+        if (param === 'page') {
+          jobslistUrl += this.query.length > 0 ? '&page=' : '?page='
+          jobslistUrl += param2
+        }
+      }
+      
+      console.log(jobslistUrl)
       this.ajaxLoading = true
       axios
         .get(jobslistUrl, null, {headers: {'Content-Type' : 'application/json' }})
         .then(response => {
-          this.jobslist = response.data
-          if (param === 'init') this.featuredJobslist = response.data
+          this.jobslist = response.data.rows
+          this.jobsFullcount = response.data.full_count
+          this.perpage = Number(response.data.perpage)
+          this.page_current = Number(response.data.page)
+          console.log('cppage: ', response.data.page)
+          if (param === 'init') this.featuredJobslist = response.data.rows
           this.ajaxLoading = false
         })
     },
     updQue(params) {
       this.query = params
+    },
+    perPageUpd(e) {
+      console.log('cpcp111 ', e)
+      //this.perpage = e
     }
   }
 }

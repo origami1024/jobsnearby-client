@@ -5,11 +5,15 @@
     </div>
     <div class="jobs__main">
       <div>
-        <br>
-        <br>
+        <q-pagination
+          :value="page_current"
+          :max="pages"
+          :disable="pending"
+          @input="switchPage"
+        />
         <JobsList :searchFilter="searchFilter" :jobslist="jobslist" msg="Полученные"/>
       </div>
-      <JobsFilter :pending="pending" @refresh="$emit('refresh')" @updQue="updQue" @updSearch="updSearch" :langOptions="langOptions" @updLangs="updLangs" @slideEnd="slideEnd" :highest="maxSal" :lowest="minSal"></JobsFilter>
+      <JobsFilter @perPageUpd="perPageUpd" :pending="pending" @refresh="$emit('refresh')" @updQue="updQue" @updSearch="updSearch" :langOptions="langOptions" @updLangs="updLangs" @slideEnd="slideEnd" :highest="maxSal" :lowest="minSal"></JobsFilter>
     </div>
   </div>
 </template>
@@ -24,6 +28,8 @@ export default {
   props: {
     jobslist: Array,
     pending: {type: Boolean, default: false},
+    pages: {type: Number, default: 1},
+    page_current: {type: Number, default: 1}
   },
   data: ()=>{return {
     sort: 'time',//time, salary, else
@@ -79,6 +85,13 @@ export default {
     updQue: function(params) {
       console.log('cpUpdQue1: ', params)
       this.$emit('updQue', params)
+    },
+    perPageUpd(e) {
+      this.$emit('perPageUpd', e)
+    },
+    switchPage(newV) {
+      //console.log('cpi ', newV)
+      this.$emit('refresh', 'page', newV)
     }
   }
 }

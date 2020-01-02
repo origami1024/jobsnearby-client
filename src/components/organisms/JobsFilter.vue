@@ -12,7 +12,7 @@
         dense
         label="Поиск"
         class="jobsfilter__search"
-        :rules="[val => /^[\wа-яА-Я\s]*$/.test(val) || 'некорректная строка поиска']"
+        :rules="[val => wordRegex.test(val) || 'некорректная строка поиска']"
         @keyup.enter="refreshPlus"
       />
       <q-btn @click="refreshPlus" icon="search" color="primary" :loading="pending" class="jobsfilter__search-btn"></q-btn>
@@ -100,7 +100,7 @@
       dense
       label="Город"
       class="jobsfilter__search"
-      :rules="[val => /^[\wа-яА-Я\s]*$/.test(val) || 'некорректная строка города']"
+      :rules="[val => wordRegex.test(val) || 'некорректная строка города']"
     />
     
     <q-select dense v-model="exp" :options="expOptions" label="Опыт" />
@@ -140,6 +140,7 @@ export default {
     perpage: '25',
     timerange: 'mon',
     txt: '',
+    wordRegex: /^[\wа-яА-ЯÇçÄä£ſÑñňÖö$¢Üü¥ÿýŽžŞş\s\\-]*$/,
     sort: 'new',
     search: '',
     value: [1600,2000],
@@ -187,13 +188,13 @@ export default {
     query() {
       //санитайз здесь и на сервере
       let params = []
-      if (this.txt !== '' && /^[\wа-яА-Я\s]*$/.test(this.txt)) params.push('txt=' + this.txt)
+      if (this.txt !== '' && this.wordRegex.test(this.txt)) params.push('txt=' + this.txt)
       if (this.sort !== 'new') params.push('sort=' + this.sort)
       if (this.timerange !== 'mon') params.push('timerange=' + this.timerange)
       if (this.perpage !== '25') params.push('perpage=' + this.perpage)
       if (this.rangeValues.min > this.lowest) params.push('salmin=' + this.rangeValues.min)
       if (this.rangeValues.max < this.highest) params.push('salmax=' + this.rangeValues.max)
-      if (this.city !== '' && /^[\wа-яА-Я\s]*$/.test(this.city)) params.push('city=' + this.city)
+      if (this.city !== '' && this.wordRegex.test(this.city)) params.push('city=' + this.city)
       if (this.nosal === false) params.push('nosal=' + '0')
       if (this.exp !== 'Не имеет значения') params.push('exp=' + this.exp)
       if (this.langsSelected.length > 0) params.push('langs=' + this.langsSelected)
@@ -227,7 +228,10 @@ export default {
       if (this.rangeValues.min > newh) this.rangeValues.min = newh
       if (this.rangeValues.max > newh) this.rangeValues.max = newh
       if (this.rangeValues.max = -Infinity) this.rangeValues.max = newh
-    }
+    },
+    // perpage(newPP) {
+    //   this.$emit('perPageUpd', newPP)
+    // }
   },
   components:{
     DoubleRange,

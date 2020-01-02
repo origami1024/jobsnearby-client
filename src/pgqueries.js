@@ -16,19 +16,27 @@ const getJobs = (req, res) => {
   if (req.query.perpage === '50') perpage = '50'
   else if (req.query.perpage === '100') perpage = '100'
   let txt = undefined
+  console.log('cptxt: ', req.query.txt)
   if (req.query.txt != undefined && 
       req.query.txt.length > 0 && 
-      /^[\wа-яА-Я\s]*$/.test(req.query.txt)) {
+      /^[\wа-яА-ЯÇçÄä£ſÑñňÖö$¢Üü¥ÿýŽžŞş\s\\-]*$/.test(req.query.txt)) {
     txt = '%' + req.query.txt.toLowerCase() + '%'
   }
-  let sort = 'ORDER BY jobs.time_updated DESC'
-  if (req.query.sort === 'salasc') sort = 'ORDER BY jobs.salary::int ASC'
-  else if (req.query.sort === 'saldesc') sort = 'ORDER BY jobs.salary::int DESC'
+  
+  let sort = 'ORDER BY (jobs.time_updated, jobs.job_id) DESC'
+  if (req.query.sort === 'salasc') sort = 'ORDER BY (jobs.salary::int, jobs.job_id) ASC'
+  else if (req.query.sort === 'saldesc') sort = 'ORDER BY (jobs.salary::int, jobs.job_id) DESC'
   console.log('cp_getJobs1: ', perpage)
   let timerange = ` AND jobs.time_updated > now() - interval '1 month'`
+
+  let page = 1
+  if (req.query.page && Number(req.query.page) > 0 && Number(req.query.page) < 11) page = req.query.page
+  let offset = (page - 1) * Number(perpage)
+  console.log('cpoffset ', offset)
+  console.log('CPPAGE ', page)
   if (req.query.timerange === 'wee') timerange = ` AND jobs.time_updated > now() - interval '1 week'`
   else if (req.query.timerange === 'day') timerange = ` AND jobs.time_updated > now() - interval '1 day'`
-  //console.log('cp787: ', req.query.timerange, ', ', timerange)
+  //, count(*) OVER() AS full_count
   let que =  `SELECT jobs.author_id, users.company as author, jobs.job_id, jobs.city, jobs.experience, jobs.jobtype, jobs.title, jobs.salary, jobs.description, jobs.worktime1, jobs.worktime2, jobs.age1, jobs.age2, jobs.langs, jobs.time_published as published, jobs.time_updated as updated
               FROM jobs, users
               WHERE jobs.author_id = users.user_id
@@ -39,7 +47,7 @@ const getJobs = (req, res) => {
                   LOWER(jobs.description) LIKE $2 OR
                   LOWER(jobs.city) LIKE $2)` : ''}
               ${sort} 
-              LIMIT $1`
+              LIMIT $1 ${'OFFSET ' + offset}`
   //console.log('cp_getJobs2: ', que)
   let qparams = [perpage]
   if (txt) qparams.push(txt)
@@ -48,8 +56,29 @@ const getJobs = (req, res) => {
       console.log(error)
       throw error
     }
+    qparams[0] = 1
+    let countque =  `SELECT count(*) OVER() AS full_count
+                    FROM jobs, users
+                    WHERE jobs.author_id = users.user_id
+                        ${timerange} 
+                        ${txt != undefined ? ` AND
+                        (LOWER(jobs.title) LIKE $2 OR
+                        LOWER(users.company) LIKE $2 OR
+                        LOWER(jobs.description) LIKE $2 OR
+                        LOWER(jobs.city) LIKE $2)` : ''}
+                    ${sort} 
+                    LIMIT $1`
+    pool.query(countque, qparams, (error2, results2) => {
+      if (error2) {
+        console.log('errcp33 ', error)
+        throw error
+      }
+      //console.log('cp23: ', results2)
+      let data = {...results2.rows[0], 'page': page, 'perpage': perpage, rows: results.rows}
+      res.status(200).json(data)
+    })
     //console.log('cp16: ', results.rows)
-    res.status(200).json(results.rows)
+    
   })
 }
 
