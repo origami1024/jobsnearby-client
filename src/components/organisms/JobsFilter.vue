@@ -1,11 +1,12 @@
 <template>
   <div class="jobsfilter">
+    <h3><strong>Фильтр</strong></h3>
+    <br>
     <p :style="{maxWidth: '330px'}">query: {{query}}</p>
     <button @click="resetFields">Сбросить фильтры</button>
-    <p class="header">Поиск</p>
+    <!-- <p class="header">Поиск</p>
     <p>Фильтр полученных данных по тексту(название, автор, город, описание):</p>
     <div class="line">
-      <!-- <input type="text" v-model="txt" class="jobsfilter__search"> -->
       <q-input
         v-model="txt"
         filled
@@ -16,10 +17,7 @@
         @keyup.enter="refreshPlus"
       />
       <q-btn @click="refreshPlus" icon="search" color="primary" :loading="pending" class="jobsfilter__search-btn"></q-btn>
-    </div>
-    <!-- <Throttle :time="350" events="input" :isDebounce="true">
-      <input type="text" :value="search" @input="searchUpd" class="jobsfilter__search">
-    </Throttle> -->
+    </div> -->
     <div class="line">
       <div class="borders">
         <p class="header">Сортировка</p>
@@ -120,9 +118,6 @@
 
 <script>
 //панелька справа с выбором фильтрации
-import DoubleRange from './../atoms/DoubleRange'
-//import 'vue-range-component/dist/vue-range-slider.css'
-
 
 
 export default {
@@ -132,6 +127,7 @@ export default {
     highest: {type: Number, default: 99550},
     langOptions: {type: Array, default: ()=>[]},
     pending: {type: Boolean, default: false},
+    txt: {type: String, default: ''}
   },
   data: ()=>{return {
     exp: 'Не имеет значения',
@@ -139,7 +135,7 @@ export default {
     city: '',
     perpage: '25',
     timerange: 'mon',
-    txt: '',
+    //txt: '',
     wordRegex: /^[\wа-яА-ЯÇçÄä£ſÑñňÖö$¢Üü¥ÿýŽžŞş\s\\-]*$/,
     sort: 'new',
     search: '',
@@ -233,24 +229,21 @@ export default {
     //   this.$emit('perPageUpd', newPP)
     // }
   },
-  components:{
-    DoubleRange,
-  }
+  components:{}
 }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="stylus">
 .jobsfilter
-  position fixed
-  right 0
-  background-color #eee
+  background-color #f7f7f7
   flex 0 1 35%
   max-width 400px
-  border 1px solid black
-  padding 15px
-  &__search
-    width 100%
+  margin-bottom 15px
+  padding 10px 15px
+  box-sizing border-box
+  box-shadow 0 0 4px 1px #06f
+  border-radius 15px
   .header
     background-color #ddd
   *

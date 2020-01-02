@@ -1,22 +1,14 @@
 <template>
   <div class="jobslist">
-    <div class="line" v-if="way!=='row'">
+    <!-- <div class="line" v-if="way!=='row'">
       <h3>
         {{msg}} : {{jobslist.length}}
         Отфильтрованные : <strong>{{jobslistFiltered.length}}</strong>
       </h3>
-      
-      <q-btn-toggle
-        v-model="lenses"
-        toggle-color="primary"
-        size="sm"
-        dense
-        :options="[ {value: 'short', icon: 'list'},
-                    {value: 'full', icon: 'code'},]"
-      />
-    </div>
+    </div> -->
     <div :class="{ rowed: way=='row' }">
       <JobCard :way="way" :lenses="lenses" :searchFilter="searchFilter" :job="item" v-for="item in jobslistFiltered" :key="item.id"></JobCard>
+      <p v-if="jobslist.length == 0">Нет ни одной вакансии</p>
     </div>
   </div>
 </template>
@@ -27,6 +19,7 @@ import JobCard from './../molecules/JobCard'
 export default {
   name: 'JobsList',
   props: {
+    lenses: String,
     way: String,
     msg: String,
     jobslist: {type: Array, default: ()=>[]},
@@ -36,7 +29,6 @@ export default {
     searchFilter: {type: String, default: ''}
   },
   data: ()=>{return {
-    lenses: 'full'
   }},
   computed: {
     jobslistFiltered: function() {

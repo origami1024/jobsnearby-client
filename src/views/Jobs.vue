@@ -1,20 +1,57 @@
 <template>
   <div class="jobs">
-    <div class="jobs__top">
-      <p>Заголовок 1 1 1</p>
+    <div class="jobs__top-wrapper">
+      <div class="jobs__top">
+        <q-input
+          v-model="txt"
+          dense
+          label="Поиск"
+          class="jobsfilter__search"
+          :rules="[val => wordRegex.test(val) || 'некорректная строка поиска']"
+          @keyup.enter="refreshPlus"
+          hint="Поиск по полям название, автор, город, основной текст"
+        >
+          <template v-slot:prepend>
+            <q-icon name="search" />
+          </template>
+        </q-input>
+        <q-btn @click="refreshPlus" color="primary" :loading="pending" class="jobsfilter__search-btn">Поиск</q-btn>
+      </div>
     </div>
     <div class="jobs__main">
       <div>
+        <div class="jobs__filterpart">
+          <JobsFilter :txt="txt" @perPageUpd="perPageUpd" :pending="pending" @refresh="$emit('refresh')" @updQue="updQue" @updSearch="updSearch" :langOptions="langOptions" @updLangs="updLangs" @slideEnd="slideEnd" :highest="maxSal" :lowest="minSal"></JobsFilter>
+        </div>
+      </div>
+      <div class="jobs__contents">
+        <div class="line">
+          Страница
+          <q-pagination
+            :value="page_current"
+            :max="pages"
+            :disable="pending"
+            @input="switchPage"
+            size="sm"
+          />
+          <p>Показано {{jobslist.length}} из {{jobsFullcount}}</p>
+          <q-btn-toggle
+            v-model="lenses"
+            toggle-color="primary"
+            size="sm"
+            dense
+            :options="[ {value: 'short', icon: 'list'},
+                        {value: 'full', icon: 'code'},]"
+          />
+        </div>
+        <JobsList :lenses="lenses" :searchFilter="searchFilter" :jobslist="jobslist" msg="Полученные"/>
         <q-pagination
           :value="page_current"
           :max="pages"
           :disable="pending"
           @input="switchPage"
         />
-        <p>Показано {{jobslist.length}} из {{jobsFullcount}}</p>
-        <JobsList :searchFilter="searchFilter" :jobslist="jobslist" msg="Полученные"/>
       </div>
-      <JobsFilter @perPageUpd="perPageUpd" :pending="pending" @refresh="$emit('refresh')" @updQue="updQue" @updSearch="updSearch" :langOptions="langOptions" @updLangs="updLangs" @slideEnd="slideEnd" :highest="maxSal" :lowest="minSal"></JobsFilter>
     </div>
   </div>
 </template>
@@ -34,6 +71,9 @@ export default {
     jobsFullcount: {type: Number, default: 0}
   },
   data: ()=>{return {
+    lenses: 'full',
+    txt: '',
+    wordRegex: /^[\wа-яА-ЯÇçÄä£ſÑñňÖö$¢Üü¥ÿýŽžŞş\s\\-]*$/,
     sort: 'time',//time, salary, else
     searchFilter: '',
     salaryVals: [-Infinity, Infinity],
@@ -73,6 +113,10 @@ export default {
     this.minSal = min1 - ((max1 - min1) / 10) | 0
   },
   methods: {
+    refreshPlus(){
+      this.searchFilter = this.txt.toLowerCase()
+      this.$emit('refresh')
+    },
     slideEnd: function(vals) {
       console.log('cp10: ', vals)
       this.salaryVals = vals
@@ -105,11 +149,42 @@ export default {
   flex-direction column
   position relative
   padding 0px 10px
+  .jobs__top-wrapper
+    z-index 1
+    background #fff
+    position sticky
+    top 0px
+    padding-top 10px
+    box-sizing border-box
+    margin-bottom 15px
+  .jobs__top
+    background-color #f7f7f7
+    display flex
+    margin 0
+    padding 10px 15px
+    box-sizing border-box
+    box-shadow 0 0 3px 0px #a0a9
+    border-radius 15px
+  .jobs__filterpart
+    position sticky
+    top 105px
+    display flex
+    margin-right 25px
+  .jobsfilter__search
+    width 100%
+  .jobsfilter__search-btn
+    align-self flex-start
   .jobs__main
     display flex
     position relative
     // justify-content space-around
+  .jobs__contents
+    width 100%
   *
     margin 0
+  .line
+    display flex
+    justify-content space-between
+    align-items center
 
 </style>

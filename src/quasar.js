@@ -28,7 +28,12 @@ import {
   QCarousel,
   QCarouselControl,
   QCarouselSlide,
-  QPagination
+  QPagination,
+  QAvatar,
+  QTabs,
+  QTab,
+  QTabPanel,
+  QTabPanels
 } from 'quasar'
 
 Vue.use(Quasar, {
@@ -58,7 +63,12 @@ Vue.use(Quasar, {
     QCarousel,
     QCarouselControl,
     QCarouselSlide,
-    QPagination
+    QPagination,
+    QAvatar,
+    QTabs,
+    QTab,
+    QTabPanel,
+    QTabPanels
   },
   directives: {
   },

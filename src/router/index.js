@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Home from '../views/Home.vue'
+import Registration from '../views/Registration.vue'
 import Jobs from '../views/Jobs.vue'
 import SubProfile from '../views/SubProfile.vue'
 
@@ -11,7 +11,7 @@ const routes = [
   {
     path: '/',
     name: 'home',
-    component: Home
+    component: Jobs //Home
   },
   {
     path: '/subprofile',
@@ -27,9 +27,9 @@ const routes = [
     component: () => import(/* webpackChunkName: "about" */ '../views/About.vue')
   },
   {
-    path: '/jobslist',
-    name: 'jobslist',
-    component: Jobs
+    path: '/registration',
+    name: 'registration',
+    component: Registration
   },
   {
     path: '/uploads',

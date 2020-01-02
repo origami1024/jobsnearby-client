@@ -63,6 +63,7 @@ export default {
               this.status = 'Вход осуществлен'
               console.log(this.status)
               this.$emit('authed', response.data.slice(1))
+              this.$router.push({ name: 'home' })
             }
             else if (response.data == 'step3') {
               this.status = 'Не удалось выполнить вход'

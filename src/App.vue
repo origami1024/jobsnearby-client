@@ -1,30 +1,38 @@
 <template>
   <div id="app">
-    <div id="nav">
-      <router-link to="/">Главная</router-link> |
-      <router-link to="/jobslist">Вакансии</router-link> |
-      <router-link v-if="role === 'company'" to="/uploads">Публикация вакансий</router-link> |
-      <router-link to="/about">Контакты</router-link> |
-      <router-link to="/registration">Регистрация</router-link> |
-      <router-link v-if="role === 'subscriber'" to="/subprofile">Личный кабинет</router-link>
-    </div>
-    <div id="authmenu">
-      <button v-show="user_id === -1" @click="modalShown = modalShown === 'login' ? 'none' : 'login'">Войти</button>
-      <button v-show="user_id === -1" @click="modalShown = modalShown === 'reg' ? 'none' : 'reg'">Регистрация</button>
-      <button v-show="user_id !== -1" @click="logout">Выйти</button>
-      <span> Статус: {{status}} </span>
-      <span> Пользователь: {{user}} ({{user_id}})</span>
-    </div>
-    <!-- <button @click="refreshjobs">refresh jobs debug</button> -->
-    <q-btn :loading="ajaxLoading" dense size="sm" color="primary" @click="refreshjobs">refresh jobs debug</q-btn>
-     <q-ajax-bar
-      position="bottom"
-      color="accent"
-      size="10px"
-    />
-    <hr>
+    <header>
+      <div class="logo">
+        <q-avatar color="red" text-color="white" icon="directions" />
+        ЛОГО
+      </div>
+      <div id="nav">
+        <router-link to="/">Главная</router-link> |
+        <router-link @click.native="regState='reg'" v-if="role === 'guest'" to="/registration">Регистрация</router-link> |
+        <!-- <router-link to="/jobslist">Вакансии</router-link> | -->
+        <router-link v-if="role === 'company'" to="/uploads">Публикация вакансий</router-link> |
+        <!-- <router-link to="/about">Контакты</router-link> | -->
+        
+        <router-link v-if="role === 'subscriber'" to="/subprofile">Личный кабинет</router-link>
+      </div>
+      <div id="authmenu">
+        <button v-show="user_id === -1" @click="modalShown = modalShown === 'login' ? 'none' : 'login'">Войти</button>
+        <!-- <button v-show="user_id === -1" @click="modalShown = modalShown === 'reg' ? 'none' : 'reg'">Регистрация</button> -->
+        <button v-show="user_id !== -1" @click="logout">Выйти</button>
+        <span> Статус: {{status}} </span>
+        <span> Пользователь: {{user}} ({{user_id}})</span>
+      </div>
+      <div>Язык: <span>рус</span></div>
+      <!-- <button @click="refreshjobs">refresh jobs debug</button> -->
+      <q-btn :loading="ajaxLoading" dense size="sm" color="primary" @click="refreshjobs">refresh jobs debug</q-btn>
+      <q-ajax-bar
+        position="bottom"
+        color="accent"
+        size="10px"
+      />
+    </header>
+    <!-- <hr> -->
     <keep-alive>
-      <router-view :jobsFullcount="jobsFullcount" :page_current="page_current" :pages="pages_count" :featuredJobslist="featuredJobslist" :pending="ajaxLoading" @updQue="updQue" :role="role" :username="username" :surname="surname" :insearch="insearch" :company="company" :isagency="isagency" :jobslist="jobslist" @refresh="refreshjobs" :uid="user_id" :authed="user_id !== -1" />
+      <router-view @regStateUpd="regStateUpd" :regState="regState" class="r-view" :jobsFullcount="jobsFullcount" :page_current="page_current" :pages="pages_count" :featuredJobslist="featuredJobslist" :pending="ajaxLoading" @updQue="updQue" :role="role" :username="username" :surname="surname" :insearch="insearch" :company="company" :isagency="isagency" :jobslist="jobslist" @refresh="refreshjobs" :uid="user_id" :authed="user_id !== -1" />
     </keep-alive>
     <!-- <footer>Origami1024, Dec 2019</footer> -->
     <LoginModal @authed="authIt" @loginclosed="modalShown = 'none'" :isShown="modalShown === 'login'"></LoginModal>
@@ -40,6 +48,7 @@ const config = require('./configs/main_config')
 export default {
   name: 'App',
   data: ()=>{return {
+    regState: 'reg',
     modalShown: 'none',
     status: 'Вход не выполнен',
     username: 'abc',
@@ -96,6 +105,10 @@ export default {
     this.refreshjobs('init')
   },
   methods: {
+    regStateUpd(val){
+      console.log('cpvalm ', val)
+      this.regState = val
+    },
     authIt: function(token) {
       this.status = 'Вход выполнен'//имя пользователя?
       this.user = token[0]
@@ -148,6 +161,7 @@ export default {
           console.log('cppage: ', response.data.page)
           if (param === 'init') this.featuredJobslist = response.data.rows
           this.ajaxLoading = false
+          
         })
     },
     updQue(params) {
@@ -168,9 +182,18 @@ export default {
   -moz-osx-font-smoothing grayscale
   text-align center
   color #2c3e50
-  margin-top 20px
   font-size 13px
   line-height 11px
+  header
+    display flex
+    align-items center
+    justify-content space-between
+    margin 15px 10px
+    margin-bottom 5px
+    padding 5px 15px
+    box-sizing border-box
+    box-shadow 0 0 3px 0px #a0a9
+    background-color #f7f7f7
   h1,h2,h3,h4,h5,h6
     font-size 14px
     line-height 1
@@ -184,4 +207,7 @@ export default {
       color orange
   .searched
     background-color yellow
+  .r-view
+    width 80%
+    margin auto
 </style>
