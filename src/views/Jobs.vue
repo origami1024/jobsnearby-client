@@ -11,6 +11,7 @@
           :disable="pending"
           @input="switchPage"
         />
+        <p>Показано {{jobslist.length}} из {{jobsFullcount}}</p>
         <JobsList :searchFilter="searchFilter" :jobslist="jobslist" msg="Полученные"/>
       </div>
       <JobsFilter @perPageUpd="perPageUpd" :pending="pending" @refresh="$emit('refresh')" @updQue="updQue" @updSearch="updSearch" :langOptions="langOptions" @updLangs="updLangs" @slideEnd="slideEnd" :highest="maxSal" :lowest="minSal"></JobsFilter>
@@ -29,7 +30,8 @@ export default {
     jobslist: Array,
     pending: {type: Boolean, default: false},
     pages: {type: Number, default: 1},
-    page_current: {type: Number, default: 1}
+    page_current: {type: Number, default: 1},
+    jobsFullcount: {type: Number, default: 0}
   },
   data: ()=>{return {
     sort: 'time',//time, salary, else
