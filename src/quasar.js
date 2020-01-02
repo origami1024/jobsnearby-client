@@ -24,7 +24,10 @@ import {
   QItem,
   QItemSection,
   QItemLabel,
-  QRange
+  QRange,
+  QCarousel,
+  QCarouselControl,
+  QCarouselSlide
 } from 'quasar'
 
 Vue.use(Quasar, {
@@ -51,6 +54,9 @@ Vue.use(Quasar, {
     QCheckbox,
     QItemSection,
     QItemLabel,
+    QCarousel,
+    QCarouselControl,
+    QCarouselSlide
   },
   directives: {
   },

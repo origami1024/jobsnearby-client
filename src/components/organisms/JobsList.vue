@@ -1,6 +1,6 @@
 <template>
   <div class="jobslist">
-    <div class="line">
+    <div class="line" v-if="way!=='row'">
       <h3>
         {{msg}} : {{jobslist.length}}
         Отфильтрованные : <strong>{{jobslistFiltered.length}}</strong>
@@ -15,8 +15,8 @@
                     {value: 'full', icon: 'code'},]"
       />
     </div>
-    <div>
-      <JobCard :lenses="lenses" :searchFilter="searchFilter" :job="item" v-for="item in jobslistFiltered" :key="item.id"></JobCard>
+    <div :class="{ rowed: way=='row' }">
+      <JobCard :way="way" :lenses="lenses" :searchFilter="searchFilter" :job="item" v-for="item in jobslistFiltered" :key="item.id"></JobCard>
     </div>
   </div>
 </template>
@@ -27,6 +27,7 @@ import JobCard from './../molecules/JobCard'
 export default {
   name: 'JobsList',
   props: {
+    way: String,
     msg: String,
     jobslist: {type: Array, default: ()=>[]},
     salaryFilter: {type: Array, default: ()=>[-Infinity, Infinity]},
@@ -86,6 +87,12 @@ export default {
     align-items center
     border 1px solid gray
     padding 5px
+  .rowed
+    display flex
+    box-sizing border-box
+    max-width 100vw
+    overflow-x: scroll;
+    
 *
   margin 0
 

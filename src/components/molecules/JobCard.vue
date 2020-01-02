@@ -1,5 +1,5 @@
 <template>
-  <div class="jobscard">
+  <div :class="{ jobscard: true, rowedCard: way=='row' }">
     <div class="line">
       <h4 class="cardHeader">
         <strong v-html="filteredTitle"></strong>
@@ -51,6 +51,7 @@
 export default {
   name: 'JobCard',
   props: {
+    way: String,
     job: Object,
     searchFilter: {type: String, default: ''},
     lenses: {type: String, default: 'full'},
@@ -112,4 +113,8 @@ export default {
     justify-content space-between
   .alignRight
     align-self flex-end
+.rowedCard
+  margin 10px 5px
+  border 1px solid gray
+  min-width 220px
 </style>

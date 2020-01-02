@@ -23,7 +23,7 @@
     />
     <hr>
     <keep-alive>
-      <router-view :pending="ajaxLoading" @updQue="updQue" :role="role" :username="username" :surname="surname" :insearch="insearch" :company="company" :isagency="isagency" :jobslist="jobslist" @refresh="refreshjobs" :uid="user_id" :authed="user_id !== -1" />
+      <router-view :featuredJobslist="featuredJobslist" :pending="ajaxLoading" @updQue="updQue" :role="role" :username="username" :surname="surname" :insearch="insearch" :company="company" :isagency="isagency" :jobslist="jobslist" @refresh="refreshjobs" :uid="user_id" :authed="user_id !== -1" />
     </keep-alive>
     <!-- <footer>Origami1024, Dec 2019</footer> -->
     <LoginModal @authed="authIt" @loginclosed="modalShown = 'none'" :isShown="modalShown === 'login'"></LoginModal>
@@ -51,6 +51,7 @@ export default {
     company: '',
     isagency: false,
     jobslist: [],
+    featuredJobslist: [],
     query: '',
     ajaxLoading: false
   }},
@@ -83,7 +84,7 @@ export default {
         }
       })
     //get all jobs
-    this.refreshjobs()
+    this.refreshjobs('init')
   },
   methods: {
     authIt: function(token) {
@@ -115,14 +116,16 @@ export default {
           })
       }
     },
-    refreshjobs: function () {
+    refreshjobs: function (param) {
       console.log('refresh jobs app level')
+      let jobslistUrl = config.jobsUrl + '/jobs.json'
+      if (param !== 'init') jobslistUrl += this.query
       this.ajaxLoading = true
       axios
-        .get(config.jobsUrl + '/jobs.json' + this.query, null, {headers: {'Content-Type' : 'application/json' }})
+        .get(jobslistUrl, null, {headers: {'Content-Type' : 'application/json' }})
         .then(response => {
           this.jobslist = response.data
-          console.log('cp1')
+          if (param === 'init') this.featuredJobslist = response.data
           this.ajaxLoading = false
         })
     },

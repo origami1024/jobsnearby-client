@@ -5,7 +5,6 @@
     </div>
     <div class="jobs__main">
       <div>
-        
         <br>
         <br>
         <JobsList :searchFilter="searchFilter" :jobslist="jobslist" msg="Полученные"/>
