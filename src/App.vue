@@ -142,7 +142,7 @@ export default {
         .get(jobslistUrl, null, {headers: {'Content-Type' : 'application/json' }})
         .then(response => {
           this.jobslist = response.data.rows
-          this.jobsFullcount = response.data.full_count
+          this.jobsFullcount = Number(response.data.full_count)
           this.perpage = Number(response.data.perpage)
           this.page_current = Number(response.data.page)
           console.log('cppage: ', response.data.page)
