@@ -97,9 +97,9 @@
               <input v-model="pwc" id="pwconfirm" placeholder="Введите пароль повторно">
             </div>
             <div class="colx">
-              <div class="row">
+              <div>
                 <input type="checkbox" id="rulescb" v-model="rules">
-                <label for="rulescb">Ознакомлен с <a href="#">условиями использования</a></label>
+                <label class="rulescb-label" for="rulescb">Я соглашаюсь с <a href="#">правилами использования сервиса</a>, а также с передачей и обработкой моих данных в TEST.com. Я подтверждаю своё совершеннолетие и ответственность за размещение объявления.</label>
               </div>
               <span v-show="showErrors" class="err_span">{{validation.rules}}</span>
             </div>
@@ -390,4 +390,10 @@ export default {
     .spacebetw
       justify-content space-between
       margin-bottom 5px
+    #rulescb
+      display inline
+      margin-right 5px
+    .rulescb-label
+      line-break normal
+      display inline
 </style>
