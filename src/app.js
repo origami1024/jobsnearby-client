@@ -164,7 +164,7 @@ async function reg(req, res) {
   console.log('ok1')
   //check arg1
   //add /s but not from beginning or end
-  let nameregex = /^[\wа-яА-Я]+$/
+  let nameregex = /^[\wа-яА-ЯÇçÄä£ſÑñňÖö$¢Üü¥ÿýŽžŞş\s\\-]*$/
   if (arg1 < 3 ||
      (arg1 > 60 && usertype === 'subscriber') ||
      (arg1 > 80 && usertype === 'company') ||

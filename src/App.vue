@@ -86,7 +86,8 @@ export default {
     page_current: 1,
     featuredJobslist: [],
     query: '',
-    ajaxLoading: false
+    ajaxLoading: false,
+    
   }},
   computed: {
     pages_count() {

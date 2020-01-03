@@ -142,7 +142,7 @@ export default {
       }
     },
     submitting: false,
-    //tab: 'reg',
+    wordRegex: /^[\wа-яА-ЯÇçÄä£ſÑñňÖö$¢Üü¥ÿýŽžŞş\s\\-]*$/,
     mail: '',
     pw: '',
     pwc: '',
@@ -211,7 +211,7 @@ export default {
     validate(){
       //return true
       let mailregex = /(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/
-      let nameregex = /^[\wа-яА-Я]+$/
+      //let nameregex = /^[\wа-яА-Я]+$/
       if (this.mail.length === 0)
         this.validation.mail = 'Введите email'
       else if (!mailregex.test(this.mail)) 
@@ -227,7 +227,7 @@ export default {
           this.validation.name = 'Минимальная длина 3 символа'
         else if (this.name.length > 60)
           this.validation.name = 'Максимальная длина 60 символов'
-        else if (!nameregex.test(this.name))
+        else if (!this.wordRegex.test(this.name))
           this.validation.name = 'Неправильный формат имени'
         else this.validation.name = ''
 
@@ -237,7 +237,7 @@ export default {
           this.validation.surname = 'Минимальная длина 3 символа'
         else if (this.surname.length > 60)
           this.validation.surname = 'Максимальная длина 60 символов'
-        else if (!nameregex.test(this.surname))
+        else if (!this.wordRegex.test(this.surname))
           this.validation.surname = 'Неправильный формат фамилии'
         else this.validation.surname = ''
       } else {
@@ -250,7 +250,7 @@ export default {
           this.validation.company = 'Минимальная длина 3 символа'
         else if (this.company.length > 60)
           this.validation.company = 'Максимальная длина 60 символов'
-        else if (!nameregex.test(this.company))
+        else if (!this.wordRegex.test(this.company))
           this.validation.company = 'Неправильный формат названия'
         else this.validation.company = ''
       }
