@@ -11,9 +11,9 @@
         <router-link class="r-link" to="/">
           <q-btn flat label="Главная"/>
         </router-link>
-        <router-link class="r-link" @click.native="regState='reg'" v-if="role === 'guest'" to="/registration">
+        <!-- <router-link class="r-link" @click.native="regState='reg'" v-if="role === 'guest'" to="/registration">
           <q-btn flat label="Регистрация"/>
-        </router-link>
+        </router-link> -->
         <!-- <router-link class="r-link" @click.native="regState='login'" v-if="role === 'guest'" to="/registration">
           <q-btn flat label="Вход"/>
         </router-link> -->
