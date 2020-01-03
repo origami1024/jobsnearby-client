@@ -1,18 +1,27 @@
 <template>
   <div id="app">
     <header>
-      <div class="logo">
-        <q-avatar color="red" text-color="white" icon="directions" />
-        ЛОГО
-      </div>
-      <div id="nav">
-        <router-link to="/">Главная</router-link> |
-        <router-link @click.native="regState='reg'" v-if="role === 'guest'" to="/registration">Регистрация</router-link> |
+      <q-btn round glossy to="/" size="16px">
+        <q-avatar size="40px">
+          <img src="https://cdn.quasar.dev/app-icons/icon-128x128.png" />
+        </q-avatar>
+      </q-btn>
+      
+      <div id="nav" shrink stretch>
+        <router-link class="r-link" to="/">
+          <q-btn flat label="Главная"/>
+        </router-link>
+        <router-link class="r-link" @click.native="regState='reg'" v-if="role === 'guest'" to="/registration">
+          <q-btn flat label="Регистрация"/>
+        </router-link>
         <!-- <router-link to="/jobslist">Вакансии</router-link> | -->
-        <router-link v-if="role === 'company'" to="/uploads">Публикация вакансий</router-link> |
+        <router-link class="r-link" v-if="role === 'company'" to="/uploads">
+          <q-btn flat label="Публикация вакансий"/>
+        </router-link>
         <!-- <router-link to="/about">Контакты</router-link> | -->
-        
-        <router-link v-if="role === 'subscriber'" to="/subprofile">Личный кабинет</router-link>
+        <router-link class="r-link" v-if="role === 'subscriber'" to="/subprofile">
+          <q-btn flat label="Личный кабинет"/>
+        </router-link>
       </div>
       <div id="authmenu">
         <button v-show="user_id === -1" @click="modalShown = modalShown === 'login' ? 'none' : 'login'">Войти</button>
@@ -194,17 +203,25 @@ export default {
     box-sizing border-box
     box-shadow 0 0 3px 0px #a0a9
     background-color #f7f7f7
+    #nav
+      display flex
+  .r-link
+    margin-right 10px
   h1,h2,h3,h4,h5,h6
     font-size 14px
     line-height 1
   a
-    color blue
+    color purple
+    display block
+    border-radius 4px
     &:visited
-      color blue
+      color purple
   .router-link-exact-active
-    color orange
+    color white
+    background-color purple
     &:visited
-      color orange
+      color white
+      background-color purple
   .searched
     background-color yellow
   .r-view
