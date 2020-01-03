@@ -33,7 +33,10 @@ import {
   QTabs,
   QTab,
   QTabPanel,
-  QTabPanels
+  QTabPanels,
+  QStepper,
+  QStep,
+  QStepperNavigation
 } from 'quasar'
 
 Vue.use(Quasar, {
@@ -68,7 +71,10 @@ Vue.use(Quasar, {
     QTabs,
     QTab,
     QTabPanel,
-    QTabPanels
+    QTabPanels,
+    QStepper,
+    QStep,
+    QStepperNavigation
   },
   directives: {
   },

@@ -8,9 +8,9 @@
       </q-btn>
       
       <div id="nav" shrink stretch>
-        <router-link class="r-link" to="/">
+        <!-- <router-link class="r-link" to="/">
           <q-btn flat label="Главная"/>
-        </router-link>
+        </router-link> -->
         <!-- <router-link class="r-link" @click.native="regState='reg'" v-if="role === 'guest'" to="/registration">
           <q-btn flat label="Регистрация"/>
         </router-link> -->
@@ -19,7 +19,7 @@
         </router-link> -->
         <!-- <router-link to="/jobslist">Вакансии</router-link> | -->
         <router-link class="r-link" v-if="role === 'company'" to="/uploads">
-          <q-btn flat label="Загрузить новые"/>
+          <q-btn flat label="Публикация вакансий"/>
         </router-link>
         <!-- <router-link to="/about">Контакты</router-link> | -->
         
@@ -204,7 +204,7 @@ export default {
   text-align center
   color #2c3e50
   font-size 13px
-  line-height 11px
+  line-height 14px
   header
     display flex
     align-items center

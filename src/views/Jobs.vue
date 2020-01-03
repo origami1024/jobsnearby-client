@@ -5,6 +5,7 @@
         <q-input
           v-model="txt"
           dense
+          clearable
           label="Поиск"
           class="jobsfilter__search"
           :rules="[val => wordRegex.test(val) || 'некорректная строка поиска']"
