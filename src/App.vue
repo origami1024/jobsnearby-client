@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <header>
-      <q-btn round glossy to="/" size="16px">
+      <q-btn class="logo" round glossy to="/" size="16px">
         <q-avatar size="40px">
           <img src="https://cdn.quasar.dev/app-icons/icon-128x128.png" />
         </q-avatar>
@@ -14,25 +14,36 @@
         <router-link class="r-link" @click.native="regState='reg'" v-if="role === 'guest'" to="/registration">
           <q-btn flat label="Регистрация"/>
         </router-link>
+        <!-- <router-link class="r-link" @click.native="regState='login'" v-if="role === 'guest'" to="/registration">
+          <q-btn flat label="Вход"/>
+        </router-link> -->
         <!-- <router-link to="/jobslist">Вакансии</router-link> | -->
         <router-link class="r-link" v-if="role === 'company'" to="/uploads">
-          <q-btn flat label="Публикация вакансий"/>
+          <q-btn flat label="Загрузить новые"/>
         </router-link>
         <!-- <router-link to="/about">Контакты</router-link> | -->
-        <router-link class="r-link" v-if="role === 'subscriber'" to="/subprofile">
-          <q-btn flat label="Личный кабинет"/>
-        </router-link>
+        
       </div>
       <div id="authmenu">
-        <button v-show="user_id === -1" @click="modalShown = modalShown === 'login' ? 'none' : 'login'">Войти</button>
+        <!-- <button v-show="user_id === -1" @click="modalShown = modalShown === 'login' ? 'none' : 'login'">Войти</button> -->
         <!-- <button v-show="user_id === -1" @click="modalShown = modalShown === 'reg' ? 'none' : 'reg'">Регистрация</button> -->
-        <button v-show="user_id !== -1" @click="logout">Выйти</button>
-        <span> Статус: {{status}} </span>
-        <span> Пользователь: {{user}} ({{user_id}})</span>
+        <!-- <button v-show="user_id !== -1" @click="logout">Выйти</button> -->
+        <div class="colx user-status-bar">
+          <div> {{status}} </div>
+          <div> {{user}} ({{user_id}})</div>
+          <q-btn-group>
+            <q-btn push glossy no-caps v-if="role === 'guest'" @click.native="regState='login'" label="Вход" to="/registration"/>
+            <q-btn push glossy no-caps v-if="user_id !== -1" @click="logout" label="Выйти"/>
+            <q-btn push glossy no-caps label="Личный кабинет" v-if="role === 'subscriber'" to="/subprofile"/>
+            <q-btn push glossy no-caps label="Профиль" v-if="role === 'company'" to="/entprofile"/>
+          </q-btn-group>
+          
+        </div>
       </div>
-      <div>Язык: <span>рус</span></div>
+      <div>Язык: рус
+      </div>
       <!-- <button @click="refreshjobs">refresh jobs debug</button> -->
-      <q-btn :loading="ajaxLoading" dense size="sm" color="primary" @click="refreshjobs">refresh jobs debug</q-btn>
+      <q-btn :loading="ajaxLoading" dense size="sm" color="primary" @click="refreshjobs" icon="refresh">debug</q-btn>
       <q-ajax-bar
         position="bottom"
         color="accent"
@@ -41,11 +52,11 @@
     </header>
     <!-- <hr> -->
     <keep-alive>
-      <router-view @regStateUpd="regStateUpd" :regState="regState" class="r-view" :jobsFullcount="jobsFullcount" :page_current="page_current" :pages="pages_count" :featuredJobslist="featuredJobslist" :pending="ajaxLoading" @updQue="updQue" :role="role" :username="username" :surname="surname" :insearch="insearch" :company="company" :isagency="isagency" :jobslist="jobslist" @refresh="refreshjobs" :uid="user_id" :authed="user_id !== -1" />
+      <router-view @authed="authIt" @regStateUpd="regStateUpd" :regState="regState" class="r-view" :jobsFullcount="jobsFullcount" :page_current="page_current" :pages="pages_count" :featuredJobslist="featuredJobslist" :pending="ajaxLoading" @updQue="updQue" :role="role" :username="username" :surname="surname" :insearch="insearch" :company="company" :isagency="isagency" :jobslist="jobslist" @refresh="refreshjobs" :uid="user_id" :authed="user_id !== -1" />
     </keep-alive>
     <!-- <footer>Origami1024, Dec 2019</footer> -->
-    <LoginModal @authed="authIt" @loginclosed="modalShown = 'none'" :isShown="modalShown === 'login'"></LoginModal>
-    <RegisterModal @regclosed="modalShown = 'none'" :isShown="modalShown === 'reg'"></RegisterModal>
+    <!-- <LoginModal @authed="authIt" @loginclosed="modalShown = 'none'" :isShown="modalShown === 'login'"></LoginModal> -->
+    <!-- <RegisterModal @regclosed="modalShown = 'none'" :isShown="modalShown === 'reg'"></RegisterModal> -->
   </div>
 </template>
 
@@ -207,13 +218,13 @@ export default {
       display flex
   .r-link
     margin-right 10px
+    display block
+    border-radius 4px
+    color purple
   h1,h2,h3,h4,h5,h6
     font-size 14px
     line-height 1
-  a
-    color purple
-    display block
-    border-radius 4px
+  a 
     &:visited
       color purple
   .router-link-exact-active
@@ -227,4 +238,10 @@ export default {
   .r-view
     width 80%
     margin auto
+  .logo
+    margin-right 10px
+  .user-status-bar
+    text-align left
+    align-items flex-start
+    
 </style>

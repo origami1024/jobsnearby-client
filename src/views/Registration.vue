@@ -12,8 +12,39 @@
       </q-tabs>
       <q-tab-panels class="registration__inner" :value="regState" animated>
         <q-tab-panel name="login">
-          <div class="text-h6">Mails</div>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit.
+          <form action="#" @submit.prevent="trylog">
+            <div class="colx">
+              <div class="row">
+                <label for="email">Email</label>
+                <span v-show="login.showErrors" class="err_span">{{login.validation.mail}}</span>
+              </div>
+              <input id="email" v-model="login.mail" type="text" placeholder="Почта используется как логин">
+            </div>
+            <div class="colx">
+              <div class="row">
+                <label for="pw">Пароль</label>
+                <span v-show="login.showErrors" class="err_span">{{login.validation.pw}}</span>
+              </div>
+              <input id="pw" v-model="login.pw" type="text" placeholder="**********">
+            </div>
+            <div class="row spacebetw">
+              <div class="row">
+                <input id="remember" type="checkbox" :checked="login.rememberme">
+                <label for="remember">Запомнить меня</label>
+              </div>
+              <a href="#">Забыл пароль?</a>
+            </div>
+            
+            <q-btn 
+              color="primary"
+              label="Войти"
+              type="submit"
+              :loading="submitting"
+              class="full-width"
+            />
+            <!-- <input type="submit" value="Войти"> -->
+            <p>{{login.status}}</p>
+          </form>
         </q-tab-panel>
         <q-tab-panel name="reg">
           <form action="#" @submit.prevent="tryreg">
@@ -99,6 +130,17 @@ export default {
     regState: {type: String, default: 'reg'}
   },
   data: ()=>{return {
+    login: {
+      mail: '',
+      pw: '',
+      status: '',
+      rememberme: true,
+      showErrors: false,
+      validation: {
+        mail: 'Введите email',
+        pw: 'Введите пароль'
+      }
+    },
     submitting: false,
     //tab: 'reg',
     mail: '',
@@ -130,6 +172,7 @@ export default {
       if (this.validate()) {
         this.showErrors = false
         this.status = 'Попытка регистрации'
+        this.submitting = true
         console.log('cp10: ',this.agency)
         axios
           .post(config.jobsUrl + '/reg', [this.mail, this.pw, this.usertype, this.usertype === 'subscriber' ? this.name : this.company, this.usertype === 'subscriber' ? this.surname : this.agency], {headers: {'Content-Type' : 'application/json' }})
@@ -145,7 +188,8 @@ export default {
               this.surname = ''
               this.company = ''
               this.agency = ''
-              this.$emit('regclosed')
+              //this.$emit('regclosed')
+              this.$emit('regStateUpd', 'login')
             }
             else if (response.data == 'step3') {
               this.status = 'Регистрация не удалась, ошибки на сервере'
@@ -155,12 +199,12 @@ export default {
               this.status = 'Такой email уже существует в базе данных'
               console.log(this.status)
             }
-            else if (response.data == 'step1') 
-            {
+            else if (response.data == 'step1') {
               this.status = 'валидация на сервере не прошла хух'
               console.log(this.status)
             }
             else console.dir('successful registering', response.data)
+            this.submitting = false
           })
       } else this.showErrors = true
     },
@@ -245,6 +289,58 @@ export default {
     },
     regStateUpd(val){
       this.$emit('regStateUpd', val)
+    },
+    trylog() {
+      this.login.status = 'Проверка данных'
+      
+      //client validation here
+      if (this.validateLogin()) {
+        this.showErrors = false
+        this.login.status = 'Попытка входа'
+        this.submitting = true
+        axios
+          .post(config.jobsUrl + '/login', [this.login.mail, this.login.pw], {headers: {'Content-Type' : 'application/json' }, withCredentials: true,})
+          .then(response => {
+            //fix: need to send auth data on login
+            if (response.data && response.data[0] === 'OK' && response.data.length > 3) {
+              this.login.status = 'Вход осуществлен'
+              //console.log(this.status)
+              this.$emit('authed', response.data.slice(1))
+              this.$router.push({ name: 'home' })
+            }
+            else if (response.data == 'step3') {
+              this.login.status = 'Не удалось выполнить вход'
+            }
+            else if (response.data == 'step2') {
+              this.login.status = 'Такого пользователя не существует, либо неверный пароль'
+              //send this in both cases
+            }
+            else if (response.data == 'step1') {
+              this.login.status = 'Валидация на сервере не прошла хух'
+            }
+            else console.dir('successful login', response.data, response.headers)
+            this.submitting = false
+          })
+      } else this.login.showErrors = true
+    },
+    validateLogin(){
+      let mailregex = /(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/
+      if (this.login.mail.length === 0) 
+        this.login.validation.mail = 'Введите email'
+      else if (!mailregex.test(this.login.mail)) 
+        this.login.validation.mail = 'Неправильный формат адреса'
+      else this.login.validation.mail = ''
+
+      if (this.login.pw.length === 0)
+        this.login.validation.pw = 'Введите пароль'
+      else if (this.login.pw.length < 5 || this.login.pw.length > 25)
+        this.login.validation.pw = 'Кол-во символов от 5 до 25'
+      else this.login.validation.pw = ''
+
+      if (this.login.validation.mail === '' && 
+          this.login.validation.pw === '')
+        return true
+      return false
     }
   },
   components: {
@@ -291,4 +387,7 @@ export default {
       display flex
     .err_span
       color #f00
+    .spacebetw
+      justify-content space-between
+      margin-bottom 5px
 </style>
