@@ -2,21 +2,52 @@
 const Pool = require('pg').Pool
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL || `postgres://postgres:123456@localhost:5433/jobsnearby`
-  // user: 'sjrvyeffzrxdge',
-  // host: 'ec2-79-125-2-142.eu-west-1.compute.amazonaws.com',
-  // database: 'dbljnohvb4649f',
-  // password: 'a6f713c3e44328755167f1aa38ae2b3ea095bce2e8461bd53abf38c6e284620d',
-  // port: process.env.DBPORT || 5433,
+
 })
 
 
+const getOwnJobs = (req, res) => {  
+  //we need to decouple the user here
+  console.log('cpGetOwnJobs: ', req.cookies)
+  if (req.cookies.session && req.cookies.session.length > 50) {
+    let que1st = `SELECT user_id FROM "users" WHERE "auth_cookie" = ($1)`
+    let params1st = [req.cookies.session]
+    pool.query(que1st, params1st, (error, results) => {
+      if (error) {
+        console.log(error)
+        res.send('step2')
+        //throw error
+        return false
+      }
+      //console.log('cp191: ', results.rows[0])
+      let que2nd = `SELECT jobs.job_id, jobs.city, jobs.experience, jobs.jobtype, jobs.title, jobs.salary, jobs.description, jobs.worktime1, jobs.worktime2, jobs.age1, jobs.age2, jobs.langs, jobs.time_published as published, jobs.time_updated as updated
+            FROM jobs
+            WHERE jobs.author_id = $1
+            ORDER BY jobs.job_id ASC` //need to paginate this too
+      let params2nd = [results.rows[0].user_id]
+      //make second que
+      pool.query(que2nd, params2nd, (error2, results2) => {
+        if (error2) {
+          //throw error2
+          console.log(error2)
+          res.send('step3')
+          return false
+        }
+        //console.log('cpcpcp1: ', results2.rows)
+        res.send({rows: results2.rows})
+      })
+      //send back response
+      //handle finding nothing?
+    })
+  }
+}
 
 const getJobs = (req, res) => {
   let perpage = '25'
   if (req.query.perpage === '50') perpage = '50'
   else if (req.query.perpage === '100') perpage = '100'
   let txt = undefined
-  console.log('cptxt: ', req.query.txt)
+  //console.log('cptxt: ', req.query.txt)
   if (req.query.txt != undefined && 
       req.query.txt.length > 0 && 
       /^[\wа-яА-ЯÇçÄä£ſÑñňÖö$¢Üü¥ÿýŽžŞş\s\\-]*$/.test(req.query.txt)) {
@@ -100,10 +131,9 @@ const getJobById = (request, response) => {
 
 
 async function addJobs (req, res) {
-  console.log(req.cookies)
+  //console.log(req.cookies)
   if (req.cookies.session && req.cookies.session.length > 50) {
-    console.log(req.body)
-    
+    //console.log(req.body)
     let que1st = `SELECT user_id FROM "users" WHERE "auth_cookie" = ($1)`
     let params1st = [req.cookies.session]
     pool.query(que1st, params1st, (error, results) => {
@@ -111,7 +141,7 @@ async function addJobs (req, res) {
         res.send('step2')
         throw error
       }
-      console.log('cp19: ', results)
+      //console.log('cp19: ', results)
       console.log('r: ', results.rows[0])
       let que2nd = `INSERT INTO "jobs" ("langs", "title", "salary", "worktime1", "worktime2", "age1", "age2", "author_id") VALUES`
       let params2nd = []
@@ -239,5 +269,6 @@ module.exports = {
   tryInsertEmail,
   getJobs,
   getJobById,
-  addJobs
+  addJobs,
+  getOwnJobs
 }

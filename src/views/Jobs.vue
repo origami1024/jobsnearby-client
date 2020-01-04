@@ -5,13 +5,16 @@
         <q-input
           v-model="txt"
           dense
-          clearable
+          
           label="Поиск"
           class="jobsfilter__search"
           :rules="[val => wordRegex.test(val) || 'некорректная строка поиска']"
           @keyup.enter="refreshPlus"
           hint="Поиск по полям название, автор, город, основной текст"
         >
+          <template v-if="txt" v-slot:append>
+            <q-icon name="cancel" @click.stop="txt = ''" class="cursor-pointer" />
+          </template>
           <template v-slot:prepend>
             <q-icon name="search" />
           </template>
@@ -173,6 +176,7 @@ export default {
     margin-right 25px
   .jobsfilter__search
     width 100%
+    margin-right 5px
   .jobsfilter__search-btn
     align-self flex-start
   .jobs__main

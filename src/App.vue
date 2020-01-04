@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <header>
-      <q-btn class="logo" round glossy to="/" size="16px">
+      <q-btn class="logo" @click="refreshjobs" round glossy to="/" size="16px">
         <q-avatar size="40px">
           <img src="https://cdn.quasar.dev/app-icons/icon-128x128.png" />
         </q-avatar>
@@ -18,7 +18,7 @@
           <q-btn flat label="Вход"/>
         </router-link> -->
         <!-- <router-link to="/jobslist">Вакансии</router-link> | -->
-        <router-link class="r-link" v-if="role === 'company'" to="/uploads">
+        <router-link @click.native="getOwnJobs" class="r-link" v-if="role === 'company'" to="/uploads">
           <q-btn flat label="Публикация вакансий"/>
         </router-link>
         <!-- <router-link to="/about">Контакты</router-link> | -->
@@ -42,8 +42,9 @@
       </div>
       <div>Язык: рус
       </div>
+      <button @click="getOwnJobs">debug ownJobs</button>
       <!-- <button @click="refreshjobs">refresh jobs debug</button> -->
-      <q-btn :loading="ajaxLoading" dense size="sm" color="primary" @click="refreshjobs" icon="refresh">debug</q-btn>
+      <!-- <q-btn :loading="ajaxLoading" dense size="sm" color="primary" @click="refreshjobs" icon="refresh">debug</q-btn> -->
       <q-ajax-bar
         position="bottom"
         color="accent"
@@ -52,7 +53,7 @@
     </header>
     <!-- <hr> -->
     <keep-alive>
-      <router-view @authed="authIt" @regStateUpd="regStateUpd" :regState="regState" class="r-view" :jobsFullcount="jobsFullcount" :page_current="page_current" :pages="pages_count" :featuredJobslist="featuredJobslist" :pending="ajaxLoading" @updQue="updQue" :role="role" :username="username" :surname="surname" :insearch="insearch" :company="company" :isagency="isagency" :jobslist="jobslist" @refresh="refreshjobs" :uid="user_id" :authed="user_id !== -1" />
+      <router-view @getOwnJobs="getOwnJobs" :ownJobs="ownJobs" @authed="authIt" @regStateUpd="regStateUpd" :regState="regState" class="r-view" :jobsFullcount="jobsFullcount" :page_current="page_current" :pages="pages_count" :featuredJobslist="featuredJobslist" :pending="ajaxLoading" @updQue="updQue" :role="role" :username="username" :surname="surname" :insearch="insearch" :company="company" :isagency="isagency" :jobslist="jobslist" @refresh="refreshjobs" :uid="user_id" :authed="user_id !== -1" />
     </keep-alive>
     <!-- <footer>Origami1024, Dec 2019</footer> -->
     <!-- <LoginModal @authed="authIt" @loginclosed="modalShown = 'none'" :isShown="modalShown === 'login'"></LoginModal> -->
@@ -87,7 +88,7 @@ export default {
     featuredJobslist: [],
     query: '',
     ajaxLoading: false,
-    
+    ownJobs: []
   }},
   computed: {
     pages_count() {
@@ -106,7 +107,7 @@ export default {
     axios
       .post(config.jobsUrl + '/auth', [], {withCredentials: true,})
       .then(response => {
-        console.log('auth resp: ', response.data)
+        //console.log('auth resp: ', response.data)
         if (response.data === 'fail') {
           this.status = 'Вход не выполнен'
           this.token = undefined
@@ -127,7 +128,7 @@ export default {
   },
   methods: {
     regStateUpd(val){
-      console.log('cpvalm ', val)
+      //console.log('cpvalm ', val)
       this.regState = val
     },
     authIt: function(token) {
@@ -160,7 +161,7 @@ export default {
       }
     },
     refreshjobs: function (param, param2) {
-      console.log('refresh jobs app level', param2)
+      //console.log('refresh jobs app level', param2)
       let jobslistUrl = config.jobsUrl + '/jobs.json'
       if (param !== 'init') {
         jobslistUrl += this.query
@@ -169,8 +170,7 @@ export default {
           jobslistUrl += param2
         }
       }
-      
-      console.log(jobslistUrl)
+      //console.log(jobslistUrl)
       this.ajaxLoading = true
       axios
         .get(jobslistUrl, null, {headers: {'Content-Type' : 'application/json' }})
@@ -179,17 +179,31 @@ export default {
           this.jobsFullcount = Number(response.data.full_count)
           this.perpage = Number(response.data.perpage)
           this.page_current = Number(response.data.page)
-          console.log('cppage: ', response.data.page)
+          //console.log('cppage: ', response.data.page)
           if (param === 'init') this.featuredJobslist = response.data.rows
           this.ajaxLoading = false
           
+        })
+    },
+    getOwnJobs() {
+      console.log('getOwnJobs app level')
+      let jobslistUrl = config.jobsUrl + '/getOwnJobs.json'
+      this.ajaxLoading = true
+      axios
+        .post(jobslistUrl, [], {withCredentials: true,})
+        .then(response => {
+          //console.log('getOwnJobs response cp61: ', response.data)
+          if (response.data && response.data.rows && response.data.rows.length > 0) {
+            this.ownJobs = response.data.rows
+          }
+          this.ajaxLoading = false
         })
     },
     updQue(params) {
       this.query = params
     },
     perPageUpd(e) {
-      console.log('cpcp111 ', e)
+      //console.log('cpcp111 ', e)
       //this.perpage = e
     }
   }

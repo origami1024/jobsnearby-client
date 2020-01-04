@@ -1,6 +1,7 @@
 <template>
   <div class="jobs">
     <div v-if="role === 'company'" class="authed">
+      <h4>Публикация</h4>
       <q-stepper
         v-model="step"
         ref="stepper"
@@ -9,47 +10,71 @@
       >
         <q-step
           :name="1"
-          title="Загрузите данные из файла"
+          title="Спарсить данные из файла"
           caption="Шаг 1"
           icon="settings"
           :done="step > 1"
         >
-          Шаг. Выберите .xlsx файл с вакансиями. <a href="#">пример файла</a>
+          Выберите файл с вакансиями. <a href="#">пример файла</a>
+          <q-input
+            
+            @change="parseFile"
+            filled
+            type="file"
+            hint=".xls и .xlsx файлы"
+            accept=".xls, .xlsx"
+            ref="fileUploader"
+            name="fileUploader"
+            id="fileUploader"
+          />
+          <q-btn :disable="parsed.length == 0" @click="step += 1" color="primary" :label="step === 3 ? 'Finish' : 'Далее'" />
+          <!-- @input="val => { file = val[0] }" -->
+          <!-- <input ref="fileUploader" type="file" @change="parseFile" id="fileUploader" class="fileUploader" name="fileUploader" accept=".xls, .xlsx"/> -->
         </q-step>
-
         <q-step
           :name="2"
-          title="Create an ad group"
+          title="Отправить данные на сервер"
           caption="Шаг 2"
           icon="create_new_folder"
           :done="step > 2"
         >
-          An ad group contains one or more ads which target a shared set of keywords.
+          <div>
+            <table>
+              <thead :style="{backgroundColor: 'black', color: 'white'}">
+                <tr>
+                  <td>Язык</td>
+                  <td>Название</td>
+                  <td>Зарплата</td>
+                  <td>время от</td>
+                  <td>время до</td>
+                  <td>возр от</td>
+                  <td>возр до</td>
+                </tr>
+              </thead>
+              <tr v-for="item in parsed" :key="item.id">
+                <td v-for="(property, index) in Object.keys(item)" :key="index">
+                  {{item[property]}}
+                </td>
+              </tr>
+            </table>
+            <q-btn v-if="step > 1" flat color="primary" @click="step -= 1" label="Назад" class="q-ml-sm" />
+            <q-btn color="primary" @click="sendNewJobs" :disabled="parsed.length < 1" label="Отправить на сервер"/>
+          </div>
         </q-step>
-        <template v-slot:navigation>
+        <!-- <template v-slot:navigation>
           <q-stepper-navigation>
-            <q-btn @click="$refs.stepper.next()" color="primary" :label="step === 3 ? 'Finish' : 'Continue'" />
+            <q-btn :disable="parsed.length == 0" @click="$refs.stepper.next()" color="primary" :label="step === 3 ? 'Finish' : 'Далее'" />
             <q-btn v-if="step > 1" flat color="primary" @click="$refs.stepper.previous()" label="Back" class="q-ml-sm" />
           </q-stepper-navigation>
-        </template>
+        </template> -->
       </q-stepper>
 
-
-      <span>Загрузите вакансии из .xlsx файла (<a href="#">пример файла</a>)</span>
-      <input ref="fileUploader" type="file" @change="parseFile" id="fileUploader" class="fileUploader" name="fileUploader" accept=".xls, .xlsx"/>
-      <div>
-        <table>
-          <tr v-for="item in parsed" :key="item.id">
-            <td v-for="(property, index) in Object.keys(item)" :key="index">
-              {{item[property]}}
-            </td>
-          </tr>
-        </table>
-      </div>
+      
+      
       <p>Статус: {{uploadStatus}}</p>
-      <button @click="sendNewJobs" :disabled="parsed.length < 1">Отправить на сервер</button>
       <hr>
-      <JobsList :jobslist="myjobslist" ref="joblist" msg="Опубликованные"/>
+      <p>Опубликованные вакансии({{ownJobs.length}}):</p>
+      <JobsList :jobslist="ownJobs" msg="Опубликованные"/>
     </div>
     <div v-else>
       Авторизируйтесь, для возможности загрузки вакансий
@@ -70,22 +95,23 @@ import JobsList from '@/components/organisms/JobsList.vue'
 export default {
   name: 'uploads',
   props: {
-    jobslist: Array,
+    ownJobs: Array,
     uid: Number,
     authed: {type: Boolean, default: false},
     role: String
   },
   data() {
     return {
+      file: undefined,
       step: 1,
       parsed: [],
       uploadStatus: 'готов к загрузке'
     }
   },
   computed: {
-    myjobslist: function () {
-      return this.jobslist.filter(job => job.author_id === this.uid)
-    }
+    // myjobslist: function () {
+    //   return this.jobslist.filter(job => job.author_id === this.uid)
+    // }
   },
   methods:{
     sendNewJobs: function () {
@@ -98,13 +124,12 @@ export default {
           .then(response => {
             if (response.data === 'OK') {
               this.uploadStatus = 'Вакансии загружены и опубликованы, готов к работе'
-              this.$emit('refresh')
+              this.$emit('getOwnJobs')
             } else {this.uploadStatus = 'Загрузка не удалась'; console.log('trespasser')}
             
           })
-        //console.log(this.$refs.joblist)
         this.parsed = []
-        this.$refs.fileUploader.files = null
+        //this.$refs.fileUploader.files = null
         
       } else {this.uploadStatus = 'Загрузите данные'}
     },
@@ -142,7 +167,7 @@ export default {
         newData.shift()
         
         localVue.parsed = newData
-
+        localVue.$refs.stepper.next()
       }
       reader.readAsArrayBuffer(this.files[0])
       
