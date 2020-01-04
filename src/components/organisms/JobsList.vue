@@ -23,7 +23,7 @@ export default {
     way: String,
     msg: String,
     jobslist: {type: Array, default: ()=>[]},
-    salaryFilter: {type: Array, default: ()=>[-Infinity, Infinity]},
+    //salaryFilter: {type: Array, default: ()=>[-Infinity, Infinity]},
     sort: String,
     langsFilter: {type: Array, default: ()=>[]},
     searchFilter: {type: String, default: ''}
@@ -38,7 +38,7 @@ export default {
         !job.description ? job.description='': null
         return job
       })
-      filtered = filtered.filter(job=>(job.salary >= this.salaryFilter[0] && job.salary <= this.salaryFilter[1]))
+      //filtered = filtered.filter(job=>(job.salary >= this.salaryFilter[0] && job.salary <= this.salaryFilter[1]))
 
       //lang filter
       // if (this.langsFilter.length > 0) {

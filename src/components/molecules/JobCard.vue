@@ -21,7 +21,8 @@
       </tr>
       <tr>
         <td>Зарплата</td>
-        <td>{{job.salary}}</td>
+        <td v-if="job.salary_min">от {{job.salary_min}} до {{job.salary_max}}</td>
+        <td v-else>{{job.salary_max}}</td>
       </tr>
       <tr v-if="lenses == 'full'">
         <td>График работы</td>

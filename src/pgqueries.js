@@ -2,52 +2,18 @@
 const Pool = require('pg').Pool
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL || `postgres://postgres:123456@localhost:5433/jobsnearby`
-
 })
 
 
-const getOwnJobs = (req, res) => {  
-  //we need to decouple the user here
-  console.log('cpGetOwnJobs: ', req.cookies)
-  if (req.cookies.session && req.cookies.session.length > 50) {
-    let que1st = `SELECT user_id FROM "users" WHERE "auth_cookie" = ($1)`
-    let params1st = [req.cookies.session]
-    pool.query(que1st, params1st, (error, results) => {
-      if (error) {
-        console.log(error)
-        res.send('step2')
-        //throw error
-        return false
-      }
-      //console.log('cp191: ', results.rows[0])
-      let que2nd = `SELECT jobs.job_id, jobs.city, jobs.experience, jobs.jobtype, jobs.title, jobs.salary, jobs.description, jobs.worktime1, jobs.worktime2, jobs.age1, jobs.age2, jobs.langs, jobs.time_published as published, jobs.time_updated as updated
-            FROM jobs
-            WHERE jobs.author_id = $1
-            ORDER BY jobs.job_id ASC` //need to paginate this too
-      let params2nd = [results.rows[0].user_id]
-      //make second que
-      pool.query(que2nd, params2nd, (error2, results2) => {
-        if (error2) {
-          //throw error2
-          console.log(error2)
-          res.send('step3')
-          return false
-        }
-        //console.log('cpcpcp1: ', results2.rows)
-        res.send({rows: results2.rows})
-      })
-      //send back response
-      //handle finding nothing?
-    })
-  }
-}
+
+
 
 const getJobs = (req, res) => {
   let perpage = '25'
   if (req.query.perpage === '50') perpage = '50'
   else if (req.query.perpage === '100') perpage = '100'
+
   let txt = undefined
-  //console.log('cptxt: ', req.query.txt)
   if (req.query.txt != undefined && 
       req.query.txt.length > 0 && 
       /^[\wа-яА-ЯÇçÄä£ſÑñňÖö$¢Üü¥ÿýŽžŞş\s\\-]*$/.test(req.query.txt)) {
@@ -55,20 +21,19 @@ const getJobs = (req, res) => {
   }
   
   let sort = 'ORDER BY (jobs.time_updated, jobs.job_id) DESC'
-  if (req.query.sort === 'salasc') sort = 'ORDER BY (jobs.salary::int, jobs.job_id) ASC'
-  else if (req.query.sort === 'saldesc') sort = 'ORDER BY (jobs.salary::int, jobs.job_id) DESC'
-  console.log('cp_getJobs1: ', perpage)
+  if (req.query.sort === 'salasc') sort = 'ORDER BY (jobs.salary_max::int, jobs.job_id) ASC'
+  else if (req.query.sort === 'saldesc') sort = 'ORDER BY (jobs.salary_max::int, jobs.job_id) DESC'
+  //console.log('cp_getJobs1: ', perpage)
   let timerange = ` AND jobs.time_updated > now() - interval '1 month'`
 
   let page = 1
   if (req.query.page && Number(req.query.page) > 0 && Number(req.query.page) < 11) page = req.query.page
   let offset = (page - 1) * Number(perpage)
-  console.log('cpoffset ', offset)
-  console.log('CPPAGE ', page)
+  //console.log('cpoffset ', offset, 'CPPAGE ', page)
   if (req.query.timerange === 'wee') timerange = ` AND jobs.time_updated > now() - interval '1 week'`
   else if (req.query.timerange === 'day') timerange = ` AND jobs.time_updated > now() - interval '1 day'`
-  //, count(*) OVER() AS full_count
-  let que =  `SELECT jobs.author_id, users.company as author, jobs.job_id, jobs.city, jobs.experience, jobs.jobtype, jobs.title, jobs.salary, jobs.description, jobs.worktime1, jobs.worktime2, jobs.age1, jobs.age2, jobs.langs, jobs.time_published as published, jobs.time_updated as updated
+
+  let que =  `SELECT jobs.author_id, users.company as author, jobs.job_id, jobs.city, jobs.experience, jobs.jobtype, jobs.title, jobs.edu, jobs.currency, jobs.sex, jobs.salary_min, jobs.salary_max, jobs.description, jobs.worktime1, jobs.worktime2, jobs.age1, jobs.age2, jobs.langs, jobs.time_published as published, jobs.time_updated as updated
               FROM jobs, users
               WHERE jobs.author_id = users.user_id
                   ${timerange} 
@@ -101,12 +66,11 @@ const getJobs = (req, res) => {
                     LIMIT $1`
     pool.query(countque, qparams, (error2, results2) => {
       if (error2) {
-        console.log('errcp33 ', error)
-        throw error
+        console.log('errcp33 ', error2)
+        return false
+        //throw error2
       }
-      //console.log('cp23: ', results2)
-      let data = {...results2.rows[0], 'page': page, 'perpage': perpage, rows: results.rows}
-      res.status(200).json(data)
+      res.status(200).json({...results2.rows[0], 'page': page, 'perpage': perpage, rows: results.rows})
     })
     //console.log('cp16: ', results.rows)
     
@@ -127,6 +91,43 @@ const getJobById = (request, response) => {
     if (results.rows.length === 1) response.status(200).json(results.rows[0])
     else response.status(200).send('entry does not exist')
   })
+}
+
+
+async function getOwnJobs (req, res) {  
+  //we need to decouple the user here
+  console.log('cpGetOwnJobs: ', req.cookies)
+  if (req.cookies.session && req.cookies.session.length > 50) {
+    let que1st = `SELECT user_id FROM "users" WHERE "auth_cookie" = ($1)`
+    let params1st = [req.cookies.session]
+    pool.query(que1st, params1st, (error, results) => {
+      if (error) {
+        console.log(error)
+        res.send('step2')
+        //throw error
+        return false
+      }
+      //after cookies check, get the actual data from db
+      let que2nd = `SELECT jobs.job_id, jobs.city, jobs.experience, jobs.jobtype, jobs.title, jobs.edu, jobs.currency, jobs.salary_min, jobs.sex, jobs.salary_max, jobs.description, jobs.worktime1, jobs.worktime2, jobs.age1, jobs.age2, jobs.langs, jobs.time_published as published, jobs.time_updated as updated
+            FROM jobs
+            WHERE jobs.author_id = $1
+            ORDER BY (jobs.time_updated, jobs.job_id) DESC` //TODO: paginate this too
+      let params2nd = [results.rows[0].user_id]
+      //make second que
+      pool.query(que2nd, params2nd, (error2, results2) => {
+        if (error2) {
+          //throw error2
+          console.log(error2)
+          res.send('step3')
+          return false
+        }
+        //console.log('cpcpcp1: ', results2.rows)
+        res.send({rows: results2.rows})
+      })
+      //send back response
+      //handle finding nothing?
+    })
+  }
 }
 
 

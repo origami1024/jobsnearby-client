@@ -99,13 +99,13 @@ async function login(req, res) {
   let mail = req.body[0]
   let pw = req.body[1]
   if (SupremeValidator.isValidEmail(mail) && SupremeValidator.isValidPW(pw)) {
-    console.log('user validated')
+    //console.log('user validated')
     //get hash from db checking if mail exists
     let userData = await db.tryGetLoginData(mail).catch(error => {
       res.send('step2')
       return undefined
     })
-    console.log('cp77', userData)
+    //console.log('cp77', userData)
     if (userData) {
       //is the pw right?
       let authed = bcrypt.compareSync(pw, userData.pwHash)
