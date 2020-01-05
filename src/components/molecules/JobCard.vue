@@ -2,7 +2,7 @@
   <div :class="{ jobscard: true, rowedCard: way=='row' }">
     <div class="line">
       <h4 class="cardHeader">
-        <a :href="'/jobBy.Id?id=' + job.job_id">
+        <a :href="'/jobBy.Id?id=' + job.job_id" target="_blank">
           <strong v-html="filteredTitle"/>
         </a>
       </h4>
