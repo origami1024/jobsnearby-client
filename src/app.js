@@ -55,7 +55,8 @@ app.post('/getOwnJobs.json', db.getOwnJobs)
 
 app.get('/jobsu.json', params1)
 app.get('/jobs.json', db.getJobs)
-app.get('/jobBy.id', db.getJobById)
+app.get('/jobBy.id', getJobById)
+
 
 function params1(request, response) {
   //get query like ?id=23123
@@ -68,6 +69,30 @@ function params1(request, response) {
 //   console.log('cp reached', path.join(__dirname, './../dist'))
 //   serveStatic(path.join(__dirname, './../dist'))
 // })
+
+
+async function getJobById(req, res) {
+  console.log('get job by id first func')
+  const id = parseInt(req.query.id)
+  if (isNaN(id) || id < 0) {
+    console.log('Error: wrong id')
+    res.status(400).send('Неправильный id вакансии')
+    return false
+  }
+  
+  let job = await db.getJobById(id).catch(error => {
+    console.log(error)
+    return false
+  })
+  if (job == false) {
+    res.status(400).json('Неправильный id вакансии')
+    return false
+  }
+  console.log('cp', job)
+  let jobpage = pageParts.head + pageParts.jobinfo(job) + pageParts.foot
+  res.status(200).send(jobpage)
+}
+
 async function out(req, res) {
   //maybe delete stuff in db and write some statistics down
   //for now just reset cookies and send back OK
