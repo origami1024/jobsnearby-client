@@ -89,7 +89,7 @@ async function getJobById(req, res) {
     return false
   }
   console.log('cp', job)
-  let jobpage = pageParts.head + pageParts.jobinfo(job) + pageParts.foot
+  let jobpage = pageParts.jobinfo(job)
   res.status(200).send(jobpage)
 }
 

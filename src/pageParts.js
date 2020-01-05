@@ -44,7 +44,24 @@ let currencydic = {
 exports.jobinfo = (job) => {
   
   let currency = currencydic[job.currency]
-  return `
+  return `<!DOCTYPE html>
+  <html lang="en"><head><style>
+  * {
+    margin: 0;
+  }
+  section {
+    width: 80%;
+  }
+  .detailed__line {
+    display: flex;
+    justify-content: space-between;
+  }
+  body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  </style></head><body>
     <section class="detailed__line">
       <div>
         <h1>${job.title}</h1>
@@ -84,5 +101,7 @@ exports.jobinfo = (job) => {
       <li>мейл@домен.домен</li>
       </ul>
     </section>
+    <footer>Футер 2020</footer>
+    </body></html>
   `
 }
