@@ -126,7 +126,7 @@ async function getOwnJobs (req, res) {
       //send back response
       //handle finding nothing?
     })
-  }
+  } else {res.send('wrong userinfo')}
 }
 
 
