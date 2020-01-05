@@ -64,9 +64,17 @@ exports.jobinfo = (job) => {
     margin: 0;
     font-family: "Open Sans", sans-serif;
   }
-  section {
+  .detailed__main{
     width: 80%;
     max-width: 450px;
+    background-color: white;
+    padding: 0 10px;
+    padding-top: 10px;
+    min-height: 100vh;
+    box-sizing: border-box;
+    box-shadow: 0 0 5px 7px #ddd;
+  }
+  section {
     margin-bottom: 30px;
   }
   .detailed__button {
@@ -104,53 +112,55 @@ exports.jobinfo = (job) => {
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin-top: 10px;
+    background-color: #eee;
   }
   </style></head><body>
-    <section class="detailed__line">
-      <div class="detailed__col">
-        <h1>${job.title}</h1>
-        ${salary_subtitle}
-      </div>
-      <div class="detailed__logo">Лого</div>
-    </section>
-    <section>
-      <p><a href="#" class="detailed__author-link">${job.author}</a></p>
-      <p>${job.city}</p>
-    </section>
-    <section>
-      <button class="detailed__button">Откликнуться</button>
-    </section>
-    <section>
-      <h4 class="detailed__header">Обязанности</h4>
-      <ul>
-        ${descArr ? descArr : '-'}
-      </ul>
-    </section>
-    <section>
-      <h4 class="detailed__header">Требования</h4>
-      <ul>
-        ${gender}
-        <li>Возраст: ${job.age1 ? 'от ' + job.age1 : ''} ${job.age2 ? 'до ' + job.age2 + ' лет': ''} ${(job.age1 && !job.age2) ? ' лет' : ''}</li>
-        ${langs}
-        ${edu}
-        ${exp}
-      </ul>
-    </section>
-    <section>
-      <h4 class="detailed__header">Условия работы</h4>
-      <ul>
-        <li>Оклад ${job.salary_max} - ${job.salary_max} ${currency}</li>
-        <li>График ${job.worktime1} - ${job.worktime1}</li>
-      </ul>
-    </section>
-    <section>
-      <h4 class="detailed__header">Контакты</h4>
-      <ul>
-        <li>тел.. .. .....</li>
-        <li>мейл@домен.домен</li>
-      </ul>
-    </section>
-    </body></html>
+    <main class="detailed__main">
+      <section class="detailed__line">
+        <div class="detailed__col">
+          <h1>${job.title}</h1>
+          ${salary_subtitle}
+        </div>
+        <div class="detailed__logo">Лого</div>
+      </section>
+      <section>
+        <p><a href="#" class="detailed__author-link">${job.author}</a></p>
+        <p>${job.city}</p>
+      </section>
+      <section>
+        <button class="detailed__button">Откликнуться</button>
+      </section>
+      <section>
+        <h4 class="detailed__header">Обязанности</h4>
+        <ul>
+          ${descArr ? descArr : '-'}
+        </ul>
+      </section>
+      <section>
+        <h4 class="detailed__header">Требования</h4>
+        <ul>
+          ${gender}
+          <li>Возраст: ${job.age1 ? 'от ' + job.age1 : ''} ${job.age2 ? 'до ' + job.age2 + ' лет': ''} ${(job.age1 && !job.age2) ? ' лет' : ''}</li>
+          ${langs}
+          ${edu}
+          ${exp}
+        </ul>
+      </section>
+      <section>
+        <h4 class="detailed__header">Условия работы</h4>
+        <ul>
+          <li>Оклад ${job.salary_max} - ${job.salary_max} ${currency}</li>
+          <li>График ${job.worktime1} - ${job.worktime1}</li>
+        </ul>
+      </section>
+      <section>
+        <h4 class="detailed__header">Контакты</h4>
+        <ul>
+          <li>тел.. .. .....</li>
+          <li>мейл@домен.домен</li>
+        </ul>
+      </section>
+    <main>
+  </body></html>
   `
 }
