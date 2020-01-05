@@ -66,13 +66,13 @@ exports.jobinfo = (job) => {
   }
   .detailed__main{
     width: 80%;
-    max-width: 450px;
+    max-width: 850px;
     background-color: white;
     padding: 0 10px;
     padding-top: 10px;
     min-height: 100vh;
     box-sizing: border-box;
-    box-shadow: 0 0 5px 7px #ddd;
+    box-shadow: 0 0 2px 3px #eee;
   }
   section {
     margin-bottom: 30px;
