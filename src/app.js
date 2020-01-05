@@ -55,10 +55,13 @@ app.post('/getOwnJobs.json', db.getOwnJobs)
 
 app.get('/jobsu.json', params1)
 app.get('/jobs.json', db.getJobs)
-app.get('/job/:id', db.getJobById)
+app.get('/jobBy.id', db.getJobById)
 
 function params1(request, response) {
+  //get query like ?id=23123
   console.log('cp555: ', request.query)
+  console.log('cp556: ', request.params)
+  response.send(request.params)
 }
 
 // app.get('/*', function (req, res) {

@@ -78,7 +78,13 @@ const getJobs = (req, res) => {
 }
 
 const getJobById = (request, response) => {
-  const id = parseInt(request.params.id)
+  //const id = parseInt(request.params.id)
+  const id = parseInt(request.query.id)
+  if (id < 0) {
+    console.log('id below zero')
+    response.status(400).send('id has to be positive')
+    return false
+  }
   console.log(id)
   if (isNaN(id)) {response.send('Error: wrong id'); return false}
   pool.query('SELECT * FROM jobs WHERE job_id = $1', [id], (error, results) => {

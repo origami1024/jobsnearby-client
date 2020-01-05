@@ -2,7 +2,9 @@
   <div :class="{ jobscard: true, rowedCard: way=='row' }">
     <div class="line">
       <h4 class="cardHeader">
-        <strong v-html="filteredTitle"></strong>
+        <a :href="'/jobBy.Id?id=' + job.job_id">
+          <strong v-html="filteredTitle"/>
+        </a>
       </h4>
       <div>автор: <strong v-html="filteredAuthor"></strong></div>
     </div>
