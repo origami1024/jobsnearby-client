@@ -27,9 +27,7 @@
             name="fileUploader"
             id="fileUploader"
           />
-          <q-btn :disable="parsed.length == 0" @click="step += 1" color="primary" :label="step === 3 ? 'Finish' : 'Далее'" />
-          <!-- @input="val => { file = val[0] }" -->
-          <!-- <input ref="fileUploader" type="file" @change="parseFile" id="fileUploader" class="fileUploader" name="fileUploader" accept=".xls, .xlsx"/> -->
+          <!-- <q-btn :disable="parsed.length == 0" @click="step = 2" color="primary" :label="step === 3 ? 'Finish' : 'Далее'" /> -->
         </q-step>
         <q-step
           :name="2"
@@ -42,22 +40,40 @@
             <table>
               <thead :style="{backgroundColor: 'black', color: 'white'}">
                 <tr>
-                  <td>Язык</td>
                   <td>Название</td>
-                  <td>Зарплата</td>
-                  <td>время от</td>
-                  <td>время до</td>
+                  <td>Зарп от</td>
+                  <td>Зарп до</td>
+                  <td>Валюта</td>
+                  <td>Пол</td>
                   <td>возр от</td>
                   <td>возр до</td>
+                  <td>время от</td>
+                  <td>время до</td>
+                  <td>Языки</td>
+                  <td>Образование</td>
+                  <td>Стаж</td>
+                  <td>Город</td>
+                  <td>Дополнительно</td>
                 </tr>
               </thead>
               <tr v-for="item in parsed" :key="item.id">
-                <td v-for="(property, index) in Object.keys(item)" :key="index">
-                  {{item[property]}}
-                </td>
+                <td>{{item.title}}</td>
+                <td>{{item.salary_min}}</td>
+                <td>{{item.salary_max}}</td>
+                <td>{{item.currency}}</td>
+                <td>{{item.sex}}</td>
+                <td>{{item.age1}}</td>
+                <td>{{item.age2}}</td>
+                <td>{{item.worktime1}}</td>
+                <td>{{item.worktime2}}</td>
+                <td>{{item.langs}}</td>
+                <td>{{item.edu}}</td>
+                <td>{{item.experience}}</td>
+                <td>{{item.city}}</td>
+                <td>{{item.description}}</td>
               </tr>
             </table>
-            <q-btn v-if="step > 1" flat color="primary" @click="step -= 1" label="Назад" class="q-ml-sm" />
+            <q-btn v-if="step > 1" flat color="primary" @click="resetParsed" label="Сбросить" class="q-ml-sm" />
             <q-btn color="primary" @click="sendNewJobs" :disabled="parsed.length < 1" label="Отправить на сервер"/>
           </div>
         </q-step>
@@ -98,12 +114,12 @@ export default {
     ownJobs: Array,
     uid: Number,
     authed: {type: Boolean, default: false},
-    role: String
+    role: String,
   },
   data() {
     return {
-      file: undefined,
       step: 1,
+      file: undefined,
       parsed: [],
       uploadStatus: 'готов к загрузке'
     }
@@ -114,6 +130,10 @@ export default {
     // }
   },
   methods:{
+    resetParsed() {
+      this.parsed = []
+      this.step = 1
+    },
     sendNewJobs: function () {
       
       if (this.parsed.length > 0) {
@@ -128,7 +148,7 @@ export default {
             } else {this.uploadStatus = 'Загрузка не удалась'; console.log('trespasser')}
             
           })
-        this.parsed = []
+        this.resetParsed()
         //this.$refs.fileUploader.files = null
         
       } else {this.uploadStatus = 'Загрузите данные'}
@@ -150,16 +170,24 @@ export default {
         lastLineIndex = 0
         let newData = []
         while (lastLineIndex <= len) {
-          newData.push({lang:[]})
+          newData.push({})        
           if ('A'+lastLineIndex in tmp) newData[lastLineIndex].title = tmp['A'+lastLineIndex].v
-          if ('B'+lastLineIndex in tmp) newData[lastLineIndex].salary = tmp['B'+lastLineIndex].v
-          if ('C'+lastLineIndex in tmp) newData[lastLineIndex].worktime1 = tmp['C'+lastLineIndex].v
-          if ('D'+lastLineIndex in tmp) newData[lastLineIndex].worktime2 = tmp['D'+lastLineIndex].v
-          if ('E'+lastLineIndex in tmp) newData[lastLineIndex].lang.push(tmp['E'+lastLineIndex].v)
-          if ('F'+lastLineIndex in tmp) newData[lastLineIndex].lang.push(tmp['F'+lastLineIndex].v)
-          if ('G'+lastLineIndex in tmp) newData[lastLineIndex].lang.push(tmp['G'+lastLineIndex].v)
-          if ('H'+lastLineIndex in tmp) newData[lastLineIndex].age1 = tmp['H'+lastLineIndex].v
-          if ('I'+lastLineIndex in tmp) newData[lastLineIndex].age2 = tmp['I'+lastLineIndex].v
+          if ('B'+lastLineIndex in tmp) newData[lastLineIndex].salary_min = tmp['B'+lastLineIndex].v
+          if ('C'+lastLineIndex in tmp) newData[lastLineIndex].salary_max = tmp['C'+lastLineIndex].v
+          if ('D'+lastLineIndex in tmp) newData[lastLineIndex].currency = tmp['D'+lastLineIndex].v
+          if ('E'+lastLineIndex in tmp) newData[lastLineIndex].sex = tmp['E'+lastLineIndex].v
+          if ('F'+lastLineIndex in tmp) newData[lastLineIndex].age1 = tmp['F'+lastLineIndex].v
+          if ('G'+lastLineIndex in tmp) newData[lastLineIndex].age2 = tmp['G'+lastLineIndex].v
+          if ('H'+lastLineIndex in tmp) newData[lastLineIndex].worktime1 = tmp['H'+lastLineIndex].v
+          if ('I'+lastLineIndex in tmp) newData[lastLineIndex].worktime2 = tmp['I'+lastLineIndex].v
+          newData[lastLineIndex].langs = []
+          if ('J'+lastLineIndex in tmp) newData[lastLineIndex].langs.push(tmp['J'+lastLineIndex].v)
+          if ('K'+lastLineIndex in tmp) newData[lastLineIndex].langs.push(tmp['K'+lastLineIndex].v)
+          if ('L'+lastLineIndex in tmp) newData[lastLineIndex].langs.push(tmp['L'+lastLineIndex].v)
+          if ('M'+lastLineIndex in tmp) newData[lastLineIndex].edu = tmp['M'+lastLineIndex].v
+          if ('N'+lastLineIndex in tmp) newData[lastLineIndex].experience = tmp['N'+lastLineIndex].v
+          if ('O'+lastLineIndex in tmp) newData[lastLineIndex].city = tmp['O'+lastLineIndex].v
+          if ('P'+lastLineIndex in tmp) newData[lastLineIndex].description = tmp['P'+lastLineIndex].v
           //newData[lastLineIndex].author_id = this.uid AUTHOR ID SHOULD BE TAKEN FROM DB BY SESSION, NOT SAFE HERE
           lastLineIndex++
         }
@@ -167,7 +195,8 @@ export default {
         newData.shift()
         
         localVue.parsed = newData
-        localVue.$refs.stepper.next()
+        //localVue.$refs.stepper.next()
+        localVue.step = 2
       }
       reader.readAsArrayBuffer(this.files[0])
       

@@ -51,9 +51,8 @@
         size="10px"
       />
     </header>
-    <!-- <hr> -->
-    <keep-alive>
-      <router-view @getOwnJobs="getOwnJobs" :ownJobs="ownJobs" @authed="authIt" @regStateUpd="regStateUpd" :regState="regState" class="r-view" :jobsFullcount="jobsFullcount" :page_current="page_current" :pages="pages_count" :featuredJobslist="featuredJobslist" :pending="ajaxLoading" @updQue="updQue" :role="role" :username="username" :surname="surname" :insearch="insearch" :company="company" :isagency="isagency" :jobslist="jobslist" @refresh="refreshjobs" :uid="user_id" :authed="user_id !== -1" />
+    <keep-alive> <!-- @stepChange="stepChange" :step="step" -->
+      <router-view  @getOwnJobs="getOwnJobs" :ownJobs="ownJobs" @authed="authIt" @regStateUpd="regStateUpd" :regState="regState" class="r-view" :jobsFullcount="jobsFullcount" :page_current="page_current" :pages="pages_count" :featuredJobslist="featuredJobslist" :pending="ajaxLoading" @updQue="updQue" :role="role" :username="username" :surname="surname" :insearch="insearch" :company="company" :isagency="isagency" :jobslist="jobslist" @refresh="refreshjobs" :uid="user_id" :authed="user_id !== -1" />
     </keep-alive>
     <!-- <footer>Origami1024, Dec 2019</footer> -->
     <!-- <LoginModal @authed="authIt" @loginclosed="modalShown = 'none'" :isShown="modalShown === 'login'"></LoginModal> -->
@@ -88,7 +87,8 @@ export default {
     featuredJobslist: [],
     query: '',
     ajaxLoading: false,
-    ownJobs: []
+    ownJobs: [],
+    //step: 1, //для uploads
   }},
   computed: {
     pages_count() {
@@ -127,6 +127,9 @@ export default {
     this.refreshjobs('init')
   },
   methods: {
+    // stepChange(n) {
+    //   this.step += n
+    // },
     regStateUpd(val){
       //console.log('cpvalm ', val)
       this.regState = val
@@ -193,8 +196,13 @@ export default {
         .post(jobslistUrl, [], {withCredentials: true,})
         .then(response => {
           //console.log('getOwnJobs response cp61: ', response.data)
-          if (response.data && response.data.rows && response.data.rows.length > 0) {
+          if (response.data && response.data.rows) {
             this.ownJobs = response.data.rows
+            this.ownJobs.forEach(job => {
+              console.log('cpppp: ', job.salary_min)
+              console.log('cpppp: ', job.salary_max)
+            })
+            
           }
           this.ajaxLoading = false
         })
