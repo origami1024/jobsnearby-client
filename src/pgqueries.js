@@ -79,10 +79,15 @@ const getJobs = (req, res) => {
 
 async function getJobById (id) {
   //const id = parseInt(request.params.id)
-  let result = await pool.query('SELECT * FROM jobs WHERE job_id = $1', [id]).catch(error => {
-    console.log(error)  
+  let que = `SELECT jobs.author_id, users.company as author, jobs.job_id, jobs.city, jobs.experience, jobs.jobtype, jobs.title, jobs.edu, jobs.currency, jobs.sex, jobs.salary_min, jobs.salary_max, jobs.description, jobs.worktime1, jobs.worktime2, jobs.age1, jobs.age2, jobs.langs, jobs.time_published as published, jobs.time_updated as updated
+            FROM jobs, users
+            WHERE jobs.author_id = users.user_id AND jobs.job_id = $1`
+  //'SELECT * FROM jobs WHERE job_id = $1'
+  let result = await pool.query(que, [id]).catch(error => {
+    console.log(error)
     throw new Error('job by id error')
   })
+  //console.log(result.rows)
   if (result.rows && result.rows.length === 1) return result.rows[0]
   else return false
 }

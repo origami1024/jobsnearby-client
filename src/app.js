@@ -76,7 +76,7 @@ async function getJobById(req, res) {
   const id = parseInt(req.query.id)
   if (isNaN(id) || id < 0) {
     console.log('Error: wrong id')
-    res.status(400).send('Неправильный id вакансии')
+    res.status(400).send('Неправильный id вакансии.')
     return false
   }
   
