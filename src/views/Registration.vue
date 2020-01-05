@@ -28,7 +28,7 @@
             </div>
             <div class="row spacebetw">
               <div class="row">
-                <input id="remember" type="checkbox" :checked="login.rememberme">
+                <input id="remember" type="checkbox" v-model="login.rememberme">
                 <label for="remember">Запомнить меня</label>
               </div>
               <a href="#">Забыл пароль?</a>
@@ -302,7 +302,7 @@ export default {
         this.login.status = 'Попытка входа'
         this.submitting = true
         axios
-          .post(config.jobsUrl + '/login', [this.login.mail, this.login.pw], {headers: {'Content-Type' : 'application/json' }, withCredentials: true,})
+          .post(config.jobsUrl + '/login', [this.login.mail, this.login.pw, this.login.rememberme], {headers: {'Content-Type' : 'application/json' }, withCredentials: true,})
           .then(response => {
             //fix: need to send auth data on login
             if (response.data && response.data[0] === 'OK' && response.data.length > 3) {

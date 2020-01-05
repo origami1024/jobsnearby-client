@@ -98,6 +98,8 @@ async function login(req, res) {
   console.log('cp login: ', req.cookies)
   let mail = req.body[0]
   let pw = req.body[1]
+  let rememberme = req.body[2]
+  console.log('cp login rm: ', rememberme)
   if (SupremeValidator.isValidEmail(mail) && SupremeValidator.isValidPW(pw)) {
     //console.log('user validated')
     //get hash from db checking if mail exists
@@ -136,7 +138,8 @@ async function login(req, res) {
           data.push(userData.cname)
           data.push(userData.isagency)
         }
-        res.cookie('session', jwtoken, {expires: new Date(Date.now() + 900000)})
+        if (rememberme) res.cookie('session', jwtoken, {expires: new Date(Date.now() + 1013000)})
+        else res.cookie('session', jwtoken)//, {expires: new Date(Date.now() + 1013000)}
         res.send(data)
       } else res.send('step2')
       
