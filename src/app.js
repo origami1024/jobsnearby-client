@@ -175,8 +175,6 @@ async function reg(req, res) {
     res.send('step3')
     return -1
   }
-  console.log('ok2')
-  console.log('cp11: ', arg2)
   //check arg2
   if ((arg2 < 3 && usertype === 'subscriber') ||
       (arg2 > 60 && usertype === 'subscriber') ||
@@ -232,7 +230,8 @@ const SupremeValidator = {
     return /(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/.test(email)
   },
   isValidPW(pw) {
-    return (pw.length>4 && pw.length<31)
+    let pwRegex = /[a-zA-Z]/
+    return (pw.length > 5 && pw.length < 26 && pwRegex.test(pw))
   },
   generateJSONWebToken(mail){
     const signature = 'YoiRG3rots' + Math.random()

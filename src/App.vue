@@ -198,11 +198,6 @@ export default {
           //console.log('getOwnJobs response cp61: ', response.data)
           if (response.data && response.data.rows) {
             this.ownJobs = response.data.rows
-            this.ownJobs.forEach(job => {
-              console.log('cpppp: ', job.salary_min)
-              console.log('cpppp: ', job.salary_max)
-            })
-            
           }
           this.ajaxLoading = false
         })

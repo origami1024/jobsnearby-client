@@ -15,17 +15,16 @@
           <form action="#" @submit.prevent="trylog">
             <div class="colx">
               <div class="row">
-                <label for="email">Email</label>
+                <!-- <label for="email">Email</label> -->
                 <span v-show="login.showErrors" class="err_span">{{login.validation.mail}}</span>
               </div>
-              <input id="email" v-model="login.mail" type="text" placeholder="Почта используется как логин">
-            </div>
-            <div class="colx">
+              <input id="email" v-model="login.mail" type="text" placeholder="* Email">
+            
               <div class="row">
-                <label for="pw">Пароль</label>
+                <!-- <label for="pw">Пароль</label> -->
                 <span v-show="login.showErrors" class="err_span">{{login.validation.pw}}</span>
               </div>
-              <input id="pw" v-model="login.pw" type="text" placeholder="**********">
+              <input id="pw" v-model="login.pw" type="text" placeholder="* Пароль">
             </div>
             <div class="row spacebetw">
               <div class="row">
@@ -56,10 +55,10 @@
             </div>
             <div class="colx" v-show="usertype === 'company'">
               <div class="row">
-                <label for="company">Компания</label>
                 <span v-show="showErrors" class="err_span">{{validation.company}}</span>
               </div>
-              <input v-model="company" id="company" placeholder="Название компании">
+              <q-input dense filled v-model="company" label="* Компания" placeholder="Название компании" :hint="null"/>
+              <!-- <input v-model="company" id="company" placeholder="Название компании"> -->
               <div class="row">
                 <input v-model="agency" type="checkbox" id="agency">
                 <label for="agency">Кадровое агенство</label>
@@ -67,39 +66,40 @@
             </div>
             <div class="colx" v-show="usertype === 'subscriber'">
               <div class="row">
-                <label for="name">Имя</label>
+                <!-- <label for="name">Имя</label> -->
                 <span v-show="showErrors" class="err_span">{{validation.name}}</span>
               </div>
-              <input v-model="name" id="name" placeholder="Имя">
+              <input v-model="name" id="name" placeholder="* Имя">
               <div class="row">
-                <label for="surname">Фамилия</label>
+                <!-- <label for="surname">Фамилия</label> -->
                 <span v-show="showErrors" class="err_span">{{validation.surname}}</span>
               </div>
-              <input v-model="surname" id="surname" placeholder="Фамилия">
+              <input v-model="surname" id="surname" placeholder="* Фамилия">
             </div>
             <div class="colx">
               <div class="row">
-                <label for="email">Email</label>
+                <!-- <label for="email">Email</label> -->
                 <span v-show="showErrors" class="err_span">{{validation.mail}}</span>
               </div>
-              <input v-model="mail" id="email" placeholder="Почта используется как логин">
+              <input v-model="mail" id="email" placeholder="* Укажите свой Email">
             </div>
             <div class="colx">
               <div class="row">
-                <label for="pw">Пароль</label>
+                <!-- <label for="pw">Пароль</label> -->
                 <span v-show="showErrors" class="err_span">{{validation.pw}}</span>
               </div>
-              <input v-model="pw" id="pw" placeholder="5 - 25 символов, 1 цифра, 1 заглавная">
+              <input v-model="pw" id="pw" placeholder="* Пароль">
+              <!-- 6 - 25 символов, 1 буква англ алф -->
               <div class="row">
-                <label for="pwconfirm">Пароль еще раз</label>
+                <!-- <label for="pwconfirm">Пароль еще раз</label> -->
                 <span v-show="showErrors" class="err_span">{{validation.pwc}}</span>
               </div>
-              <input v-model="pwc" id="pwconfirm" placeholder="Введите пароль повторно">
+              <input v-model="pwc" id="pwconfirm" placeholder="* Повторите пароль">
             </div>
             <div class="colx">
               <div>
                 <input type="checkbox" id="rulescb" v-model="rules">
-                <label class="rulescb-label" for="rulescb">Я соглашаюсь с <a href="#">правилами использования сервиса</a>, а также с передачей и обработкой моих данных в TEST.com. Я подтверждаю своё совершеннолетие и ответственность за размещение объявления.</label>
+                <label class="rulescb-label" for="rulescb">* Я соглашаюсь с <a href="#">правилами использования сервиса</a>, а также с передачей и обработкой моих данных в TEST.com. Я подтверждаю своё совершеннолетие и ответственность за размещение объявления.</label>
               </div>
               <span v-show="showErrors" class="err_span">{{validation.rules}}</span>
             </div>
@@ -143,6 +143,7 @@ export default {
     },
     submitting: false,
     wordRegex: /^[\wа-яА-ЯÇçÄä£ſÑñňÖö$¢Üü¥ÿýŽžŞş\s\\-]*$/,
+    pwRegex: /[a-zA-Z]/, //хотябы одна a-zA-Z
     mail: '',
     pw: '',
     pwc: '',
@@ -258,10 +259,12 @@ export default {
 
       if (this.pw.length === 0)
         this.validation.pw = 'Введите пароль'
-      else if (this.pw.length < 5)
-        this.validation.pw = 'Минимум 5 символов'
+      else if (this.pw.length < 6)
+        this.validation.pw = 'Минимум 6 символов'
       else if (this.pw.length > 25)
         this.validation.pw = 'Максимум 25 символов'
+      else if (!this.pwRegex.test(this.pw))
+        this.validation.pw = 'Минимум 1 английская буква'
       else this.validation.pw = ''
 
       if (this.pwc.length === 0)
@@ -367,6 +370,12 @@ export default {
     display flex
     flex-direction column
     text-align left
+    input
+      margin-bottom 5px
+      &:last-child
+        margin-bottom 0
+    input[type="checkbox"]
+      margin-bottom 0
     .twolined
       display flex
       flex-wrap wrap
