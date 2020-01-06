@@ -32,7 +32,7 @@
           <div> {{status}} </div>
           <div> {{user}} ({{user_id}})</div>
           <q-btn-group>
-            <q-btn push glossy no-caps v-if="role === 'guest'" @click.native="regState='login'" label="Вход" to="/registration"/>
+            <q-btn push glossy :color="$route.path == '/registration' ? 'purple' : 'gray'" :text-color="$route.path == '/registration' ? 'white' : 'black'" no-caps v-if="role === 'guest'" @click.native="regState='login'" label="Вход" to="/registration"/>
             <q-btn push glossy no-caps v-if="user_id !== -1" @click="logout" label="Выйти"/>
             <q-btn push glossy :color="$route.path == '/subprofile' ? 'purple' : 'gray'" :text-color="$route.path == '/subprofile' ? 'white' : 'black'" no-caps label="Личный кабинет" v-if="role === 'subscriber'" to="/subprofile"/>
             <q-btn push glossy no-caps label="Профиль" v-if="role === 'company'" to="/entprofile"/>
@@ -109,6 +109,7 @@ export default {
       .then(response => {
         //console.log('auth resp: ', response.data)
         if (response.data === 'fail') {
+          console.log('auth failed')
           this.status = 'Вход не выполнен'
           this.token = undefined
           this.user = 'Гость'

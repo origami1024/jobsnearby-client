@@ -118,7 +118,7 @@ async function auth(req, res) {
       res.send(Object.values(profile))
     }
   } else {
-    console.log('auth failed, expiring cookies2')
+    console.log('auth failed, expiring cookies2', req.cookies.session, req.cookies.session.length)
     res.cookie('session', '', {expires: new Date(Date.now())})
     res.send('fail')
   }

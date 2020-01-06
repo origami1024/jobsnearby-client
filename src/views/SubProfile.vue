@@ -38,14 +38,15 @@
         <q-tab-panel name="starred">
         </q-tab-panel>
         <q-tab-panel class="subprofile__settings" name="settings">
+          <div>
+            <q-toggle v-model="editable" :label="editable === true ? 'Редактирование разрешено' : 'Редактирование запрещено'"/>
+          </div>
+          <q-input outlined bottom-slots v-model="newusername" label="Имя" counter maxlength="60" :readonly="!editable" />
+          <q-input outlined bottom-slots v-model="newsurname" label="Фамилия" counter maxlength="60" :readonly="!editable" />
+          <q-input outlined bottom-slots v-model="newemail" label="Email" counter maxlength="50" :readonly="!editable" />
           <h4>{{username}} {{surname}}</h4>
-          <input id="insearc" type="checkbox" :checked="insearch">
-          <!-- <label for="insearc">Я ищу работу</label> -->
           <button>Загрузить резюме</button>
           <button disabled="true">Отправить на сервер</button>
-          //отклики
-          //избранные вакансии
-          //оповещения
         </q-tab-panel>
       </q-tab-panels>
     </div>
@@ -62,7 +63,11 @@ export default {
     role: String
   },
   data: ()=>{return {
+    newusername: '',
+    newsurname: '',
+    newemail: '',
     tab: 'settings',
+    editable: false
   }},
   components: {
   },
