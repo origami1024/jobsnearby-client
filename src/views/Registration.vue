@@ -6,6 +6,7 @@
         @input="regStateUpd"
         inline-label
         class="bg-primary text-white shadow-2 tabs"
+        
       >
         <q-tab name="login" label="Вход" />
         <q-tab name="reg" label="Регистрация" />

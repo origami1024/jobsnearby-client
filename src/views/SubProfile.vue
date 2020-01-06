@@ -1,6 +1,12 @@
 <template>
   <div v-if="role === 'subscriber'" class="subprofile">
-    <p>Личный кабинет</p>
+    <div class="subprofile__header">
+      <q-toggle
+        :label="insearch === true ? 'Я ищу работу' : 'Я не ищу работу'"
+        color="purple"
+        v-model="insearch"
+      />
+    </div>
     <div class="subprofile__inner">
       <q-tabs
         align="justify"
@@ -34,7 +40,7 @@
         <q-tab-panel class="subprofile__settings" name="settings">
           <h4>{{username}} {{surname}}</h4>
           <input id="insearc" type="checkbox" :checked="insearch">
-          <label for="insearc">Я ищу работу</label>
+          <!-- <label for="insearc">Я ищу работу</label> -->
           <button>Загрузить резюме</button>
           <button disabled="true">Отправить на сервер</button>
           //отклики
@@ -59,6 +65,8 @@ export default {
     tab: 'settings',
   }},
   components: {
+  },
+  mounted(){
   }
 }
 </script>
@@ -68,6 +76,9 @@ export default {
   display flex
   flex-direction column
   justify-content center
+  &__header
+    display flex
+    justify-content flex-end
   .tabs
     border-top-left-radius 15px
     border-top-right-radius 15px
