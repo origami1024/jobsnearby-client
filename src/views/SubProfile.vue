@@ -4,7 +4,7 @@
       <q-toggle
         :label="insearch === true ? 'Я ищу работу' : 'Я не ищу работу'"
         color="purple"
-        v-model="insearch"
+        :value="insearch"
       />
     </div>
     <div class="subprofile__inner">
@@ -92,8 +92,8 @@ export default {
   components: {
   },
   mounted(){
-    this.newusername = username
-    this.newsurname = surname
+    this.newusername = this.username
+    this.newsurname = this.surname
   },
   watch: {
     username(newu) {
