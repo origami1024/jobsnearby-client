@@ -110,7 +110,7 @@ async function auth(req, res) {
     })
     if (profile === false) {
       console.log('auth failed, expiring cookies1')
-      res.cookie('session', '', {expires: new Date(Date.now())})
+      //res.cookie('session', '', {expires: new Date(Date.now())})
       res.send('fail')
       return false
     } else {
@@ -118,8 +118,8 @@ async function auth(req, res) {
       res.send(Object.values(profile))
     }
   } else {
-    console.log('auth failed, expiring cookies2', req.cookies.session, req.cookies.session.length)
-    res.cookie('session', '', {expires: new Date(Date.now())})
+    console.log('auth failed, expiring cookies2', req.cookies.session)
+    //res.cookie('session', '', {expires: new Date(Date.now())})
     res.send('fail')
   }
 }
@@ -168,7 +168,7 @@ async function login(req, res) {
           data.push(userData.cname)
           data.push(userData.isagency)
         }
-        if (rememberme) res.cookie('session', jwtoken, {expires: new Date(Date.now() + 1013000)})
+        if (rememberme) res.cookie('session', jwtoken, {expires: new Date(Date.now() + 590013000)})
         else res.cookie('session', jwtoken)//, {expires: new Date(Date.now() + 1013000)}
         res.send(data)
       } else res.send('step2')

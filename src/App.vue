@@ -1,6 +1,7 @@
 <template>
   <div id="app">
     <header>
+
       <q-btn class="logo" :color="$route.path == '/' ? 'purple' : 'gray'" @click="refreshjobs" round glossy to="/" size="16px">
         <q-avatar size="40px">
           <img src="https://cdn.quasar.dev/app-icons/icon-128x128.png" />
