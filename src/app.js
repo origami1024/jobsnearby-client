@@ -109,7 +109,7 @@ async function auth(req, res) {
       return false
     })
     if (profile === false) {
-      console.log('auth failed, expiring cookies')
+      console.log('auth failed, expiring cookies1')
       res.cookie('session', '', {expires: new Date(Date.now())})
       res.send('fail')
       return false
@@ -118,7 +118,7 @@ async function auth(req, res) {
       res.send(Object.values(profile))
     }
   } else {
-    console.log('auth failed, expiring cookies')
+    console.log('auth failed, expiring cookies2')
     res.cookie('session', '', {expires: new Date(Date.now())})
     res.send('fail')
   }

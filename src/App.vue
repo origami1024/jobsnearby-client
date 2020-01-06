@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <header>
-      <q-btn class="logo" @click="refreshjobs" round glossy to="/" size="16px">
+      <q-btn class="logo" :color="$route.path == '/' ? 'purple' : 'gray'" @click="refreshjobs" round glossy to="/" size="16px">
         <q-avatar size="40px">
           <img src="https://cdn.quasar.dev/app-icons/icon-128x128.png" />
         </q-avatar>
@@ -34,7 +34,7 @@
           <q-btn-group>
             <q-btn push glossy no-caps v-if="role === 'guest'" @click.native="regState='login'" label="Вход" to="/registration"/>
             <q-btn push glossy no-caps v-if="user_id !== -1" @click="logout" label="Выйти"/>
-            <q-btn push glossy no-caps label="Личный кабинет" v-if="role === 'subscriber'" to="/subprofile"/>
+            <q-btn push glossy :color="$route.path == '/subprofile' ? 'purple' : 'gray'" :text-color="$route.path == '/subprofile' ? 'white' : 'black'" no-caps label="Личный кабинет" v-if="role === 'subscriber'" to="/subprofile"/>
             <q-btn push glossy no-caps label="Профиль" v-if="role === 'company'" to="/entprofile"/>
           </q-btn-group>
           
@@ -61,8 +61,8 @@
 </template>
 
 <script>
-import LoginModal from './components/organisms/LoginModal'
-import RegisterModal from './components/organisms/RegisterModal'
+// import LoginModal from './components/organisms/LoginModal'
+// import RegisterModal from './components/organisms/RegisterModal'
 import axios from 'axios'
 const config = require('./configs/main_config')
 export default {
@@ -96,8 +96,8 @@ export default {
     }
   },
   components: {
-    LoginModal,
-    RegisterModal
+    // LoginModal,
+    // RegisterModal
   },
   created() {
     
