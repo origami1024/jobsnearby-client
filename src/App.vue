@@ -44,6 +44,7 @@
       <div>Язык: рус
       </div>
       <button @click="getOwnJobs">debug ownJobs</button>
+      <button @click="getLikedJobs">debug getLiked</button>
       <!-- <button @click="refreshjobs">refresh jobs debug</button> -->
       <!-- <q-btn :loading="ajaxLoading" dense size="sm" color="primary" @click="refreshjobs" icon="refresh">debug</q-btn> -->
       <q-ajax-bar
@@ -53,7 +54,7 @@
       />
     </header>
     <keep-alive> <!-- @stepChange="stepChange" :step="step" -->
-      <router-view  @getOwnJobs="getOwnJobs" :ownJobs="ownJobs" @authed="authIt" @regStateUpd="regStateUpd" :regState="regState" class="r-view" :jobsFullcount="jobsFullcount" :page_current="page_current" :pages="pages_count" :featuredJobslist="featuredJobslist" :pending="ajaxLoading" @updQue="updQue" :role="role" :username="username" :surname="surname" :insearch="insearch" :company="company" :isagency="isagency" :jobslist="jobslist" @refresh="refreshjobs" :uid="user_id" :authed="user_id !== -1" />
+      <router-view :likedJobs="likedJobs" @favOne="favOne" @getOwnJobs="getOwnJobs" :ownJobs="ownJobs" @authed="authIt" @regStateUpd="regStateUpd" :regState="regState" class="r-view" :jobsFullcount="jobsFullcount" :page_current="page_current" :pages="pages_count" :featuredJobslist="featuredJobslist" :pending="ajaxLoading" @updQue="updQue" :role="role" :username="username" :surname="surname" :insearch="insearch" :company="company" :isagency="isagency" :jobslist="jobslist" @refresh="refreshjobs" :uid="user_id" :authed="user_id !== -1" />
     </keep-alive>
     <!-- <footer>Origami1024, Dec 2019</footer> -->
     <!-- <LoginModal @authed="authIt" @loginclosed="modalShown = 'none'" :isShown="modalShown === 'login'"></LoginModal> -->
@@ -89,6 +90,7 @@ export default {
     query: '',
     ajaxLoading: false,
     ownJobs: [],
+    likedJobs: [],
     //step: 1, //для uploads
   }},
   computed: {
@@ -129,9 +131,39 @@ export default {
     this.refreshjobs('init')
   },
   methods: {
-    // stepChange(n) {
-    //   this.step += n
-    // },
+    getLikedJobs() {
+      let jobsLikedUrl = config.jobsUrl + '/getFaved.json'
+      this.ajaxLoading = true
+      axios
+        .post(jobsLikedUrl, [], {withCredentials: true,})
+        .then(response => {
+          console.log('getLikedJobs response cp72: ', response.data)
+          if (response.data) {
+            this.likedJobs = response.data
+            console.log(this.likedJobs)
+          }
+          this.ajaxLoading = false
+        })
+    },
+    favOne(id) {
+      let favOneUrl
+      if (!this.likedJobs.includes(id)) {
+        this.likedJobs.push(id)
+        favOneUrl = config.jobsUrl + '/favOne.json?jid=' + id
+      } else {
+        let index = this.likedJobs.indexOf(id);
+        if (index !== -1) this.likedJobs.splice(index, 1);
+        favOneUrl = config.jobsUrl + '/delFavOne.json?jid=' + id
+      }
+      this.ajaxLoading = true
+      axios
+        .post(favOneUrl, [], {withCredentials: true,})
+        .then(response => {
+          //console.log('getOwnJobs response cp61: ', response.status, response.data)
+          this.ajaxLoading = false
+        })
+    
+    },
     regStateUpd(val){
       //console.log('cpvalm ', val)
       this.regState = val

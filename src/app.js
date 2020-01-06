@@ -51,7 +51,13 @@ app.post('/out', out)
 
 app.post('/entrance', db.addJobs)
 app.post('/getOwnJobs.json', db.getOwnJobs)
-//getOwnJobs.json
+
+app.post('/favOne.json', db.favOne)
+app.post('/delFavOne.json', db.delFavOne)
+app.post('/getFaved.json', db.getFaved)
+
+///favOne.json?jid=
+
 
 app.get('/jobsu.json', params1)
 app.get('/jobs.json', db.getJobs)

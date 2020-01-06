@@ -43,8 +43,10 @@
         <td v-html="filteredDesc"></td>
       </tr>
     </table>
+    <!-- {{liked}} -->
     <p class="alignRight">Опубликована: {{new Date(job.published).toLocaleDateString()}} в {{new Date(job.published).toLocaleTimeString([],{hour: '2-digit', minute:'2-digit'})}}</p>
     <p class="alignRight">Обновлена: {{new Date(job.updated).toLocaleDateString()}} в {{new Date(job.updated).toLocaleTimeString([],{hour: '2-digit', minute:'2-digit'})}}</p>
+    <q-btn :text-color="liked ? 'primary' : 'grey'" round size="sm" icon="star" @click="$emit('favOne', job.job_id)"/>
     <!-- <div v-html="filteredTitle"></div> -->
   </div>
 </template>
@@ -54,6 +56,7 @@
 export default {
   name: 'JobCard',
   props: {
+    liked: Boolean,
     way: String,
     job: Object,
     searchFilter: {type: String, default: ''},
@@ -62,6 +65,7 @@ export default {
   data: ()=>{return {
     info: {}
   }},
+
   computed: {
     filteredTitle: function() {
       if (this.searchFilter.length > 1 && this.job.title.toLowerCase().includes(this.searchFilter)) {

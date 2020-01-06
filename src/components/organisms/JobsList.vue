@@ -7,7 +7,7 @@
       </h3>
     </div> -->
     <div :class="{ rowed: way=='row' }">
-      <JobCard :way="way" :lenses="lenses" :searchFilter="searchFilter" :job="item" v-for="item in jobslistFiltered" :key="item.id"></JobCard>
+      <JobCard :liked="likedJobs.includes(item.job_id)" @favOne="favOne" :way="way" :lenses="lenses" :searchFilter="searchFilter" :job="item" v-for="item in jobslistFiltered" :key="item.job_id"></JobCard>
       <p v-if="jobslist.length == 0">Нет ни одной вакансии</p>
     </div>
   </div>
@@ -19,6 +19,7 @@ import JobCard from './../molecules/JobCard'
 export default {
   name: 'JobsList',
   props: {
+    likedJobs: Array,
     lenses: String,
     way: String,
     msg: String,
@@ -38,25 +39,6 @@ export default {
         !job.description ? job.description='': null
         return job
       })
-      //filtered = filtered.filter(job=>(job.salary >= this.salaryFilter[0] && job.salary <= this.salaryFilter[1]))
-
-      //lang filter
-      // if (this.langsFilter.length > 0) {
-      //   filtered = filtered.filter(job=>{
-      //     let result = false
-      //     job.langs.forEach(lang=>{
-      //       if (this.langsFilter.includes(lang)) result = true
-      //     })
-      //     return result
-      //   })
-      // }
-      //text filter
-      // if (this.searchFilter.length > 1) {
-      //   filtered = filtered.filter(job=>(
-      //     job.title.toLowerCase().includes(this.searchFilter) ||
-      //     job.author.toLowerCase().includes(this.searchFilter)
-      //   ))
-      // }
       
       let sorted
       if (this.sort == 'salary') {
@@ -65,7 +47,12 @@ export default {
       return sorted
     }
   },
-  components:{
+  methods: {
+    favOne(id) {
+      this.$emit('favOne', id)
+    }
+  },
+  components: {
     JobCard
   }
 }

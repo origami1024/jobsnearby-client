@@ -20,7 +20,6 @@
           <q-badge color="red" floating>0</q-badge>
         </q-tab>
         <q-tab name="starred" icon="star" label="Избранные вакансии">
-          <q-badge color="red" floating>10+</q-badge>
         </q-tab>
         <q-tab name="settings" icon="settings" label="Личные данные">
         </q-tab>
@@ -38,6 +37,9 @@
         <q-tab-panel name="responses">
         </q-tab-panel>
         <q-tab-panel name="starred">
+          //Нужны не только номера, но и данные
+          //продумать где должно вызываться получение всех faved, видимо в auth и еще может быть при переходе в личн кабинет
+          <p v-for="faved in likedJobs" :key="faved">{{faved}}</p>
         </q-tab-panel>
         <q-tab-panel class="subprofile__settings" name="settings">
           <p>Добавить контакты</p>
@@ -71,6 +73,7 @@
 export default {
   name: 'SubProfile',
   props: {
+    likedJobs: Array,
     username: {type: String, default: ''},
     surname: {type: String, default: ''},
     insearch: {type: Boolean, default: false},

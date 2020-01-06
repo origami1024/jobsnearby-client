@@ -106,6 +106,11 @@ async function getOwnJobs (req, res) {
         //throw error
         return false
       }
+      if (results.rows.length < 1) {
+        //Если юзера с таким куки не найдено, то выходим из функции прост
+        res.send('step3')
+        return false
+      }
       //after cookies check, get the actual data from db
       let que2nd = `SELECT jobs.job_id, jobs.city, jobs.experience, jobs.jobtype, jobs.title, jobs.edu, jobs.currency, jobs.salary_min, jobs.salary_max, jobs.sex, jobs.description, jobs.worktime1, jobs.worktime2, jobs.age1, jobs.age2, jobs.langs, jobs.time_published as published, jobs.time_updated as updated
             FROM jobs
@@ -129,6 +134,87 @@ async function getOwnJobs (req, res) {
   } else {res.send('wrong userinfo')}
 }
 
+async function getFaved (req, res) {  
+  console.log('cpGetFaved: ', req.cookies)
+  if (req.cookies.session && req.cookies.session.length > 50) {
+    let que1st = `SELECT user_id, "likedJobs" FROM "users" WHERE "auth_cookie" = ($1)`
+    let params1st = [req.cookies.session]
+    pool.query(que1st, params1st, (error, results) => {
+      if (error) {
+        console.log(error)
+        res.send('step2')
+        //throw error
+        return false
+      }
+      if (results.rows.length < 1) {
+        //Если юзера с таким куки не найдено, то выходим из функции прост
+        res.send('step3')
+        return false
+      }
+      res.send(results.rows[0].likedJobs)
+
+    })
+  } else {res.status(400).send('wrong userinfo')}
+}
+
+async function delFavOne (req, res) {
+  let jid = req.query.jid
+  if (isNaN(jid) == false && Number.isInteger(Number(jid)) && jid > 0 && req.cookies.session && req.cookies.session.length > 50) {
+    let que1st = `SELECT user_id FROM "users" WHERE "auth_cookie" = ($1)`
+    let params1st = [req.cookies.session]
+    pool.query(que1st, params1st, (error, results) => {
+      if (error) {
+        res.send('step2')
+        console.log('delFavOne Error: ', error)
+      }
+      if (results.rows.length < 1) {
+        //Если юзера с таким куки не найдено, то выходим из функции прост
+        res.send('step3')
+        return false
+      }
+      //we are here if auth is ok
+      let que2nd = `UPDATE users SET "likedJobs" = array_remove("likedJobs", $1) WHERE user_id = $2`
+      console.log(que2nd)
+      let params2nd = [jid, results.rows[0].user_id]
+      pool.query(que2nd, params2nd, (error2, results2) => {
+        if (error2) {
+          console.log('delFavOne Error2: ', error2)
+        }
+        res.status(200).send('OK')
+      })
+      
+    })
+  } else res.status(400).send('wrong job id')
+}
+async function favOne (req, res) {
+  let jid = req.query.jid
+  if (isNaN(jid) == false && Number.isInteger(Number(jid)) && jid > 0 && req.cookies.session && req.cookies.session.length > 50) {
+    let que1st = `SELECT user_id FROM "users" WHERE "auth_cookie" = ($1)`
+    let params1st = [req.cookies.session]
+    pool.query(que1st, params1st, (error, results) => {
+      if (error) {
+        res.send('step2')
+        console.log('favOne Error: ', error)
+      }
+      if (results.rows.length < 1) {
+        //Если юзера с таким куки не найдено, то выходим из функции прост
+        res.send('step3')
+        return false
+      }
+      //we are here if auth is ok
+      let que2nd = `UPDATE users SET "likedJobs" = array_append ("likedJobs", $1) WHERE user_id = $2 AND $1 != ALL("likedJobs")`
+      console.log(que2nd)
+      let params2nd = [jid, results.rows[0].user_id]
+      pool.query(que2nd, params2nd, (error2, results2) => {
+        if (error2) {
+          console.log('favOne Error2: ', error2)
+        }
+        res.status(200).send('OK')
+      })
+      
+    })
+  } else res.status(400).send('wrong job id')
+}
 
 async function addJobs (req, res) {
   //console.log(req.cookies)
@@ -139,8 +225,14 @@ async function addJobs (req, res) {
     pool.query(que1st, params1st, (error, results) => {
       if (error) {
         res.send('step2')
-        throw error
+        console.log('addJobs Error: ', error)
       }
+      if (results.rows.length < 1) {
+        //Если юзера с таким куки не найдено, то выходим из функции прост
+        res.send('step3')
+        return false
+      }
+      
       //console.log('cp19: ', results)
       //console.log('r: ', req.body[0])
       //console.log('r: ', Array.isArray(req.body[0].langs))
@@ -342,5 +434,8 @@ module.exports = {
   getJobs,
   getJobById,
   addJobs,
-  getOwnJobs
+  getOwnJobs,
+  favOne,
+  getFaved,
+  delFavOne,
 }

@@ -1,6 +1,6 @@
 <template>
   <div class="registration">
-    <div class="registration__main">
+    <div v-if="role === 'guest'" class="registration__main">
       <q-tabs
         :value="regState"
         @input="regStateUpd"
@@ -117,6 +117,9 @@
         </q-tab-panel>
       </q-tab-panels>
     </div>
+    <div v-else>
+      Успешная авторизация
+    </div>
   </div>
 </template>
 
@@ -128,7 +131,8 @@ const config = require('./../configs/main_config')
 export default {
   name: 'registration',
   props: {
-    regState: {type: String, default: 'reg'}
+    regState: {type: String, default: 'reg'},
+    role: String,
   },
   data: ()=>{return {
     login: {

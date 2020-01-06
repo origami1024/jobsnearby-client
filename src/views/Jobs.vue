@@ -48,7 +48,7 @@
                         {value: 'full', icon: 'code'},]"
           />
         </div>
-        <JobsList :lenses="lenses" :searchFilter="searchFilter" :jobslist="jobslist" msg="Полученные"/>
+        <JobsList :likedJobs="likedJobs" @favOne="favOne" :lenses="lenses" :searchFilter="searchFilter" :jobslist="jobslist" msg="Полученные"/>
         <q-pagination
           :value="page_current"
           :max="pages"
@@ -68,6 +68,7 @@ import JobsFilter from '@/components/organisms/JobsFilter.vue'
 export default {
   name: 'Jobs',
   props: {
+    likedJobs: Array,
     jobslist: Array,
     pending: {type: Boolean, default: false},
     pages: {type: Number, default: 1},
@@ -117,6 +118,9 @@ export default {
     this.minSal = min1 - ((max1 - min1) / 10) | 0
   },
   methods: {
+    favOne(id) {
+      this.$emit('favOne', id)
+    },
     refreshPlus(){
       this.searchFilter = this.txt.toLowerCase()
       this.$emit('refresh')
