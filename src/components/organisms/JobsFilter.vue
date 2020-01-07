@@ -3,7 +3,7 @@
     <h3><strong>Фильтр</strong></h3>
     <br>
     <p :style="{maxWidth: '330px'}">query: {{query}}</p>
-    <button @click="resetFields">Сбросить фильтры</button>
+    <!-- <button @click="resetFields">Сбросить фильтры</button> -->
     <!-- <p class="header">Поиск</p>
     <p>Фильтр полученных данных по тексту(название, автор, город, описание):</p>
     <div class="line">
@@ -65,15 +65,15 @@
         />
       </div> -->
 
-    <div class="line">
+    <!-- <div class="line">
       <q-item-section>
         <p :style="{textAlign: 'left'}">Скрыть вакансии без указания зп</p>
       </q-item-section>
       <q-item-section avatar>
         <q-toggle color="blue" v-model="nosal" checked-icon="check" />
       </q-item-section>
-    </div>
-    <br>
+    </div> -->
+    <!-- <br>
     <p>Зарплата:</p>
     <div class="line">
       <q-item-section avatar>
@@ -90,18 +90,8 @@
           label-always
         />
       </q-item-section>
-    </div>
-    <q-input
-      v-model="city"
-      dense
-      label="Город"
-      class="jobsfilter__search"
-      :rules="[val => wordRegex.test(val) || 'некорректная строка города']"
-    />
-    
-    <q-select dense v-model="exp" :options="expOptions" label="Опыт" />
-    
-    <q-select
+    </div> -->
+    <!-- <q-select
       
       multiple
       use-chips
@@ -110,13 +100,45 @@
       :options="langOptions"
       @input="updateLangs"
       
-    />
+    /> -->
+
+    <!-- <q-input
+      v-model="city"
+      dense
+      label="Город"
+      class="jobsfilter__search"
+      :rules="[val => wordRegex.test(val) || 'некорректная строка города']"
+    /> -->
+    <q-select
+      v-model="city"
+      use-input
+      input-debounce="0"
+      fill-input
+      hide-selected
+      :options="cityOptions"
+      @filter="filterFn"
+      label="Город"
+    >
+      <template v-slot:no-option>
+        <q-item>
+          <q-item-section class="text-grey">
+            No results
+          </q-item-section>
+        </q-item>
+      </template>
+    </q-select>
+    
+    <q-select dense v-model="salary" :options="salOptions" label="Зарплата" />
+    <q-select dense v-model="exp" :options="expOptions" label="Опыт" />
+    <q-select dense v-model="jtype" :options="jtypeOptions" label="Тип занятости" />
+    
+    
   </div>
 </template>
 
 <script>
 //панелька справа с выбором фильтрации
-
+const stringOptions = ["Ашхабад", "Мары", "Туркменбаши", "Туркменабад", "Дашогуз"]
 
 export default {
   name: 'JobsFilter',
@@ -131,9 +153,13 @@ export default {
     perpage: {type: String, default: '25'},
   },
   data: ()=>{return {
-    exp: 'Не имеет значения',
-    nosal: false,
+    cityOptions: stringOptions,
+
+    exp: {label: "Не имеет значения", value: 'idc'}, 
     city: '',
+    jtype: '',
+    salary: {label: "Не имеет значения", value: 'idc'},
+    
     //perpage: '25',
     //timerange: 'mon',
     //txt: '',
@@ -148,20 +174,38 @@ export default {
     },
     langsSelected: [],
     //langOptions: ["Русский", "Английский", "Немецкий", "Французкий"],
-    expOptions: ["Не имеет значения", "Нет опыта", "от 1 до 3 лет", "от 3 до 5", "от 5 лет"]
+    expOptions: [
+      {label: "Не имеет значения", value: 'idc'}, 
+      {label: "Без опыта", value: '0'}, 
+      {label: "от 1 до 3 лет", value: '1-3'}, 
+      {label: "от 3 до 5", value: '3-5'},
+      {label: "от 5 лет", value: '5'}],
+    jtypeOptions: [{label: "Постоянная", value: 'c'},{label: "Временная", value: 'v'}],
+    salOptions: [
+      {label: "Не имеет значения", value: 'idc'}, 
+      {label: "от 0", value: '0+'}, 
+      {label: "от 1000 до 3000", value: '1-3'}, 
+      {label: "от 3000", value: '3+'},
+    ],
   }},
   methods: {
-    resetFields(){
-      this.exp = 'Не имеет значения'
-      this.nosal = false
-      this.city = ''
-      //this.perpage = '25'
-      //this.timerange = 'mon'
-      //this.txt = ''
-      //this.sort = 'new'
-      //this.search = ''
-      //rangeValues???
+    filterFn (val, update, abort) {
+      update(() => {
+        const needle = val.toLowerCase()
+        this.cityOptions = stringOptions.filter(v => v.toLowerCase().indexOf(needle) > -1)
+      })
     },
+    // resetFields(){
+    //   this.exp = 'Не имеет значения'
+    //   this.nosal = false
+    //   this.city = ''
+    //   //this.perpage = '25'
+    //   //this.timerange = 'mon'
+    //   //this.txt = ''
+    //   //this.sort = 'new'
+    //   //this.search = ''
+    //   //rangeValues???
+    // },
     updateAndSave: function(val) {
       this.rangeValues = val
       this.$emit('slideEnd', [val.min, val.max])
@@ -189,12 +233,14 @@ export default {
       if (this.sort !== 'new') params.push('sort=' + this.sort)
       if (this.timerange !== 'mon') params.push('timerange=' + this.timerange)
       if (this.perpage !== '25') params.push('perpage=' + this.perpage)
-      if (this.rangeValues.min > this.lowest) params.push('salmin=' + this.rangeValues.min)
-      if (this.rangeValues.max < this.highest) params.push('salmax=' + this.rangeValues.max)
+      //if (this.rangeValues.min > this.lowest) params.push('salmin=' + this.rangeValues.min)
+      //if (this.rangeValues.max < this.highest) params.push('salmax=' + this.rangeValues.max)
       if (this.city !== '' && this.wordRegex.test(this.city)) params.push('city=' + this.city)
-      if (this.nosal === false) params.push('nosal=' + '0')
-      if (this.exp !== 'Не имеет значения') params.push('exp=' + this.exp)
-      if (this.langsSelected.length > 0) params.push('langs=' + this.langsSelected)
+      //if (this.nosal === false) params.push('nosal=' + '0')
+      if (this.exp.value !== 'idc') params.push('exp=' + this.exp.value)
+      if (this.jtype.value == 'c' || this.jtype.value == 'v') params.push('jtype=' + this.jtype.value)
+      if (this.salary.value !== 'idc') params.push('sal=' + this.salary.value)
+      //if (this.langsSelected.length > 0) params.push('langs=' + this.langsSelected)
       let que = params.length == 0 ? '' : '?' + params.join('&')
       this.$emit('updQue', que)
       return que

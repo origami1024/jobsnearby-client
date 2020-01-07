@@ -145,10 +145,11 @@ export default {
     },
     filteredDesc: function() {
       if (this.searchFilter.length > 1 && this.job.description.toLowerCase().includes(this.searchFilter)) {
-        let i = this.job.description.toLowerCase().indexOf(this.searchFilter)
-        return this.job.description.substr(0, i) + 
-        '<span class="searched">' + this.job.description.substr(i, this.searchFilter.length) + '</span>' + 
-        this.job.description.substr(i + this.searchFilter.length).split('/').join('<br>')
+        let tmpdesc = this.job.description.split('/').join('<br>')
+        let i = tmpdesc.toLowerCase().indexOf(this.searchFilter)
+        let res = tmpdesc.substr(0, i) + '<span class="searched">' + tmpdesc.substr(i, this.searchFilter.length) + '</span>' + tmpdesc.substr(i + this.searchFilter.length)
+        //console.log(res)
+        return res
       } else return this.job.description.split('/').join('<br>')
     },
   }

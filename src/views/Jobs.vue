@@ -196,7 +196,8 @@ export default {
     margin 0
     padding 10px 15px
     box-sizing border-box
-    box-shadow 0 0 3px 0px #a0a9
+    //box-shadow 0 0 3px 0px #a0a9
+    box-shadow 0 0 4px 1px #06f
     border-radius 15px
   .jobs__filterpart
     position sticky
