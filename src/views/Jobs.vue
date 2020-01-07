@@ -69,8 +69,9 @@ export default {
   name: 'Jobs',
   props: {
     role: String,
-    likedJobs: Array,
-    jobslist: Array,
+    jobslist: {type: Array, default: ()=>[]},
+    likedJobs: {type: Array, default: ()=>[]},
+    likedJobsList: {type: Array, default: ()=>[]},
     pending: {type: Boolean, default: false},
     pages: {type: Number, default: 1},
     page_current: {type: Number, default: 1},
@@ -120,6 +121,7 @@ export default {
   },
   methods: {
     favOne(id) {
+      console.log('favOne from Jobs')
       this.$emit('favOne', id)
     },
     refreshPlus(){

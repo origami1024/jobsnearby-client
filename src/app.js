@@ -170,6 +170,7 @@ async function login(req, res) {
           data.push(userData.name)
           data.push(userData.surname)
           data.push(userData.insearch)
+          data.push(userData.likedJobs)
         } else
         if (userData.role === 'company') {
           data.push(userData.cname)

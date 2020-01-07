@@ -157,7 +157,7 @@ async function getFavedFull (req, res) {
                     WHERE jobs.author_id = users.user_id AND
                           jobs.job_id = ANY($1)
                     ORDER BY (jobs.time_updated, jobs.job_id) DESC`
-      console.log(que2nd)
+      //console.log(que2nd)
       let params2nd = [results.rows[0].likedJobs]
       pool.query(que2nd, params2nd, (error2, results2) => {
         if (error2) {
@@ -191,7 +191,7 @@ async function getFaved (req, res) {
       res.send(results.rows[0].likedJobs)
 
     })
-  } else {res.send('wrong userinfo')}
+  } else {res.send('wrong userinfo1')}
 }
 
 async function delFavOne (req, res) {
@@ -211,7 +211,7 @@ async function delFavOne (req, res) {
       }
       //we are here if auth is ok
       let que2nd = `UPDATE users SET "likedJobs" = array_remove("likedJobs", $1) WHERE user_id = $2`
-      console.log(que2nd)
+      //console.log(que2nd)
       let params2nd = [jid, results.rows[0].user_id]
       pool.query(que2nd, params2nd, (error2, results2) => {
         if (error2) {
@@ -240,7 +240,7 @@ async function favOne (req, res) {
       }
       //we are here if auth is ok
       let que2nd = `UPDATE users SET "likedJobs" = array_append ("likedJobs", $1) WHERE user_id = $2 AND $1 != ALL("likedJobs")`
-      console.log(que2nd)
+      //console.log(que2nd)
       let params2nd = [jid, results.rows[0].user_id]
       pool.query(que2nd, params2nd, (error2, results2) => {
         if (error2) {
@@ -366,7 +366,7 @@ async function addJobs (req, res) {
 }
 
 async function tryGetLoginData (mail) {
-  let que = `SELECT pwhash, user_id, role, name, surname, insearch, company, isagency FROM "users" WHERE "email" = ($1)`
+  let que = `SELECT pwhash, user_id, role, name, surname, insearch, company, isagency, "likedJobs" FROM "users" WHERE "email" = ($1)`
   let params = [mail]
   let result = await pool.query(que, params).catch(error => {
     console.log(error)  
@@ -385,6 +385,7 @@ async function tryGetLoginData (mail) {
       res['name'] = result.rows[0].name
       res['surname'] = result.rows[0].surname
       res['insearch'] = result.rows[0].insearch
+      res['likedJobs'] = result.rows[0].likedJobs
     } else
     if (result.rows[0].role === 'company') {
       res['cname'] = result.rows[0].company

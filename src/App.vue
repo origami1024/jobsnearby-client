@@ -144,7 +144,12 @@ export default {
         .then(response => {
           //console.log('getLikedJobs response cp72: ', response.data)
           if (response.data) {
-            this.likedJobsList = response.data
+            if (Array.isArray(response.data)) {
+              this.likedJobsList = response.data
+            } else {
+              this.likedJobsList = []
+            }
+            
             //console.log(this.likedJobsList)
             //console.log(this.likedJobs)
           }
@@ -159,21 +164,29 @@ export default {
         .then(response => {
           //console.log('getLikedJobs response cp72: ', response.data)
           if (response.data) {
-            this.likedJobs = response.data
+            if (Array.isArray(response.data)) {
+              this.likedJobs = response.data
+            } else {
+              this.likedJobs = []
+            }
+            
             //console.log(this.likedJobs)
           }
           this.ajaxLoading = false
         })
     },
     favOne(id) {
+      console.log('app favOne1', this.likedJobs)
       let favOneUrl
       if (!this.likedJobs.includes(id)) {
         this.likedJobs.push(id)
+        console.log('app favOne2')
         favOneUrl = config.jobsUrl + '/favOne.json?jid=' + id
       } else {
         let index = this.likedJobs.indexOf(id);
         if (index !== -1) this.likedJobs.splice(index, 1);
         favOneUrl = config.jobsUrl + '/delFavOne.json?jid=' + id
+        console.log('app favOne3')
       }
       this.ajaxLoading = true
       axios
@@ -194,7 +207,7 @@ export default {
       this.user_id = token[1]
       this.role = token[2]
       this.modalShown = 'none'
-      this.ownJobs = []      
+      this.ownJobs = []
       if (token[2] === 'subscriber') {
         this.username = token[3]
         this.surname = token[4]
@@ -206,7 +219,7 @@ export default {
         this.isagency = token[4]
         this.likedJobs = []
       }
-      console.log(token)
+      console.log('cp111')
     },
     logout: function() {
       if (this.user_id !== -1) {

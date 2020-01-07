@@ -20,7 +20,7 @@ export default {
   name: 'JobsList',
   props: {
     showLiked: Boolean,
-    likedJobs: Array,
+    likedJobs: {type: Array, default: ()=>[]},
     lenses: String,
     way: String,
     msg: String,
@@ -50,6 +50,7 @@ export default {
   },
   methods: {
     favOne(id) {
+      console.log('favOne Click from jobsList')
       this.$emit('favOne', id)
     }
   },

@@ -89,8 +89,8 @@ import JobsList from '@/components/organisms/JobsList.vue'
 export default {
   name: 'SubProfile',
   props: {
-    likedJobs: Array,
-    likedJobsList: Array,
+    likedJobs: {type: Array, default: ()=>[]},
+    likedJobsList: {type: Array, default: ()=>[]},
     username: {type: String, default: ''},
     surname: {type: String, default: ''},
     insearch: {type: Boolean, default: false},
