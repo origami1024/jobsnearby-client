@@ -1,5 +1,6 @@
 <template>
   <div id="app">
+    <q-btn v-if="$route.path == '/'" class="scrollTopBtn" icon="keyboard_arrow_up" glossy color="primary" round @click="scrollTop"/>
     <header>
 
       <q-btn class="logo" :color="$route.path == '/' ? 'purple' : 'gray'" @click="refreshjobs" round glossy to="/" size="20px">
@@ -59,12 +60,17 @@
     <!-- <footer>Origami1024, Dec 2019</footer> -->
     <!-- <LoginModal @authed="authIt" @loginclosed="modalShown = 'none'" :isShown="modalShown === 'login'"></LoginModal> -->
     <!-- <RegisterModal @regclosed="modalShown = 'none'" :isShown="modalShown === 'reg'"></RegisterModal> -->
+    
   </div>
 </template>
 
 <script>
 // import LoginModal from './components/organisms/LoginModal'
 // import RegisterModal from './components/organisms/RegisterModal'
+
+import { scroll } from 'quasar'
+const { getScrollTarget, setScrollPosition } = scroll
+
 import axios from 'axios'
 const config = require('./configs/main_config')
 export default {
@@ -136,6 +142,13 @@ export default {
     this.getFavedFull()
   },
   methods: {
+    scrollTop() {
+      let el = document.documentElement
+      const target = getScrollTarget(el)
+      const offset = el.offsetTop
+      const duration = 250
+      setScrollPosition(target, offset, duration)
+    },
     getFavedFull() {
       let url = config.jobsUrl + '/getFavedFull.json'
       this.ajaxLoading = true
@@ -301,6 +314,7 @@ export default {
   color #2c3e50
   font-size 13px
   line-height 14px
+  
   header
     display flex
     align-items center
@@ -321,9 +335,9 @@ export default {
   h1,h2,h3,h4,h5,h6
     font-size 14px
     line-height 1
-  a 
-    &:visited
-      color purple
+  // a 
+  //   &:visited
+  //     color purple
   .router-link-exact-active
     color white
     background-color purple
@@ -333,12 +347,17 @@ export default {
   .searched
     background-color yellow
   .r-view
-    width 80%
+    //width 80%
     margin auto
   .logo
     margin-right 10px
   .user-status-bar
     text-align left
     align-items flex-start
-    
+  .scrollTopBtn
+    position fixed
+    bottom 30px
+    left 30px
+    opacity 0.7
+    z-index 3
 </style>
