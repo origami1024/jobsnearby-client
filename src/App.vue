@@ -349,7 +349,8 @@ export default {
   .searched
     background-color yellow
   .r-view
-    //width 80%
+    //width 90%
+    max-width 1280px
     margin auto
   .logo
     margin-right 10px

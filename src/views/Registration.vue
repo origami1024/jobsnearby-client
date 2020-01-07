@@ -356,11 +356,12 @@ export default {
 }
 </script>
 
-<style lang="stylus">
+<style scoped lang="stylus">
 .registration
   padding-top 15px
   margin 0
   max-width 400px
+  width 400px
   .registration__main
     //border 2px solid black
     

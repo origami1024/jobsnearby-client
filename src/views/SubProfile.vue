@@ -138,6 +138,7 @@ export default {
 
 <style scoped lang="stylus">
 .subprofile
+  width 900px
   display flex
   flex-direction column
   justify-content center

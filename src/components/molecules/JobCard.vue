@@ -7,14 +7,14 @@
             <strong v-html="filteredTitle"/>
           </a>
         </h4>
-        <div v-html="filteredAuthor"></div>
+        <div class="author" v-html="filteredAuthor"></div>
       </div>
       <div class="colx">
-        <strong>
-          <p class="alignRight" v-if="job.salary_min === job.salary_max && job.salary_min > 0">{{job.salary_max}} {{currency}}</p>
-          <p class="alignRight" v-else-if="job.salary_min && job.salary_min > 0">от {{job.salary_min}} до {{job.salary_max}} {{currency}}</p>
-          <p class="alignRight" v-else-if="job.salary_max > 0">{{job.salary_max}} {{currency}}</p>
-          <p class="alignRight" v-else>зп не указана</p>
+        <strong class="alignRight">
+          <p v-if="job.salary_min === job.salary_max && job.salary_min > 0">{{job.salary_max}} {{currency}}</p>
+          <p v-else-if="job.salary_min && job.salary_min > 0">от {{job.salary_min}} до {{job.salary_max}} {{currency}}</p>
+          <p v-else-if="job.salary_max > 0">{{job.salary_max}} {{currency}}</p>
+          <p v-else>зп не указана</p>
         </strong>
         <p class="alignRight city" v-html="filteredCity"></p>
       </div>
@@ -180,13 +180,15 @@ export default {
   .cardHeader
     font-weight 400
     font-size 20px
-    margin-bottom 5px
+    margin-bottom 3px
   .city
     font-size 0.85em
+  .author
+    font-size 0.9em
   .line
     display flex
     justify-content space-between
-    margin-bottom 10px
+    margin-bottom 8px
     &:last-child
       margin-bottom 0
   .linej
