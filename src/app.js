@@ -55,6 +55,7 @@ app.post('/getOwnJobs.json', db.getOwnJobs)
 app.post('/favOne.json', db.favOne)
 app.post('/delFavOne.json', db.delFavOne)
 app.post('/getFaved.json', db.getFaved)
+app.post('/getFavedFull.json', db.getFavedFull)
 
 ///favOne.json?jid=
 

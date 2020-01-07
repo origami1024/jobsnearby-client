@@ -134,7 +134,44 @@ async function getOwnJobs (req, res) {
   } else {res.send('wrong userinfo')}
 }
 
-async function getFaved (req, res) {  
+
+async function getFavedFull (req, res) {
+  if (req.cookies.session && req.cookies.session.length > 50) {
+    let que1st = `SELECT user_id, "likedJobs" FROM "users" WHERE "auth_cookie" = ($1)`
+    let params1st = [req.cookies.session]
+    pool.query(que1st, params1st, (error, results) => {
+      if (error) {
+        console.log(error)
+        res.send('step2')
+        //throw error
+        return false
+      }
+      if (results.rows.length < 1) {
+        //Если юзера с таким куки не найдено, то выходим из функции прост
+        res.send('step3')
+        return false
+      }
+      //res.send(results.rows[0])
+      let que2nd = `SELECT jobs.author_id, users.company as author, jobs.job_id, jobs.city, jobs.experience, jobs.jobtype, jobs.title, jobs.edu, jobs.currency, jobs.sex, jobs.salary_min, jobs.salary_max, jobs.description, jobs.worktime1, jobs.worktime2, jobs.age1, jobs.age2, jobs.langs, jobs.time_published as published, jobs.time_updated as updated
+                    FROM jobs, users
+                    WHERE jobs.author_id = users.user_id AND
+                          jobs.job_id = ANY($1)
+                    ORDER BY (jobs.time_updated, jobs.job_id) DESC`
+      console.log(que2nd)
+      let params2nd = [results.rows[0].likedJobs]
+      pool.query(que2nd, params2nd, (error2, results2) => {
+        if (error2) {
+          console.log('getFavedFull Error2: ', error2)
+        }
+        //res.status(200).send('OK')
+        res.send(results2.rows)
+      })
+
+    })
+  } else {res.send('wrong userinfo(full)')}
+}
+
+async function getFaved (req, res) {
   console.log('cpGetFaved: ', req.cookies)
   if (req.cookies.session && req.cookies.session.length > 50) {
     let que1st = `SELECT user_id, "likedJobs" FROM "users" WHERE "auth_cookie" = ($1)`
@@ -398,7 +435,7 @@ async function tryInsertAuthToken(id,token) {
   return true
 }
 async function checkAuthGetProfile(token) {
-  let que = `SELECT email, user_id, role, name, surname, insearch, company, isagency FROM "users" WHERE "auth_cookie" = ($1)`
+  let que = `SELECT email, user_id, role, name, surname, insearch, company, isagency, "likedJobs" FROM "users" WHERE "auth_cookie" = ($1)`
   let params = [token]
   let result = await pool.query(que, params).catch(error => {
     console.log(error)
@@ -416,6 +453,7 @@ async function checkAuthGetProfile(token) {
       res['name'] = result.rows[0].name
       res['surname'] = result.rows[0].surname
       res['insearch'] = result.rows[0].insearch
+      res['likedJobs'] = result.rows[0].likedJobs
     } else
     if (result.rows[0].role === 'company') {
       res['cname'] = result.rows[0].company
@@ -436,6 +474,7 @@ module.exports = {
   addJobs,
   getOwnJobs,
   favOne,
-  getFaved,
   delFavOne,
+  getFaved,
+  getFavedFull
 }

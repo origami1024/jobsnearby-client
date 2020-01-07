@@ -2,8 +2,8 @@
   <div id="app">
     <header>
 
-      <q-btn class="logo" :color="$route.path == '/' ? 'purple' : 'gray'" @click="refreshjobs" round glossy to="/" size="16px">
-        <q-avatar size="40px">
+      <q-btn class="logo" :color="$route.path == '/' ? 'purple' : 'gray'" @click="refreshjobs" round glossy to="/" size="20px">
+        <q-avatar size="46px">
           <img src="https://cdn.quasar.dev/app-icons/icon-128x128.png" />
         </q-avatar>
       </q-btn>
@@ -35,7 +35,7 @@
           <q-btn-group>
             <q-btn push glossy :color="$route.path == '/registration' ? 'purple' : 'gray'" :text-color="$route.path == '/registration' ? 'white' : 'black'" no-caps v-if="role === 'guest'" @click.native="regState='login'" label="Вход" to="/registration"/>
             <q-btn push glossy no-caps v-if="user_id !== -1" @click="logout" label="Выйти"/>
-            <q-btn push glossy :color="$route.path == '/subprofile' ? 'purple' : 'gray'" :text-color="$route.path == '/subprofile' ? 'white' : 'black'" no-caps label="Личный кабинет" v-if="role === 'subscriber'" to="/subprofile"/>
+            <q-btn push glossy @click="getFavedFull" :color="$route.path == '/subprofile' ? 'purple' : 'gray'" :text-color="$route.path == '/subprofile' ? 'white' : 'black'" no-caps label="Личный кабинет" v-if="role === 'subscriber'" to="/subprofile"/>
             <q-btn push glossy no-caps label="Профиль" v-if="role === 'company'" to="/entprofile"/>
           </q-btn-group>
           
@@ -43,8 +43,8 @@
       </div>
       <div>Язык: рус
       </div>
-      <button @click="getOwnJobs">debug ownJobs</button>
-      <button @click="getLikedJobs">debug getLiked</button>
+      <!-- <button @click="getOwnJobs">debug ownJobs</button>
+      <button @click="getLikedJobs">debug getLiked</button> -->
       <!-- <button @click="refreshjobs">refresh jobs debug</button> -->
       <!-- <q-btn :loading="ajaxLoading" dense size="sm" color="primary" @click="refreshjobs" icon="refresh">debug</q-btn> -->
       <q-ajax-bar
@@ -54,7 +54,7 @@
       />
     </header>
     <keep-alive> <!-- @stepChange="stepChange" :step="step" -->
-      <router-view :likedJobs="likedJobs" @favOne="favOne" @getOwnJobs="getOwnJobs" :ownJobs="ownJobs" @authed="authIt" @regStateUpd="regStateUpd" :regState="regState" class="r-view" :jobsFullcount="jobsFullcount" :page_current="page_current" :pages="pages_count" :featuredJobslist="featuredJobslist" :pending="ajaxLoading" @updQue="updQue" :role="role" :username="username" :surname="surname" :insearch="insearch" :company="company" :isagency="isagency" :jobslist="jobslist" @refresh="refreshjobs" :uid="user_id" :authed="user_id !== -1" />
+      <router-view :likedJobsList="likedJobsList" :likedJobs="likedJobs" @favOne="favOne" @getOwnJobs="getOwnJobs" :ownJobs="ownJobs" @authed="authIt" @regStateUpd="regStateUpd" :regState="regState" class="r-view" :jobsFullcount="jobsFullcount" :page_current="page_current" :pages="pages_count" :featuredJobslist="featuredJobslist" :pending="ajaxLoading" @updQue="updQue" :role="role" :username="username" :surname="surname" :insearch="insearch" :company="company" :isagency="isagency" :jobslist="jobslist" @refresh="refreshjobs" :uid="user_id" :authed="user_id !== -1" />
     </keep-alive>
     <!-- <footer>Origami1024, Dec 2019</footer> -->
     <!-- <LoginModal @authed="authIt" @loginclosed="modalShown = 'none'" :isShown="modalShown === 'login'"></LoginModal> -->
@@ -91,6 +91,7 @@ export default {
     ajaxLoading: false,
     ownJobs: [],
     likedJobs: [],
+    likedJobsList: [],
     //step: 1, //для uploads
   }},
   computed: {
@@ -123,14 +124,33 @@ export default {
           this.company = ''
           this.isagency = false
           this.insearch = false
+          this.likedJobs = []
+          this.likedJobsList = []
+          this.ownJobs = []
         } else if (response.data && response.data[0] && response.data[1] && response.data[2]) {
           this.authIt(response.data)
         }
       })
     //get all jobs
     this.refreshjobs('init')
+    this.getFavedFull()
   },
   methods: {
+    getFavedFull() {
+      let url = config.jobsUrl + '/getFavedFull.json'
+      this.ajaxLoading = true
+      axios
+        .post(url, [], {withCredentials: true,})
+        .then(response => {
+          //console.log('getLikedJobs response cp72: ', response.data)
+          if (response.data) {
+            this.likedJobsList = response.data
+            //console.log(this.likedJobsList)
+            //console.log(this.likedJobs)
+          }
+          this.ajaxLoading = false
+        })
+    },
     getLikedJobs() {
       let jobsLikedUrl = config.jobsUrl + '/getFaved.json'
       this.ajaxLoading = true
@@ -174,15 +194,19 @@ export default {
       this.user_id = token[1]
       this.role = token[2]
       this.modalShown = 'none'
+      this.ownJobs = []      
       if (token[2] === 'subscriber') {
         this.username = token[3]
         this.surname = token[4]
         this.insearch = token[5]
+        this.likedJobs = token[6]
       } else
       if (token[2] === 'company') {
         this.company = token[3]
         this.isagency = token[4]
+        this.likedJobs = []
       }
+      console.log(token)
     },
     logout: function() {
       if (this.user_id !== -1) {
@@ -243,6 +267,14 @@ export default {
       //console.log('cpcp111 ', e)
       //this.perpage = e
     }
+  },
+  watch:{
+    // $route (to, from){
+    //   console.log(to)
+    //   if (to === '/usbprofile') {
+    //     this.getFavedFull()
+    //   }
+    // }
   }
 }
 </script>

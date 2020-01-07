@@ -37,9 +37,23 @@
         <q-tab-panel name="responses">
         </q-tab-panel>
         <q-tab-panel name="starred">
-          //Нужны не только номера, но и данные
-          //продумать где должно вызываться получение всех faved, видимо в auth и еще может быть при переходе в личн кабинет
-          <p v-for="faved in likedJobs" :key="faved">{{faved}}</p>
+          <q-btn-toggle
+            v-if="likedJobs.length > 0"
+            v-model="lenses"
+            toggle-color="primary"
+            size="sm"
+            dense
+            :options="[ {value: 'short', icon: 'list'},
+                        {value: 'full', icon: 'code'},]"
+          />
+          <JobsList
+            :showLiked="role === 'subscriber'"
+            :likedJobs="likedJobs"
+            @favOne="favOne"
+            :lenses="lenses"
+            :jobslist="likedJobsList"
+          />
+          <!-- <p v-for="faved in likedJobsList" :key="faved.job_id">{{faved}}</p> -->
         </q-tab-panel>
         <q-tab-panel class="subprofile__settings" name="settings">
           <p>Добавить контакты</p>
@@ -70,16 +84,20 @@
 </template>
 
 <script>
+import JobsList from '@/components/organisms/JobsList.vue'
+
 export default {
   name: 'SubProfile',
   props: {
     likedJobs: Array,
+    likedJobsList: Array,
     username: {type: String, default: ''},
     surname: {type: String, default: ''},
     insearch: {type: Boolean, default: false},
     role: String
   },
   data: ()=>{return {
+    lenses: 'full',
     contacts1: '',
     contacts2: '',
     contacts3: '',
@@ -93,6 +111,12 @@ export default {
     editable: false
   }},
   components: {
+    JobsList,
+  },
+  methods: {
+    favOne(id) {
+      this.$emit('favOne', id)
+    }
   },
   mounted(){
     this.newusername = this.username
