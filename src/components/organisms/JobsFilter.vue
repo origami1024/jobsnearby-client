@@ -18,8 +18,8 @@
       />
       <q-btn @click="refreshPlus" icon="search" color="primary" :loading="pending" class="jobsfilter__search-btn"></q-btn>
     </div> -->
-    <div class="line">
-      <div class="borders">
+    
+      <!-- <div class="borders">
         <p class="header">Сортировка</p>
         <q-btn-toggle
           size="sm"
@@ -33,8 +33,8 @@
             {label: 'Зарплата-возр', value: 'salasc'}
           ]"
         />
-      </div>
-      <div class="borders">
+      </div> -->
+      <!-- <div class="borders">
         <p class="header">Данные за</p>
         <q-btn-toggle
           size="sm"
@@ -48,8 +48,8 @@
             {label: 'Сутки', value: 'day'}
           ]"
         />
-      </div>
-      <div class="borders">
+      </div> -->
+      <!-- <div class="borders">
         <p class="header">На странице</p>
         <q-btn-toggle
           size="sm"
@@ -63,10 +63,8 @@
             {label: '100', value: '100'}
           ]"
         />
-      </div>
-    </div>
-    <br>
-    <p class="header">Фильтры</p>
+      </div> -->
+
     <div class="line">
       <q-item-section>
         <p :style="{textAlign: 'left'}">Скрыть вакансии без указания зп</p>
@@ -127,17 +125,20 @@ export default {
     highest: {type: Number, default: 99550},
     langOptions: {type: Array, default: ()=>[]},
     pending: {type: Boolean, default: false},
-    txt: {type: String, default: ''}
+    txt: {type: String, default: ''},
+    sort: {type: String, default: 'new'},
+    timerange: {type: String, default: 'mon'},
+    perpage: {type: String, default: '25'},
   },
   data: ()=>{return {
     exp: 'Не имеет значения',
     nosal: false,
     city: '',
-    perpage: '25',
-    timerange: 'mon',
+    //perpage: '25',
+    //timerange: 'mon',
     //txt: '',
     wordRegex: /^[\wа-яА-ЯÇçÄä£ſÑñňÖö$¢Üü¥ÿýŽžŞş\s\\-]*$/,
-    sort: 'new',
+    //sort: 'new',
     search: '',
     value: [1600,2000],
     reinit: true, //when loaded first time - need to set the rangeValues equal to low and high
@@ -154,11 +155,11 @@ export default {
       this.exp = 'Не имеет значения'
       this.nosal = false
       this.city = ''
-      this.perpage = '25'
-      this.timerange = 'mon'
-      this.txt = ''
-      this.sort = 'new'
-      this.search = ''
+      //this.perpage = '25'
+      //this.timerange = 'mon'
+      //this.txt = ''
+      //this.sort = 'new'
+      //this.search = ''
       //rangeValues???
     },
     updateAndSave: function(val) {
@@ -239,6 +240,7 @@ export default {
   background-color #f7f7f7
   flex 0 1 35%
   max-width 400px
+  min-width 320px
   margin-bottom 15px
   padding 10px 15px
   box-sizing border-box

@@ -25,12 +25,32 @@
     <div class="jobs__main">
       <div>
         <div class="jobs__filterpart">
-          <JobsFilter :txt="txt" @perPageUpd="perPageUpd" :pending="pending" @refresh="$emit('refresh')" @updQue="updQue" @updSearch="updSearch" :langOptions="langOptions" @updLangs="updLangs" @slideEnd="slideEnd" :highest="maxSal" :lowest="minSal"></JobsFilter>
+          <JobsFilter :perpage="perpage.value" :timerange="timerange.value" :sort="sort.value" :txt="txt" @perPageUpd="perPageUpd" :pending="pending" @refresh="$emit('refresh')" @updQue="updQue" @updSearch="updSearch" :langOptions="langOptions" @updLangs="updLangs" @slideEnd="slideEnd" :highest="maxSal" :lowest="minSal"></JobsFilter>
         </div>
       </div>
       <div class="jobs__contents">
-        <div class="line">
-          Страница
+        <div class="line jobs_prefilters">
+          <q-select dense outlined
+            :style="{minWidth: '240px'}"
+            v-model="sort"
+            :options="[ {label: 'По дате', value: 'new'},
+                        {label: 'По убыванию зарплаты', value: 'saldesc'},
+                        {label: 'По возрастанию зарплаты', value: 'salasc'}]"
+          />
+          <q-select dense outlined
+            :style="{minWidth: '130px'}"
+            v-model="timerange"
+            :options="[ {label: 'За месяц', value: 'mon'},
+                        {label: 'За неделю', value: 'wee'},
+                        {label: 'За сутки', value: 'day'}]"
+          />
+          <q-select dense outlined
+            :style="{minWidth: '130px'}"
+            v-model="perpage"
+            :options="[ {label: '25 на стр', value: '25'},
+                        {label: '50 на стр', value: '50'},
+                        {label: '100 на стр', value: '100'}]"
+          />
           <q-pagination
             :value="page_current"
             :max="pages"
@@ -81,7 +101,9 @@ export default {
     lenses: 'full',
     txt: '',
     wordRegex: /^[\wа-яА-ЯÇçÄä£ſÑñňÖö$¢Üü¥ÿýŽžŞş\s\\-]*$/,
-    sort: 'time',//time, salary, else
+    sort: {label: 'По дате', value: 'new'},
+    timerange: {label: 'За месяц', value: 'mon'},
+    perpage: {label: '25 на стр', value: '25'},
     searchFilter: '',
     salaryVals: [-Infinity, Infinity],
     langsFilter: [],
@@ -192,6 +214,12 @@ export default {
     // justify-content space-around
   .jobs__contents
     width 100%
+  .jobs_prefilters
+    margin-bottom 10px
+    background-color #eee
+    padding 5px
+    border-radius 5px
+    box-shadow 0 0 3px 0px #a0a9
   *
     margin 0
   .line
