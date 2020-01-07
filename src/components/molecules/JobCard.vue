@@ -176,6 +176,7 @@ export default {
     color #2837C6
   .cardHeader
     font-weight 400
+    font-size 20px
   .line
     display flex
     justify-content space-between
