@@ -162,14 +162,19 @@ export default {
   text-align left
 .jobscard
   font-size 14px
-  margin-top 10px
+  //margin-top 10px
   //max-width 300px
   display flex
   flex-direction column
   padding 5px
   box-sizing border-box
   &:nth-child(odd)
-    border 1px solid black
+    //border 1px solid black
+    background-color #efefef
+    box-shadow 0 0 3px 2px #dfdfdf
+  &:nth-child(even)
+    background-color #fefefe
+    box-shadow 0 0 3px 2px #eee
   a
     text-decoration none
     color #2837C6
