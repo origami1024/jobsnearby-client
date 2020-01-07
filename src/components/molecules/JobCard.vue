@@ -46,7 +46,7 @@
     <!-- {{liked}} -->
     <p class="alignRight">Опубликована: {{new Date(job.published).toLocaleDateString()}} в {{new Date(job.published).toLocaleTimeString([],{hour: '2-digit', minute:'2-digit'})}}</p>
     <p class="alignRight">Обновлена: {{new Date(job.updated).toLocaleDateString()}} в {{new Date(job.updated).toLocaleTimeString([],{hour: '2-digit', minute:'2-digit'})}}</p>
-    <q-btn :text-color="liked ? 'primary' : 'grey'" round size="sm" icon="star" @click="$emit('favOne', job.job_id)"/>
+    <q-btn v-if="showLiked" :text-color="liked ? 'primary' : 'grey'" round size="sm" icon="star" @click="$emit('favOne', job.job_id)"/>
     <!-- <div v-html="filteredTitle"></div> -->
   </div>
 </template>
@@ -56,6 +56,7 @@
 export default {
   name: 'JobCard',
   props: {
+    showLiked: Boolean,
     liked: Boolean,
     way: String,
     job: Object,

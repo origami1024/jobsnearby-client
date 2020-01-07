@@ -48,7 +48,7 @@
                         {value: 'full', icon: 'code'},]"
           />
         </div>
-        <JobsList :likedJobs="likedJobs" @favOne="favOne" :lenses="lenses" :searchFilter="searchFilter" :jobslist="jobslist" msg="Полученные"/>
+        <JobsList :showLiked="role === 'subscriber'" :likedJobs="likedJobs" @favOne="favOne" :lenses="lenses" :searchFilter="searchFilter" :jobslist="jobslist" msg="Полученные"/>
         <q-pagination
           :value="page_current"
           :max="pages"
@@ -68,6 +68,7 @@ import JobsFilter from '@/components/organisms/JobsFilter.vue'
 export default {
   name: 'Jobs',
   props: {
+    role: String,
     likedJobs: Array,
     jobslist: Array,
     pending: {type: Boolean, default: false},

@@ -7,7 +7,7 @@
       </h3>
     </div> -->
     <div :class="{ rowed: way=='row' }">
-      <JobCard :liked="likedJobs.includes(item.job_id)" @favOne="favOne" :way="way" :lenses="lenses" :searchFilter="searchFilter" :job="item" v-for="item in jobslistFiltered" :key="item.job_id"></JobCard>
+      <JobCard :showLiked="showLiked" :liked="likedJobs.includes(item.job_id)" @favOne="favOne" :way="way" :lenses="lenses" :searchFilter="searchFilter" :job="item" v-for="item in jobslistFiltered" :key="item.job_id"></JobCard>
       <p v-if="jobslist.length == 0">Нет ни одной вакансии</p>
     </div>
   </div>
@@ -19,6 +19,7 @@ import JobCard from './../molecules/JobCard'
 export default {
   name: 'JobsList',
   props: {
+    showLiked: Boolean,
     likedJobs: Array,
     lenses: String,
     way: String,

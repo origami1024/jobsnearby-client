@@ -154,7 +154,7 @@ async function getFaved (req, res) {
       res.send(results.rows[0].likedJobs)
 
     })
-  } else {res.status(400).send('wrong userinfo')}
+  } else {res.send('wrong userinfo')}
 }
 
 async function delFavOne (req, res) {
@@ -184,7 +184,7 @@ async function delFavOne (req, res) {
       })
       
     })
-  } else res.status(400).send('wrong job id')
+  } else res.send('wrong job id')
 }
 async function favOne (req, res) {
   let jid = req.query.jid

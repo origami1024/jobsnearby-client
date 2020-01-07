@@ -137,10 +137,10 @@ export default {
       axios
         .post(jobsLikedUrl, [], {withCredentials: true,})
         .then(response => {
-          console.log('getLikedJobs response cp72: ', response.data)
+          //console.log('getLikedJobs response cp72: ', response.data)
           if (response.data) {
             this.likedJobs = response.data
-            console.log(this.likedJobs)
+            //console.log(this.likedJobs)
           }
           this.ajaxLoading = false
         })
