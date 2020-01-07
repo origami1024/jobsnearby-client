@@ -10,11 +10,13 @@
         <div v-html="filteredAuthor"></div>
       </div>
       <div class="colx">
-        <p class="alignRight" v-if="job.salary_min === job.salary_max && job.salary_min > 0">{{job.salary_max}} {{currency}}</p>
-        <p class="alignRight" v-else-if="job.salary_min && job.salary_min > 0">от {{job.salary_min}} до {{job.salary_max}} {{currency}}</p>
-        <p class="alignRight" v-else-if="job.salary_max > 0">{{job.salary_max}} {{currency}}</p>
-        <p class="alignRight" v-else>зп не указана</p>
-        <p class="alignRight" v-html="filteredCity"></p>
+        <strong>
+          <p class="alignRight" v-if="job.salary_min === job.salary_max && job.salary_min > 0">{{job.salary_max}} {{currency}}</p>
+          <p class="alignRight" v-else-if="job.salary_min && job.salary_min > 0">от {{job.salary_min}} до {{job.salary_max}} {{currency}}</p>
+          <p class="alignRight" v-else-if="job.salary_max > 0">{{job.salary_max}} {{currency}}</p>
+          <p class="alignRight" v-else>зп не указана</p>
+        </strong>
+        <p class="alignRight city" v-html="filteredCity"></p>
       </div>
     </div>
     <div class="line" v-if="lenses == 'full'">
@@ -159,6 +161,7 @@ export default {
   margin 0
   text-align left
 .jobscard
+  font-size 14px
   margin-top 10px
   //max-width 300px
   display flex
@@ -177,6 +180,9 @@ export default {
   .cardHeader
     font-weight 400
     font-size 20px
+    margin-bottom 5px
+  .city
+    font-size 0.85em
   .line
     display flex
     justify-content space-between
