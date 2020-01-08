@@ -167,7 +167,7 @@ export default {
   //max-width 300px
   display flex
   flex-direction column
-  padding 5px
+  
   box-sizing border-box
   &:nth-child(odd)
     //border 1px solid black
@@ -192,6 +192,7 @@ export default {
   .author
     font-size 0.9em
   .line
+    padding 5px
     display flex
     justify-content space-between
     margin-bottom 8px
@@ -203,6 +204,7 @@ export default {
     display flex
     align-items center
     min-width 190px
+    
   .spbtw
     justify-content space-between
   .mr-5px

@@ -131,7 +131,9 @@
     <q-select dense v-model="salary" :options="salOptions" label="Зарплата" />
     <q-select dense v-model="exp" :options="expOptions" label="Опыт" />
     <q-select dense v-model="jtype" :options="jtypeOptions" label="Тип занятости" />
-    
+    <div class="w100">
+      <q-btn color="primary" label="Применить"/>
+    </div>
     
   </div>
 </template>
@@ -305,6 +307,10 @@ export default {
     padding 0 2px
   .alignRight
     align-self flex-end
+  .w100
+    display flex
+    width 100%
+    justify-content flex-end
 .jobsfilter__search-btn
   align-self flex-start
 </style>

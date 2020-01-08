@@ -88,7 +88,6 @@
       
       
       <p>Статус: {{uploadStatus}}</p>
-      <hr>
       <h4 class="uploads__header">Опубликованные вакансии({{ownJobs.length}}):</h4>
       <JobsList :jobslist="ownJobs" msg="Опубликованные"/>
     </div>
