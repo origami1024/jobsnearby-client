@@ -38,7 +38,7 @@
       <div class="line">
         <p class="startP">Возраст</p>
         <q-input type="Number" :style="{width: '100px', marginRight: '10px'}" dense filled v-model="job.age1" label="От" :hint="null"/>
-        <q-input type="Number" :style="{width: '100px', marginRight: '10px'}" dense filled v-model="job.age1" label="До" :hint="null"/>
+        <q-input type="Number" :style="{width: '100px', marginRight: '10px'}" dense filled v-model="job.age2" label="До" :hint="null"/>
       </div>
       <div class="line">
         <p class="startP">График работы</p>
@@ -66,7 +66,7 @@
       </div>
       <div class="line">
         <!-- <p class="startP">Город</p> -->
-        <q-input :style="{width: '250px'}" dense filled v-model="job.exp" label="Минимальный стаж" :hint="null"/>
+        <q-input :style="{width: '250px'}" dense filled v-model="job.experience" label="Минимальный стаж" :hint="null"/>
       </div>
       <p>Обязанности</p>
       <div class="line">
@@ -79,7 +79,7 @@
           style="width: 100%;"
         />
       </div>
-      <q-btn color="primary" label="Опубликовать"/>
+      <q-btn color="primary" label="Опубликовать" @click="addOneJob"/>
     </div>
     <div v-else>
       Авторизируйтесь, для возможности загрузки вакансий
@@ -118,7 +118,7 @@ export default {
         sex: {label: "Не имеет значения", value: ''},
         langs: [],
         edu: '',
-        exp: '',
+        experience: '',
         description: '',
       },
       sexOptions: [{label: "Не имеет значения", value: ''}, {label: "Муж", value: 'm'}, {label: "Жен", value: 'w'},],
@@ -132,6 +132,26 @@ export default {
     // }
   },
   methods:{
+    addOneJob() {
+      //console.dir(this.job)
+      let j = this.job
+      if (j.salary_fix > 0) j.salary_max = j.salary_fix
+      if (j.salary_min > j.salary_max) j.salary_max = j.salary_min
+      j.sex = j.sex.value
+      if (j.title != '' && j.title.length > 1 && (j.salary_max > 0 || j.salaryOn) && j.description.length > 15) {
+        axios
+          .post(config.jobsUrl + '/oneJob', j, {headers: {'Content-Type' : 'application/json' }, withCredentials: true,})
+          .then(response => {
+            if (response.data === 'OK') {
+              console.log('cp addOneJob: OK')
+            } else {console.log('trespasser')}
+            
+          })
+      } else {
+        console.log('NO TITLE')
+        return false
+      }
+    }
   },
   components: {
   }

@@ -253,6 +253,118 @@ async function favOne (req, res) {
   } else res.status(400).send('wrong job id')
 }
 
+
+
+async function addOneJob (req, res) {
+  //
+  if (req.cookies.session && req.cookies.session.length > 50) {
+    //console.log(req.body)
+    let que1st = `SELECT user_id FROM "users" WHERE "auth_cookie" = ($1)`
+    let params1st = [req.cookies.session]
+    pool.query(que1st, params1st, (error, results) => {
+      if (error) {
+        res.send('step2')
+        console.log('addJobs Error: ', error)
+      }
+      if (results.rows.length < 1) {
+        //Если юзера с таким куки не найдено, то выходим из функции прост
+        res.send('step3')
+        return false
+      }
+
+      //que2 go
+      //console.log('addOneJob cp2: ', req.body)
+      let parsedData = validateOneJob(req.body)
+      if (parsedData == false) return false
+      //author_id - проверка не нужна
+      parsedData.author_id = results.rows[0].user_id
+      //console.log('addOneJob cp2: ', parsedData)
+      let que2nd = `INSERT INTO "jobs" ("title", "salary_max", "salary_min", "currency", "sex", "age1", "age2", "worktime1", "worktime2", "langs", "edu", "experience", "city", "description", "author_id") VALUES
+                    ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)`
+      let params2nd = [parsedData.title, parsedData.salary_max, parsedData.salary_min, parsedData.currency, parsedData.sex, parsedData.age1, parsedData.age2, parsedData.worktime1, parsedData.worktime2, parsedData.langs, parsedData.edu, parsedData.experience, parsedData.city, parsedData.description, parsedData.author_id]
+      
+      pool.query(que2nd, params2nd, (error2, results2) => {
+        if (error2) {
+          console.log('send1Job, err2: ', error2)
+          res.send('error')
+          return false
+        }
+        res.send('OK')
+      })
+    })
+
+  }
+}
+
+
+
+function validateOneJob (data) {
+  let parsedData = {}
+  //title - обязат поле, без него вакансия пропускается; длина от 2 до 75 символов
+  if (data.title && data.title.length > 1 && data.title.length < 76) {
+    parsedData.title = data.title
+  } else return false//{ iSkipped += 1; continue}
+  //salary_max - необязат, целое число
+  if (data.salary_max && isNaN(data.salary_max) === false && data.salary_max > -1 && Number.isInteger(Number(data.salary_max))) {
+    parsedData.salary_max = Number(data.salary_max)
+  } else parsedData.salary_max = 0
+  //salary_min - необязат, целое число
+  if (data.salary_min && isNaN(data.salary_min) === false && data.salary_min > -1 && Number.isInteger(Number(data.salary_min))) {
+    parsedData.salary_min = Number(data.salary_min)
+  } else parsedData.salary_min = 0
+  //если указана min но не указана max, то добавить max
+  if (parsedData.salary_max == 0 && parsedData.salary_min > 0) parsedData.salary_max = parsedData.salary_min
+  //валюта - необязат, [m, $, р, e], по умолчанию m
+  if (data.currency && (data.currency === '$' || data.currency === 'm' || data.currency === 'р' || data.currency === 'e')) {
+    parsedData.currency = data.currency
+  } else parsedData.currency = 'm'
+
+  //пол - необязат, [m, w или пропуск]
+  if (data.sex && (data.sex === 'm' || data.sex === 'w')) {
+    parsedData.sex = data.sex
+  } else parsedData.sex = ''
+  //возр от - необязат, целое число
+  if (data.age1 && isNaN(data.age1) === false && Number(data.age1) > -1 && Number(data.age1) < 250 && Number.isInteger(Number(data.age1))) {
+    parsedData.age1 = Number(data.age1)
+  } else parsedData.age1 = 0
+  //возр до - необязат, целое число
+  if (data.age2 && isNaN(data.age2) === false && data.age2 > -1 && data.age2 < 250 && Number.isInteger(Number(data.age2))) {
+    parsedData.age2 = Number(data.age2)
+  } else parsedData.age2 = 0
+  //время от - необязат
+  if (data.worktime1 && isNaN(data.worktime1) === false && data.worktime1 > -1 && data.worktime1 < 25) {
+    parsedData.worktime1 = data.worktime1
+  } else parsedData.worktime1 = ''
+  //время до - необязат
+  if (data.worktime2 && isNaN(data.worktime2) === false && data.worktime2 > -1 && data.worktime2 < 25) {
+    parsedData.worktime2 = data.worktime2
+  } else parsedData.worktime2 = ''
+  //языки - обязательно массив, длина каждого языка - 50, макс кол-во языков - 3
+  if (data.langs && Array.isArray(data.langs) && data.langs.length < 4) {
+    let langsFiltered = data.langs.filter(lang => lang.length < 51)
+    parsedData.langs = langsFiltered
+  } else parsedData.langs = []
+  //edu - необязат, от 2х символов до 20
+  if (data.edu && data.edu.length > 1 && data.edu.length < 21) {
+    parsedData.edu = data.edu
+  } else parsedData.edu = ''
+  //experience - стаж в годах, дробное число от 0 до 250
+  if (data.experience && isNaN(data.experience) === false && data.experience >= 0 && data.experience < 250) {
+    parsedData.experience = Number(data.experience)
+  } else parsedData.experience = 0
+  //city - необязат, от 2х символов до 100
+  if (data.city && data.city.length > 1 && data.city.length < 101) {
+    parsedData.city = data.city
+  } else parsedData.city = ''
+  //description - необязат, от 2х символов до 500
+  if (data.description && data.description.length > 1 && data.description.length < 501) {
+    parsedData.description = data.description
+  } else parsedData.description = ''
+
+  return parsedData
+}
+
+
 async function addJobs (req, res) {
   //console.log(req.cookies)
   if (req.cookies.session && req.cookies.session.length > 50) {
@@ -279,70 +391,74 @@ async function addJobs (req, res) {
       let iSkipped = 0
 
       for (let i = 0; i < req.body.length; i++) {
-        let parsedData = {}
-        //title - обязат поле, без него вакансия пропускается; длина от 2 до 75 символов
-        if (req.body[i].title && req.body[i].title.length > 1 && req.body[i].title.length < 76) {
-          parsedData.title = req.body[i].title
-        } else { iSkipped += 1; continue}
-        console.log('cp567: ', req.body[i].title)
-        
-        //salary_max - необязат, целое число
-        if (req.body[i].salary_max && isNaN(req.body[i].salary_max) === false && req.body[i].salary_max > -1 && Number.isInteger(req.body[i].salary_max)) {
-          parsedData.salary_max = req.body[i].salary_max
-        } else parsedData.salary_max = 0
-        //salary_min - необязат, целое число
-        if (req.body[i].salary_min && isNaN(req.body[i].salary_min) === false && req.body[i].salary_min > -1 && Number.isInteger(req.body[i].salary_min)) {
-          parsedData.salary_min = req.body[i].salary_min
-        } else parsedData.salary_min = 0
-        //если указана min но не указана max, то добавить max
-        if (parsedData.salary_max == 0 && parsedData.salary_min > 0) parsedData.salary_max = parsedData.salary_min
-        //валюта - необязат, [m, $, р, e], по умолчанию m
-        if (req.body[i].currency && (req.body[i].currency === '$' || req.body[i].currency === 'm' || req.body[i].currency === 'р' || req.body[i].currency === 'e')) {
-          parsedData.currency = req.body[i].currency
-        } else parsedData.currency = 'm'
-        //пол - необязат, [m, w или пропуск]
-        if (req.body[i].sex && (req.body[i].sex === 'm' || req.body[i].sex === 'w')) {
-          parsedData.sex = req.body[i].sex
-        } else parsedData.sex = ''
-        //возр от - необязат, целое число
-        if (req.body[i].age1 && isNaN(req.body[i].age1) === false && req.body[i].age1 > -1 && req.body[i].age1 < 250 && Number.isInteger(req.body[i].age1)) {
-          parsedData.age1 = req.body[i].age1
-        } else parsedData.age1 = 0
-        //возр до - необязат, целое число
-        if (req.body[i].age2 && isNaN(req.body[i].age2) === false && req.body[i].age2 > -1 && req.body[i].age2 < 250 && Number.isInteger(req.body[i].age2)) {
-          parsedData.age2 = req.body[i].age2
-        } else parsedData.age2 = 0
-        //время от - необязат
-        if (req.body[i].worktime1 && isNaN(req.body[i].worktime1) === false && req.body[i].worktime1 > -1 && req.body[i].worktime1 < 25) {
-          parsedData.worktime1 = req.body[i].worktime1
-        } else parsedData.worktime1 = ''
-        //время до - необязат
-        if (req.body[i].worktime2 && isNaN(req.body[i].worktime2) === false && req.body[i].worktime2 > -1 && req.body[i].worktime2 < 25) {
-          parsedData.worktime2 = req.body[i].worktime2
-        } else parsedData.worktime2 = ''
-        //языки - обязательно массив, длина каждого языка - 50, макс кол-во языков - 3
-        if (req.body[i].langs && Array.isArray(req.body[i].langs) && req.body[i].langs.length < 4) {
-          let langsFiltered = req.body[i].langs.filter(lang => lang.length < 51)
-          parsedData.langs = langsFiltered
-        } else parsedData.langs = []
-        //edu - необязат, от 2х символов до 20
-        if (req.body[i].edu && req.body[i].edu.length > 1 && req.body[i].edu.length < 21) {
-          parsedData.edu = req.body[i].edu
-        } else parsedData.edu = ''
-        //experience - стаж в годах, дробное число от 0 до 250
-        if (req.body[i].experience && isNaN(req.body[i].experience) === false && req.body[i].experience >= 0 && req.body[i].experience < 250) {
-          parsedData.experience = req.body[i].experience
-        } else parsedData.experience = 0
-        //city - необязат, от 2х символов до 100
-        if (req.body[i].city && req.body[i].city.length > 1 && req.body[i].city.length < 101) {
-          parsedData.city = req.body[i].city
-        } else parsedData.city = ''
-        //description - необязат, от 2х символов до 500
-        if (req.body[i].description && req.body[i].description.length > 1 && req.body[i].description.length < 501) {
-          parsedData.description = req.body[i].description
-        } else parsedData.description = ''
+        let parsedData = validateOneJob(req.body[i])
+        if (parsedData == false) { iSkipped += 1; continue}
         //author_id - проверка не нужна
         parsedData.author_id = results.rows[0].user_id
+
+
+        // //title - обязат поле, без него вакансия пропускается; длина от 2 до 75 символов
+        // if (req.body[i].title && req.body[i].title.length > 1 && req.body[i].title.length < 76) {
+        //   parsedData.title = req.body[i].title
+        // } else { iSkipped += 1; continue}
+        // //console.log('cp567: ', req.body[i].title)
+        
+        // //salary_max - необязат, целое число
+        // if (req.body[i].salary_max && isNaN(req.body[i].salary_max) === false && req.body[i].salary_max > -1 && Number.isInteger(req.body[i].salary_max)) {
+        //   parsedData.salary_max = req.body[i].salary_max
+        // } else parsedData.salary_max = 0
+        // //salary_min - необязат, целое число
+        // if (req.body[i].salary_min && isNaN(req.body[i].salary_min) === false && req.body[i].salary_min > -1 && Number.isInteger(req.body[i].salary_min)) {
+        //   parsedData.salary_min = req.body[i].salary_min
+        // } else parsedData.salary_min = 0
+        // //если указана min но не указана max, то добавить max
+        // if (parsedData.salary_max == 0 && parsedData.salary_min > 0) parsedData.salary_max = parsedData.salary_min
+        // //валюта - необязат, [m, $, р, e], по умолчанию m
+        // if (req.body[i].currency && (req.body[i].currency === '$' || req.body[i].currency === 'm' || req.body[i].currency === 'р' || req.body[i].currency === 'e')) {
+        //   parsedData.currency = req.body[i].currency
+        // } else parsedData.currency = 'm'
+        // //пол - необязат, [m, w или пропуск]
+        // if (req.body[i].sex && (req.body[i].sex === 'm' || req.body[i].sex === 'w')) {
+        //   parsedData.sex = req.body[i].sex
+        // } else parsedData.sex = ''
+        // //возр от - необязат, целое число
+        // if (req.body[i].age1 && isNaN(req.body[i].age1) === false && req.body[i].age1 > -1 && req.body[i].age1 < 250 && Number.isInteger(req.body[i].age1)) {
+        //   parsedData.age1 = req.body[i].age1
+        // } else parsedData.age1 = 0
+        // //возр до - необязат, целое число
+        // if (req.body[i].age2 && isNaN(req.body[i].age2) === false && req.body[i].age2 > -1 && req.body[i].age2 < 250 && Number.isInteger(req.body[i].age2)) {
+        //   parsedData.age2 = req.body[i].age2
+        // } else parsedData.age2 = 0
+        // //время от - необязат
+        // if (req.body[i].worktime1 && isNaN(req.body[i].worktime1) === false && req.body[i].worktime1 > -1 && req.body[i].worktime1 < 25) {
+        //   parsedData.worktime1 = req.body[i].worktime1
+        // } else parsedData.worktime1 = ''
+        // //время до - необязат
+        // if (req.body[i].worktime2 && isNaN(req.body[i].worktime2) === false && req.body[i].worktime2 > -1 && req.body[i].worktime2 < 25) {
+        //   parsedData.worktime2 = req.body[i].worktime2
+        // } else parsedData.worktime2 = ''
+        // //языки - обязательно массив, длина каждого языка - 50, макс кол-во языков - 3
+        // if (req.body[i].langs && Array.isArray(req.body[i].langs) && req.body[i].langs.length < 4) {
+        //   let langsFiltered = req.body[i].langs.filter(lang => lang.length < 51)
+        //   parsedData.langs = langsFiltered
+        // } else parsedData.langs = []
+        // //edu - необязат, от 2х символов до 20
+        // if (req.body[i].edu && req.body[i].edu.length > 1 && req.body[i].edu.length < 21) {
+        //   parsedData.edu = req.body[i].edu
+        // } else parsedData.edu = ''
+        // //experience - стаж в годах, дробное число от 0 до 250
+        // if (req.body[i].experience && isNaN(req.body[i].experience) === false && req.body[i].experience >= 0 && req.body[i].experience < 250) {
+        //   parsedData.experience = req.body[i].experience
+        // } else parsedData.experience = 0
+        // //city - необязат, от 2х символов до 100
+        // if (req.body[i].city && req.body[i].city.length > 1 && req.body[i].city.length < 101) {
+        //   parsedData.city = req.body[i].city
+        // } else parsedData.city = ''
+        // //description - необязат, от 2х символов до 500
+        // if (req.body[i].description && req.body[i].description.length > 1 && req.body[i].description.length < 501) {
+        //   parsedData.description = req.body[i].description
+        // } else parsedData.description = ''
+        
         
         let j = i - iSkipped
         que2nd += ` ($${(j * n) + 1}, $${(j * n) + 2}, $${(j * n) + 3}, $${(j * n) + 4}, $${(j * n) + 5}, $${(j * n) + 6}, $${(j * n) + 7}, $${(j * n) + 8}, $${(j * n) + 9}, $${(j * n) + 10}, $${(j * n) + 11}, $${(j * n) + 12}, $${(j * n) + 13}, $${(j * n) + 14}, $${(j * n) + 15}),`
@@ -356,7 +472,7 @@ async function addJobs (req, res) {
       //console.log(params2nd)
       pool.query(que2nd, params2nd, (error2, results2) => {
         if (error2) {
-          throw error2
+          console.log('addJobs err2', error2)
         }
         res.send('OK')
       })
@@ -473,6 +589,7 @@ module.exports = {
   getJobs,
   getJobById,
   addJobs,
+  addOneJob,
   getOwnJobs,
   favOne,
   delFavOne,

@@ -50,6 +50,7 @@ app.post('/reg', reg)
 app.post('/out', out)
 
 app.post('/entrance', db.addJobs)
+app.post('/onejob', db.addOneJob)
 app.post('/getOwnJobs.json', db.getOwnJobs)
 
 app.post('/favOne.json', db.favOne)
