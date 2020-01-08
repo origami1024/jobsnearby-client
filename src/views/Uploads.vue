@@ -1,7 +1,7 @@
 <template>
-  <div class="jobs">
+  <div class="uploads">
     <div v-if="role === 'company'" class="authed">
-      <h4>Публикация</h4>
+      <h4 class="uploads__header">Публикация</h4>
       <q-stepper
         v-model="step"
         ref="stepper"
@@ -89,7 +89,7 @@
       
       <p>Статус: {{uploadStatus}}</p>
       <hr>
-      <p>Опубликованные вакансии({{ownJobs.length}}):</p>
+      <h4 class="uploads__header">Опубликованные вакансии({{ownJobs.length}}):</h4>
       <JobsList :jobslist="ownJobs" msg="Опубликованные"/>
     </div>
     <div v-else>
@@ -208,3 +208,15 @@ export default {
   }
 }
 </script>
+
+
+<style scoped lang="stylus">
+.uploads
+  width 90%
+  max-width 1280px
+  &__header
+    margin 8px 0
+    margin-top 16px
+    font-size 15px
+    font-weight 600
+</style>

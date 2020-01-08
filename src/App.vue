@@ -2,7 +2,6 @@
   <div id="app">
     <q-btn v-if="$route.path == '/'" class="scrollTopBtn" icon="keyboard_arrow_up" glossy color="primary" round @click="scrollTop"/>
     <header>
-
       <q-btn class="logo" :color="$route.path == '/' ? 'purple' : 'gray'" @click="refreshjobs" round glossy to="/" size="20px">
         <q-avatar size="46px">
           <img src="https://cdn.quasar.dev/app-icons/icon-128x128.png" />
@@ -21,7 +20,10 @@
         </router-link> -->
         <!-- <router-link to="/jobslist">Вакансии</router-link> | -->
         <router-link @click.native="getOwnJobs" class="r-link" v-if="role === 'company'" to="/uploads">
-          <q-btn flat label="Публикация вакансий"/>
+          <q-btn label="Публикация вакансий(xls)"/>
+        </router-link>
+        <router-link class="r-link" v-if="role === 'company'" to="/addJob">
+          <q-btn label="Добавить вакансию"/>
         </router-link>
         <!-- <router-link to="/about">Контакты</router-link> | -->
         

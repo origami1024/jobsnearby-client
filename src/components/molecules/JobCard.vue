@@ -105,12 +105,12 @@ export default {
     lastUpdated() {
       let d = new Date(this.job.updated)
       let today = new Date()
-      let result = d.getDate() + '.' + d.getMonth() + 1 + '.' + d.getFullYear()
-      if (today.getMonth() === d.getMonth() &&
-          today.getFullYear === d.getFullYear) {
-        if (today.getDate() === d.getDate()) result = '<span class="red">Сегодня</span>'
-        else if (today.getDate() - 1 === d.getDate()) result = '<span class="red">Вчера</span>'
-      }
+      let msInDay = 24 * 60 * 60 * 1000
+      let diff = (today.getTime() - d.getTime())/msInDay | 0
+      let result = d.getDate() + '.' + (d.getMonth() + 1) + '.' + d.getFullYear()
+      if (diff == 0) result = '<span class="red">Сегодня</span>'
+      else if (diff == 1) result = '<span class="red">Вчера</span>'
+      else if (diff < 5) result = `<span class="red">${diff} дня назад</span>`
       return result
     },
     currency() {
