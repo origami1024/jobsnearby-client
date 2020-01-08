@@ -167,7 +167,7 @@ export default {
   //max-width 300px
   display flex
   flex-direction column
-  
+  margin-bottom 10px
   box-sizing border-box
   &:nth-child(odd)
     //border 1px solid black
@@ -195,7 +195,6 @@ export default {
     padding 5px
     display flex
     justify-content space-between
-    margin-bottom 8px
     &:last-child
       margin-bottom 0
   .linej
