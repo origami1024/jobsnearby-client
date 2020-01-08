@@ -57,7 +57,7 @@
             @input="switchPage"
             size="sm"
           />
-          <p>Показано {{jobslist.length}} из {{jobsFullcount}}</p>
+          <!-- <p>Показано {{jobslist.length}} из {{jobsFullcount}}</p> -->
           <q-btn-toggle
             v-model="lenses"
             toggle-color="primary"

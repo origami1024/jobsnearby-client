@@ -4,7 +4,12 @@
       <div v-if="role === 'company' && sent == 'none'" class="authed" :key="1">
         <div class="line">
           <p class="star">*</p>
-          <q-input :style="{width: '100%'}" dense filled v-model="job.title" label="Название вакансии" :hint="null"/>
+          <q-input
+            :style="{width: '100%'}"
+            dense filled :hint="null"
+            v-model="job.title"
+            label="Название вакансии"
+            :rules="[title => (title.length > 1 && title.length < 76) || 'От 2 до 75 символов']"/>
         </div>
         <div class="line">
           <p class="star">*</p>
