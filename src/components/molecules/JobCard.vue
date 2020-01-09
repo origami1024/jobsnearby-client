@@ -176,6 +176,10 @@ export default {
   &:nth-child(even)
     background-color #fefefe
     box-shadow 0 0 3px 2px #eee
+  &:hover
+    box-shadow 0 0 3px 2px #bbb
+  &:hover > .cardHeader
+    color red
   a
     text-decoration none
     color #2837C6
