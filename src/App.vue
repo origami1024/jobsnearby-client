@@ -234,7 +234,7 @@ export default {
         this.isagency = token[4]
         this.likedJobs = []
       }
-      console.log('cp111')
+      //console.log('cp111')
     },
     logout: function() {
       if (this.user_id !== -1) {
@@ -250,7 +250,7 @@ export default {
       }
     },
     refreshjobs: function (param, param2) {
-      //console.log('refresh jobs app level', param2)
+      console.log('refresh jobs app level')
       let jobslistUrl = config.jobsUrl + '/jobs.json'
       if (param !== 'init') {
         jobslistUrl += this.query
@@ -290,6 +290,7 @@ export default {
     },
     updQue(params) {
       this.query = params
+      console.log(this.query)
     },
     perPageUpd(e) {
       //console.log('cpcp111 ', e)

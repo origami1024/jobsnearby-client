@@ -108,7 +108,8 @@
       :rules="[val => wordRegex.test(val) || 'некорректная строка города']"
     /> -->
     <q-select
-      v-model="city"
+      :value="city"
+      @input="cityUpd"
       use-input
       input-debounce="0"
       fill-input
@@ -116,22 +117,23 @@
       :options="cityOptions"
       @filter="filterFn"
       label="Город"
-      @keyup.enter="addNewCity"
+      @keyup="addNewCity"
     >
       <template v-slot:no-option>
         <q-item>
           <q-item-section class="text-grey">
-            No results
+            ...
           </q-item-section>
         </q-item>
       </template>
     </q-select>
-    
-    <q-select dense v-model="salary" :options="salOptions" label="Зарплата" />
-    <q-select dense v-model="exp" :options="expOptions" label="Опыт" />
-    <q-select dense v-model="jtype" :options="jtypeOptions" label="Тип занятости" />
+    <!-- {{txt}}{{query}} -->
+    <!-- {{exp}}{{salary}} -->
+    <q-select @input="salaryUpd" dense :value="salary" :options="salOptions" label="Зарплата" />
+    <q-select @input="expUpd" dense :value="exp" :options="expOptions" label="Опыт" />
+    <q-select @input="jtypeUpd" dense :value="jtype" :options="jtypeOptions" label="Тип занятости" />
     <div class="w100">
-      <q-btn color="primary" label="Применить" @click="$emit('refresh')"/>
+      <q-btn :loading="pending" color="primary" label="Применить" @click="refreshPlus"/>
     </div>
     
   </div>
@@ -139,7 +141,7 @@
 
 <script>
 //панелька справа с выбором фильтрации
-let stringOptions = ["Ашхабад", "Мары", "Туркменбаши", "Туркменабад", "Дашогуз"]
+let stringOptions = ["Не имеет значения", "Ашхабад", "Мары", "Туркменбаши", "Туркменабад", "Дашогуз"]
 
 export default {
   name: 'JobsFilter',
@@ -148,19 +150,17 @@ export default {
     highest: {type: Number, default: 99550},
     langOptions: {type: Array, default: ()=>[]},
     pending: {type: Boolean, default: false},
-    txt: {type: String, default: ''},
-    sort: {type: String, default: 'new'},
-    timerange: {type: String, default: 'mon'},
-    perpage: {type: String, default: '25'},
+    // txt: {type: String, default: ''},
+    // sort: {type: String, default: 'new'},
+    // timerange: {type: String, default: 'mon'},
+    // perpage: {type: String, default: '25'},
+    exp: {type: Object},
+    city: {type: String},
+    jtype: {type: Object},
+    salary: {type: Object},
   },
   data: ()=>{return {
     cityOptions: stringOptions,
-
-    exp: {label: "Не имеет значения", value: 'idc'}, 
-    city: 'Не имеет значения',
-    jtype: {label: "Не имеет значения", value: ''},
-    salary: {label: "Не имеет значения", value: 'idc'},
-    
     //perpage: '25',
     //timerange: 'mon',
     //txt: '',
@@ -177,11 +177,14 @@ export default {
     //langOptions: ["Русский", "Английский", "Немецкий", "Французкий"],
     expOptions: [
       {label: "Не имеет значения", value: 'idc'}, 
-      {label: "Без опыта", value: '0'}, 
+      {label: "Без опыта", value: '0'},
       {label: "от 1 до 3 лет", value: '1-3'}, 
       {label: "от 3 до 5 лет", value: '3-5'},
       {label: "от 5 лет", value: '5'}],
-    jtypeOptions: [{label: "Не имеет значения", value: ''}, {label: "Постоянная", value: 'c'},{label: "Временная", value: 'v'}],
+    jtypeOptions: [
+      {label: "Не имеет значения", value: ''}, 
+      {label: "Постоянная", value: 'c'},
+      {label: "Временная", value: 'v'}],
     salOptions: [
       {label: "Не имеет значения", value: 'idc'}, 
       {label: "от 0 до 1000", value: '0-1'}, 
@@ -190,10 +193,20 @@ export default {
     ],
   }},
   methods: {
+    cityUpd(new1) {
+      this.$emit('cityUpd', new1)
+    },
+    salaryUpd(new1) {
+      this.$emit('salaryUpd', new1)
+    },
+    expUpd(new1) {
+      this.$emit('expUpd', new1)
+    },
+    jtypeUpd(new1) {
+      this.$emit('jtypeUpd', new1)
+    },
     addNewCity(e){
-      console.log(1)
-      //stringOptions.push(e.target.value)
-      this.city = e.target.value
+      this.cityUpd(e.target.value)
       //this.cityOptions.push(this.city)
     },
     filterFn (val, update, abort) {
@@ -222,68 +235,13 @@ export default {
         this.$emit('updLangs', [])
       } else this.$emit('updLangs', val)
     },
-    searchUpd: function(e) {
-      //console.log(val.target.value)
-      this.search = e.target.value
-      this.$emit('updSearch', e.target.value.toLowerCase())
-    },
     refreshPlus(){
-      this.$emit('updSearch', this.txt.toLowerCase())
+      //this.query()
+      //this.$emit('updSearch', this.txt.toLowerCase())
+      
       this.$emit('refresh')
     }
   },
-  computed: {
-    query() {
-      //санитайз здесь и на сервере
-      let params = []
-      if (this.txt !== '' && this.wordRegex.test(this.txt)) params.push('txt=' + this.txt)
-      if (this.sort !== 'new') params.push('sort=' + this.sort)
-      if (this.timerange !== 'mon') params.push('timerange=' + this.timerange)
-      if (this.perpage !== '25') params.push('perpage=' + this.perpage)
-      //if (this.rangeValues.min > this.lowest) params.push('salmin=' + this.rangeValues.min)
-      //if (this.rangeValues.max < this.highest) params.push('salmax=' + this.rangeValues.max)
-      if ((this.city !== 'Не имеет значения' && this.city !== '') && this.wordRegex.test(this.city)) params.push('city=' + this.city)
-      //if (this.nosal === false) params.push('nosal=' + '0')
-      if (this.exp.value !== 'idc') params.push('exp=' + this.exp.value)
-      if (this.jtype.value == 'c' || this.jtype.value == 'v') params.push('jtype=' + this.jtype.value)
-      if (this.salary.value !== 'idc') params.push('sal=' + this.salary.value)
-      //if (this.langsSelected.length > 0) params.push('langs=' + this.langsSelected)
-      let que = params.length == 0 ? '' : '?' + params.join('&')
-      this.$emit('updQue', que)
-      return que
-    }
-    // lthumb: function() {
-    //   return this.lowest
-    // },
-    // rthumb: function() {
-    //   return this.lowest
-    // },
-  },
-  mounted: function() {
-    
-    this.value = [this.lowest, this.highest]
-    this.rangeValues.min = this.lowest
-    this.rangeValues.max = this.highest
-  },
-  watch: {
-    lowest: function(newl, oldl) {
-      if (this.value[0] < newl) this.value[0] = newl
-      if (this.value[1] < newl) this.value[1] = newl
-      if (this.rangeValues.min < newl) this.rangeValues.min = newl
-      if (this.rangeValues.max < newl) this.rangeValues.max = newl
-    },
-    highest: function(newh, oldh) {
-      if (this.value[0] > newh) this.value[0] = newh
-      if (this.value[1] > newh) this.value[1] = newh
-      if (this.rangeValues.min > newh) this.rangeValues.min = newh
-      if (this.rangeValues.max > newh) this.rangeValues.max = newh
-      if (this.rangeValues.max = -Infinity) this.rangeValues.max = newh
-    },
-    // perpage(newPP) {
-    //   this.$emit('perPageUpd', newPP)
-    // }
-  },
-  components:{}
 }
 </script>
 

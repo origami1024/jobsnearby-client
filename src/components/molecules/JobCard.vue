@@ -14,7 +14,7 @@
           <p v-if="job.salary_min === job.salary_max && job.salary_min > 0">{{job.salary_max}} {{currency}}</p>
           <p v-else-if="job.salary_min && job.salary_min > 0">от {{job.salary_min}} до {{job.salary_max}} {{currency}}</p>
           <p v-else-if="job.salary_max > 0">{{job.salary_max}} {{currency}}</p>
-          <p v-else>зп не указана</p>
+          <p v-else>По итогам собеседования</p>
         </strong>
         <p class="alignRight city" v-html="filteredCity"></p>
       </div>

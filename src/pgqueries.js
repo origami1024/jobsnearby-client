@@ -12,7 +12,7 @@ const getJobs = (req, res) => {
   let perpage = '25'
   if (req.query.perpage === '50') perpage = '50'
   else if (req.query.perpage === '100') perpage = '100'
-
+  console.log('cpGetJobs, txt: ', req.query.txt)
   let txt = undefined
   if (req.query.txt != undefined && 
       req.query.txt.length > 0 && 
@@ -33,6 +33,23 @@ const getJobs = (req, res) => {
   if (req.query.timerange === 'wee') timerange = ` AND jobs.time_updated > now() - interval '1 week'`
   else if (req.query.timerange === 'day') timerange = ` AND jobs.time_updated > now() - interval '1 day'`
 
+  let city
+  if (req.query.city != undefined && 
+      req.query.city.length > 0 && 
+      /^[\wа-яА-ЯÇçÄä£ſÑñňÖö$¢Üü¥ÿýŽžŞş\s\\-]*$/.test(req.query.city)) {
+    city = '%' + req.query.city.toLowerCase() + '%'
+  }
+  let cityN
+  if (city != undefined) {
+    if (txt != undefined) cityN = '$3'
+    else cityN = '$2'
+  }
+
+  let jtype
+  if (req.query.jtype == 'c') jtype = 'c'
+  else if (req.query.jtype == 'v') jtype = 'v'
+  //not done yet
+
   let que =  `SELECT jobs.author_id, users.company as author, jobs.job_id, jobs.city, jobs.experience, jobs.jobtype, jobs.title, jobs.edu, jobs.currency, jobs.sex, jobs.salary_min, jobs.salary_max, jobs.description, jobs.worktime1, jobs.worktime2, jobs.age1, jobs.age2, jobs.langs, jobs.time_published as published, jobs.time_updated as updated
               FROM jobs, users
               WHERE jobs.author_id = users.user_id
@@ -42,11 +59,14 @@ const getJobs = (req, res) => {
                   LOWER(users.company) LIKE $2 OR
                   LOWER(jobs.description) LIKE $2 OR
                   LOWER(jobs.city) LIKE $2)` : ''}
-              ${sort} 
+                  ${city != undefined ? ` AND 
+                  LOWER(jobs.city) LIKE ${cityN}`: ''}
+              ${sort}
               LIMIT $1 ${'OFFSET ' + offset}`
   //console.log('cp_getJobs2: ', que)
   let qparams = [perpage]
   if (txt) qparams.push(txt)
+  if (city) qparams.push(city)
   pool.query(que, qparams, (error, results) => {
     if (error) {
       console.log(error)
@@ -62,6 +82,8 @@ const getJobs = (req, res) => {
                         LOWER(users.company) LIKE $2 OR
                         LOWER(jobs.description) LIKE $2 OR
                         LOWER(jobs.city) LIKE $2)` : ''}
+                        ${city != undefined ? ` AND 
+                        LOWER(jobs.city) LIKE ${cityN}`: ''}
                     ${sort} 
                     LIMIT $1`
     pool.query(countque, qparams, (error2, results2) => {
@@ -306,10 +328,12 @@ function validateOneJob (data) {
   } else return false//{ iSkipped += 1; continue}
   //salary_max - необязат, целое число
   if (data.salary_max && isNaN(data.salary_max) === false && data.salary_max > -1 && Number.isInteger(Number(data.salary_max))) {
+    if (String(data.salary_max).length > 5) data.salary_max.substring(0,5)
     parsedData.salary_max = Number(data.salary_max)
   } else parsedData.salary_max = 0
   //salary_min - необязат, целое число
   if (data.salary_min && isNaN(data.salary_min) === false && data.salary_min > -1 && Number.isInteger(Number(data.salary_min))) {
+    if (String(data.salary_min).length > 5) data.salary_min.substring(0,5)
     parsedData.salary_min = Number(data.salary_min)
   } else parsedData.salary_min = 0
   //если указана min но не указана max, то добавить max

@@ -24,7 +24,7 @@
     <div class="jobs__main">
       <div>
         <div class="jobs__filterpart">
-          <JobsFilter :perpage="perpage.value" :timerange="timerange.value" :sort="sort.value" :txt="txt" @perPageUpd="perPageUpd" :pending="pending" @refresh="$emit('refresh')" @updQue="updQue" @updSearch="updSearch" :langOptions="langOptions" @updLangs="updLangs" @slideEnd="slideEnd" :highest="maxSal" :lowest="minSal"></JobsFilter>
+          <JobsFilter @cityUpd="cityUpd" @jtypeUpd="jtypeUpd" @expUpd="expUpd" @salaryUpd="salaryUpd" :city="city" :salary="salary" :exp="exp" :jtype="jtype" :pending="pending" @refresh="$emit('refresh')" :langOptions="langOptions" @updLangs="updLangs" @slideEnd="slideEnd" :highest="maxSal" :lowest="minSal"></JobsFilter>
         </div>
       </div>
       <div class="jobs__contents">
@@ -50,14 +50,26 @@
                         {label: '50 на стр', value: '50'},
                         {label: '100 на стр', value: '100'}]"
           />
-          <q-pagination
+          <!-- <q-pagination
             :value="page_current"
             :max="pages"
             :disable="pending"
             @input="switchPage"
             size="sm"
-          />
+            ellipses
+          /> -->
+          <div v-if="pages && pages > 0" class="paginationWrap">
+            <button
+              :class="{pageBtns: true, currentPage: page_current == i}"
+              v-for="i of pages" :key="i"
+              @click="switchPage(i)"
+            >
+              {{i}}
+            </button>
+          </div>
+          <!-- @input="switchPage" -->
           <!-- <p>Показано {{jobslist.length}} из {{jobsFullcount}}</p> -->
+          <!-- <p v-if="txt != ''">Найдено: {{jobsFullcount}}</p> -->
           <q-btn-toggle
             v-model="lenses"
             toggle-color="primary"
@@ -68,12 +80,15 @@
           />
         </div>
         <JobsList :showLiked="role === 'subscriber'" :likedJobs="likedJobs" @favOne="favOne" :lenses="lenses" :searchFilter="searchFilter" :jobslist="jobslist" msg="Полученные"/>
-        <q-pagination
-          :value="page_current"
-          :max="pages"
-          :disable="pending"
-          @input="switchPage"
-        />
+        <div v-if="pages && pages > 0" class="paginationWrap">
+          <button
+            :class="{pageBtns: true, currentPage: page_current == i}"
+            v-for="i of pages" :key="888 + i"
+            @click="switchPage(i)"
+          >
+            {{i}}
+          </button>
+        </div>
       </div>
     </div>
   </div>
@@ -109,22 +124,35 @@ export default {
     maxSal: 100000,
     minSal: 0,
     langOptions: ["Русский", "Английский", "Немецкий", "Французкий"],
+    city: 'Не имеет значения',
+    jtype: {label: "Не имеет значения", value: ''},
+    salary: {label: "Не имеет значения", value: 'idc'},
+    exp: {label: "Не имеет значения", value: 'idc'}, 
+
   }},
   components: {
     JobsFilter,
     JobsList
   },
   computed: {
-    maxSalary: function() {
-      if (this.jobslist.length == 0) {return 100000} else
-      return Math.max.apply(Math, this.jobslist.map(function(o) { return o.salary }))
-    },
-    minSalary: function() {
-      if (this.jobslist.length == 0) return 0
-      return Math.min.apply(Math, this.jobslist.map(function(o) { return o.salary }))
+    query() {
+      let params = []
+      if (this.txt !== '' && this.wordRegex.test(this.txt)) params.push('txt=' + this.txt)
+      if (this.sort.value !== 'new') params.push('sort=' + this.sort.value)
+      if (this.timerange.value !== 'mon') params.push('timerange=' + this.timerange.value)
+      if (this.perpage.value !== '25') params.push('perpage=' + this.perpage.value)
+      if ((this.city !== 'Не имеет значения' && this.city !== '') && this.wordRegex.test(this.city)) params.push('city=' + this.city)
+      if (this.exp.value !== 'idc') params.push('exp=' + this.exp.value)
+      if (this.jtype.value == 'c' || this.jtype.value == 'v') params.push('jtype=' + this.jtype.value)
+      if (this.salary.value !== 'idc') params.push('sal=' + this.salary.value)
+      let que = params.length == 0 ? '' : '?' + params.join('&')
+      return que
     }
   },
   watch: {
+    query(que){
+      this.$emit('updQue', que)
+    },
     jobslist: function(newj, oldj) {
       let max1 = Math.max.apply(Math, newj.map(function(o) { return o.salary }))
       let min1 = Math.min.apply(Math, newj.map(function(o) { return o.salary }))
@@ -135,10 +163,7 @@ export default {
     }
   },
   mounted: function() {
-    let max1 = Math.max.apply(Math, this.jobslist.map(function(o) { return o.salary }))
-    let min1 = Math.min.apply(Math, this.jobslist.map(function(o) { return o.salary }))
-    this.maxSal = max1 + ((max1 - min1) / 10) | 0
-    this.minSal = min1 - ((max1 - min1) / 10) | 0
+    
   },
   methods: {
     favOne(id) {
@@ -146,6 +171,7 @@ export default {
       this.$emit('favOne', id)
     },
     refreshPlus(){
+      
       this.searchFilter = this.txt.toLowerCase()
       this.$emit('refresh')
     },
@@ -160,18 +186,29 @@ export default {
     updSearch: function(str) {
       this.searchFilter = str
     },
-    updQue: function(params) {
-      console.log('cpUpdQue1: ', params)
-      this.$emit('updQue', params)
-    },
+    // updQue: function(params) {
+    //   console.log('cpUpdQue1: ', params)
+    //   this.$emit('updQue', params)
+    // },
     perPageUpd(e) {
       this.$emit('perPageUpd', e)
     },
     switchPage(newV) {
-      //console.log('cpi ', newV)
       this.$emit('refresh', 'page', newV)
+    },
+    salaryUpd(new1) {
+      this.salary = new1
+    },
+    expUpd(new1) {
+      this.exp = new1
+    },
+    jtypeUpd(new1) {
+      this.jtype = new1
+    },
+    cityUpd(new1) {
+      this.city = new1
     }
-  }
+  },
 }
 </script>
 
@@ -226,5 +263,18 @@ export default {
     display flex
     justify-content space-between
     align-items center
-
+  .pageBtns
+    cursor pointer
+    border 0px solid gray
+    margin 1px
+    padding 5px 4px
+    background-color #fff
+    border-radius 4px
+    font-size 14px
+    font-weight 700
+    color #06f
+  .currentPage
+    border 1px solid #06f
+    color #fff
+    background-color #06f
 </style>
