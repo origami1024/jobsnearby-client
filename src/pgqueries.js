@@ -314,6 +314,7 @@ function validateOneJob (data) {
   } else parsedData.salary_min = 0
   //если указана min но не указана max, то добавить max
   if (parsedData.salary_max == 0 && parsedData.salary_min > 0) parsedData.salary_max = parsedData.salary_min
+  if (parsedData.salary_max < parsedData.salary_min) parsedData.salary_max = parsedData.salary_min
   //валюта - необязат, [m, $, р, e], по умолчанию m
   if (data.currency && (data.currency === '$' || data.currency === 'm' || data.currency === 'р' || data.currency === 'e')) {
     parsedData.currency = data.currency

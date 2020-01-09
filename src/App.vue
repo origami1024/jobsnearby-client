@@ -28,13 +28,15 @@
         <!-- <router-link to="/about">Контакты</router-link> | -->
         
       </div>
+      <div>Язык: рус</div>
       <div id="authmenu">
         <!-- <button v-show="user_id === -1" @click="modalShown = modalShown === 'login' ? 'none' : 'login'">Войти</button> -->
         <!-- <button v-show="user_id === -1" @click="modalShown = modalShown === 'reg' ? 'none' : 'reg'">Регистрация</button> -->
         <!-- <button v-show="user_id !== -1" @click="logout">Выйти</button> -->
+        
         <div class="colx user-status-bar">
-          <div> {{status}} </div>
-          <div> {{user}} ({{user_id}})</div>
+          <!-- <div> {{status}} </div>
+          <div> {{user}} ({{user_id}})</div> -->
           <q-btn-group>
             <q-btn push glossy :color="$route.path == '/registration' ? 'purple' : 'gray'" :text-color="$route.path == '/registration' ? 'white' : 'black'" no-caps v-if="role === 'guest'" @click.native="regState='login'" label="Вход" to="/registration"/>
             <q-btn push glossy no-caps v-if="user_id !== -1" @click="logout" label="Выйти"/>
@@ -43,8 +45,6 @@
           </q-btn-group>
           
         </div>
-      </div>
-      <div>Язык: рус
       </div>
       <!-- <button @click="getOwnJobs">debug ownJobs</button>
       <button @click="getLikedJobs">debug getLiked</button> -->
@@ -316,7 +316,8 @@ export default {
   color #2c3e50
   font-size 13px
   line-height 14px
-  
+  max-width 1280px
+  margin auto
   header
     display flex
     align-items center

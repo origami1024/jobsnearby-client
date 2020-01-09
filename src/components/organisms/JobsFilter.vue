@@ -1,8 +1,6 @@
 <template>
   <div class="jobsfilter">
-    <h3><strong>Фильтр</strong></h3>
-    <br>
-    <p :style="{maxWidth: '330px'}">query: {{query}}</p>
+    <!-- <p :style="{maxWidth: '330px'}">query: {{query}}</p> -->
     <!-- <button @click="resetFields">Сбросить фильтры</button> -->
     <!-- <p class="header">Поиск</p>
     <p>Фильтр полученных данных по тексту(название, автор, город, описание):</p>
@@ -118,6 +116,7 @@
       :options="cityOptions"
       @filter="filterFn"
       label="Город"
+      @keyup.enter="addNewCity"
     >
       <template v-slot:no-option>
         <q-item>
@@ -132,7 +131,7 @@
     <q-select dense v-model="exp" :options="expOptions" label="Опыт" />
     <q-select dense v-model="jtype" :options="jtypeOptions" label="Тип занятости" />
     <div class="w100">
-      <q-btn color="primary" label="Применить"/>
+      <q-btn color="primary" label="Применить" @click="$emit('refresh')"/>
     </div>
     
   </div>
@@ -140,7 +139,7 @@
 
 <script>
 //панелька справа с выбором фильтрации
-const stringOptions = ["Ашхабад", "Мары", "Туркменбаши", "Туркменабад", "Дашогуз"]
+let stringOptions = ["Ашхабад", "Мары", "Туркменбаши", "Туркменабад", "Дашогуз"]
 
 export default {
   name: 'JobsFilter',
@@ -158,8 +157,8 @@ export default {
     cityOptions: stringOptions,
 
     exp: {label: "Не имеет значения", value: 'idc'}, 
-    city: '',
-    jtype: '',
+    city: 'Не имеет значения',
+    jtype: {label: "Не имеет значения", value: ''},
     salary: {label: "Не имеет значения", value: 'idc'},
     
     //perpage: '25',
@@ -180,17 +179,23 @@ export default {
       {label: "Не имеет значения", value: 'idc'}, 
       {label: "Без опыта", value: '0'}, 
       {label: "от 1 до 3 лет", value: '1-3'}, 
-      {label: "от 3 до 5", value: '3-5'},
+      {label: "от 3 до 5 лет", value: '3-5'},
       {label: "от 5 лет", value: '5'}],
-    jtypeOptions: [{label: "Постоянная", value: 'c'},{label: "Временная", value: 'v'}],
+    jtypeOptions: [{label: "Не имеет значения", value: ''}, {label: "Постоянная", value: 'c'},{label: "Временная", value: 'v'}],
     salOptions: [
       {label: "Не имеет значения", value: 'idc'}, 
-      {label: "от 0", value: '0+'}, 
+      {label: "от 0 до 1000", value: '0-1'}, 
       {label: "от 1000 до 3000", value: '1-3'}, 
       {label: "от 3000", value: '3+'},
     ],
   }},
   methods: {
+    addNewCity(e){
+      console.log(1)
+      //stringOptions.push(e.target.value)
+      this.city = e.target.value
+      //this.cityOptions.push(this.city)
+    },
     filterFn (val, update, abort) {
       update(() => {
         const needle = val.toLowerCase()
@@ -237,7 +242,7 @@ export default {
       if (this.perpage !== '25') params.push('perpage=' + this.perpage)
       //if (this.rangeValues.min > this.lowest) params.push('salmin=' + this.rangeValues.min)
       //if (this.rangeValues.max < this.highest) params.push('salmax=' + this.rangeValues.max)
-      if (this.city !== '' && this.wordRegex.test(this.city)) params.push('city=' + this.city)
+      if ((this.city !== 'Не имеет значения' && this.city !== '') && this.wordRegex.test(this.city)) params.push('city=' + this.city)
       //if (this.nosal === false) params.push('nosal=' + '0')
       if (this.exp.value !== 'idc') params.push('exp=' + this.exp.value)
       if (this.jtype.value == 'c' || this.jtype.value == 'v') params.push('jtype=' + this.jtype.value)
@@ -311,6 +316,7 @@ export default {
     display flex
     width 100%
     justify-content flex-end
+    padding-top 10px
 .jobsfilter__search-btn
   align-self flex-start
 </style>
