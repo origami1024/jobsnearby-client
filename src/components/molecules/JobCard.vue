@@ -169,6 +169,7 @@ export default {
   flex-direction column
   margin-bottom 10px
   box-sizing border-box
+  transition-duration 0.3s
   &:nth-child(odd)
     //border 1px solid black
     background-color #efefef
@@ -177,9 +178,7 @@ export default {
     background-color #fefefe
     box-shadow 0 0 3px 2px #eee
   &:hover
-    box-shadow 0 0 3px 2px #bbb
-  &:hover > .cardHeader
-    color red
+    box-shadow 0 0 3px 1px #bbb
   a
     text-decoration none
     color #2837C6
