@@ -58,6 +58,21 @@ exports.jobinfo = (job) => {
   let edu = job.edu ? `<li>${job.edu}</li>` : ''
   let langs = job.langs.length > 0 ? `<li>${job.langs.join(', ')}</li>` : ''
   let exp = job.experience > 0 ? `<li>Минимальный стаж ${job.experience} лет</li>` : '<li>Без опыта</li>'
+  let salary_deriv
+  
+  if (job.salary_min < 1) {
+    if (job.salary_max < 1) {
+      salary_deriv = 'по итогам собеседования'
+    } else salary_deriv = salary_max
+  } else {
+    if (job.salary_min < job.salary_max) {
+      salary_deriv = `${job.salary_min} - ${job.salary_max}`
+    } else
+    if (job.salary_min = job.salary_max) {
+      salary_deriv = `${job.salary_max}`
+    } else salary_deriv = `${job.salary_max}`
+  }
+  
   return `<!DOCTYPE html>
   <html lang="en"><head><style>
   * {
@@ -140,7 +155,7 @@ exports.jobinfo = (job) => {
         <h4 class="detailed__header">Требования</h4>
         <ul>
           ${gender}
-          <li>Возраст: ${job.age1 ? 'от ' + job.age1 : ''} ${job.age2 ? 'до ' + job.age2 + ' лет': ''} ${(job.age1 && !job.age2) ? ' лет' : ''}</li>
+          ${(job.age1 > 0 && job.age2 > 0) ? `<li>Возраст: ${(job.age1 && job.age1 > 0)? 'от ' + job.age1 : ''} ${(job.age2 && job.age2 > 0) ? 'до ' + job.age2 + ' лет': ''} ${(job.age1 && !job.age2) ? ' лет' : ''}</li>` : ''}
           ${langs}
           ${edu}
           ${exp}
@@ -149,8 +164,8 @@ exports.jobinfo = (job) => {
       <section>
         <h4 class="detailed__header">Условия работы</h4>
         <ul>
-          <li>Оклад ${job.salary_max} - ${job.salary_max} ${currency}</li>
-          <li>График ${job.worktime1} - ${job.worktime1}</li>
+          <li>Оклад ${salary_deriv} ${currency}</li>
+          ${(job.worktime1 > 0 && job.worktime2 > 0) ? `<li>График ${job.worktime1} - ${job.worktime2}</li>` : ''}
         </ul>
       </section>
       <section>

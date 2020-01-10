@@ -59,7 +59,9 @@
     <keep-alive> <!-- @stepChange="stepChange" :step="step" -->
       <router-view :likedJobsList="likedJobsList" :likedJobs="likedJobs" @favOne="favOne" @getOwnJobs="getOwnJobs" :ownJobs="ownJobs" @authed="authIt" @regStateUpd="regStateUpd" :regState="regState" class="r-view" :jobsFullcount="jobsFullcount" :page_current="page_current" :pages="pages_count" :featuredJobslist="featuredJobslist" :pending="ajaxLoading" @updQue="updQue" :role="role" :username="username" :surname="surname" :insearch="insearch" :company="company" :isagency="isagency" :jobslist="jobslist" @refresh="refreshjobs" :uid="user_id" :authed="user_id !== -1" />
     </keep-alive>
-    <!-- <footer>Origami1024, Dec 2019</footer> -->
+    <footer class="main__footer">
+      <q-btn push color="primary" label="Написать нам" to="/Feedback"/>
+    </footer>
     <!-- <LoginModal @authed="authIt" @loginclosed="modalShown = 'none'" :isShown="modalShown === 'login'"></LoginModal> -->
     <!-- <RegisterModal @regclosed="modalShown = 'none'" :isShown="modalShown === 'reg'"></RegisterModal> -->
     
@@ -319,6 +321,7 @@ export default {
   line-height 14px
   max-width 1280px
   margin auto
+  margin-bottom 55px
   header
     display flex
     align-items center
@@ -367,4 +370,10 @@ export default {
     left 30px
     opacity 0.7
     z-index 3
+  .main__footer
+    background-color black
+    position fixed
+    bottom 0
+    padding-bottom 12px
+    width 100%
 </style>

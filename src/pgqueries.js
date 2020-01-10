@@ -327,13 +327,14 @@ function validateOneJob (data) {
     parsedData.title = data.title
   } else return false//{ iSkipped += 1; continue}
   //salary_max - необязат, целое число
+  
   if (data.salary_max && isNaN(data.salary_max) === false && data.salary_max > -1 && Number.isInteger(Number(data.salary_max))) {
-    if (String(data.salary_max).length > 5) data.salary_max.substring(0,5)
+    if (String(data.salary_max).length > 5) data.salary_max = String(data.salary_max).substring(0,5)
     parsedData.salary_max = Number(data.salary_max)
   } else parsedData.salary_max = 0
   //salary_min - необязат, целое число
   if (data.salary_min && isNaN(data.salary_min) === false && data.salary_min > -1 && Number.isInteger(Number(data.salary_min))) {
-    if (String(data.salary_min).length > 5) data.salary_min.substring(0,5)
+    if (String(data.salary_min).length > 5) data.salary_min = String(data.salary_min).substring(0,5)
     parsedData.salary_min = Number(data.salary_min)
   } else parsedData.salary_min = 0
   //если указана min но не указана max, то добавить max
@@ -349,13 +350,24 @@ function validateOneJob (data) {
     parsedData.sex = data.sex
   } else parsedData.sex = ''
   //возр от - необязат, целое число
-  if (data.age1 && isNaN(data.age1) === false && Number(data.age1) > -1 && Number(data.age1) < 250 && Number.isInteger(Number(data.age1))) {
+  if (data.age1 && isNaN(data.age1) === false && Number(data.age1) > 0 && Number(data.age1) < 250 && Number.isInteger(Number(data.age1))) {
     parsedData.age1 = Number(data.age1)
+    if (parsedData.age1 < 18) parsedData.age1 = 18
   } else parsedData.age1 = 0
   //возр до - необязат, целое число
-  if (data.age2 && isNaN(data.age2) === false && data.age2 > -1 && data.age2 < 250 && Number.isInteger(Number(data.age2))) {
+  if (data.age2 && isNaN(data.age2) === false && data.age2 > 0 && data.age2 < 250 && Number.isInteger(Number(data.age2))) {
     parsedData.age2 = Number(data.age2)
+    if (parsedData.age2 < 18) parsedData.age2 = 18
   } else parsedData.age2 = 0
+  //возр проверки
+  if (parsedData.age1 > parsedData.age2) {
+    parsedData.age2 = parsedData.age1
+    parsedData.age1 = 0
+  }
+  if (parsedData.age2 == 18) {
+    parsedData.age1 = 18
+    parsedData.age2 = 0
+  }
   //время от - необязат
   if (data.worktime1 && isNaN(data.worktime1) === false && data.worktime1 > -1 && data.worktime1 < 25) {
     parsedData.worktime1 = data.worktime1
@@ -385,7 +397,7 @@ function validateOneJob (data) {
   if (data.description && data.description.length > 1 && data.description.length < 501) {
     parsedData.description = data.description
   } else parsedData.description = ''
-
+  //console.log('validationcp1: ', parsedData)
   return parsedData
 }
 
