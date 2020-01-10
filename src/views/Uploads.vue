@@ -53,6 +53,7 @@
                   <td>Образование</td>
                   <td>Стаж</td>
                   <td>Город</td>
+                  <td>Тип занятости</td>
                   <td>Дополнительно</td>
                 </tr>
               </thead>
@@ -70,6 +71,7 @@
                 <td>{{item.edu}}</td>
                 <td>{{item.experience}}</td>
                 <td>{{item.city}}</td>
+                <td>{{item.jtype}}</td>
                 <td>{{item.description}}</td>
               </tr>
             </table>
@@ -165,6 +167,11 @@ export default {
         let lastLineIndex = tmp["!ref"].split(':')
         lastLineIndex = lastLineIndex[lastLineIndex.length - 1].replace(/\D/g,'')
         
+        let getjtype = (val) => {
+          console.log('gettype cp1: ', val)
+          return (val == 'постоянная') ? 'c' : (val == 'временная') ? 'v' : ''
+        }
+
         let len = lastLineIndex
         lastLineIndex = 0
         let newData = []
@@ -186,7 +193,8 @@ export default {
           if ('M'+lastLineIndex in tmp) newData[lastLineIndex].edu = tmp['M'+lastLineIndex].v
           if ('N'+lastLineIndex in tmp) newData[lastLineIndex].experience = tmp['N'+lastLineIndex].v
           if ('O'+lastLineIndex in tmp) newData[lastLineIndex].city = tmp['O'+lastLineIndex].v
-          if ('P'+lastLineIndex in tmp) newData[lastLineIndex].description = tmp['P'+lastLineIndex].v
+          if ('P'+lastLineIndex in tmp && getjtype(tmp['P'+lastLineIndex].v) != '') newData[lastLineIndex].jtype = getjtype(tmp['P'+lastLineIndex].v)
+          if ('Q'+lastLineIndex in tmp) newData[lastLineIndex].description = tmp['Q'+lastLineIndex].v
           //newData[lastLineIndex].author_id = this.uid AUTHOR ID SHOULD BE TAKEN FROM DB BY SESSION, NOT SAFE HERE
           lastLineIndex++
         }

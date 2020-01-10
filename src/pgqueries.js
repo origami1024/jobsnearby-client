@@ -393,10 +393,15 @@ function validateOneJob (data) {
   if (data.city && data.city.length > 1 && data.city.length < 101) {
     parsedData.city = data.city
   } else parsedData.city = ''
+  //jobtype - постоянная, временная или пусто
+  if (data.jtype && data.jtype == 'c') parsedData.jobtype = 'c'
+  else if (data.jtype && data.jtype == 'v') parsedData.jobtype = 'v'
+  else parsedData.jobtype = ''
   //description - необязат, от 2х символов до 500
   if (data.description && data.description.length > 1 && data.description.length < 501) {
     parsedData.description = data.description
   } else parsedData.description = ''
+
   //console.log('validationcp1: ', parsedData)
   return parsedData
 }
@@ -422,9 +427,9 @@ async function addJobs (req, res) {
       //console.log('cp19: ', results)
       //console.log('r: ', req.body[0])
       //console.log('r: ', Array.isArray(req.body[0].langs))
-      let que2nd = `INSERT INTO "jobs" ("title", "salary_max", "salary_min", "currency", "sex", "age1", "age2", "worktime1", "worktime2", "langs", "edu", "experience", "city", "description", "author_id") VALUES`
+      let que2nd = `INSERT INTO "jobs" ("title", "salary_max", "salary_min", "currency", "sex", "age1", "age2", "worktime1", "worktime2", "langs", "edu", "experience", "city", "jobtype", "description", "author_id") VALUES`
       let params2nd = []
-      let n = 15
+      let n = 16
       let iSkipped = 0
 
       for (let i = 0; i < req.body.length; i++) {
@@ -498,15 +503,15 @@ async function addJobs (req, res) {
         
         
         let j = i - iSkipped
-        que2nd += ` ($${(j * n) + 1}, $${(j * n) + 2}, $${(j * n) + 3}, $${(j * n) + 4}, $${(j * n) + 5}, $${(j * n) + 6}, $${(j * n) + 7}, $${(j * n) + 8}, $${(j * n) + 9}, $${(j * n) + 10}, $${(j * n) + 11}, $${(j * n) + 12}, $${(j * n) + 13}, $${(j * n) + 14}, $${(j * n) + 15}),`
+        que2nd += ` ($${(j * n) + 1}, $${(j * n) + 2}, $${(j * n) + 3}, $${(j * n) + 4}, $${(j * n) + 5}, $${(j * n) + 6}, $${(j * n) + 7}, $${(j * n) + 8}, $${(j * n) + 9}, $${(j * n) + 10}, $${(j * n) + 11}, $${(j * n) + 12}, $${(j * n) + 13}, $${(j * n) + 14}, $${(j * n) + 15}, $${(j * n) + 16}),`
         params2nd = [
           ...params2nd,
           ...Object.values(parsedData)
         ]
       }
       que2nd = que2nd.substring(0, que2nd.length - 1);
-      //console.log(que2nd)
-      //console.log(params2nd)
+      console.log(que2nd)
+      console.log(params2nd)
       pool.query(que2nd, params2nd, (error2, results2) => {
         if (error2) {
           console.log('addJobs err2', error2)
