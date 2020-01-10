@@ -321,7 +321,7 @@ export default {
   line-height 14px
   max-width 1280px
   margin auto
-  margin-bottom 55px
+  margin-bottom 75px
   header
     display flex
     align-items center
@@ -374,6 +374,9 @@ export default {
     background-color black
     position fixed
     bottom 0
+    padding-top 12px
     padding-bottom 12px
+    box-sizing border-box
     width 100%
+    max-width 1280px
 </style>
