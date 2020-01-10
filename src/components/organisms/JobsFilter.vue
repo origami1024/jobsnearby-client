@@ -129,8 +129,8 @@
     </q-select>
     <!-- {{txt}}{{query}} -->
     <!-- {{exp}}{{salary}} -->
-    <q-select @input="salaryUpd" dense :value="salary" :options="salOptions" label="Зарплата" />
-    <q-select @input="expUpd" dense :value="exp" :options="expOptions" label="Опыт" />
+    <q-select bg-color="grey" @input="salaryUpd" dense :value="salary" :options="salOptions" label="Зарплата" />
+    <q-select bg-color="grey" @input="expUpd" dense :value="exp" :options="expOptions" label="Опыт" />
     <q-select @input="jtypeUpd" dense :value="jtype" :options="jtypeOptions" label="Тип занятости" />
     <div class="w100">
       <q-btn :loading="pending" color="primary" label="Применить" @click="refreshPlus"/>

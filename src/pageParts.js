@@ -63,7 +63,7 @@ exports.jobinfo = (job) => {
   if (job.salary_min < 1) {
     if (job.salary_max < 1) {
       salary_deriv = 'по итогам собеседования'
-    } else salary_deriv = salary_max
+    } else salary_deriv = job.salary_max
   } else {
     if (job.salary_min < job.salary_max) {
       salary_deriv = `${job.salary_min} - ${job.salary_max}`

@@ -46,9 +46,9 @@ const getJobs = (req, res) => {
   }
 
   let jtype
-  if (req.query.jtype == 'c') jtype = 'c'
-  else if (req.query.jtype == 'v') jtype = 'v'
-  //not done yet
+  if (req.query.jtype == 'c') jtype = "'c'"
+  else if (req.query.jtype == 'v') jtype = "'v'"
+  
 
   let que =  `SELECT jobs.author_id, users.company as author, jobs.job_id, jobs.city, jobs.experience, jobs.jobtype, jobs.title, jobs.edu, jobs.currency, jobs.sex, jobs.salary_min, jobs.salary_max, jobs.description, jobs.worktime1, jobs.worktime2, jobs.age1, jobs.age2, jobs.langs, jobs.time_published as published, jobs.time_updated as updated
               FROM jobs, users
@@ -61,6 +61,7 @@ const getJobs = (req, res) => {
                   LOWER(jobs.city) LIKE $2)` : ''}
                   ${city != undefined ? ` AND 
                   LOWER(jobs.city) LIKE ${cityN}`: ''}
+                  ${jtype != undefined ? ` AND jobs.jobtype = ${jtype}`: ''}
               ${sort}
               LIMIT $1 ${'OFFSET ' + offset}`
   //console.log('cp_getJobs2: ', que)
@@ -84,6 +85,7 @@ const getJobs = (req, res) => {
                         LOWER(jobs.city) LIKE $2)` : ''}
                         ${city != undefined ? ` AND 
                         LOWER(jobs.city) LIKE ${cityN}`: ''}
+                        ${jtype != undefined ? ` AND jobs.jobtype = ${jtype}`: ''}
                     ${sort} 
                     LIMIT $1`
     pool.query(countque, qparams, (error2, results2) => {
@@ -101,7 +103,7 @@ const getJobs = (req, res) => {
 
 async function getJobById (id) {
   //const id = parseInt(request.params.id)
-  let que = `SELECT jobs.author_id, users.company as author, jobs.job_id, jobs.city, jobs.experience, jobs.jobtype, jobs.title, jobs.edu, jobs.currency, jobs.sex, jobs.salary_min, jobs.salary_max, jobs.description, jobs.worktime1, jobs.worktime2, jobs.age1, jobs.age2, jobs.langs, jobs.time_published as published, jobs.time_updated as updated
+  let que = `SELECT jobs.author_id, users.company as author, jobs.job_id, jobs.city, jobs.experience, jobs.jobtype, jobs.title, jobs.edu, jobs.currency, jobs.sex, jobs.salary_min, jobs.salary_max, jobs.description, jobs.worktime1, jobs.worktime2, jobs.age1, jobs.age2, jobs.langs, jobs.time_published as published, jobs.time_updated as updated, jobs.jobtype
             FROM jobs, users
             WHERE jobs.author_id = users.user_id AND jobs.job_id = $1`
   //'SELECT * FROM jobs WHERE job_id = $1'
@@ -301,9 +303,9 @@ async function addOneJob (req, res) {
       //author_id - проверка не нужна
       parsedData.author_id = results.rows[0].user_id
       //console.log('addOneJob cp2: ', parsedData)
-      let que2nd = `INSERT INTO "jobs" ("title", "salary_max", "salary_min", "currency", "sex", "age1", "age2", "worktime1", "worktime2", "langs", "edu", "experience", "city", "description", "author_id") VALUES
-                    ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)`
-      let params2nd = [parsedData.title, parsedData.salary_max, parsedData.salary_min, parsedData.currency, parsedData.sex, parsedData.age1, parsedData.age2, parsedData.worktime1, parsedData.worktime2, parsedData.langs, parsedData.edu, parsedData.experience, parsedData.city, parsedData.description, parsedData.author_id]
+      let que2nd = `INSERT INTO "jobs" ("title", "salary_max", "salary_min", "currency", "sex", "age1", "age2", "worktime1", "worktime2", "langs", "edu", "experience", "city", "jobtype", "description", "author_id") VALUES
+                    ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16)`
+      let params2nd = [parsedData.title, parsedData.salary_max, parsedData.salary_min, parsedData.currency, parsedData.sex, parsedData.age1, parsedData.age2, parsedData.worktime1, parsedData.worktime2, parsedData.langs, parsedData.edu, parsedData.experience, parsedData.city, parsedData.jobtype, parsedData.description, parsedData.author_id]
       
       pool.query(que2nd, params2nd, (error2, results2) => {
         if (error2) {

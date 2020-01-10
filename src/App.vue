@@ -366,16 +366,17 @@ export default {
     align-items flex-start
   .scrollTopBtn
     position fixed
-    bottom 30px
-    left 30px
+    bottom 12px
+    left 40px
     opacity 0.7
     z-index 3
   .main__footer
+    display flex
+    justify-content flex-end
     background-color black
     position fixed
     bottom 0
-    padding-top 12px
-    padding-bottom 12px
+    padding 12px 10px
     box-sizing border-box
     width 100%
     max-width 1280px
