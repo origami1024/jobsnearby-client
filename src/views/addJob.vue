@@ -47,7 +47,7 @@
           />
           <q-toggle v-model="job.salaryOn" :style="{alignSelf: 'start'}" :hint="null">
             <q-tooltip>
-              По итогам собеседования
+              <p style="font-size: 14px; margin-bottom: 0">По итогам собеседования</p>
             </q-tooltip>
           </q-toggle>
         </div>
