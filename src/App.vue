@@ -373,7 +373,8 @@ export default {
   .main__footer
     display flex
     justify-content flex-end
-    background-color black
+    background-color #eee
+    box-shadow 0 0 3px 0px #a0a9
     position fixed
     bottom 0
     padding 12px 10px
