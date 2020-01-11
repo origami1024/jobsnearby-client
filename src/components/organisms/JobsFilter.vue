@@ -129,7 +129,11 @@
     </q-select>
     <!-- {{txt}}{{query}} -->
     <!-- {{exp}}{{salary}} -->
-    <q-select bg-color="grey" @input="salaryUpd" dense :value="salary" :options="salOptions" label="Зарплата" />
+    
+    <div class="line">
+      <q-select style="width: 70%" @input="salaryUpd" dense :value="salary" :options="salOptions" label="Зарплата" />
+      <q-select style="width: 25%" dense @input="currUpd" :value="currency" :options="currOptions" label="Валюта" />
+    </div>
     <q-select @input="expUpd" dense :value="exp" :options="expOptions" label="Опыт" />
     <q-select @input="jtypeUpd" dense :value="jtype" :options="jtypeOptions" label="Тип занятости" />
     <div class="w100">
@@ -158,6 +162,7 @@ export default {
     city: {type: String},
     jtype: {type: Object},
     salary: {type: Object},
+    currency: {type: Object},
   },
   data: ()=>{return {
     cityOptions: stringOptions,
@@ -175,6 +180,10 @@ export default {
     },
     langsSelected: [],
     //langOptions: ["Русский", "Английский", "Немецкий", "Французкий"],
+    currOptions: [
+      {label: "все", value: 'idc'},
+      {label: "$", value: '$'},
+      {label: "манат", value: 'm'},],
     expOptions: [
       {label: "Не имеет значения", value: 'idc'}, 
       {label: "Без опыта", value: '0'},
@@ -204,6 +213,9 @@ export default {
     },
     jtypeUpd(new1) {
       this.$emit('jtypeUpd', new1)
+    },
+    currUpd(new1) {
+      this.$emit('currUpd', new1)
     },
     addNewCity(e){
       this.cityUpd(e.target.value)

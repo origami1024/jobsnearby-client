@@ -63,8 +63,7 @@
       <q-btn push color="primary" label="Написать нам" to="/Feedback"/>
     </footer>
     <!-- <LoginModal @authed="authIt" @loginclosed="modalShown = 'none'" :isShown="modalShown === 'login'"></LoginModal> -->
-    <!-- <RegisterModal @regclosed="modalShown = 'none'" :isShown="modalShown === 'reg'"></RegisterModal> -->
-  {{jobsFullcount}}    
+    <!-- <RegisterModal @regclosed="modalShown = 'none'" :isShown="modalShown === 'reg'"></RegisterModal> -->  
   </div>
 </template>
 

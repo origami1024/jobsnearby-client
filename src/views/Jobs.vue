@@ -24,7 +24,7 @@
     <div class="jobs__main">
       <div>
         <div class="jobs__filterpart">
-          <JobsFilter @cityUpd="cityUpd" @jtypeUpd="jtypeUpd" @expUpd="expUpd" @salaryUpd="salaryUpd" :city="city" :salary="salary" :exp="exp" :jtype="jtype" :pending="pending" @refresh="$emit('refresh')" :langOptions="langOptions" @updLangs="updLangs" @slideEnd="slideEnd" :highest="maxSal" :lowest="minSal"></JobsFilter>
+          <JobsFilter @currUpd="currUpd" :currency="currency" @cityUpd="cityUpd" @jtypeUpd="jtypeUpd" @expUpd="expUpd" @salaryUpd="salaryUpd" :city="city" :salary="salary" :exp="exp" :jtype="jtype" :pending="pending" @refresh="$emit('refresh')" :langOptions="langOptions" @updLangs="updLangs" @slideEnd="slideEnd" :highest="maxSal" :lowest="minSal"></JobsFilter>
         </div>
       </div>
       <div class="jobs__contents">
@@ -128,7 +128,7 @@ export default {
     jtype: {label: "Не имеет значения", value: ''},
     salary: {label: "Не имеет значения", value: 'idc'},
     exp: {label: "Не имеет значения", value: 'idc'}, 
-
+    currency: {label: "все", value: ''}, 
   }},
   components: {
     JobsFilter,
@@ -207,6 +207,9 @@ export default {
     },
     cityUpd(new1) {
       this.city = new1
+    },
+    currUpd(new1) {
+      this.currency = new1
     }
   },
 }
