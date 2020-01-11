@@ -32,12 +32,7 @@
         <!-- <router-link to="/about">Контакты</router-link> | -->
         
       </div>
-      <div>Язык: рус</div>
       <div id="authmenu">
-        <!-- <button v-show="user_id === -1" @click="modalShown = modalShown === 'login' ? 'none' : 'login'">Войти</button> -->
-        <!-- <button v-show="user_id === -1" @click="modalShown = modalShown === 'reg' ? 'none' : 'reg'">Регистрация</button> -->
-        <!-- <button v-show="user_id !== -1" @click="logout">Выйти</button> -->
-        
         <div class="colx user-status-bar">
           <!-- <div> {{status}} </div>
           <div> {{user}} ({{user_id}})</div> -->
@@ -49,6 +44,28 @@
           </q-btn-group>
           
         </div>
+      </div>
+      <div>
+        <!-- Язык -->
+        <!-- <p style="margin: 0; margin-bottom: 5px;">Язык</p>
+        <select v-model="app_lng" style="width: 40px">
+          <option value="tm">tm</option>
+          <option value="ru">ru</option>
+          <option value="en">en</option>
+        </select> -->
+        <button class="langLink">{{app_lng}}
+          <q-menu>
+            <q-item :style="{color: app_lng == 'TN' ? 'purple' : 'black'}" clickable v-close-popup @click="app_lng = 'TN'">
+              TN
+            </q-item>
+            <q-item :style="{color: app_lng == 'RU' ? 'purple' : 'black'}" clickable v-close-popup @click="app_lng = 'RU'">
+              RU
+            </q-item>
+            <q-item :style="{color: app_lng == 'EN' ? 'purple' : 'black'}" clickable v-close-popup @click="app_lng = 'EN'">
+              EN
+            </q-item>
+          </q-menu>
+        </button>
       </div>
       <!-- <button @click="getOwnJobs">debug ownJobs</button>
       <button @click="getLikedJobs">debug getLiked</button> -->
@@ -83,6 +100,7 @@ const config = require('./configs/main_config')
 export default {
   name: 'App',
   data: ()=>{return {
+    app_lng: 'RU',
     regState: 'reg',
     modalShown: 'none',
     status: 'Вход не выполнен',
@@ -104,7 +122,7 @@ export default {
     ajaxLoading: false,
     ownJobs: [],
     likedJobs: [],
-    likedJobsList: [],
+    likedJobsList: []
     //step: 1, //для uploads
   }},
   computed: {
@@ -318,6 +336,7 @@ export default {
   font-family 'Varela Round', 'Nunito', sans-serif
 #app
   // font-family 'Avenir', Helvetica, Arial, sans-serif
+  --maxW 1000px
   font-family 'Varela Round', 'Nunito', sans-serif
   -webkit-font-smoothing antialiased
   -moz-osx-font-smoothing grayscale
@@ -325,7 +344,7 @@ export default {
   color #2c3e50
   font-size 13px
   line-height 14px
-  max-width 1280px
+  max-width var(--maxW)
   margin auto
   margin-bottom 75px
   header
@@ -364,7 +383,7 @@ export default {
     background-color yellow
   .r-view
     //width 90%
-    max-width 1280px
+    max-width var(--maxW)
     margin auto
   .logo
     margin-right 10px
@@ -389,5 +408,14 @@ export default {
     padding 12px 10px
     box-sizing border-box
     width 100%
-    max-width 1280px
+    max-width var(--maxW)
+  .langLink
+    border 0
+    background-color transparent
+    color purple
+    cursor pointer
+    font-size 18px
+    &:hover
+      color blue
+
 </style>

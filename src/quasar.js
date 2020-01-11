@@ -39,7 +39,9 @@ import {
   QStepperNavigation,
   QBadge,
   QSeparator,
-  QTooltip
+  QTooltip,
+  QMenu,
+  ClosePopup
 } from 'quasar'
 
 Vue.use(Quasar, {
@@ -80,9 +82,11 @@ Vue.use(Quasar, {
     QStepperNavigation,
     QBadge,
     QSeparator,
-    QTooltip
+    QTooltip,
+    QMenu
   },
   directives: {
+    ClosePopup
   },
   plugins: {
   }

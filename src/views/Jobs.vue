@@ -34,11 +34,11 @@
         <div style="padding: 0 3px">
           <div class="line jobs_prefilters">
             <q-select dense outlined
-              :style="{minWidth: '240px'}"
+              :style="{minWidth: '170px'}"
               v-model="sort"
               :options="[ {label: 'По дате', value: 'new'},
-                          {label: 'По убыванию зарплаты', value: 'saldesc'},
-                          {label: 'По возрастанию зарплаты', value: 'salasc'}]"
+                          {label: 'По убыванию зп', value: 'saldesc'},
+                          {label: 'По возрастанию зп', value: 'salasc'}]"
             />
             <q-select dense outlined
               :style="{minWidth: '130px'}"
@@ -48,7 +48,7 @@
                           {label: 'За сутки', value: 'day'}]"
             />
             <q-select dense outlined
-              :style="{minWidth: '130px'}"
+              :style="{minWidth: '120px'}"
               v-model="perpage"
               :options="[ {label: '25 на стр', value: '25'},
                           {label: '50 на стр', value: '50'},
@@ -263,7 +263,7 @@ export default {
     position relative
     // justify-content space-around
   .jobs__contents
-    max-width 960px
+    
     width 100%
   .jobs_prefilters
     margin-bottom 10px
