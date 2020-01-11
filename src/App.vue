@@ -2,10 +2,14 @@
   <div id="app">
     <q-btn v-if="$route.path == '/'" class="scrollTopBtn" icon="keyboard_arrow_up" glossy color="primary" round @click="scrollTop"/>
     <header>
-      <q-btn class="logo" :color="$route.path == '/' ? 'purple' : 'gray'" @click="refreshjobs" round glossy to="/" size="20px">
-        <q-avatar size="46px">
-          <img src="https://cdn.quasar.dev/app-icons/icon-128x128.png" />
-        </q-avatar>
+      <q-btn
+        class="logo"
+        :text-color="$route.path == '/' ? 'white' : 'purple'"
+        :color="$route.path == '/' ? 'purple' : 'gray'"
+        @click="refreshjobs" round glossy to="/" size="16px" label="ussat" style="padding: 6px;">
+        <!-- <q-avatar size="46px">
+          <img src="https://cdn.quasar.dev/app-icons/icon-128x128.png" />  
+        </q-avatar> -->
       </q-btn>
       
       <div id="nav" shrink stretch>
@@ -310,6 +314,8 @@ export default {
 </script>
 
 <style lang="stylus">
+*
+  font-family 'Varela Round', 'Nunito', sans-serif
 #app
   // font-family 'Avenir', Helvetica, Arial, sans-serif
   font-family 'Varela Round', 'Nunito', sans-serif
@@ -361,6 +367,8 @@ export default {
     margin auto
   .logo
     margin-right 10px
+    font-weight 700
+    
   .user-status-bar
     text-align left
     align-items flex-start
