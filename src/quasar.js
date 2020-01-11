@@ -38,7 +38,8 @@ import {
   QStep,
   QStepperNavigation,
   QBadge,
-  QSeparator
+  QSeparator,
+  QTooltip
 } from 'quasar'
 
 Vue.use(Quasar, {
@@ -78,7 +79,8 @@ Vue.use(Quasar, {
     QStep,
     QStepperNavigation,
     QBadge,
-    QSeparator
+    QSeparator,
+    QTooltip
   },
   directives: {
   },

@@ -161,10 +161,8 @@ export default {
 *
   margin 0
   text-align left
-a
-  font-family 'Varela Round', sans-serif
 .jobscard
-  font-family 'Varela Round', sans-serif
+  //font-family 'Varela Round', sans-serif
   font-size 14px
   //margin-top 10px
   //max-width 300px

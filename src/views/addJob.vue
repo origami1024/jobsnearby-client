@@ -9,18 +9,50 @@
             dense filled :hint="null"
             v-model="job.title"
             label="Название вакансии"
-            :rules="[title => (title.length > 1 && title.length < 76) || 'От 2 до 75 символов']"/>
+            :rules="[title => (
+              title.length > 1 && 
+              title.length < 76 &&
+              /^[\wа-яА-ЯÇçÄä£ſÑñňÖö$¢Üü¥ÿýŽžŞş\s\\-]*$/.test(title)
+              ) || 'Длина от 2 до 75 символов, без специальных символов']"/>
         </div>
         <div class="line">
           <p class="star">*</p>
-          <q-input type="number" :disable="job.salaryOn || job.salary_min > 0 || job.salary_max > 0" :style="{width: '150px'}" dense filled v-model="job.salary_fix" label="Оклад фикс" :hint="null"/>
-          <p class="withMargins">или</p>
-          <q-input type="number" :disable="job.salaryOn || job.salary_fix > 0" :style="{width: '100px', marginRight: '10px'}" dense filled v-model="job.salary_min" label="От" :hint="null"/>
-          <q-input type="number" :disable="job.salaryOn || job.salary_fix > 0" :style="{width: '100px', marginRight: '10px'}" dense filled v-model="job.salary_max" label="До" :hint="null"/>
-          <q-toggle v-model="job.salaryOn" :style="{alignSelf: 'start'}" label="По итогам собеседования"/>
+          <p class="startP">Зарплата</p>
+          <q-input
+            :disable="job.salaryOn"
+            :style="{width: '110px', marginRight: '10px'}"
+            dense filled
+            v-model="job.salary_min"
+            label="От" :hint="null"
+            :rules="[sal => (sal >= 0 && String(sal).length < 6 && sal < 100000) || 'От 0 до 99999']"
+          />
+          <q-input
+            :disable="job.salaryOn"
+            :style="{width: '110px', marginRight: '10px'}"
+            dense filled
+            v-model="job.salary_max"
+            label="До" :hint="null"
+            :rules="[sal => (sal >= 0 && String(sal).length < 6 && sal < 100000) || 'От 0 до 99999']"
+          />
+          <q-select
+            :disable="job.salaryOn"
+            style="width: 85px"
+            dense filled
+            v-model="job.currency"
+            :options="[
+              {label: 'манат', value: 'm'},      
+              {label: '$', value: '$'},
+            ]"
+            :hint="null"
+          />
+          <q-toggle v-model="job.salaryOn" :style="{alignSelf: 'start'}" :hint="null">
+            <q-tooltip>
+              По итогам собеседования
+            </q-tooltip>
+          </q-toggle>
         </div>
         <div class="line">
-          <p class="withMargins">Оплата в: </p>
+          <!-- <p class="withMargins">Оплата в: </p>
           <q-btn-toggle
             v-model="job.currency"
             push
@@ -31,7 +63,7 @@
               {label: 'Рубли', value: 'р'},
               {label: 'Евро', value: 'e'}
             ]"
-          />
+          /> -->
         </div>
         <div class="line">
           <p class="star">*</p>
@@ -121,10 +153,9 @@ export default {
     return {
       job: {
         title: '',
-        salary_fix: '',
         salary_min: '',
         salary_max: '',
-        currency: 'm',
+        currency: {label: 'манат', value: 'm'},
         salaryOn: false,
         city: '',
         age1: '',
@@ -152,9 +183,9 @@ export default {
     addOneJob() {
       //console.dir(this.job)
       let j = Object.assign({}, this.job)
-      if (j.salary_fix > 0) j.salary_max = j.salary_fix
       if (j.salary_min > j.salary_max) j.salary_max = j.salary_min
       j.sex = j.sex.value
+      j.currency = j.currency.value
       if (j.title != '' && j.title.length > 1 && (j.salary_max > 0 || j.salaryOn) && j.description.length > 15) {
         axios
           .post(config.jobsUrl + '/oneJob', j, {headers: {'Content-Type' : 'application/json' }, withCredentials: true,})
@@ -193,6 +224,7 @@ export default {
     margin-bottom 10px
   .startP
     margin-right 10px
+    font-size 15px
   .star
     align-self flex-start
     margin-right 10px
