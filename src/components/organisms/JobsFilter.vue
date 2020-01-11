@@ -22,8 +22,8 @@
     </q-select>
     
     <div class="line">
-      <q-select style="width: 70%" @input="salaryUpd" dense :value="salary" :options="salOptions" label="Зарплата" />
-      <q-select style="width: 25%" dense @input="currUpd" :value="currency" :options="currOptions" label="Валюта" />
+      <q-select style="width: 65%" @input="salaryUpd" dense :value="salary" :options="salOptions" label="Зарплата" />
+      <q-select style="width: 30%" dense @input="currUpd" :value="currency" :options="currOptions" label="Валюта" />
     </div>
     <q-select @input="expUpd" dense :value="exp" :options="expOptions" label="Опыт" />
     <q-select @input="jtypeUpd" dense :value="jtype" :options="jtypeOptions" label="Тип занятости" />
@@ -153,8 +153,8 @@ export default {
 .jobsfilter
   background-color #f7f7f7
   flex 0 1 35%
-  max-width 400px
-  min-width 320px
+  max-width 360px
+  min-width 270px
   margin-bottom 15px
   padding 10px 15px
   box-sizing border-box

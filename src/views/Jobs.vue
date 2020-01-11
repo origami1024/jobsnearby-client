@@ -252,7 +252,7 @@ export default {
     //top 105px
     top 10px
     display flex
-    margin-right 25px
+    margin-right 20px
   .jobsfilter__search
     width 100%
     margin-right 5px

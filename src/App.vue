@@ -55,8 +55,8 @@
         </select> -->
         <button class="langLink">{{app_lng}}
           <q-menu>
-            <q-item :style="{color: app_lng == 'TN' ? 'purple' : 'black'}" clickable v-close-popup @click="app_lng = 'TN'">
-              TN
+            <q-item :style="{color: app_lng == 'TM' ? 'purple' : 'black'}" clickable v-close-popup @click="app_lng = 'TM'">
+              TM
             </q-item>
             <q-item :style="{color: app_lng == 'RU' ? 'purple' : 'black'}" clickable v-close-popup @click="app_lng = 'RU'">
               RU

@@ -57,12 +57,12 @@
           <p class="star">*</p>
           <p class="startP">Ваши контакты</p>
           <q-input
-            dense filled :hint="null"
+            dense filled
             v-model="job.contact_mail"
             label="Email"
             type="email"
             ref="mail1"
-            
+            style="marginRight: 10px"
           />
           <!-- :rules="[mail => (
               mail.length < 60 && 
@@ -70,7 +70,7 @@
               ) || 'Введите валидный адрес электронной почты (*@*.*)']"
             lazy-rules -->
           <q-input
-            dense filled :hint="null"
+            dense filled
             v-model="job.contact_phone"
             label="Phone"
             type="tel"
