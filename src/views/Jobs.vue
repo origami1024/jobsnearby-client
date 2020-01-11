@@ -128,7 +128,7 @@ export default {
     jtype: {label: "Не имеет значения", value: ''},
     salary: {label: "Не имеет значения", value: 'idc'},
     exp: {label: "Не имеет значения", value: 'idc'}, 
-    currency: {label: "все", value: ''}, 
+    currency: {label: "все", value: 'idc'},
   }},
   components: {
     JobsFilter,
@@ -145,6 +145,7 @@ export default {
       if (this.exp.value !== 'idc') params.push('exp=' + this.exp.value)
       if (this.jtype.value == 'c' || this.jtype.value == 'v') params.push('jtype=' + this.jtype.value)
       if (this.salary.value !== 'idc') params.push('sal=' + this.salary.value)
+      if (this.currency.value !== 'idc') params.push('cur=' + this.currency.value)
       let que = params.length == 0 ? '' : '?' + params.join('&')
       return que
     }

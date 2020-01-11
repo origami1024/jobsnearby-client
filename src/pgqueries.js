@@ -55,9 +55,21 @@ const getJobs = (req, res) => {
   else if (req.query.exp == '3-5') exp_line = ` AND jobs.experience BETWEEN 3 AND 5`
   else if (req.query.exp == '5') exp_line = ` AND jobs.experience > 5`
   else exp_line = ''
-  console.log('exp_line: ', exp_line)
+  // console.log('exp_line: ', exp_line)
+  let sal_line
+  if (req.query.sal == '0-1') sal_line = ` AND ((jobs.salary_min BETWEEN 1 AND 1000) OR jobs.salary_max <= 1000)`
+  else if (req.query.sal == '1-3') sal_line = ` AND (jobs.salary_min BETWEEN 1000 AND 3000 OR jobs.salary_max BETWEEN 1000 AND 3000)`
+  else if (req.query.sal == '3') sal_line = ` AND (jobs.salary_max >= 3000)`
+  else sal_line = ''
+  console.log('sal_line: ', sal_line)
 
-  let que =  `SELECT jobs.author_id, users.company as author, jobs.job_id, jobs.city, jobs.experience, jobs.jobtype, jobs.title, jobs.edu, jobs.currency, jobs.sex, jobs.salary_min, jobs.salary_max, jobs.description, jobs.worktime1, jobs.worktime2, jobs.age1, jobs.age2, jobs.langs, jobs.time_published as published, jobs.time_updated as updated
+  let curr_line
+  if (req.query.cur == '$') curr_line = ` AND jobs.currency = '$'`
+  else if (req.query.cur == 'm') curr_line = ` AND jobs.currency = 'm'`
+  else curr_line = ''
+  console.log('curr_line: ', curr_line)
+
+  let que =  `SELECT jobs.author_id, users.company as author, jobs.job_id, jobs.city, jobs.experience, jobs.jobtype, jobs.title, jobs.edu, jobs.currency, jobs.sex, jobs.salary_min, jobs.salary_max, jobs.description, jobs.worktime1, jobs.worktime2, jobs.age1, jobs.age2, jobs.langs, jobs.time_published as published, jobs.time_updated as updated, jobs.jobtype
               FROM jobs, users
               WHERE jobs.author_id = users.user_id
                   ${timerange} 
@@ -70,6 +82,8 @@ const getJobs = (req, res) => {
                   LOWER(jobs.city) LIKE ${cityN}`: ''}
                   ${jtype != undefined ? ` AND jobs.jobtype = ${jtype}`: ''}
                   ${exp_line}
+                  ${sal_line}
+                  ${curr_line}
               ${sort}
               LIMIT $1 ${'OFFSET ' + offset}`
   //console.log('cp_getJobs2: ', que)
@@ -95,6 +109,8 @@ const getJobs = (req, res) => {
                         LOWER(jobs.city) LIKE ${cityN}`: ''}
                         ${jtype != undefined ? ` AND jobs.jobtype = ${jtype}`: ''}
                         ${exp_line}
+                        ${sal_line}
+                        ${curr_line}
                     ${sort} 
                     LIMIT $1`
     pool.query(countque, qparams, (error2, results2) => {

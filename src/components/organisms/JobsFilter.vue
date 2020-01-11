@@ -1,112 +1,5 @@
 <template>
   <div class="jobsfilter">
-    <!-- <p :style="{maxWidth: '330px'}">query: {{query}}</p> -->
-    <!-- <button @click="resetFields">Сбросить фильтры</button> -->
-    <!-- <p class="header">Поиск</p>
-    <p>Фильтр полученных данных по тексту(название, автор, город, описание):</p>
-    <div class="line">
-      <q-input
-        v-model="txt"
-        filled
-        dense
-        label="Поиск"
-        class="jobsfilter__search"
-        :rules="[val => wordRegex.test(val) || 'некорректная строка поиска']"
-        @keyup.enter="refreshPlus"
-      />
-      <q-btn @click="refreshPlus" icon="search" color="primary" :loading="pending" class="jobsfilter__search-btn"></q-btn>
-    </div> -->
-    
-      <!-- <div class="borders">
-        <p class="header">Сортировка</p>
-        <q-btn-toggle
-          size="sm"
-          v-model="sort"
-          toggle-color="primary"
-          no-caps
-          dense
-          :options="[
-            {label: 'Новые', value: 'new'},
-            {label: 'Зарплата-убыв', value: 'saldesc'},
-            {label: 'Зарплата-возр', value: 'salasc'}
-          ]"
-        />
-      </div> -->
-      <!-- <div class="borders">
-        <p class="header">Данные за</p>
-        <q-btn-toggle
-          size="sm"
-          v-model="timerange"
-          toggle-color="primary"
-          no-caps
-          dense
-          :options="[
-            {label: 'Месяц', value: 'mon'},
-            {label: 'Неделю', value: 'wee'},
-            {label: 'Сутки', value: 'day'}
-          ]"
-        />
-      </div> -->
-      <!-- <div class="borders">
-        <p class="header">На странице</p>
-        <q-btn-toggle
-          size="sm"
-          v-model="perpage"
-          toggle-color="primary"
-          no-caps
-          dense
-          :options="[
-            {label: '25', value: '25'},
-            {label: '50', value: '50'},
-            {label: '100', value: '100'}
-          ]"
-        />
-      </div> -->
-
-    <!-- <div class="line">
-      <q-item-section>
-        <p :style="{textAlign: 'left'}">Скрыть вакансии без указания зп</p>
-      </q-item-section>
-      <q-item-section avatar>
-        <q-toggle color="blue" v-model="nosal" checked-icon="check" />
-      </q-item-section>
-    </div> -->
-    <!-- <br>
-    <p>Зарплата:</p>
-    <div class="line">
-      <q-item-section avatar>
-        <q-icon name="euro_symbol" />
-      </q-item-section>
-      <q-item-section>
-        <q-range
-          :key="lowest"
-          :value="rangeValues"
-          @change="updateAndSave"
-          :min="lowest"
-          :max="highest"
-          label
-          label-always
-        />
-      </q-item-section>
-    </div> -->
-    <!-- <q-select
-      
-      multiple
-      use-chips
-      label="Подходящие языки"
-      v-model="langsSelected"
-      :options="langOptions"
-      @input="updateLangs"
-      
-    /> -->
-
-    <!-- <q-input
-      v-model="city"
-      dense
-      label="Город"
-      class="jobsfilter__search"
-      :rules="[val => wordRegex.test(val) || 'некорректная строка города']"
-    /> -->
     <q-select
       :value="city"
       @input="cityUpd"
@@ -127,8 +20,6 @@
         </q-item>
       </template>
     </q-select>
-    <!-- {{txt}}{{query}} -->
-    <!-- {{exp}}{{salary}} -->
     
     <div class="line">
       <q-select style="width: 70%" @input="salaryUpd" dense :value="salary" :options="salOptions" label="Зарплата" />
@@ -198,7 +89,7 @@ export default {
       {label: "Не имеет значения", value: 'idc'}, 
       {label: "от 0 до 1000", value: '0-1'}, 
       {label: "от 1000 до 3000", value: '1-3'}, 
-      {label: "от 3000", value: '3+'},
+      {label: "от 3000", value: '3'},
     ],
   }},
   methods: {
