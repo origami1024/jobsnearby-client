@@ -263,6 +263,7 @@ export default {
     position relative
     // justify-content space-around
   .jobs__contents
+    max-width 960px
     width 100%
   .jobs_prefilters
     margin-bottom 10px

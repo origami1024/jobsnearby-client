@@ -345,6 +345,7 @@ export default {
     display block
     border-radius 4px
     color purple
+    text-decoration none
   h1,h2,h3,h5,h6
     font-size 14px
     line-height 1
