@@ -13,7 +13,7 @@ const getJobs = (req, res) => {
   if (req.query.perpage === '50') perpage = '50'
   else if (req.query.perpage === '100') perpage = '100'
   console.log('cpGetJobs, txt: ', req.query.txt)
-  let txt = undefined
+  let txt
   if (req.query.txt != undefined && 
       req.query.txt.length > 0 && 
       /^[\wа-яА-ЯÇçÄä£ſÑñňÖö$¢Üü¥ÿýŽžŞş\s\\-]*$/.test(req.query.txt)) {
@@ -49,6 +49,13 @@ const getJobs = (req, res) => {
   if (req.query.jtype == 'c') jtype = "'c'"
   else if (req.query.jtype == 'v') jtype = "'v'"
   
+  let exp_line
+  if (req.query.exp == '0') exp_line = ` AND jobs.experience = '0'`
+  else if (req.query.exp == '1-3') exp_line = ` AND jobs.experience BETWEEN 1 AND 3`
+  else if (req.query.exp == '3-5') exp_line = ` AND jobs.experience BETWEEN 3 AND 5`
+  else if (req.query.exp == '5') exp_line = ` AND jobs.experience > 5`
+  else exp_line = ''
+  console.log('exp_line: ', exp_line)
 
   let que =  `SELECT jobs.author_id, users.company as author, jobs.job_id, jobs.city, jobs.experience, jobs.jobtype, jobs.title, jobs.edu, jobs.currency, jobs.sex, jobs.salary_min, jobs.salary_max, jobs.description, jobs.worktime1, jobs.worktime2, jobs.age1, jobs.age2, jobs.langs, jobs.time_published as published, jobs.time_updated as updated
               FROM jobs, users
@@ -62,6 +69,7 @@ const getJobs = (req, res) => {
                   ${city != undefined ? ` AND 
                   LOWER(jobs.city) LIKE ${cityN}`: ''}
                   ${jtype != undefined ? ` AND jobs.jobtype = ${jtype}`: ''}
+                  ${exp_line}
               ${sort}
               LIMIT $1 ${'OFFSET ' + offset}`
   //console.log('cp_getJobs2: ', que)
@@ -86,6 +94,7 @@ const getJobs = (req, res) => {
                         ${city != undefined ? ` AND 
                         LOWER(jobs.city) LIKE ${cityN}`: ''}
                         ${jtype != undefined ? ` AND jobs.jobtype = ${jtype}`: ''}
+                        ${exp_line}
                     ${sort} 
                     LIMIT $1`
     pool.query(countque, qparams, (error2, results2) => {

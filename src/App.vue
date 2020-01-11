@@ -64,7 +64,7 @@
     </footer>
     <!-- <LoginModal @authed="authIt" @loginclosed="modalShown = 'none'" :isShown="modalShown === 'login'"></LoginModal> -->
     <!-- <RegisterModal @regclosed="modalShown = 'none'" :isShown="modalShown === 'reg'"></RegisterModal> -->
-    
+  {{jobsFullcount}}    
   </div>
 </template>
 
