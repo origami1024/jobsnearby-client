@@ -74,10 +74,12 @@ exports.jobinfo = (job) => {
   }
   
   return `<!DOCTYPE html>
-  <html lang="en"><head><style>
+  <html lang="en"><head>
+  <link href="https://fonts.googleapis.com/css?family=Nunito|Varela+Round&display=swap" rel="stylesheet">
+  <style>
   * {
     margin: 0;
-    font-family: "Open Sans", sans-serif;
+    font-family: 'Varela Round', 'Nunito', sans-serif;
   }
   .detailed__main{
     width: 80%;
