@@ -41,7 +41,7 @@
             <q-btn push glossy :color="$route.path == '/registration' ? 'purple' : 'gray'" :text-color="$route.path == '/registration' ? 'white' : 'black'" no-caps v-if="role === 'guest'" @click.native="regState='login'" label="Вход" to="/registration"/>
             <q-btn push glossy no-caps v-if="user_id !== -1" @click="logout" label="Выйти"/>
             <q-btn push glossy @click="getFavedFull" :color="$route.path == '/subprofile' ? 'purple' : 'gray'" :text-color="$route.path == '/subprofile' ? 'white' : 'black'" no-caps label="Личный кабинет" v-if="role === 'subscriber'" to="/subprofile"/>
-            <q-btn push glossy no-caps label="Профиль" v-if="role === 'company'" to="/entprofile"/>
+            <q-btn push glossy @click.native="getOwnJobs" no-caps label="Профиль" v-if="role === 'company'" to="/entprofile"/>
           </q-btn-group>
           
         </div>

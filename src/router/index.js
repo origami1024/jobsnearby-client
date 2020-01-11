@@ -3,6 +3,8 @@ import VueRouter from 'vue-router'
 import Registration from '../views/Registration.vue'
 import Jobs from '../views/Jobs.vue'
 import SubProfile from '../views/SubProfile.vue'
+import EntProfile from '../views/EntProfile.vue'
+
 
 
 Vue.use(VueRouter)
@@ -17,6 +19,11 @@ const routes = [
     path: '/subprofile',
     name: 'subprofile',
     component: SubProfile
+  },
+  {
+    path: '/entprofile',
+    name: 'entprofile',
+    component: EntProfile
   },
   {
     path: '/Feedback',
