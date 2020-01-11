@@ -1,85 +1,91 @@
 <template>
   <div class="jobs">
-    <div class="jobs__top-wrapper">
-      <div class="jobs__top">
-        <q-input
-          v-model="txt"
-          dense
-          label="Поиск"
-          class="jobsfilter__search"
-          :rules="[val => wordRegex.test(val) || 'некорректная строка поиска']"
-          @keyup.enter="refreshPlus"
-          hint="Поиск по полям название, автор, город, основной текст"
-        >
-          <template v-if="txt" v-slot:append>
-            <q-icon name="cancel" @click.stop="txt = ''" class="cursor-pointer" />
-          </template>
-          <template v-slot:prepend>
-            <q-icon name="search" />
-          </template>
-        </q-input>
-        <q-btn @click="refreshPlus" color="primary" :loading="pending" class="jobsfilter__search-btn">Поиск</q-btn>
-      </div>
-    </div>
+    
+      
+    
     <div class="jobs__main">
-      <div>
+      <div style="padding-top: 10px">
         <div class="jobs__filterpart">
           <JobsFilter @currUpd="currUpd" :currency="currency" @cityUpd="cityUpd" @jtypeUpd="jtypeUpd" @expUpd="expUpd" @salaryUpd="salaryUpd" :city="city" :salary="salary" :exp="exp" :jtype="jtype" :pending="pending" @refresh="$emit('refresh')" :langOptions="langOptions" @updLangs="updLangs" @slideEnd="slideEnd" :highest="maxSal" :lowest="minSal"></JobsFilter>
         </div>
       </div>
       <div class="jobs__contents">
-        <div class="line jobs_prefilters">
-          <q-select dense outlined
-            :style="{minWidth: '240px'}"
-            v-model="sort"
-            :options="[ {label: 'По дате', value: 'new'},
-                        {label: 'По убыванию зарплаты', value: 'saldesc'},
-                        {label: 'По возрастанию зарплаты', value: 'salasc'}]"
-          />
-          <q-select dense outlined
-            :style="{minWidth: '130px'}"
-            v-model="timerange"
-            :options="[ {label: 'За месяц', value: 'mon'},
-                        {label: 'За неделю', value: 'wee'},
-                        {label: 'За сутки', value: 'day'}]"
-          />
-          <q-select dense outlined
-            :style="{minWidth: '130px'}"
-            v-model="perpage"
-            :options="[ {label: '25 на стр', value: '25'},
-                        {label: '50 на стр', value: '50'},
-                        {label: '100 на стр', value: '100'}]"
-          />
-          <!-- <q-pagination
-            :value="page_current"
-            :max="pages"
-            :disable="pending"
-            @input="switchPage"
-            size="sm"
-            ellipses
-          /> -->
-          <div v-if="pages && pages > 0" class="paginationWrap">
-            <button
-              :class="{pageBtns: true, currentPage: page_current == i}"
-              v-for="i of pages" :key="i"
-              @click="switchPage(i)"
+        <div class="jobs__top-wrapper">
+          <div class="jobs__top">
+            <q-input
+              v-model="txt"
+              dense
+              label="Поиск"
+              class="jobsfilter__search"
+              :rules="[val => wordRegex.test(val) || 'некорректная строка поиска']"
+              @keyup.enter="refreshPlus"
+              hint="Поиск по полям название, автор, город, основной текст"
             >
-              {{i}}
-            </button>
+              <template v-if="txt" v-slot:append>
+                <q-icon name="cancel" @click.stop="txt = ''" class="cursor-pointer" />
+              </template>
+              <template v-slot:prepend>
+                <q-icon name="search" />
+              </template>
+            </q-input>
+            <q-btn @click="refreshPlus" color="primary" :loading="pending" class="jobsfilter__search-btn">Поиск</q-btn>
           </div>
-          <!-- @input="switchPage" -->
-          <!-- <p>Показано {{jobslist.length}} из {{jobsFullcount}}</p> -->
-          <!-- <p v-if="txt != ''">Найдено: {{jobsFullcount}}</p> -->
-          <q-btn-toggle
-            v-model="lenses"
-            toggle-color="primary"
-            size="sm"
-            dense
-            :options="[ {value: 'short', icon: 'list'},
-                        {value: 'full', icon: 'code'},]"
-          />
         </div>
-        <JobsList :showLiked="role === 'subscriber'" :likedJobs="likedJobs" @favOne="favOne" :lenses="lenses" :searchFilter="searchFilter" :jobslist="jobslist" msg="Полученные"/>
+        <div style="padding: 0 3px">
+          <div class="line jobs_prefilters">
+            <q-select dense outlined
+              :style="{minWidth: '240px'}"
+              v-model="sort"
+              :options="[ {label: 'По дате', value: 'new'},
+                          {label: 'По убыванию зарплаты', value: 'saldesc'},
+                          {label: 'По возрастанию зарплаты', value: 'salasc'}]"
+            />
+            <q-select dense outlined
+              :style="{minWidth: '130px'}"
+              v-model="timerange"
+              :options="[ {label: 'За месяц', value: 'mon'},
+                          {label: 'За неделю', value: 'wee'},
+                          {label: 'За сутки', value: 'day'}]"
+            />
+            <q-select dense outlined
+              :style="{minWidth: '130px'}"
+              v-model="perpage"
+              :options="[ {label: '25 на стр', value: '25'},
+                          {label: '50 на стр', value: '50'},
+                          {label: '100 на стр', value: '100'}]"
+            />
+            <!-- <q-pagination
+              :value="page_current"
+              :max="pages"
+              :disable="pending"
+              @input="switchPage"
+              size="sm"
+              ellipses
+            /> -->
+            <div v-if="pages && pages > 0" class="paginationWrap">
+              <button
+                :class="{pageBtns: true, currentPage: page_current == i}"
+                v-for="i of pages" :key="i"
+                @click="switchPage(i)"
+              >
+                {{i}}
+              </button>
+            </div>
+            <!-- @input="switchPage" -->
+            <!-- <p>Показано {{jobslist.length}} из {{jobsFullcount}}</p> -->
+            <!-- <p v-if="txt != ''">Найдено: {{jobsFullcount}}</p> -->
+            <q-btn-toggle
+              v-model="lenses"
+              toggle-color="primary"
+              size="sm"
+              dense
+              :options="[ {value: 'short', icon: 'list'},
+                          {value: 'full', icon: 'code'},]"
+            />
+          </div>
+        
+          <JobsList :showLiked="role === 'subscriber'" :likedJobs="likedJobs" @favOne="favOne" :lenses="lenses" :searchFilter="searchFilter" :jobslist="jobslist" msg="Полученные"/>
+        </div>
         <div v-if="pages && pages > 0" class="paginationWrap">
           <button
             :class="{pageBtns: true, currentPage: page_current == i}"
@@ -230,6 +236,8 @@ export default {
     padding-top 10px
     box-sizing border-box
     margin-bottom 15px
+    border-bottom-left-radius 15px
+    border-bottom-right-radius 15px
   .jobs__top
     background-color #f7f7f7
     display flex
@@ -241,7 +249,8 @@ export default {
     border-radius 15px
   .jobs__filterpart
     position sticky
-    top 105px
+    //top 105px
+    top 10px
     display flex
     margin-right 25px
   .jobsfilter__search
