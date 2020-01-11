@@ -11,15 +11,7 @@
       @filter="filterFn"
       label="Город"
       @keyup="addNewCity"
-    >
-      <template v-slot:no-option>
-        <q-item>
-          <q-item-section class="text-grey">
-            ...
-          </q-item-section>
-        </q-item>
-      </template>
-    </q-select>
+    />
     
     <div class="line">
       <q-select style="width: 65%" @input="salaryUpd" dense :value="salary" :options="salOptions" label="Зарплата" />
@@ -61,14 +53,7 @@ export default {
     //timerange: 'mon',
     //txt: '',
     wordRegex: /^[\wа-яА-ЯÇçÄä£ſÑñňÖö$¢Üü¥ÿýŽžŞş\s\\-]*$/,
-    //sort: 'new',
     search: '',
-    value: [1600,2000],
-    reinit: true, //when loaded first time - need to set the rangeValues equal to low and high
-    rangeValues: {
-      min: 1600,
-      max: 8000
-    },
     langsSelected: [],
     //langOptions: ["Русский", "Английский", "Немецкий", "Французкий"],
     currOptions: [

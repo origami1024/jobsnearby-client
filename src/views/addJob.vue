@@ -19,7 +19,7 @@
         </div>
         <div class="line">
           <p class="star">*</p>
-          <p class="startP">Зарплата</p>
+          <p class="startP" style="width: 115px; textAlign: left">Зарплата</p>
           <q-input
             :disable="job.salaryOn"
             :style="{width: '110px', marginRight: '10px'}"
@@ -55,7 +55,7 @@
         </div>
         <div class="line">
           <p class="star">*</p>
-          <p class="startP">Ваши контакты</p>
+          <p class="startP" style="margin-bottom: 0; width: 115px; textAlign: left">Ваши контакты</p>
           <q-input
             dense filled
             v-model="job.contact_mail"
@@ -78,15 +78,30 @@
         </div>
         <div class="line">
           <!-- <p class="startP">Город</p> -->
-          <q-input :style="{width: '250px'}" dense filled v-model="job.city" label="Город" :hint="null"/>
+          <p class="startP" style="margin-bottom: 0; width: 130px; textAlign: left">Город</p>
+          <q-select
+            :value="job.city"
+            @input="cityUpd"
+            filled
+            dense
+            use-input
+            input-debounce="0"
+            fill-input
+            hide-selected
+            :options="cityOptions"
+            @filter="filterFn"
+            
+            @keyup="addNewCity"
+          />
+          <!-- <q-input :style="{width: '250px'}" dense filled v-model="job.city" label="Город" :hint="null"/> -->
         </div>
         <div class="line">
-          <p class="startP">Возраст</p>
+          <p class="startP" style="width: 130px; textAlign: left">Возраст</p>
           <q-input type="Number" :style="{width: '100px', marginRight: '10px'}" dense filled v-model="job.age1" label="От" :hint="null"/>
           <q-input type="Number" :style="{width: '100px', marginRight: '10px'}" dense filled v-model="job.age2" label="До" :hint="null"/>
         </div>
         <div class="line">
-          <p class="startP">График работы</p>
+          <p class="startP" style="width: 130px; textAlign: left">График работы</p>
           <q-input type="Number" :style="{width: '100px', marginRight: '10px'}" dense filled v-model="job.worktime1" label="От" :hint="null"/>
           <q-input type="Number" :style="{width: '100px', marginRight: '10px'}" dense filled v-model="job.worktime2" label="До" :hint="null"/>
         </div>
@@ -147,7 +162,7 @@
 import axios from 'axios'
 const config = require('@/configs/main_config')
 
-
+let stringOptions = ["Не имеет значения", "Ашхабад", "Дашогуз", "Мары", "Туркменабад", "Туркменбаши"]
 
 export default {
   name: 'addJob',
@@ -179,8 +194,8 @@ export default {
       },
       sent: 'none',
       sexOptions: [{label: "Не имеет значения", value: ''}, {label: "Муж", value: 'm'}, {label: "Жен", value: 'w'},],
-      
       langOptions: ["Русский", "Английский", "Немецкий", "Французкий"],
+      cityOptions: stringOptions,
     }
   },
   computed: {
@@ -212,7 +227,20 @@ export default {
     },
     isValidMail(mail) {
       return /(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/.test(mail)
-    }
+    },
+    addNewCity(e){
+      this.cityUpd(e.target.value)
+      //this.cityOptions.push(this.city)
+    },
+    filterFn (val, update, abort) {
+      update(() => {
+        const needle = val.toLowerCase()
+        this.cityOptions = stringOptions.filter(v => v.toLowerCase().indexOf(needle) > -1)
+      })
+    },
+    cityUpd(new1) {
+      this.job.city = new1
+    },
   },
   components: {
   }
@@ -242,6 +270,8 @@ export default {
     margin-right 10px
     font-weight 900
     font-size 20px
+    margin-top 5px
+    width 5px
   .withMargins
     margin 0 10px
     align-self center
