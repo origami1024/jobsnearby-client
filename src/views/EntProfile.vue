@@ -24,17 +24,8 @@
         transition-next="jump-up"
       >
         <q-tab-panel name="published" class="entprofile__published">
-          <h4 class="uploads__header">Опубликованные вакансии({{ownJobs.length}}):</h4>
-          <q-btn-toggle
-            v-if="ownJobs.length > 0"
-            v-model="lenses"
-            toggle-color="primary"
-            size="sm"
-            dense
-            :options="[ {value: 'short', icon: 'list'},
-                        {value: 'full', icon: 'code'},]"
-          />
-          <JobsList :lenses="lenses" :jobslist="ownJobs"/>
+          <h4 class="entprofile__header">Опубликованные вакансии({{ownJobs.length}}):</h4>
+          <JobsTable :jobslist="ownJobs"/>
         </q-tab-panel>
         <q-tab-panel name="responses">
         </q-tab-panel>
@@ -68,7 +59,7 @@
 </template>
 
 <script>
-import JobsList from '@/components/organisms/JobsList.vue'
+import JobsTable from '@/components/organisms/JobsTable.vue'
 
 export default {
   name: 'EntProfile',
@@ -92,7 +83,8 @@ export default {
     editable: false
   }},
   components: {
-    JobsList,
+    //JobsList,
+    JobsTable
   },
   methods: {
     favOne(id) {
@@ -119,7 +111,9 @@ export default {
 
 <style scoped lang="stylus">
 .entprofile
-  width 900px
+  max-width 900px
+  padding 0 10px
+  padding-top 10px
   display flex
   flex-direction column
   justify-content center
@@ -130,6 +124,7 @@ export default {
   &__header
     display flex
     justify-content flex-end
+    font-size 18px
   .tabs
     border-top-left-radius 15px
     border-top-right-radius 15px
@@ -137,6 +132,7 @@ export default {
     animation-duration 0.3s
     transition-duration 0.3s
   .entprofile__published
+    width 100%
     background-color #eee
     display flex
     flex-direction column

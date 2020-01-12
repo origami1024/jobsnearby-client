@@ -110,11 +110,11 @@
         </div>
         <p>Требования</p>
         <div class="line">
-          <vue-editor 
-            v-model="content" style="width: 100%;"
+          <vue-editor
+            v-model="job.reqs"
             :editorToolbar="customToolbar"
-          ></vue-editor>
-
+            style="width: 100%;"
+          />
           <!-- <q-input
             v-model="job.reqs"
             filled
@@ -193,7 +193,6 @@ export default {
   },
   data() {
     return {
-      content: "<h1>Some initial content</h1>",
       customToolbar: [
         ["bold", "italic", "underline", 'strike'],
         [{"header":2},{"header":1}],
@@ -222,7 +221,7 @@ export default {
         description: '',
         contact_mail: '',
         contact_tel: '',
-        reqs: ''
+        reqs: '<h1>Some initial content</h1>'
       },
       sent: 'none',
       sexOptions: [{label: "Не имеет значения", value: ''}, {label: "Муж", value: 'm'}, {label: "Жен", value: 'w'},],
@@ -236,6 +235,9 @@ export default {
     // }
   },
   methods:{
+    logger1() {
+      console.log(this.editorContent)
+    },
     addOneJob() {
       //console.dir(this.job)
       let j = Object.assign({}, this.job)

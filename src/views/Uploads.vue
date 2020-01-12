@@ -57,22 +57,22 @@
                   <td>Дополнительно</td>
                 </tr>
               </thead>
-              <tr v-for="item in parsed" :key="item.id">
-                <td>{{item.title}}</td>
-                <td>{{item.salary_min}}</td>
-                <td>{{item.salary_max}}</td>
-                <td>{{item.currency}}</td>
-                <td>{{item.sex}}</td>
-                <td>{{item.age1}}</td>
-                <td>{{item.age2}}</td>
-                <td>{{item.worktime1}}</td>
-                <td>{{item.worktime2}}</td>
-                <td>{{item.langs}}</td>
-                <td>{{item.edu}}</td>
-                <td>{{item.experience}}</td>
-                <td>{{item.city}}</td>
-                <td>{{item.jtype}}</td>
-                <td>{{item.description}}</td>
+              <tr @input="onEditableInput" v-for="(item, index) in parsed" :key="index" :itemindex="index">
+                <td contenteditable="true" propname="title">{{item.title}}</td>
+                <td contenteditable="true" propname="salary_min">{{item.salary_min}}</td>
+                <td contenteditable="true" propname="salary_max">{{item.salary_max}}</td>
+                <td contenteditable="true">{{item.currency}}</td>
+                <td contenteditable="true">{{item.sex}}</td>
+                <td contenteditable="true">{{item.age1}}</td>
+                <td contenteditable="true">{{item.age2}}</td>
+                <td contenteditable="true">{{item.worktime1}}</td>
+                <td contenteditable="true">{{item.worktime2}}</td>
+                <td contenteditable="true">{{item.langs}}</td>
+                <td contenteditable="true">{{item.edu}}</td>
+                <td contenteditable="true">{{item.experience}}</td>
+                <td contenteditable="true">{{item.city}}</td>
+                <td contenteditable="true">{{item.jtype}}</td>
+                <td contenteditable="true">{{item.description}}</td>
               </tr>
             </table>
             <q-btn v-if="step > 1" flat color="primary" @click="resetParsed" label="Сбросить" class="q-ml-sm" />
@@ -131,6 +131,16 @@ export default {
     // }
   },
   methods:{
+    onEditableInput(e) {
+      //console.log('event: ', e)
+      let itemindex = e.target.parentElement.getAttribute('itemindex')
+      let propname = e.target.getAttribute('propname')
+      let newContent = e.target.textContent
+      console.log('t ', e.target.getAttribute('propname'))
+      console.log('t1 ', e.target.textContent)
+      console.log('t2 ', e.target.parentElement.getAttribute('itemindex'))
+      this.parsed[itemindex][propname] = newContent
+    },
     resetParsed() {
       this.parsed = []
       this.step = 1

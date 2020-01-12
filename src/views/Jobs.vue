@@ -179,6 +179,8 @@ export default {
       this.salary= {label: "Не имеет значения", value: 'idc'}
       this.exp= {label: "Не имеет значения", value: 'idc'}
       this.currency= {label: "все", value: 'idc'}
+      this.$emit('updQue', this.query)
+      this.$emit('refresh')
     },
     favOne(id) {
       console.log('favOne from Jobs')
