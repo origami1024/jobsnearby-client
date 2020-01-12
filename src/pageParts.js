@@ -178,8 +178,8 @@ exports.jobinfo = (job) => {
         </ul>
       </section>
       <section>
-        <p>Всех просмотров: ${job.hits_all || 0}</p>
-        <p>Уникальных просмотров: ${job.hits_uniq || 0}</p>
+        <p>Всех просмотров: ${job.hits_all || 1}</p>
+        <p>Уникальных просмотров: ${job.hits_uniq || 1}</p>
       </section>
     <main>
   </body></html>

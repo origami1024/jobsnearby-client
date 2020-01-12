@@ -4,11 +4,11 @@
       <div v-if="role === 'company' && sent == 'none'" class="authed" :key="1">
         <div class="line">
           <p class="star">*</p>
+          <p class="startP" style="min-width: 140px; textAlign: left">Название вакансии</p>
           <q-input
             :style="{width: '100%'}"
             dense filled :hint="null"
             v-model="job.title"
-            label="Название вакансии"
           />
             <!-- :rules="[title => (
               title.length > 1 && 
@@ -19,7 +19,7 @@
         </div>
         <div class="line">
           <p class="star">*</p>
-          <p class="startP" style="width: 115px; textAlign: left">Зарплата</p>
+          <p class="startP" style="width: 140px; textAlign: left">Зарплата</p>
           <q-input
             :disable="job.salaryOn"
             :style="{width: '110px', marginRight: '10px'}"
@@ -55,7 +55,7 @@
         </div>
         <div class="line">
           <p class="star">*</p>
-          <p class="startP" style="margin-bottom: 0; width: 115px; textAlign: left">Ваши контакты</p>
+          <p class="startP" style="width: 140px; textAlign: left">Ваши контакты</p>
           <q-input
             dense filled
             v-model="job.contact_mail"
@@ -63,6 +63,7 @@
             type="email"
             ref="mail1"
             style="marginRight: 10px"
+            :hint="null"
           />
           <!-- :rules="[mail => (
               mail.length < 60 && 
@@ -74,12 +75,13 @@
             v-model="job.contact_phone"
             label="Phone"
             type="tel"
+            :hint="null"
           />
         </div>
         <div class="line">
           <!-- <p class="startP">Город</p> -->
           <p class="star"> </p>
-          <p class="startP" style="margin-bottom: 0; width: 115px; textAlign: left">Город</p>
+          <p class="startP" style="width: 140px; textAlign: left">Город</p>
           <q-select
             :value="job.city"
             @input="cityUpd"
@@ -91,29 +93,29 @@
             hide-selected
             :options="cityOptions"
             @filter="filterFn"
-            
+            :hint="null"
             @keyup="addNewCity"
           />
           <!-- <q-input :style="{width: '250px'}" dense filled v-model="job.city" label="Город" :hint="null"/> -->
         </div>
-        <div class="line">
+        <!-- <div class="line">
           <p class="star"> </p>
-          <p class="startP" style="width: 115px; textAlign: left">Возраст</p>
+          <p class="startP" style="width: 140px; textAlign: left">Возраст</p>
           <q-input :style="{width: '100px', marginRight: '10px'}" dense filled v-model="job.age1" label="От" :hint="null"/>
           <q-input :style="{width: '100px', marginRight: '10px'}" dense filled v-model="job.age2" label="До" :hint="null"/>
-        </div>
+        </div> -->
         <div class="line">
           <p class="star"> </p>
-          <p class="startP" style="width: 115px; textAlign: left">График работы</p>
+          <p class="startP" style="width: 140px; textAlign: left">График работы</p>
           <q-input :style="{width: '100px', marginRight: '10px'}" dense filled v-model="job.worktime1" label="От" :hint="null"/>
           <q-input :style="{width: '100px', marginRight: '10px'}" dense filled v-model="job.worktime2" label="До" :hint="null"/>
         </div>
-        <p>Требования</p>
+        <p>Описание</p>
         <div class="line">
           <vue-editor
             v-model="job.reqs"
             :editorToolbar="customToolbar"
-            style="width: 100%;"
+            style="width: 100%; backgroundColor: white"
           />
           <!-- <q-input
             v-model="job.reqs"
@@ -144,7 +146,9 @@
         <div class="line">
           <q-input :style="{width: '250px'}" dense filled v-model="job.experience" label="Минимальный стаж" :hint="null"/>
         </div> -->
-        <p>Обязанности</p>
+
+
+        <!-- <p>Обязанности</p>
         <div class="line">
           <q-input
             v-model="job.description"
@@ -154,8 +158,8 @@
             type="textarea"
             style="width: 100%;"
           />
-        </div>
-        <q-btn color="primary" label="Опубликовать" @click="addOneJob"/>
+        </div> -->
+        <q-btn style="marginTop: 10px" color="primary" label="Разместить вакансию" @click="addOneJob"/>
       </div>
       <div v-else-if="sent == 'good'" :key="2">
         <p>Вакансия успешно добавлена</p>
@@ -169,7 +173,6 @@
         Авторизируйтесь, для возможности загрузки вакансий
       </div>
     </transition>
-    {{sent}}
   </div>
 </template>
 
@@ -178,7 +181,7 @@
 import axios from 'axios'
 const config = require('@/configs/main_config')
 
-let stringOptions = ["Не имеет значения", "Ашхабад", "Дашогуз", "Мары", "Туркменабад", "Туркменбаши"]
+let stringOptions = ["Ашхабад", "Дашогуз", "Мары", "Туркменабад", "Туркменбаши"]
 
 
 import { VueEditor } from "vue2-editor"
@@ -221,7 +224,7 @@ export default {
         description: '',
         contact_mail: '',
         contact_tel: '',
-        reqs: '<h1>Some initial content</h1>'
+        reqs: ``
       },
       sent: 'none',
       sexOptions: [{label: "Не имеет значения", value: ''}, {label: "Муж", value: 'm'}, {label: "Жен", value: 'w'},],
@@ -295,11 +298,14 @@ export default {
     box-shadow 0 0 3px 2px #ddd
   .line
     display flex
-    align-items center
-    margin-bottom 10px
+    align-items flex-end
+    // margin-bottom 10px
+    min-height 52px
   .startP
     margin-right 10px
     font-size 15px
+    align-self flex-end
+    padding-bottom 12px
   .star
     align-self flex-start
     margin-right 10px
