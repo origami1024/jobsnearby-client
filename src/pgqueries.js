@@ -148,7 +148,7 @@ async function getJobById (id) {
             from (
                 select unnest(hits_log) as hits_log1
                 from jobs
-              WHERE job_id = 563
+              WHERE job_id = $1
             ) as ss) b`
 
   let result = await pool.query(que, [id]).catch(error => {
