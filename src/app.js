@@ -80,7 +80,7 @@ function params1(request, response) {
 
 
 async function getJobById(req, res) {
-  console.log('get job by id first func. ip: ', req.connection.remoteAddress)
+  console.log('get job by id first func. ip: ', req.headers['x-forwarded-for'] || req.connection.remoteAddress)
   const id = parseInt(req.query.id)
   if (isNaN(id) || id < 0) {
     console.log('Error: wrong id')
@@ -99,7 +99,7 @@ async function getJobById(req, res) {
   console.log('cp', job)
   let jobpage = pageParts.jobinfo(job)
   res.status(200).send(jobpage)
-  db.hitJobById(id, req.connection.remoteAddress)
+  db.hitJobById(id, req.headers['x-forwarded-for'] || req.connection.remoteAddress)
 }
 
 async function out(req, res) {
