@@ -110,14 +110,19 @@
         </div>
         <p>Требования</p>
         <div class="line">
-          <q-input
+          <vue-editor 
+            v-model="content" style="width: 100%;"
+            :editorToolbar="customToolbar"
+          ></vue-editor>
+
+          <!-- <q-input
             v-model="job.reqs"
             filled
             maxlength="500"
             counter
             type="textarea"
             style="width: 100%;"
-          />
+          /> -->
         </div>
         <!-- <div class="line">
           <q-select dense v-model="job.sex" :options="sexOptions" label="Пол" />
@@ -175,6 +180,10 @@ const config = require('@/configs/main_config')
 
 let stringOptions = ["Не имеет значения", "Ашхабад", "Дашогуз", "Мары", "Туркменабад", "Туркменбаши"]
 
+
+import { VueEditor } from "vue2-editor"
+
+
 export default {
   name: 'addJob',
   props: {
@@ -184,6 +193,17 @@ export default {
   },
   data() {
     return {
+      content: "<h1>Some initial content</h1>",
+      customToolbar: [
+        ["bold", "italic", "underline", 'strike'],
+        [{"header":2},{"header":1}],
+        [{ size: [ 'small', false, 'large']}],
+        [{ list: "ordered" }, { list: "bullet" }],
+        [{ 'indent': '-1'}, { 'indent': '+1' }],
+        [{ 'color': [] }, { 'background': [] }],
+        [{ 'align': [] }],
+        ['clean']
+      ],
       job: {
         title: '',
         salary_min: '',
@@ -255,6 +275,7 @@ export default {
     },
   },
   components: {
+    VueEditor
   }
 }
 </script>
