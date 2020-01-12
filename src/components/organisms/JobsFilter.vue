@@ -22,7 +22,7 @@
     <div class="w100" :style="{justifyContent: isResetShown ? 'space-between': 'flex-end'}">
       <q-btn
         v-if="isResetShown"
-        icon="delete"
+        icon="delete_forever"
         round
         color="red"
         @click="$emit('resetFilters')"

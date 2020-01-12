@@ -125,13 +125,32 @@ const getJobs = (req, res) => {
     
   })
 }
-
+async function hitJobById (job_id, ip) {
+  let que = `UPDATE jobs SET "hits_log" = array_append("hits_log", $1) WHERE job_id = $2`
+  let params = [ip, job_id]
+  pool.query(que, params, (error, results1) => {
+    if (error) {
+      console.log('hitJobById Error: ', error)
+    } else console.log('job hit')
+  })
+}
 async function getJobById (id) {
   //const id = parseInt(request.params.id)
-  let que = `SELECT jobs.author_id, users.company as author, jobs.job_id, jobs.city, jobs.experience, jobs.jobtype, jobs.title, jobs.edu, jobs.currency, jobs.sex, jobs.salary_min, jobs.salary_max, jobs.description, jobs.worktime1, jobs.worktime2, jobs.age1, jobs.age2, jobs.langs, jobs.time_published as published, jobs.time_updated as updated, jobs.jobtype
-            FROM jobs, users
-            WHERE jobs.author_id = users.user_id AND jobs.job_id = $1`
+  // let que = `SELECT * FROM (SELECT jobs.author_id, users.company as author, jobs.job_id, jobs.city, jobs.experience, jobs.jobtype, jobs.title, jobs.edu, jobs.currency, jobs.sex, jobs.salary_min, jobs.salary_max, jobs.description, jobs.worktime1, jobs.worktime2, jobs.age1, jobs.age2, jobs.langs, jobs.time_published as published, jobs.time_updated as updated, cardinality(jobs.hits_log) as hits_all, jobs.hits_log
+  //           FROM jobs, users
+  //           WHERE jobs.author_id = users.user_id AND jobs.job_id = $1) a,
+  //           (SELECT COUNT(*) FROM (SELECT DISTINCT hits_log FROM jobs WHERE job_id = $1) as ff) b`
   //'SELECT * FROM jobs WHERE job_id = $1'
+  let que = `SELECT * FROM (SELECT jobs.author_id, users.company as author, jobs.job_id, jobs.city, jobs.experience, jobs.jobtype, jobs.title, jobs.edu, jobs.currency, jobs.sex, jobs.salary_min, jobs.salary_max, jobs.description, jobs.worktime1, jobs.worktime2, jobs.age1, jobs.age2, jobs.langs, jobs.time_published as published, jobs.time_updated as updated, cardinality(jobs.hits_log) as hits_all
+            FROM jobs, users
+            WHERE jobs.author_id = users.user_id AND jobs.job_id = $1) a,
+            (select count(distinct hits_log1) as hits_uniq
+            from (
+                select unnest(hits_log) as hits_log1
+                from jobs
+              WHERE job_id = 563
+            ) as ss) b`
+
   let result = await pool.query(que, [id]).catch(error => {
     console.log(error)
     throw new Error('job by id error')
@@ -663,5 +682,6 @@ module.exports = {
   favOne,
   delFavOne,
   getFaved,
-  getFavedFull
+  getFavedFull,
+  hitJobById
 }

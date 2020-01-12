@@ -14,11 +14,11 @@
             <td>время от</td>
             <td>время до</td>
             <td>Языки</td>
-            <td>Образование</td>
+            <td>Образ ование</td>
             <td>Стаж</td>
             <td>Город</td>
-            <td>Тип занятости</td>
-            <td>Дополнительно</td>
+            <td>Тип р.</td>
+            <td>Дополн ительно</td>
             <td>Изменения</td>
           </tr>
         </thead>
@@ -36,17 +36,17 @@
           <td>{{item.edu}}</td>
           <td>{{item.experience}}</td>
           <td>{{item.city}}</td>
-          <td>{{item.jtype}}</td>
+          <td>{{item.jobtype}}</td>
           <td>{{item.description}}</td>
           <td>
             <q-btn
-              icon="save"
+              icon="edit"
               size="sm"
               color="green"
               round
             />
             <q-btn
-              icon="delete"
+              icon="delete_forever"
               size="sm"
               color="red"
               round
@@ -88,6 +88,8 @@ export default {
   min-width 300px
   td
     padding 3px
+    font-size 12px
+    max-width 85px
   .line
     display flex
     align-items center
