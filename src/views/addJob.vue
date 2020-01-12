@@ -45,7 +45,7 @@
           />
           <q-select
             :disable="job.salaryOn"
-            style="width: 85px; lineHeight: 3.2"
+            style="width: 95px; lineHeight: 3.2"
             dense
             outlined
             bg-color="white"
@@ -112,24 +112,12 @@
           />
           <!-- <q-input :style="{width: '250px'}" dense filled v-model="job.city" label="Город" :hint="null"/> -->
         </div>
-        <!-- <div class="line">
-          <p class="star"> </p>
-          <p class="startP" style="width: 140px; textAlign: left">Возраст</p>
-          <q-input :style="{width: '100px', marginRight: '10px'}" dense filled v-model="job.age1" label="От" :hint="null"/>
-          <q-input :style="{width: '100px', marginRight: '10px'}" dense filled v-model="job.age2" label="До" :hint="null"/>
-        </div> -->
-        <div class="line">
-          <p class="star"> </p>
-          <p class="startP" style="width: 140px; textAlign: left">График работы</p>
-          <q-input :style="{width: '100px', marginRight: '10px'}" dense outlined bg-color="white" v-model="job.worktime1" label="От" :hint="null"/>
-          <q-input :style="{width: '100px', marginRight: '10px'}" dense outlined bg-color="white" v-model="job.worktime2" label="До" :hint="null"/>
-        </div>
-        <p>Описание</p>
+        <p style="fontSize: 16px; marginBottom: 5px">Описание</p>
         <div class="line">
           <vue-editor
             v-model="job.reqs"
             :editorToolbar="customToolbar"
-            style="width: 100%; backgroundColor: white"
+            style="width: 100%; backgroundColor: white; marginBottom: 22px"
           />
           <!-- <q-input
             v-model="job.reqs"
@@ -138,6 +126,50 @@
             counter
             type="textarea"
             style="width: 100%;"
+          /> -->
+        </div>
+        <div class="line">
+          <p class="star"> </p>
+          <p class="startP" style="width: 140px; textAlign: left">Возраст</p>
+          <q-input :style="{width: '100px', marginRight: '10px'}" dense outlined bg-color="white" v-model="job.age1" label="От" :hint="null"/>
+          <q-input :style="{width: '100px', marginRight: '10px'}" dense outlined bg-color="white" v-model="job.age2" label="До" :hint="null"/>
+        </div>
+        <div class="line">
+          <p class="star"> </p>
+          <p class="startP" style="width: 140px; textAlign: left">График работы</p>
+          <q-input :style="{width: '100px', marginRight: '10px'}" dense outlined bg-color="white" v-model="job.worktime1" label="От" :hint="null"/>
+          <q-input :style="{width: '100px', marginRight: '10px'}" dense outlined bg-color="white" v-model="job.worktime2" label="До" :hint="null"/>
+        </div>
+        <div class="line">
+          <p class="star"> </p>
+          <p class="startP" style="width: 140px; textAlign: left">Опыт</p>
+          <q-input
+            dense
+            outlined
+            bg-color="white"
+            v-model="job.experience"
+            style="marginRight: 10px"
+            :hint="null"
+          />
+        </div>
+        <div class="line">
+          <p class="star"> </p>
+          <p class="startP" style="width: 140px; textAlign: left">Тип занятости</p>
+          <q-select
+            v-model="job.jtype"
+            outlined bg-color="white"
+            dense 
+            :options="jtypeOptions"
+            :hint="null"
+            style="width: 135px"
+          />
+          <!-- <q-input
+            dense
+            outlined
+            bg-color="white"
+            v-model="job.contact_mail"
+            style="marginRight: 10px"
+            :hint="null"
           /> -->
         </div>
         <!-- <div class="line">
@@ -238,12 +270,17 @@ export default {
         description: '',
         contact_mail: '',
         contact_tel: '',
+        jtype: {label: "", value: ''},
         reqs: ``
       },
       sent: 'none',
       sexOptions: [{label: "Не имеет значения", value: ''}, {label: "Муж", value: 'm'}, {label: "Жен", value: 'w'},],
       langOptions: ["Русский", "Английский", "Немецкий", "Французкий"],
       cityOptions: stringOptions,
+      jtypeOptions: [
+      {label: "", value: ''},
+      {label: "Постоянная", value: 'c'},
+      {label: "Временная", value: 'v'}],
     }
   },
   computed: {
