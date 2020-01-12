@@ -19,7 +19,14 @@
     </div>
     <q-select @input="expUpd" dense :value="exp" :options="expOptions" label="Опыт" />
     <q-select @input="jtypeUpd" dense :value="jtype" :options="jtypeOptions" label="Тип занятости" />
-    <div class="w100">
+    <div class="w100" :style="{justifyContent: isResetShown ? 'space-between': 'flex-end'}">
+      <q-btn
+        v-if="isResetShown"
+        icon="delete"
+        round
+        color="red"
+        @click="$emit('resetFilters')"
+      />
       <q-btn :loading="pending" color="primary" label="Применить" @click="refreshPlus"/>
     </div>
     
@@ -77,6 +84,17 @@ export default {
       {label: "от 3000", value: '3'},
     ],
   }},
+  computed: {
+    isResetShown() {
+      let res = false
+      if (this.city != 'Не имеет значения' && this.city != '') res = true
+      else if (this.salary.value != 'idc') res = true
+      else if (this.currency.value != 'idc') res = true
+      else if (this.exp.value != 'idc') res = true
+      else if (this.jtype.value != '') res = true
+      return res
+    }
+  },
   methods: {
     cityUpd(new1) {
       this.$emit('cityUpd', new1)

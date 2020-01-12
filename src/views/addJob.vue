@@ -9,13 +9,13 @@
             dense filled :hint="null"
             v-model="job.title"
             label="Название вакансии"
-            :rules="[title => (
+          />
+            <!-- :rules="[title => (
               title.length > 1 && 
               title.length < 76 &&
               /^[\wа-яА-ЯÇçÄä£ſÑñňÖö$¢Üü¥ÿýŽžŞş\s\\-]*$/.test(title)
               ) || 'Длина от 2 до 75 символов, без специальных символов']"
-            lazy-rules
-            />
+            lazy-rules -->
         </div>
         <div class="line">
           <p class="star">*</p>
@@ -78,7 +78,8 @@
         </div>
         <div class="line">
           <!-- <p class="startP">Город</p> -->
-          <p class="startP" style="margin-bottom: 0; width: 130px; textAlign: left">Город</p>
+          <p class="star"> </p>
+          <p class="startP" style="margin-bottom: 0; width: 115px; textAlign: left">Город</p>
           <q-select
             :value="job.city"
             @input="cityUpd"
@@ -96,17 +97,29 @@
           <!-- <q-input :style="{width: '250px'}" dense filled v-model="job.city" label="Город" :hint="null"/> -->
         </div>
         <div class="line">
-          <p class="startP" style="width: 130px; textAlign: left">Возраст</p>
-          <q-input type="Number" :style="{width: '100px', marginRight: '10px'}" dense filled v-model="job.age1" label="От" :hint="null"/>
-          <q-input type="Number" :style="{width: '100px', marginRight: '10px'}" dense filled v-model="job.age2" label="До" :hint="null"/>
+          <p class="star"> </p>
+          <p class="startP" style="width: 115px; textAlign: left">Возраст</p>
+          <q-input :style="{width: '100px', marginRight: '10px'}" dense filled v-model="job.age1" label="От" :hint="null"/>
+          <q-input :style="{width: '100px', marginRight: '10px'}" dense filled v-model="job.age2" label="До" :hint="null"/>
         </div>
         <div class="line">
-          <p class="startP" style="width: 130px; textAlign: left">График работы</p>
-          <q-input type="Number" :style="{width: '100px', marginRight: '10px'}" dense filled v-model="job.worktime1" label="От" :hint="null"/>
-          <q-input type="Number" :style="{width: '100px', marginRight: '10px'}" dense filled v-model="job.worktime2" label="До" :hint="null"/>
+          <p class="star"> </p>
+          <p class="startP" style="width: 115px; textAlign: left">График работы</p>
+          <q-input :style="{width: '100px', marginRight: '10px'}" dense filled v-model="job.worktime1" label="От" :hint="null"/>
+          <q-input :style="{width: '100px', marginRight: '10px'}" dense filled v-model="job.worktime2" label="До" :hint="null"/>
         </div>
         <p>Требования</p>
         <div class="line">
+          <q-input
+            v-model="job.reqs"
+            filled
+            maxlength="500"
+            counter
+            type="textarea"
+            style="width: 100%;"
+          />
+        </div>
+        <!-- <div class="line">
           <q-select dense v-model="job.sex" :options="sexOptions" label="Пол" />
         </div>
         <div class="line">
@@ -121,13 +134,11 @@
           />
         </div>
         <div class="line">
-          <!-- <p class="startP">Город</p> -->
           <q-input :style="{width: '250px'}" dense filled v-model="job.edu" label="Образование" :hint="null"/>
         </div>
         <div class="line">
-          <!-- <p class="startP">Город</p> -->
           <q-input :style="{width: '250px'}" dense filled v-model="job.experience" label="Минимальный стаж" :hint="null"/>
-        </div>
+        </div> -->
         <p>Обязанности</p>
         <div class="line">
           <q-input
@@ -190,7 +201,8 @@ export default {
         experience: '',
         description: '',
         contact_mail: '',
-        contact_tel: ''
+        contact_tel: '',
+        reqs: ''
       },
       sent: 'none',
       sexOptions: [{label: "Не имеет значения", value: ''}, {label: "Муж", value: 'm'}, {label: "Жен", value: 'w'},],

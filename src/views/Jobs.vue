@@ -6,7 +6,7 @@
     <div class="jobs__main">
       <div style="padding-top: 10px">
         <div class="jobs__filterpart">
-          <JobsFilter @currUpd="currUpd" :currency="currency" @cityUpd="cityUpd" @jtypeUpd="jtypeUpd" @expUpd="expUpd" @salaryUpd="salaryUpd" :city="city" :salary="salary" :exp="exp" :jtype="jtype" :pending="pending" @refresh="$emit('refresh')" :langOptions="langOptions" @updLangs="updLangs" @slideEnd="slideEnd" :highest="maxSal" :lowest="minSal"></JobsFilter>
+          <JobsFilter @resetFilters="resetFilters" @currUpd="currUpd" :currency="currency" @cityUpd="cityUpd" @jtypeUpd="jtypeUpd" @expUpd="expUpd" @salaryUpd="salaryUpd" :city="city" :salary="salary" :exp="exp" :jtype="jtype" :pending="pending" @refresh="$emit('refresh')" :langOptions="langOptions" @updLangs="updLangs" @slideEnd="slideEnd" :highest="maxSal" :lowest="minSal"></JobsFilter>
         </div>
       </div>
       <div class="jobs__contents">
@@ -173,6 +173,13 @@ export default {
     
   },
   methods: {
+    resetFilters() {
+      this.city = 'Не имеет значения'
+      this.jtype= {label: "Не имеет значения", value: ''}
+      this.salary= {label: "Не имеет значения", value: 'idc'}
+      this.exp= {label: "Не имеет значения", value: 'idc'}
+      this.currency= {label: "все", value: 'idc'}
+    },
     favOne(id) {
       console.log('favOne from Jobs')
       this.$emit('favOne', id)
