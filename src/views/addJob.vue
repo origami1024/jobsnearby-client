@@ -45,7 +45,7 @@
           />
           <q-select
             :disable="job.salaryOn"
-            style="width: 85px"
+            style="width: 85px; lineHeight: 3.2"
             dense
             outlined
             bg-color="white"
