@@ -5,9 +5,12 @@
         <div class="line">
           <p class="star">*</p>
           <p class="startP" style="min-width: 140px; textAlign: left">Название вакансии</p>
+          
           <q-input
+            outlined
+            bg-color="white"
             :style="{width: '100%'}"
-            dense filled :hint="null"
+            dense :hint="null"
             v-model="job.title"
           />
             <!-- :rules="[title => (
@@ -23,7 +26,9 @@
           <q-input
             :disable="job.salaryOn"
             :style="{width: '110px', marginRight: '10px'}"
-            dense filled
+            dense
+            outlined
+            bg-color="white"
             v-model="job.salary_min"
             label="От" :hint="null"
             :rules="[sal => (sal >= 0 && String(sal).length < 6 && sal < 100000) || 'От 0 до 99999']"
@@ -31,7 +36,9 @@
           <q-input
             :disable="job.salaryOn"
             :style="{width: '110px', marginRight: '10px'}"
-            dense filled
+            dense
+            outlined
+            bg-color="white"
             v-model="job.salary_max"
             label="До" :hint="null"
             :rules="[sal => (sal >= 0 && String(sal).length < 6 && sal < 100000) || 'От 0 до 99999']"
@@ -39,7 +46,9 @@
           <q-select
             :disable="job.salaryOn"
             style="width: 85px"
-            dense filled
+            dense
+            outlined
+            bg-color="white"
             v-model="job.currency"
             :options="[
               {label: 'манат', value: 'm'},      
@@ -57,7 +66,9 @@
           <p class="star">*</p>
           <p class="startP" style="width: 140px; textAlign: left">Ваши контакты</p>
           <q-input
-            dense filled
+            dense
+            outlined
+            bg-color="white"
             v-model="job.contact_mail"
             label="Email"
             type="email"
@@ -71,7 +82,9 @@
               ) || 'Введите валидный адрес электронной почты (*@*.*)']"
             lazy-rules -->
           <q-input
-            dense filled
+            dense
+            outlined
+            bg-color="white"
             v-model="job.contact_phone"
             label="Phone"
             type="tel"
@@ -85,7 +98,8 @@
           <q-select
             :value="job.city"
             @input="cityUpd"
-            filled
+            outlined
+            bg-color="white"
             dense
             use-input
             input-debounce="0"
@@ -107,8 +121,8 @@
         <div class="line">
           <p class="star"> </p>
           <p class="startP" style="width: 140px; textAlign: left">График работы</p>
-          <q-input :style="{width: '100px', marginRight: '10px'}" dense filled v-model="job.worktime1" label="От" :hint="null"/>
-          <q-input :style="{width: '100px', marginRight: '10px'}" dense filled v-model="job.worktime2" label="До" :hint="null"/>
+          <q-input :style="{width: '100px', marginRight: '10px'}" dense outlined bg-color="white" v-model="job.worktime1" label="От" :hint="null"/>
+          <q-input :style="{width: '100px', marginRight: '10px'}" dense outlined bg-color="white" v-model="job.worktime2" label="До" :hint="null"/>
         </div>
         <p>Описание</p>
         <div class="line">
