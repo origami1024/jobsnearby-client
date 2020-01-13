@@ -134,13 +134,66 @@ async function hitJobById (job_id, ip) {
     } else console.log('job hit')
   })
 }
+
+async function deleteJobById(req, res) {
+  const jid = parseInt(req.query.jid)
+  //проверить жоб айди формально
+  
+  if (isNaN(jid) || jid < 0 || String(jid).length > 10) {
+    console.log('Error: wrong id')
+    res.status(400).send('Неправильный id вакансии.')
+    return false
+  }
+
+  if (req.cookies.session && req.cookies.session.length > 50) {
+    console.log('cpsrv', jid)
+    let que1st = `SELECT user_id FROM "users" WHERE "auth_cookie" = $1`
+    let params1st = [req.cookies.session]
+    pool.query(que1st, params1st, (error, results) => {
+      if (error) {
+        console.log(error)
+        res.send('step2')
+        //throw error
+        return false
+      }
+      if (results.rows.length < 1) {
+        console.log('no cookie found')
+        //Если юзера с таким куки не найдено, то выходим из функции прост
+        res.send('step3')
+        return false
+      }
+      
+      //по айди
+      //если есть в базе и автор сам удаляющий
+      //удалить
+      console.log('no cookie fo: ', )
+      let que2nd = `DELETE FROM jobs where (author_id = $1 AND job_id = $2)`
+      //console.log(que2nd)
+      let params2nd = [results.rows[0].user_id, jid]
+      pool.query(que2nd, params2nd, (error2, results2) => {
+        if (error2) {
+          console.log('deleteJobById Error2: ', error2)
+          res.status(400).send('error22')
+          return false
+        }
+        res.status(200).send('OK')
+        //res.send(results2.rows)
+      })
+
+    })
+  } else {res.send('wrong userinfo(deleteJBI)')}
+}
+
 async function getJobById (id) {
+  //id is PRECHECKED!
   //const id = parseInt(request.params.id)
   // let que = `SELECT * FROM (SELECT jobs.author_id, users.company as author, jobs.job_id, jobs.city, jobs.experience, jobs.jobtype, jobs.title, jobs.edu, jobs.currency, jobs.sex, jobs.salary_min, jobs.salary_max, jobs.description, jobs.worktime1, jobs.worktime2, jobs.age1, jobs.age2, jobs.langs, jobs.time_published as published, jobs.time_updated as updated, cardinality(jobs.hits_log) as hits_all, jobs.hits_log
   //           FROM jobs, users
   //           WHERE jobs.author_id = users.user_id AND jobs.job_id = $1) a,
   //           (SELECT COUNT(*) FROM (SELECT DISTINCT hits_log FROM jobs WHERE job_id = $1) as ff) b`
   //'SELECT * FROM jobs WHERE job_id = $1'
+
+  
   let que = `SELECT * FROM (SELECT jobs.author_id, users.company as author, jobs.job_id, jobs.city, jobs.experience, jobs.jobtype, jobs.title, jobs.edu, jobs.currency, jobs.sex, jobs.salary_min, jobs.salary_max, jobs.description, jobs.worktime1, jobs.worktime2, jobs.age1, jobs.age2, jobs.langs, jobs.time_published as published, jobs.time_updated as updated, cardinality(jobs.hits_log) as hits_all
             FROM jobs, users
             WHERE jobs.author_id = users.user_id AND jobs.job_id = $1) a,
@@ -230,6 +283,8 @@ async function getFavedFull (req, res) {
       pool.query(que2nd, params2nd, (error2, results2) => {
         if (error2) {
           console.log('getFavedFull Error2: ', error2)
+          res.status(400).send('OK')
+          return false
         }
         //res.status(200).send('OK')
         res.send(results2.rows)
@@ -683,5 +738,6 @@ module.exports = {
   delFavOne,
   getFaved,
   getFavedFull,
-  hitJobById
+  hitJobById,
+  deleteJobById
 }

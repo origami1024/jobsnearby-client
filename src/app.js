@@ -58,12 +58,15 @@ app.post('/delFavOne.json', db.delFavOne)
 app.post('/getFaved.json', db.getFaved)
 app.post('/getFavedFull.json', db.getFavedFull)
 
+
 ///favOne.json?jid=
 
 
 app.get('/jobsu.json', params1)
 app.get('/jobs.json', db.getJobs)
 app.get('/jobBy.id', getJobById)
+
+app.post('/delJobBy.id', db.deleteJobById)
 
 
 function params1(request, response) {
@@ -79,10 +82,12 @@ function params1(request, response) {
 // })
 
 
+
+
 async function getJobById(req, res) {
   console.log('get job by id first func. ip: ', req.headers['x-forwarded-for'] || req.connection.remoteAddress)
   const id = parseInt(req.query.id)
-  if (isNaN(id) || id < 0) {
+  if (isNaN(id) || id < 0 || String(id).length > 10) {
     console.log('Error: wrong id')
     res.status(400).send('Неправильный id вакансии.')
     return false

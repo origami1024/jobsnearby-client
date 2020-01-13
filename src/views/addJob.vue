@@ -2,6 +2,7 @@
   <div class="addJob">
     <transition name="bounce">
       <div v-if="role === 'company' && sent == 'none'" class="authed" :key="1">
+        {{job.salaryOn}}
         <div class="line">
           <p class="star">*</p>
           <p class="startP" style="min-width: 140px; textAlign: left">Название вакансии</p>
@@ -117,7 +118,7 @@
           <vue-editor
             v-model="job.reqs"
             :editorToolbar="customToolbar"
-            style="width: 100%; backgroundColor: white; marginBottom: 22px"
+            style="textAlign: left; width: 100%; backgroundColor: white; marginBottom: 22px"
           />
           <!-- <q-input
             v-model="job.reqs"
@@ -232,7 +233,9 @@ let stringOptions = ["Ашхабад", "Дашогуз", "Мары", "Туркм
 
 import { VueEditor } from "vue2-editor"
 
-
+//[{ 'color': [] }, { 'background': [] }],
+//[{"header":2},{"header":1}],
+//[{ 'indent': '-1'}, { 'indent': '+1' }],
 export default {
   name: 'addJob',
   props: {
@@ -243,12 +246,9 @@ export default {
   data() {
     return {
       customToolbar: [
-        ["bold", "italic", "underline", 'strike'],
-        [{"header":2},{"header":1}],
+        ["bold", "italic", "underline"],
         [{ size: [ 'small', false, 'large']}],
         [{ list: "ordered" }, { list: "bullet" }],
-        [{ 'indent': '-1'}, { 'indent': '+1' }],
-        [{ 'color': [] }, { 'background': [] }],
         [{ 'align': [] }],
         ['clean']
       ],
@@ -298,7 +298,7 @@ export default {
       if (j.salary_min > j.salary_max) j.salary_max = j.salary_min
       j.sex = j.sex.value
       j.currency = j.currency.value
-      if (j.title != '' && j.title.length > 1 && (j.salary_max > 0 || j.salaryOn) && j.description.length > 15) {
+      if (j.title != '' && j.title.length > 1 && (j.salary_max > 0 || j.salaryOn) && j.reqs.length > 15) {
         axios
           .post(config.jobsUrl + '/oneJob', j, {headers: {'Content-Type' : 'application/json' }, withCredentials: true,})
           .then(response => {

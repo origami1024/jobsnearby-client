@@ -18,7 +18,7 @@
       <q-select style="width: 30%" dense @input="currUpd" :value="currency" :options="currOptions" label="Валюта" />
     </div>
     <q-select @input="expUpd" dense :value="exp" :options="expOptions" label="Опыт" />
-    <q-select @input="jtypeUpd" dense :value="jtype" :options="jtypeOptions" label="Тип занятости" />
+    <q-select @input="jtypeUpd" dense :value="jtype" :options="jtypeOptions" label="Занятость" />
     <div class="w100" :style="{justifyContent: isResetShown ? 'space-between': 'flex-end'}">
       <q-btn
         v-if="isResetShown"

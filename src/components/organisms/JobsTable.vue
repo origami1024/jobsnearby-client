@@ -22,7 +22,7 @@
             <td>Изменения</td>
           </tr>
         </thead>
-        <tr contenteditable="true" v-for="item in jobslist" :key="item.id">
+        <tr contenteditable="true" v-for="item in jobslist" :key="item.job_id">
           <td>{{item.title}}</td>
           <td>{{item.salary_min}}</td>
           <td>{{item.salary_max}}</td>
@@ -50,6 +50,7 @@
               size="sm"
               color="red"
               round
+              @click="delThis(item.job_id)"
             />
           </td>
         </tr>
@@ -72,6 +73,9 @@ export default {
   computed: {
   },
   methods: {
+    delThis(jid) {
+      this.$emit('delJob', jid)
+    }
   },
   components: {
   }

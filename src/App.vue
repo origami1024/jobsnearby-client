@@ -27,7 +27,8 @@
           <q-btn label="Публикация вакансий(xls)"/>
         </router-link>
         <router-link class="r-link" v-if="role === 'company'" to="/addJob">
-          <q-btn label="Добавить вакансию"/>
+          <!-- <q-btn round icon="add_circle_outline"/> -->
+          <q-icon round glossy name="add_circle_outline" size="40px"></q-icon>
         </router-link>
         <!-- <router-link to="/about">Контакты</router-link> | -->
         
@@ -39,8 +40,8 @@
           <q-btn-group>
             <q-btn push glossy :color="$route.path == '/registration' ? 'purple' : 'gray'" :text-color="$route.path == '/registration' ? 'white' : 'black'" no-caps v-if="role === 'guest'" @click.native="regState='login'" label="Вход" to="/registration"/>
             <q-btn push glossy no-caps v-if="user_id !== -1" @click="logout" icon="logout"/>
-            <q-btn push glossy @click="getFavedFull" :color="$route.path == '/subprofile' ? 'purple' : 'gray'" :text-color="$route.path == '/subprofile' ? 'white' : 'black'" no-caps icon="people" v-if="role === 'subscriber'" to="/subprofile"/>
-            <q-btn push glossy @click.native="getOwnJobs" no-caps icon="people" v-if="role === 'company'" to="/entprofile"/>
+            <q-btn push glossy @click="getFavedFull" :color="$route.path == '/subprofile' ? 'purple' : 'gray'" :text-color="$route.path == '/subprofile' ? 'white' : 'black'" no-caps icon="person" v-if="role === 'subscriber'" to="/subprofile"/>
+            <q-btn push glossy @click.native="getOwnJobs" no-caps icon="person" v-if="role === 'company'" to="/entprofile"/>
           </q-btn-group>
           
         </div>
@@ -78,7 +79,7 @@
       />
     </header>
     <keep-alive> <!-- @stepChange="stepChange" :step="step" -->
-      <router-view :likedJobsList="likedJobsList" :likedJobs="likedJobs" @favOne="favOne" @getOwnJobs="getOwnJobs" :ownJobs="ownJobs" @authed="authIt" @regStateUpd="regStateUpd" :regState="regState" class="r-view" :jobsFullcount="jobsFullcount" :page_current="page_current" :pages="pages_count" :featuredJobslist="featuredJobslist" :pending="ajaxLoading" @updQue="updQue" :role="role" :username="username" :surname="surname" :insearch="insearch" :company="company" :isagency="isagency" :jobslist="jobslist" @refresh="refreshjobs" :uid="user_id" :authed="user_id !== -1" />
+      <router-view @delJob="deleteJobById" :likedJobsList="likedJobsList" :likedJobs="likedJobs" @favOne="favOne" @getOwnJobs="getOwnJobs" :ownJobs="ownJobs" @authed="authIt" @regStateUpd="regStateUpd" :regState="regState" class="r-view" :jobsFullcount="jobsFullcount" :page_current="page_current" :pages="pages_count" :featuredJobslist="featuredJobslist" :pending="ajaxLoading" @updQue="updQue" :role="role" :username="username" :surname="surname" :insearch="insearch" :company="company" :isagency="isagency" :jobslist="jobslist" @refresh="refreshjobs" :uid="user_id" :authed="user_id !== -1" />
     </keep-alive>
     <footer class="main__footer">
       <q-btn push color="primary" label="Написать нам" to="/Feedback"/>
@@ -167,6 +168,19 @@ export default {
     this.getFavedFull()
   },
   methods: {
+    deleteJobById(jid) {
+      //console.log('cpcpcp ', jid)
+      let indx = this.ownJobs.indexOf(this.ownJobs.find(val=>val.job_id == jid))
+      //console.log(indx)
+      this.ownJobs.splice(indx, 1)
+      let url = config.jobsUrl + '/delJobBy.id?jid=' + jid
+      this.ajaxLoading = true
+      axios
+        .post(url, [], {withCredentials: true,})
+        .then(response => {
+          this.ajaxLoading = false
+        })
+    },
     scrollTop() {
       let el = document.documentElement
       const target = getScrollTarget(el)
