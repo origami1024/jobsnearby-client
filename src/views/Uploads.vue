@@ -44,7 +44,6 @@
                   <td>Зарп от</td>
                   <td>Зарп до</td>
                   <td>Валюта</td>
-                  <td>Пол</td>
                   <td>возр от</td>
                   <td>возр до</td>
                   <td>время от</td>
@@ -55,6 +54,8 @@
                   <td>Город</td>
                   <td>Тип занятости</td>
                   <td>Дополнительно</td>
+                  <td>Тел</td>
+                  <td>Почта</td>
                 </tr>
               </thead>
               <tr @input="onEditableInput" v-for="(item, index) in parsed" :key="index" :itemindex="index">
@@ -62,7 +63,6 @@
                 <td contenteditable="true" propname="salary_min">{{item.salary_min}}</td>
                 <td contenteditable="true" propname="salary_max">{{item.salary_max}}</td>
                 <td contenteditable="true">{{item.currency}}</td>
-                <td contenteditable="true">{{item.sex}}</td>
                 <td contenteditable="true">{{item.age1}}</td>
                 <td contenteditable="true">{{item.age2}}</td>
                 <td contenteditable="true">{{item.worktime1}}</td>
@@ -73,6 +73,8 @@
                 <td contenteditable="true">{{item.city}}</td>
                 <td contenteditable="true">{{item.jtype}}</td>
                 <td contenteditable="true">{{item.description}}</td>
+                <td contenteditable="true">{{item.contact_tel}}</td>
+                <td contenteditable="true">{{item.contact_mail}}</td>
               </tr>
             </table>
             <q-btn v-if="step > 1" flat color="primary" @click="resetParsed" label="Сбросить" class="q-ml-sm" />
@@ -178,36 +180,65 @@ export default {
         lastLineIndex = lastLineIndex[lastLineIndex.length - 1].replace(/\D/g,'')
         
         let getjtype = (val) => {
-          console.log('gettype cp1: ', val)
+          //console.log('gettype cp1: ', val)
           return (val == 'постоянная') ? 'c' : (val == 'временная') ? 'v' : ''
         }
 
+        
+        let entries = [
+          'title', 'salary_min', 'salary_max', 'currency', 'contact_tel', 'contact_mail', 'description',
+          'age1', 'age2', 'worktime1', 'worktime2', 'edu', 'experience', 'city'
+        ]
         let len = lastLineIndex
         lastLineIndex = 0
         let newData = []
+        let alpha = 'abcdefghijklmnopqrstuvwxyz'.toUpperCase().split('')
+        let alphaIndex = 0
+        let newl = (entryname) => {
+          //console.log(lastLineIndex)
+          //console.log(alpha[alphaIndex] + lastLineIndex)
+          if (alpha[alphaIndex] + lastLineIndex in tmp) newData[lastLineIndex][entryname] = tmp[alpha[alphaIndex] + lastLineIndex].v
+          alphaIndex += 1
+        }
         while (lastLineIndex <= len) {
-          newData.push({})        
-          if ('A'+lastLineIndex in tmp) newData[lastLineIndex].title = tmp['A'+lastLineIndex].v
-          if ('B'+lastLineIndex in tmp) newData[lastLineIndex].salary_min = tmp['B'+lastLineIndex].v
-          if ('C'+lastLineIndex in tmp) newData[lastLineIndex].salary_max = tmp['C'+lastLineIndex].v
-          if ('D'+lastLineIndex in tmp) newData[lastLineIndex].currency = tmp['D'+lastLineIndex].v
-          if ('E'+lastLineIndex in tmp) newData[lastLineIndex].sex = tmp['E'+lastLineIndex].v
-          if ('F'+lastLineIndex in tmp) newData[lastLineIndex].age1 = tmp['F'+lastLineIndex].v
-          if ('G'+lastLineIndex in tmp) newData[lastLineIndex].age2 = tmp['G'+lastLineIndex].v
-          if ('H'+lastLineIndex in tmp) newData[lastLineIndex].worktime1 = tmp['H'+lastLineIndex].v
-          if ('I'+lastLineIndex in tmp) newData[lastLineIndex].worktime2 = tmp['I'+lastLineIndex].v
-          newData[lastLineIndex].langs = []
-          if ('J'+lastLineIndex in tmp) newData[lastLineIndex].langs.push(tmp['J'+lastLineIndex].v)
-          if ('K'+lastLineIndex in tmp) newData[lastLineIndex].langs.push(tmp['K'+lastLineIndex].v)
-          if ('L'+lastLineIndex in tmp) newData[lastLineIndex].langs.push(tmp['L'+lastLineIndex].v)
-          if ('M'+lastLineIndex in tmp) newData[lastLineIndex].edu = tmp['M'+lastLineIndex].v
-          if ('N'+lastLineIndex in tmp) newData[lastLineIndex].experience = tmp['N'+lastLineIndex].v
-          if ('O'+lastLineIndex in tmp) newData[lastLineIndex].city = tmp['O'+lastLineIndex].v
-          if ('P'+lastLineIndex in tmp && getjtype(tmp['P'+lastLineIndex].v) != '') newData[lastLineIndex].jtype = getjtype(tmp['P'+lastLineIndex].v)
-          if ('Q'+lastLineIndex in tmp) newData[lastLineIndex].description = tmp['Q'+lastLineIndex].v
+          alphaIndex = 0
+          newData.push({})
+          entries.forEach(val => newl(val))
+          // if ('A'+lastLineIndex in tmp) newData[lastLineIndex].title = tmp['A'+lastLineIndex].v
+          // if ('B'+lastLineIndex in tmp) newData[lastLineIndex].salary_min = tmp['B'+lastLineIndex].v
+          // if ('C'+lastLineIndex in tmp) newData[lastLineIndex].salary_max = tmp['C'+lastLineIndex].v
+          // if ('D'+lastLineIndex in tmp) newData[lastLineIndex].currency = tmp['D'+lastLineIndex].v
+          // if ('E'+lastLineIndex in tmp) newData[lastLineIndex].contact_tel = tmp['E'+lastLineIndex].v
+          // if ('F'+lastLineIndex in tmp) newData[lastLineIndex].contact_mail = tmp['F'+lastLineIndex].v
+          // if ('E'+lastLineIndex in tmp) newData[lastLineIndex].contact_mail = tmp['E'+lastLineIndex].v
+          // if ('F'+lastLineIndex in tmp) newData[lastLineIndex].age1 = tmp['F'+lastLineIndex].v
+          // if ('G'+lastLineIndex in tmp) newData[lastLineIndex].age2 = tmp['G'+lastLineIndex].v
+          // if ('H'+lastLineIndex in tmp) newData[lastLineIndex].worktime1 = tmp['H'+lastLineIndex].v
+          // if ('I'+lastLineIndex in tmp) newData[lastLineIndex].worktime2 = tmp['I'+lastLineIndex].v
+          // newData[lastLineIndex].langs = []
+          // if ('J'+lastLineIndex in tmp) newData[lastLineIndex].langs.push(tmp['J'+lastLineIndex].v)
+          // if ('K'+lastLineIndex in tmp) newData[lastLineIndex].langs.push(tmp['K'+lastLineIndex].v)
+          // if ('L'+lastLineIndex in tmp) newData[lastLineIndex].langs.push(tmp['L'+lastLineIndex].v)
+          // if ('M'+lastLineIndex in tmp) newData[lastLineIndex].edu = tmp['M'+lastLineIndex].v
+          // if ('N'+lastLineIndex in tmp) newData[lastLineIndex].experience = tmp['N'+lastLineIndex].v
+          // if ('O'+lastLineIndex in tmp) newData[lastLineIndex].city = tmp['O'+lastLineIndex].v
+          // if ('P'+lastLineIndex in tmp && getjtype(tmp['P'+lastLineIndex].v) != '') newData[lastLineIndex].jtype = getjtype(tmp['P'+lastLineIndex].v)
+          // if ('Q'+lastLineIndex in tmp) newData[lastLineIndex].description = tmp['Q'+lastLineIndex].v
           //newData[lastLineIndex].author_id = this.uid AUTHOR ID SHOULD BE TAKEN FROM DB BY SESSION, NOT SAFE HERE
+          console.log((alpha[alphaIndex] + lastLineIndex in tmp && getjtype(tmp[alpha[alphaIndex] + lastLineIndex].v) != ''))
+          if (alpha[alphaIndex] + lastLineIndex in tmp && getjtype(tmp[alpha[alphaIndex] + lastLineIndex].v) != '') newData[lastLineIndex].jtype = getjtype(tmp[alpha[alphaIndex] + lastLineIndex].v)
+          alphaIndex += 1
+
+          newData[lastLineIndex].langs = []
+          if (alpha[alphaIndex] + lastLineIndex in tmp) newData[lastLineIndex].langs.push(tmp[alpha[alphaIndex] + lastLineIndex].v)
+          alphaIndex += 1
+          if (alpha[alphaIndex] + lastLineIndex in tmp) newData[lastLineIndex].langs.push(tmp[alpha[alphaIndex] + lastLineIndex].v)
+          alphaIndex += 1
+          if (alpha[alphaIndex] + lastLineIndex in tmp) newData[lastLineIndex].langs.push(tmp[alpha[alphaIndex] + lastLineIndex].v)
+          alphaIndex += 1
           lastLineIndex++
         }
+        console.log(newData)
         newData.shift()
         newData.shift()
         

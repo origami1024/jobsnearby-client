@@ -233,7 +233,7 @@ async function getOwnJobs (req, res) {
         return false
       }
       //after cookies check, get the actual data from db
-      let que2nd = `SELECT jobs.job_id, jobs.city, jobs.experience, jobs.jobtype, jobs.title, jobs.edu, jobs.currency, jobs.salary_min, jobs.salary_max, jobs.sex, jobs.description, jobs.worktime1, jobs.worktime2, jobs.age1, jobs.age2, jobs.langs, jobs.time_published as published, jobs.time_updated as updated
+      let que2nd = `SELECT jobs.job_id, jobs.city, jobs.experience, jobs.jobtype, jobs.title, jobs.edu, jobs.currency, jobs.salary_min, jobs.salary_max, jobs.sex, jobs.description, jobs.worktime1, jobs.worktime2, jobs.age1, jobs.age2, jobs.langs, jobs.time_published as published, jobs.time_updated as updated, jobs.contact_tel, jobs.contact_mail
             FROM jobs
             WHERE jobs.author_id = $1
             ORDER BY (jobs.time_updated, jobs.job_id) DESC` //TODO: paginate this too
@@ -402,9 +402,9 @@ async function addOneJob (req, res) {
       //author_id - проверка не нужна
       parsedData.author_id = results.rows[0].user_id
       //console.log('addOneJob cp2: ', parsedData)
-      let que2nd = `INSERT INTO "jobs" ("title", "salary_max", "salary_min", "currency", "sex", "age1", "age2", "worktime1", "worktime2", "langs", "edu", "experience", "city", "jobtype", "description", "author_id") VALUES
-                    ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16)`
-      let params2nd = [parsedData.title, parsedData.salary_max, parsedData.salary_min, parsedData.currency, parsedData.sex, parsedData.age1, parsedData.age2, parsedData.worktime1, parsedData.worktime2, parsedData.langs, parsedData.edu, parsedData.experience, parsedData.city, parsedData.jobtype, parsedData.description, parsedData.author_id]
+      let que2nd = `INSERT INTO "jobs" ("title", "salary_max", "salary_min", "currency", "age1", "age2", "worktime1", "worktime2", "langs", "edu", "experience", "city", "jobtype", "description", "author_id", "contact_tel", "contact_mail") VALUES
+                    ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17)`
+      let params2nd = [parsedData.title, parsedData.salary_max, parsedData.salary_min, parsedData.currency, parsedData.age1, parsedData.age2, parsedData.worktime1, parsedData.worktime2, parsedData.langs, parsedData.edu, parsedData.experience, parsedData.city, parsedData.jobtype, parsedData.description, parsedData.author_id, parsedData.contact_tel, parsedData.contact_mail]
       
       pool.query(que2nd, params2nd, (error2, results2) => {
         if (error2) {
@@ -446,10 +446,10 @@ function validateOneJob (data) {
     parsedData.currency = data.currency
   } else parsedData.currency = 'm'
 
-  //пол - необязат, [m, w или пропуск]
-  if (data.sex && (data.sex === 'm' || data.sex === 'w')) {
-    parsedData.sex = data.sex
-  } else parsedData.sex = ''
+  // //пол - необязат, [m, w или пропуск]
+  // if (data.sex && (data.sex === 'm' || data.sex === 'w')) {
+  //   parsedData.sex = data.sex
+  // } else parsedData.sex = ''
   //возр от - необязат, целое число
   if (data.age1 && isNaN(data.age1) === false && Number(data.age1) > 0 && Number(data.age1) < 250 && Number.isInteger(Number(data.age1))) {
     parsedData.age1 = Number(data.age1)
@@ -502,6 +502,15 @@ function validateOneJob (data) {
   if (data.description && data.description.length > 1 && data.description.length < 501) {
     parsedData.description = data.description
   } else parsedData.description = ''
+  //"contact_tel", "contact_mail", 
+  //contact_tel - не обязат на самом деле; длина до 15 символов
+  if (data.contact_tel && data.contact_tel.length < 16 && /[\+0-9\-]/.test(data.contact_tel)) {
+    parsedData.contact_tel = data.contact_tel
+  } else parsedData.contact_tel = ''
+  //contact_mail - не обязат на самом деле; длина до 40 символов
+  if (data.contact_mail && data.contact_mail.length < 41 && /(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/.test(data.contact_mail)) {
+    parsedData.contact_mail = data.contact_mail
+  } else parsedData.contact_mail = ''
 
   //console.log('validationcp1: ', parsedData)
   return parsedData
@@ -528,9 +537,9 @@ async function addJobs (req, res) {
       //console.log('cp19: ', results)
       //console.log('r: ', req.body[0])
       //console.log('r: ', Array.isArray(req.body[0].langs))
-      let que2nd = `INSERT INTO "jobs" ("title", "salary_max", "salary_min", "currency", "sex", "age1", "age2", "worktime1", "worktime2", "langs", "edu", "experience", "city", "jobtype", "description", "author_id") VALUES`
+      let que2nd = `INSERT INTO "jobs" ("title", "salary_max", "salary_min", "currency", "age1", "age2", "worktime1", "worktime2", "langs", "edu", "experience", "city", "jobtype", "description", "contact_tel", "contact_mail", "author_id") VALUES`
       let params2nd = []
-      let n = 16
+      let n = 17
       let iSkipped = 0
 
       for (let i = 0; i < req.body.length; i++) {
@@ -604,7 +613,7 @@ async function addJobs (req, res) {
         
         
         let j = i - iSkipped
-        que2nd += ` ($${(j * n) + 1}, $${(j * n) + 2}, $${(j * n) + 3}, $${(j * n) + 4}, $${(j * n) + 5}, $${(j * n) + 6}, $${(j * n) + 7}, $${(j * n) + 8}, $${(j * n) + 9}, $${(j * n) + 10}, $${(j * n) + 11}, $${(j * n) + 12}, $${(j * n) + 13}, $${(j * n) + 14}, $${(j * n) + 15}, $${(j * n) + 16}),`
+        que2nd += ` ($${(j * n) + 1}, $${(j * n) + 2}, $${(j * n) + 3}, $${(j * n) + 4}, $${(j * n) + 5}, $${(j * n) + 6}, $${(j * n) + 7}, $${(j * n) + 8}, $${(j * n) + 9}, $${(j * n) + 10}, $${(j * n) + 11}, $${(j * n) + 12}, $${(j * n) + 13}, $${(j * n) + 14}, $${(j * n) + 15}, $${(j * n) + 16}, $${(j * n) + 17}),`
         params2nd = [
           ...params2nd,
           ...Object.values(parsedData)

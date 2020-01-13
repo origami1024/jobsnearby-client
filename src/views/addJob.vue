@@ -2,7 +2,7 @@
   <div class="addJob">
     <transition name="bounce">
       <div v-if="role === 'company' && sent == 'none'" class="authed" :key="1">
-        {{job.salaryOn}}
+        <p style="fontSize: 20px; marginBottom: 22px">{{pageType}}</p>
         <div class="line">
           <p class="star">*</p>
           <p class="startP" style="min-width: 140px; textAlign: left">Название вакансии</p>
@@ -57,11 +57,16 @@
             ]"
             :hint="null"
           />
-          <q-toggle v-model="job.salaryOn" :style="{alignSelf: 'start'}" :hint="null">
+          <q-checkbox style="marginBottom: 12px; alignSelf: center" v-model="job.salaryOn">
+            <q-tooltip>
+              <p style="font-size: 15px; margin: 0">По итогам собеседования</p>
+            </q-tooltip>
+          </q-checkbox>
+          <!-- <q-toggle v-model="job.salaryOn" :style="{alignSelf: 'start'}" :hint="null">
             <q-tooltip>
               <p style="font-size: 15px; margin-bottom: 0">По итогам собеседования</p>
             </q-tooltip>
-          </q-toggle>
+          </q-toggle> -->
         </div>
         <div class="line">
           <p class="star">*</p>
@@ -116,7 +121,7 @@
         <p style="fontSize: 16px; marginBottom: 5px">Описание</p>
         <div class="line">
           <vue-editor
-            v-model="job.reqs"
+            v-model="job.description"
             :editorToolbar="customToolbar"
             style="textAlign: left; width: 100%; backgroundColor: white; marginBottom: 22px"
           />
@@ -128,6 +133,32 @@
             type="textarea"
             style="width: 100%;"
           /> -->
+        </div>
+        <div class="line">
+          <p class="star"> </p>
+          <p class="startP" style="width: 140px; textAlign: left">Опыт</p>
+          <q-input
+            dense
+            outlined
+            bg-color="white"
+            v-model="job.experience"
+            style="marginRight: 10px; width: 55px"
+            label="лет"
+            maxlength="3"
+            :hint="null"
+          />
+        </div>
+        <div class="line">
+          <p class="star"> </p>
+          <p class="startP" style="width: 140px; textAlign: left">Тип занятости</p>
+          <q-select
+            v-model="job.jtype"
+            outlined bg-color="white"
+            dense 
+            :options="jtypeOptions"
+            :hint="null"
+            style="width: 135px"
+          />
         </div>
         <div class="line">
           <p class="star"> </p>
@@ -143,50 +174,36 @@
         </div>
         <div class="line">
           <p class="star"> </p>
-          <p class="startP" style="width: 140px; textAlign: left">Опыт</p>
+          <p class="startP" style="width: 140px; textAlign: left">Образование</p>
           <q-input
             dense
             outlined
             bg-color="white"
-            v-model="job.experience"
+            v-model="job.edu"
             style="marginRight: 10px"
             :hint="null"
           />
         </div>
         <div class="line">
           <p class="star"> </p>
-          <p class="startP" style="width: 140px; textAlign: left">Тип занятости</p>
+          <p class="startP" style="width: 140px; textAlign: left">Языки</p>
           <q-select
-            v-model="job.jtype"
-            outlined bg-color="white"
-            dense 
-            :options="jtypeOptions"
-            :hint="null"
-            style="width: 135px"
-          />
-          <!-- <q-input
+            multiple
+            use-chips
             dense
             outlined
             bg-color="white"
-            v-model="job.contact_mail"
-            style="marginRight: 10px"
+            :style="{width: '400px'}"
+            max-values="3"
+            v-model="job.langs"
+            :options="langOptions"
             :hint="null"
-          /> -->
+          />
         </div>
         <!-- <div class="line">
           <q-select dense v-model="job.sex" :options="sexOptions" label="Пол" />
         </div>
-        <div class="line">
-          <q-select
-            multiple
-            use-chips
-            :style="{width: '100%'}"
-            label="Языки"
-            max-values="3"
-            v-model="job.langs"
-            :options="langOptions"
-          />
-        </div>
+        
         <div class="line">
           <q-input :style="{width: '250px'}" dense filled v-model="job.edu" label="Образование" :hint="null"/>
         </div>
@@ -206,15 +223,15 @@
             style="width: 100%;"
           />
         </div> -->
-        <q-btn style="marginTop: 10px" color="primary" label="Разместить вакансию" @click="addOneJob"/>
+        <q-btn style="marginTop: 0px" color="primary" label="Разместить вакансию" @click="addOneJob"/>
       </div>
       <div v-else-if="sent == 'good'" :key="2">
         <p>Вакансия успешно добавлена</p>
-        <q-btn color="primary" @click="sent='none'" label="Загрузить еще одну"/>
+        <q-btn color="primary" @click="sent='none'; resetFields()" label="Загрузить еще одну"/>
       </div>
       <div v-else-if="sent == 'fail'" :key="3">
         <p>Ошибка на сервере, вакансия не добавлена</p>
-        <q-btn color="primary" @click="sent='none'" label="Загрузить еще одну"/>
+        <q-btn color="primary" @click="sent='none'; resetFields()" label="Загрузить еще одну"/>
       </div>
       <div v-else :key="4">
         Авторизируйтесь, для возможности загрузки вакансий
@@ -229,7 +246,26 @@ import axios from 'axios'
 const config = require('@/configs/main_config')
 
 let stringOptions = ["Ашхабад", "Дашогуз", "Мары", "Туркменабад", "Туркменбаши"]
-
+let jobInit = {
+  title: '',
+  salary_min: '',
+  salary_max: '',
+  currency: {label: 'манат', value: 'm'},
+  salaryOn: false,
+  city: '',
+  age1: '',
+  age2: '',
+  worktime1: '',
+  worktime2: '',
+  sex: {label: "Не имеет значения", value: ''},
+  langs: [],
+  edu: '',
+  experience: '',
+  description: '',
+  contact_mail: '',
+  contact_tel: '',
+  jtype: {label: "", value: ''},
+}
 
 import { VueEditor } from "vue2-editor"
 
@@ -245,6 +281,7 @@ export default {
   },
   data() {
     return {
+      pageType: 'Создать новую вакансию',
       customToolbar: [
         ["bold", "italic", "underline"],
         [{ size: [ 'small', false, 'large']}],
@@ -252,27 +289,7 @@ export default {
         [{ 'align': [] }],
         ['clean']
       ],
-      job: {
-        title: '',
-        salary_min: '',
-        salary_max: '',
-        currency: {label: 'манат', value: 'm'},
-        salaryOn: false,
-        city: '',
-        age1: '',
-        age2: '',
-        worktime1: '',
-        worktime2: '',
-        sex: {label: "Не имеет значения", value: ''},
-        langs: [],
-        edu: '',
-        experience: '',
-        description: '',
-        contact_mail: '',
-        contact_tel: '',
-        jtype: {label: "", value: ''},
-        reqs: ``
-      },
+      job: Object.assign({}, jobInit),
       sent: 'none',
       sexOptions: [{label: "Не имеет значения", value: ''}, {label: "Муж", value: 'm'}, {label: "Жен", value: 'w'},],
       langOptions: ["Русский", "Английский", "Немецкий", "Французкий"],
@@ -289,6 +306,9 @@ export default {
     // }
   },
   methods:{
+    resetFields() {
+      this.job = Object.assign({}, jobInit)
+    },
     logger1() {
       console.log(this.editorContent)
     },
@@ -298,7 +318,7 @@ export default {
       if (j.salary_min > j.salary_max) j.salary_max = j.salary_min
       j.sex = j.sex.value
       j.currency = j.currency.value
-      if (j.title != '' && j.title.length > 1 && (j.salary_max > 0 || j.salaryOn) && j.reqs.length > 15) {
+      if (j.title != '' && j.title.length > 1 && (j.salary_max > 0 || j.salaryOn) && j.description.length > 15) {
         axios
           .post(config.jobsUrl + '/oneJob', j, {headers: {'Content-Type' : 'application/json' }, withCredentials: true,})
           .then(response => {
