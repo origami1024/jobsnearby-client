@@ -41,7 +41,8 @@ import {
   QSeparator,
   QTooltip,
   QMenu,
-  ClosePopup
+  ClosePopup,
+  QExpansionItem
 } from 'quasar'
 
 Vue.use(Quasar, {
@@ -83,7 +84,8 @@ Vue.use(Quasar, {
     QBadge,
     QSeparator,
     QTooltip,
-    QMenu
+    QMenu,
+    QExpansionItem
   },
   directives: {
     ClosePopup

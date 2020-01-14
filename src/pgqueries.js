@@ -50,7 +50,7 @@ const getJobs = (req, res) => {
   else if (req.query.jtype == 'v') jtype = "'v'"
   
   let exp_line
-  if (req.query.exp == '0') exp_line = ` AND jobs.experience = '0'`
+  if (req.query.exp == '0') exp_line = ` AND jobs.experience = 0`
   else if (req.query.exp == '1-3') exp_line = ` AND jobs.experience BETWEEN 1 AND 3`
   else if (req.query.exp == '3-5') exp_line = ` AND jobs.experience BETWEEN 3 AND 5`
   else if (req.query.exp == '5') exp_line = ` AND jobs.experience > 5`
@@ -504,7 +504,7 @@ function validateOneJob (data) {
   } else parsedData.description = ''
   //"contact_tel", "contact_mail", 
   //contact_tel - не обязат на самом деле; длина до 15 символов
-  if (data.contact_tel && data.contact_tel.length < 16 && /[\+0-9\-]/.test(data.contact_tel)) {
+  if (data.contact_tel && data.contact_tel.length < 16 && /^[\+0-9\-\(\)]*$/.test(data.contact_tel)) {
     parsedData.contact_tel = data.contact_tel
   } else parsedData.contact_tel = ''
   //contact_mail - не обязат на самом деле; длина до 40 символов

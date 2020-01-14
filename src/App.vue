@@ -10,6 +10,9 @@
         <!-- <q-avatar size="46px">
           <img src="https://cdn.quasar.dev/app-icons/icon-128x128.png" />  
         </q-avatar> -->
+        <q-tooltip>
+            <p style="font-size: 15px; margin: 0">Главная</p>
+          </q-tooltip>
       </q-btn>
       
       <div id="nav" shrink stretch>
@@ -23,12 +26,13 @@
           <q-btn flat label="Вход"/>
         </router-link> -->
         <!-- <router-link to="/jobslist">Вакансии</router-link> | -->
-        <router-link @click.native="getOwnJobs" class="r-link" v-if="role === 'company'" to="/uploads">
-          <q-btn label="Публикация вакансий(xls)"/>
-        </router-link>
+        
         <router-link class="r-link" v-if="role === 'company'" to="/addJob">
           <!-- <q-btn round icon="add_circle_outline"/> -->
           <q-icon round glossy name="add_circle_outline" size="40px"></q-icon>
+          <q-tooltip>
+            <p style="font-size: 15px; margin: 0">Создать новую вакансию</p>
+          </q-tooltip>
         </router-link>
         <!-- <router-link to="/about">Контакты</router-link> | -->
         
@@ -39,7 +43,11 @@
           <div> {{user}} ({{user_id}})</div> -->
           <q-btn-group>
             <q-btn push glossy :color="$route.path == '/registration' ? 'purple' : 'gray'" :text-color="$route.path == '/registration' ? 'white' : 'black'" no-caps v-if="role === 'guest'" @click.native="regState='login'" label="Вход" to="/registration"/>
-            <q-btn push glossy no-caps v-if="user_id !== -1" @click="logout" icon="logout"/>
+            <q-btn push glossy no-caps v-if="user_id !== -1" @click="logout" icon="logout">
+              <q-tooltip>
+                <p style="font-size: 15px; margin: 0">Выйти</p>
+              </q-tooltip>
+            </q-btn>
             <q-btn push glossy @click="getFavedFull" :color="$route.path == '/subprofile' ? 'purple' : 'gray'" :text-color="$route.path == '/subprofile' ? 'white' : 'black'" no-caps icon="person" v-if="role === 'subscriber'" to="/subprofile"/>
             <q-btn push glossy @click.native="getOwnJobs" no-caps icon="person" v-if="role === 'company'" to="/entprofile"/>
           </q-btn-group>
@@ -79,7 +87,7 @@
       />
     </header>
     <keep-alive> <!-- @stepChange="stepChange" :step="step" -->
-      <router-view @delJob="deleteJobById" :likedJobsList="likedJobsList" :likedJobs="likedJobs" @favOne="favOne" @getOwnJobs="getOwnJobs" :ownJobs="ownJobs" @authed="authIt" @regStateUpd="regStateUpd" :regState="regState" class="r-view" :jobsFullcount="jobsFullcount" :page_current="page_current" :pages="pages_count" :featuredJobslist="featuredJobslist" :pending="ajaxLoading" @updQue="updQue" :role="role" :username="username" :surname="surname" :insearch="insearch" :company="company" :isagency="isagency" :jobslist="jobslist" @refresh="refreshjobs" :uid="user_id" :authed="user_id !== -1" />
+      <router-view @scrollTo="scrollTo" @delJob="deleteJobById" :likedJobsList="likedJobsList" :likedJobs="likedJobs" @favOne="favOne" @getOwnJobs="getOwnJobs" :ownJobs="ownJobs" @authed="authIt" @regStateUpd="regStateUpd" :regState="regState" class="r-view" :jobsFullcount="jobsFullcount" :page_current="page_current" :pages="pages_count" :featuredJobslist="featuredJobslist" :pending="ajaxLoading" @updQue="updQue" :role="role" :username="username" :surname="surname" :insearch="insearch" :company="company" :isagency="isagency" :jobslist="jobslist" @refresh="refreshjobs" :uid="user_id" :authed="user_id !== -1" />
     </keep-alive>
     <footer class="main__footer">
       <q-btn push color="primary" label="Написать нам" to="/Feedback"/>
@@ -180,6 +188,13 @@ export default {
         .then(response => {
           this.ajaxLoading = false
         })
+    },
+    scrollTo(yyy) {
+      let el = document.documentElement
+      const target = getScrollTarget(el)
+      const offset = el.offsetTop + yyy
+      const duration = 250
+      setScrollPosition(target, offset, duration)
     },
     scrollTop() {
       let el = document.documentElement
@@ -335,12 +350,11 @@ export default {
     }
   },
   watch:{
-    // $route (to, from){
-    //   console.log(to)
-    //   if (to === '/usbprofile') {
-    //     this.getFavedFull()
-    //   }
-    // }
+    $route (to, from){
+      if (to.name === 'uploads') {
+        this.getOwnJobs()
+      }
+    }
   }
 }
 </script>
