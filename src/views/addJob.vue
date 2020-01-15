@@ -12,7 +12,7 @@
           </q-btn>
           
         </router-link>
-        <p style="fontSize: 20px; marginBottom: 22px">{{pageType}}</p>
+        <p style="fontSize: 20px; marginBottom: 22px">{{pageTypes[newJobsPageType].label}} {{jobEditId != -1 ? jobEditId : ''}}</p>
         <div class="line">
           <p class="star">*</p>
           <p class="startP" style="min-width: 140px; textAlign: left">Название вакансии</p>
@@ -111,11 +111,11 @@
             dense
             outlined
             bg-color="white"
-            v-model="job.contact_phone"
+            v-model="job.contact_tel"
             label="Phone"
             type="tel"
             :hint="null"
-            ref="contact_phone"
+            ref="contact_tel"
             @input="contactsValidated = true; $refs.contact_mail.validate()"
             :rules="[
               val => val.length < 16 || 'Максимум 15 символов',
@@ -291,15 +291,15 @@
             />
           </div>
         </q-expansion-item>
-        <q-btn style="marginTop: 0px" color="primary" label="Разместить вакансию" @click="tryAdd"/>
+        <q-btn style="marginTop: 0px" color="primary" :label="newJobsPageType == 'new' ? 'Разместить вакансию' : 'Отправить изменения'" @click="tryAdd"/>
       </div>
       <div v-else-if="sent == 'good'" :key="2">
         <p>Вакансия успешно добавлена</p>
-        <q-btn color="primary" @click="sent='none'; resetFields()" label="Загрузить еще одну"/>
+        <q-btn color="primary" @click="$emit('setSentState', 'none'); resetFields(); $emit('newJobInit')" label="Загрузить еще одну"/>
       </div>
       <div v-else-if="sent == 'fail'" :key="3">
         <p>Ошибка на сервере, вакансия не добавлена</p>
-        <q-btn color="primary" @click="sent='none'; resetFields()" label="Загрузить еще одну"/>
+        <q-btn color="primary" @click="$emit('setSentState', 'none'); resetFields(); $emit('newJobInit')" label="Загрузить еще одну"/>
       </div>
       <div v-else :key="4">
         Авторизируйтесь, для возможности загрузки вакансий
@@ -331,7 +331,7 @@ let jobInit = {
   experience: {label: "Не имеет значения", value: -1},
   description: '',
   contact_mail: '',
-  contact_phone: '',
+  contact_tel: '',
   jtype: {label: "Постоянная", value: 'c'},
 }
 
@@ -346,6 +346,10 @@ export default {
     uid: Number,
     authed: {type: Boolean, default: false},
     role: String,
+    newJobsPageType: {type: String, default: 'new'},
+    jobEditId: Number,
+    jobEditedObj: Object,
+    sent: {type: String, default: 'none'},
   },
   data() {
     return {
@@ -357,7 +361,10 @@ export default {
         {label: "от 5 лет", value: 6}
       ],
       lazyRulesAll: true,
-      pageType: 'Создать новую вакансию',
+      pageTypes: {
+        'new': {label: 'Создать новую вакансию'},
+        'edit': {label: 'Редактирование вакансии'}
+      },
       customToolbar: [
         ["bold", "italic", "underline"],
         [{ size: [ 'small', false, 'large']}],
@@ -368,7 +375,6 @@ export default {
       job: Object.assign({}, jobInit),
       contactsValidated: true,
       descError: '',
-      sent: 'none',
       sexOptions: [{label: "Не имеет значения", value: ''}, {label: "Муж", value: 'm'}, {label: "Жен", value: 'w'},],
       langOptions: ["Туркменский", "Русский", "Китайский", "Английский", "Немецкий", "Французкий"],
       cityOptions: stringOptions,
@@ -382,6 +388,22 @@ export default {
     // myjobslist: function () {
     //   return this.jobslist.filter(job => job.author_id === this.uid)
     // }
+  },
+  watch: {
+    jobEditedObj(newObj) {
+      if (this.newJobsPageType == 'edit') {
+        this.job = Object.assign({}, jobInit, newObj)
+        
+        console.log('jobEditorWatcher cp')
+        
+      } else {
+        this.job = Object.assign({}, jobInit)
+        
+      }
+    }
+  },
+  mounted(){
+    
   },
   methods:{
     descUpd(e) {
@@ -407,6 +429,7 @@ export default {
       this.lazyRulesAll = false
       let scrollPos
 
+      console.log('cp1111')
       //title
       this.$refs.title.validate()
       if (this.$refs.title.hasError) {
@@ -420,13 +443,13 @@ export default {
       }
       //contacts
       this.$refs.contact_mail.validate()
-      this.$refs.contact_phone.validate()
-      if ((this.job.contact_mail && this.job.contact_mail.length > 0) || (this.job.contact_phone && this.job.contact_phone.length > 0))
+      this.$refs.contact_tel.validate()
+      if ((this.job.contact_mail && this.job.contact_mail.length > 0) || (this.job.contact_tel && this.job.contact_tel.length > 0))
         this.contactsValidated = true
       else
         this.contactsValidated = false
 
-      if (this.$refs.contact_mail.hasError || this.$refs.contact_phone.hasError || this.contactsValidated == false) {
+      if (this.$refs.contact_mail.hasError || this.$refs.contact_tel.hasError || this.contactsValidated == false) {
         if (!scrollPos) scrollPos = 160
       }
       //city
@@ -456,27 +479,53 @@ export default {
       if (this.$refs.edu.hasError) {
         scrollPos = 480
       }
+      
       if (scrollPos)
         this.$emit('scrollTo', scrollPos)
-      else
-        this.addOneJob()
+      else {
+        if (this.newJobsPageType == 'new') this.addOneJob()
+        else this.editJobSend()
+      }
+        
+    },
+    editJobSend() {
+      let j = Object.assign({}, this.job)
+      if (j.salary_min > j.salary_max) j.salary_max = j.salary_min
+      j.currency = j.currency.value
+      j.experience = j.experience.value
+      j.jtype = j.jtype.value
+      if (j.title != '' && j.title.length > 1) {
+        axios
+          .post(config.jobsUrl + '/updateJob', j, {headers: {'Content-Type' : 'application/json' }, withCredentials: true,})
+          .then(response => {
+            if (response.data === 'OK') {
+              this.$emit('setSentState', 'good')
+              console.log('cp editJob: OK')
+            } else {this.$emit('setSentState', 'fail'); console.log('trespasser')}
+            
+          })
+      } else console.log('NO TITLE in edit')
     },
     addOneJob() {
       //console.dir(this.job)
+      
       let j = Object.assign({}, this.job)
       if (j.salary_min > j.salary_max) j.salary_max = j.salary_min
       j.sex = j.sex.value
       j.currency = j.currency.value
       j.experience = j.experience.value
       j.jtype = j.jtype.value
+      
       if (j.title != '' && j.title.length > 1) {
         axios
           .post(config.jobsUrl + '/oneJob', j, {headers: {'Content-Type' : 'application/json' }, withCredentials: true,})
           .then(response => {
             if (response.data === 'OK') {
-              this.sent = 'good'
+              
+              this.$emit('setSentState', 'good')
               console.log('cp addOneJob: OK')
-            } else {this.sent = 'fail'; console.log('trespasser')}
+              
+            } else {this.$emit('setSentState', 'fail'); console.log('trespasser')}
             
           })
       } else {

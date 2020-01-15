@@ -25,7 +25,7 @@
       >
         <q-tab-panel name="published" class="entprofile__published">
           <h4 class="entprofile__header">Опубликованные вакансии({{ownJobs.length}}):</h4>
-          <JobsTable @delJob="delJob" :jobslist="ownJobs"/>
+          <JobsTable @editJob="editJob" @delJob="delJob" :jobslist="ownJobs"/>
         </q-tab-panel>
         <q-tab-panel name="responses">
         </q-tab-panel>
@@ -87,8 +87,11 @@ export default {
     JobsTable
   },
   methods: {
+    editJob(jid) {
+      console.log('edit jab: ', jid)
+      this.$emit('editJob', jid)
+    },
     delJob(jid) {
-      console.log('fdsf', jid)
       this.$emit('delJob', jid)
     },
     favOne(id) {

@@ -27,7 +27,7 @@
         </router-link> -->
         <!-- <router-link to="/jobslist">Вакансии</router-link> | -->
         
-        <router-link class="r-link" v-if="role === 'company'" to="/addJob">
+        <router-link @click.native="newJobInit" class="r-link" v-if="role === 'company'" to="/addJob">
           <!-- <q-btn round icon="add_circle_outline"/> -->
           <q-icon round glossy name="add_circle_outline" size="40px"></q-icon>
           <q-tooltip>
@@ -87,7 +87,18 @@
       />
     </header>
     <keep-alive> <!-- @stepChange="stepChange" :step="step" -->
-      <router-view @scrollTo="scrollTo" @delJob="deleteJobById" :likedJobsList="likedJobsList" :likedJobs="likedJobs" @favOne="favOne" @getOwnJobs="getOwnJobs" :ownJobs="ownJobs" @authed="authIt" @regStateUpd="regStateUpd" :regState="regState" class="r-view" :jobsFullcount="jobsFullcount" :page_current="page_current" :pages="pages_count" :featuredJobslist="featuredJobslist" :pending="ajaxLoading" @updQue="updQue" :role="role" :username="username" :surname="surname" :insearch="insearch" :company="company" :isagency="isagency" :jobslist="jobslist" @refresh="refreshjobs" :uid="user_id" :authed="user_id !== -1" />
+      <router-view
+        @setSentState="setSentState" :sent="newJobSentState" @newJobInit="newJobInit" :jobEditedObj="jobEditedObj" :jobEditId="jobEditId" :newJobsPageType="newJobsPageType" @editJob="editJob"
+        @scrollTo="scrollTo"
+        @delJob="deleteJobById"
+        :likedJobsList="likedJobsList" :likedJobs="likedJobs"
+        @favOne="favOne"
+        @getOwnJobs="getOwnJobs" :ownJobs="ownJobs"
+        @authed="authIt" @regStateUpd="regStateUpd" :regState="regState"
+        class="r-view"
+        :jobsFullcount="jobsFullcount"
+        :page_current="page_current" :pages="pages_count"
+        :pending="ajaxLoading" @updQue="updQue" :role="role" :username="username" :surname="surname" :insearch="insearch" :company="company" :isagency="isagency" :jobslist="jobslist" @refresh="refreshjobs" :uid="user_id" :authed="user_id !== -1" />
     </keep-alive>
     <footer class="main__footer">
       <q-btn push color="primary" label="Написать нам" to="/Feedback"/>
@@ -109,6 +120,10 @@ const config = require('./configs/main_config')
 export default {
   name: 'App',
   data: ()=>{return {
+    newJobSentState: 'none',
+    newJobsPageType: 'new',
+    jobEditId : -1,
+    jobEditedObj: {},
     app_lng: 'RU',
     regState: 'reg',
     modalShown: 'none',
@@ -126,7 +141,6 @@ export default {
     jobsFullcount: 0,
     perpage: 25,
     page_current: 1,
-    featuredJobslist: [],
     query: '',
     ajaxLoading: false,
     ownJobs: [],
@@ -176,6 +190,56 @@ export default {
     this.getFavedFull()
   },
   methods: {
+    setSentState(state) {
+      console.log('cpcpcp: ', state)
+      this.newJobSentState = state
+    },
+    newJobInit() {
+      console.log('tr')
+      this.newJobsPageType = 'new'
+      this.jobEditId = -1
+      this.jobEditedObj = {}
+      this.newJobSentState = 'none'
+    },
+    editJob(jid) {
+      this.newJobsPageType = 'edit'
+      this.jobEditId = jid
+      //title: this.ownJobs.find(j => j.job_id == jid).title,
+      this.jobEditedObj = this.ownJobs.find(j => j.job_id == jid)
+
+      let jtypeOptions = [
+        {label: "Постоянная", value: 'c'},
+        {label: "Временная", value: 'v'}]
+      let expOptions = [
+        {label: "Не имеет значения", value: -1},
+        {label: "Без опыта", value: 0},
+        {label: "от 1 до 3 лет", value: 2}, 
+        {label: "от 3 до 5 лет", value: 4},
+        {label: "от 5 лет", value: 6}
+      ]
+      let curOpts = [
+        {label: 'манат', value: 'm'},      
+        {label: '$', value: '$'},
+      ]
+      console.log(this.jobEditedObj.contact_tel)
+      
+      let searched
+
+      searched = curOpts.find(c => c.value == this.jobEditedObj.currency)
+      if (!searched) searched = curOpts[0]
+      this.jobEditedObj.currency = searched
+      
+      searched = expOptions.find(c => c.value == this.jobEditedObj.experience)
+      if (!searched) searched = expOptions[0]
+      this.jobEditedObj.experience = searched
+
+      searched = jtypeOptions.find(c => c.value == this.jobEditedObj.jtype)
+      if (!searched) searched = jtypeOptions[0]
+      this.jobEditedObj.jtype = searched
+
+      //console.log(this.jobEditedObj)
+      this.$router.push('/addJob')
+    },
     deleteJobById(jid) {
       //console.log('cpcpcp ', jid)
       let indx = this.ownJobs.indexOf(this.ownJobs.find(val=>val.job_id == jid))
@@ -321,7 +385,7 @@ export default {
           this.perpage = Number(response.data.perpage)
           this.page_current = Number(response.data.page)
           //console.log('cppage: ', response.data.page)
-          if (param === 'init') this.featuredJobslist = response.data.rows
+          //if (param === 'init') this.featuredJobslist = response.data.rows
           this.ajaxLoading = false
           
         })
@@ -353,7 +417,12 @@ export default {
     $route (to, from){
       if (to.name === 'uploads') {
         this.getOwnJobs()
+      } else
+      if (to.name === 'addjob') {
+        console.log('1')
+        this.newJobSentState = 'none'
       }
+
     }
   }
 }

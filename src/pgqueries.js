@@ -377,6 +377,48 @@ async function favOne (req, res) {
 }
 
 
+async function updateJob (req, res) {
+  if (req.cookies.session && req.cookies.session.length > 50) {
+    let que1st = `SELECT user_id FROM "users" WHERE "auth_cookie" = ($1)`
+    let params1st = [req.cookies.session]
+    pool.query(que1st, params1st, (error, results) => {
+      if (error) {
+        res.send('step2')
+        console.log('addJobs Error: ', error)
+      }
+      if (results.rows.length < 1) {
+        //Если юзера с таким куки не найдено, то выходим из функции прост
+        res.send('step3')
+        return false
+      }
+
+      let jid = req.body.job_id
+      if (isNaN(jid) != false || !Number.isInteger(Number(jid)) || jid < 0) {
+        res.send('wrong job id: ' + jid)
+        console.log('cp34: ', jid)
+        return false
+      }
+      let parsedData = validateOneJob(req.body)
+      if (parsedData == false) return false
+      //parsedData.author_id = results.rows[0].user_id - NO NEED TO UPDATE THIS FIELD
+      //`UPDATE "users" SET auth_cookie = $1, last_logged_in = NOW() where user_id = $2`
+      let que2nd = `UPDATE "jobs" SET ("title", "salary_max", "salary_min", "currency", "age1", "age2", "worktime1", "worktime2", "langs", "edu", "experience", "city", "jobtype", "description", "contact_tel", "contact_mail") =
+                    ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16)
+                    WHERE author_id = $17 AND job_id = $18`
+      let params2nd = [parsedData.title, parsedData.salary_max, parsedData.salary_min, parsedData.currency, parsedData.age1, parsedData.age2, parsedData.worktime1, parsedData.worktime2, parsedData.langs, parsedData.edu, parsedData.experience, parsedData.city, parsedData.jobtype, parsedData.description, parsedData.contact_tel, parsedData.contact_mail, results.rows[0].user_id, jid]
+
+      pool.query(que2nd, params2nd, (error2, results2) => {
+        if (error2) {
+          console.log('updateJob, err2: ', error2)
+          res.send('error')
+          return false
+        }
+        res.send('OK')
+      })
+    })
+  } else {res.send('auth fail edit')}
+}
+
 
 async function addOneJob (req, res) {
   //
@@ -416,7 +458,7 @@ async function addOneJob (req, res) {
       })
     })
 
-  }
+  } else {res.send('auth fail')}
 }
 
 
@@ -504,9 +546,11 @@ function validateOneJob (data) {
   } else parsedData.description = ''
   //"contact_tel", "contact_mail", 
   //contact_tel - не обязат на самом деле; длина до 15 символов
+  console.log('cp10: ', data.contact_tel)
   if (data.contact_tel && data.contact_tel.length < 16 && /^[\+0-9\-\(\)]*$/.test(data.contact_tel)) {
     parsedData.contact_tel = data.contact_tel
   } else parsedData.contact_tel = ''
+  console.log('cp11: ', parsedData.contact_tel)
   //contact_mail - не обязат на самом деле; длина до 40 символов
   if (data.contact_mail && data.contact_mail.length < 41 && /(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/.test(data.contact_mail)) {
     parsedData.contact_mail = data.contact_mail
@@ -748,5 +792,6 @@ module.exports = {
   getFaved,
   getFavedFull,
   hitJobById,
-  deleteJobById
+  deleteJobById,
+  updateJob
 }

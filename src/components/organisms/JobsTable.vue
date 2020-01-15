@@ -44,6 +44,7 @@
               size="sm"
               color="green"
               round
+              @click="$emit('editJob', item.job_id)"
             />
             <q-btn
               icon="delete_forever"
