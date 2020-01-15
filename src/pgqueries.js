@@ -4,7 +4,7 @@ const pool = new Pool({
   connectionString: process.env.DATABASE_URL || `postgres://postgres:123456@localhost:5433/jobsnearby`
 })
 
-
+const titleRegex = /^[\wа-яА-ЯÇçÄä£ſÑñňÖö$¢Üü¥ÿýŽžŞş\s\-\+\$\%\(\)\№\:\#]*$/
 
 
 
@@ -16,7 +16,7 @@ const getJobs = (req, res) => {
   let txt
   if (req.query.txt != undefined && 
       req.query.txt.length > 0 && 
-      /^[\wа-яА-ЯÇçÄä£ſÑñňÖö$¢Üü¥ÿýŽžŞş\s\\-]*$/.test(req.query.txt)) {
+      titleRegex.test(req.query.txt)) {
     txt = '%' + req.query.txt.toLowerCase() + '%'
   }
   
@@ -466,7 +466,7 @@ async function addOneJob (req, res) {
 function validateOneJob (data) {
   let parsedData = {}
   //title - обязат поле, без него вакансия пропускается; длина от 2 до 75 символов
-  if (data.title && data.title.length > 1 && data.title.length < 76) {
+  if (data.title && data.title.length > 1 && data.title.length < 76 && titleRegex.test(data.title)) {
     parsedData.title = data.title
   } else return false//{ iSkipped += 1; continue}
   //salary_max - необязат, целое число
