@@ -1,37 +1,24 @@
 <template>
   <div v-if="role === 'company'" class="entprofile">
     <div class="entprofile__inner">
-      <q-tabs
-        align="justify"
-        v-model="tab"
-        class="bg-primary text-white shadow-2 tabs"
-        dense
-      >
-        <q-tab alert name="published" icon="list" label="Мои публикации">
-        </q-tab>
-        <q-tab disable name="responses" icon="work" label="Отклики">
-          <q-badge color="red" floating>0</q-badge>
-        </q-tab>
-        <q-tab disable name="starred" icon="assignment_ind" label="Избранные резюме">
-        </q-tab>
-        <q-tab name="settings" icon="settings" label="Личные данные">
-        </q-tab>
-      </q-tabs>
+      <EntProfileNav :localRoute="tab" @setLocalRoute="setLocalRoute"/>
       <q-tab-panels
+        class="qtpans"
+        @before-transition="changeTabs"
         v-model="tab"
         animated
         transition-prev="jump-up"
         transition-next="jump-up"
       >
-        <q-tab-panel name="published" class="entprofile__published">
+        <q-tab-panel name="published" class="entprofile__published entprofile__mid">
           <h4 class="entprofile__header">Опубликованные вакансии({{ownJobs.length}}):</h4>
           <JobsTable @editJob="editJob" @delJob="delJob" :jobslist="ownJobs"/>
         </q-tab-panel>
-        <q-tab-panel name="responses">
+        <q-tab-panel name="responses" class="entprofile__mid">
         </q-tab-panel>
-        <q-tab-panel name="starred">
+        <q-tab-panel name="cabout" class="entprofile__mid">
         </q-tab-panel>
-        <q-tab-panel class="entprofile__settings" name="settings">
+        <q-tab-panel class="entprofile__settings entprofile__mid" name="settings">
           <p>Добавить контакты</p>
           <q-input dense class="entprofile__inp" outlined bottom-slots v-model="contacts1" label="Контакты" counter maxlength="30"/>
           <q-input dense v-show="contacts_count > 1" class="entprofile__inp" outlined bottom-slots v-model="contacts2" label="Контакты" counter maxlength="30"/>
@@ -60,6 +47,7 @@
 
 <script>
 import JobsTable from '@/components/organisms/JobsTable.vue'
+import EntProfileNav from '@/components/molecules/EntProfileNav.vue'
 
 export default {
   name: 'EntProfile',
@@ -84,9 +72,17 @@ export default {
   }},
   components: {
     //JobsList,
-    JobsTable
+    JobsTable,
+    EntProfileNav
   },
   methods: {
+    changeTabs(newT) {
+      //if (newT == 'published') this.$emit('getOwnJobs')
+      newT != 'published' || this.$emit('getOwnJobs')
+    },
+    setLocalRoute(rou) {
+      this.tab = rou
+    },
     editJob(jid) {
       console.log('edit jab: ', jid)
       this.$emit('editJob', jid)
@@ -117,6 +113,11 @@ export default {
 </script>
 
 <style scoped lang="stylus">
+.qtpans
+  width 100%
+  min-height 75vh
+  border 1px solid #eee
+  border-radius 4px
 .entprofile
   max-width 900px
   padding 0 10px
@@ -124,6 +125,11 @@ export default {
   display flex
   flex-direction column
   justify-content center
+  &__inner
+    display flex
+  &__mid
+    width 100%
+    
   p
     margin-bottom 15px
   &__inp
@@ -133,26 +139,26 @@ export default {
     justify-content flex-end
     font-size 18px
   .tabs
-    border-top-left-radius 15px
-    border-top-right-radius 15px
+    // border-top-left-radius 15px
+    // border-top-right-radius 15px
     justify-content center
     animation-duration 0.3s
     transition-duration 0.3s
   .entprofile__published
     width 100%
-    background-color #eee
+    //background-color #eee
     display flex
     flex-direction column
     align-items flex-start
-    border-bottom-left-radius 15px
-    border-bottom-right-radius 15px
+    // border-bottom-left-radius 15px
+    // border-bottom-right-radius 15px
   .entprofile__settings
-    background-color #eee
+    //background-color #eee
     display flex
     flex-direction column
     align-items flex-end
-    border-bottom-left-radius 15px
-    border-bottom-right-radius 15px
+    // border-bottom-left-radius 15px
+    // border-bottom-right-radius 15px
   .anim1
     animation-duration 0.3s
     transition-duration 0.3s
