@@ -202,10 +202,11 @@ export default {
       this.newJobSentState = 'none'
     },
     editJob(jid) {
+      console.log('editJOBCP')
       this.newJobsPageType = 'edit'
       this.jobEditId = jid
       //title: this.ownJobs.find(j => j.job_id == jid).title,
-      this.jobEditedObj = this.ownJobs.find(j => j.job_id == jid)
+      let tmpObj = this.ownJobs.find(j => j.job_id == jid)
 
       let jtypeOptions = [
         {label: "Постоянная", value: 'c'},
@@ -221,22 +222,21 @@ export default {
         {label: 'манат', value: 'm'},      
         {label: '$', value: '$'},
       ]
-      console.log(this.jobEditedObj.contact_tel)
       
       let searched
 
-      searched = curOpts.find(c => c.value == this.jobEditedObj.currency)
+      searched = curOpts.find(c => c.value == tmpObj.currency)
       if (!searched) searched = curOpts[0]
-      this.jobEditedObj.currency = searched
+      tmpObj.currency = searched
       
-      searched = expOptions.find(c => c.value == this.jobEditedObj.experience)
+      searched = expOptions.find(c => c.value == tmpObj.experience)
       if (!searched) searched = expOptions[0]
-      this.jobEditedObj.experience = searched
+      tmpObj.experience = searched
 
-      searched = jtypeOptions.find(c => c.value == this.jobEditedObj.jtype)
+      searched = jtypeOptions.find(c => c.value == tmpObj.jtype)
       if (!searched) searched = jtypeOptions[0]
-      this.jobEditedObj.jtype = searched
-
+      tmpObj.jtype = searched
+      this.jobEditedObj = Object.assign({}, tmpObj)
       //console.log(this.jobEditedObj)
       this.$router.push('/addJob')
     },
@@ -419,8 +419,9 @@ export default {
         this.getOwnJobs()
       } else
       if (to.name === 'addjob') {
-        console.log('1')
+        console.log('going to addJOB')
         this.newJobSentState = 'none'
+        
       }
 
     }

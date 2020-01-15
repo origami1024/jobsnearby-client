@@ -402,8 +402,8 @@ async function updateJob (req, res) {
       if (parsedData == false) return false
       //parsedData.author_id = results.rows[0].user_id - NO NEED TO UPDATE THIS FIELD
       //`UPDATE "users" SET auth_cookie = $1, last_logged_in = NOW() where user_id = $2`
-      let que2nd = `UPDATE "jobs" SET ("title", "salary_max", "salary_min", "currency", "age1", "age2", "worktime1", "worktime2", "langs", "edu", "experience", "city", "jobtype", "description", "contact_tel", "contact_mail") =
-                    ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16)
+      let que2nd = `UPDATE "jobs" SET ("time_updated", "title", "salary_max", "salary_min", "currency", "age1", "age2", "worktime1", "worktime2", "langs", "edu", "experience", "city", "jobtype", "description", "contact_tel", "contact_mail") =
+                    (NOW(), $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16)
                     WHERE author_id = $17 AND job_id = $18`
       let params2nd = [parsedData.title, parsedData.salary_max, parsedData.salary_min, parsedData.currency, parsedData.age1, parsedData.age2, parsedData.worktime1, parsedData.worktime2, parsedData.langs, parsedData.edu, parsedData.experience, parsedData.city, parsedData.jobtype, parsedData.description, parsedData.contact_tel, parsedData.contact_mail, results.rows[0].user_id, jid]
 

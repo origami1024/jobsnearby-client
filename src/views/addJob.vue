@@ -391,6 +391,7 @@ export default {
   },
   watch: {
     jobEditedObj(newObj) {
+      console.log('jobEditorWatcher cp0')
       if (this.newJobsPageType == 'edit') {
         this.job = Object.assign({}, jobInit, newObj)
         
@@ -403,7 +404,13 @@ export default {
     }
   },
   mounted(){
-    
+    console.log('cpmount: ', this.jobEditedObj)
+    if (this.newJobsPageType == 'edit') {
+        this.job = Object.assign({}, jobInit, this.jobEditedObj)
+    } else {
+      this.job = Object.assign({}, jobInit)
+      
+    }
   },
   methods:{
     descUpd(e) {
