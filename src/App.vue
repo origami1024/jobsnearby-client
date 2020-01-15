@@ -237,6 +237,10 @@ export default {
       if (!searched) searched = jtypeOptions[0]
       tmpObj.jtype = searched
       this.jobEditedObj = Object.assign({}, tmpObj)
+
+      console.log('mail ', this.jobEditedObj.contact_mail)
+      console.log('tel ', this.jobEditedObj.contact_tel)
+      console.log('obj ', this.jobEditedObj)
       //console.log(this.jobEditedObj)
       this.$router.push('/addJob')
     },
