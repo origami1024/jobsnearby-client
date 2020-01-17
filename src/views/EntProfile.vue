@@ -14,7 +14,12 @@
           <h4 class="entprofile__header">Опубликованные вакансии({{ownJobs.length}}):</h4>
           <JobsStats @editJob="editJob" @delJob="delJob" :jobslist="ownJobs"/>
         </q-tab-panel>
-        <q-tab-panel name="responses" class="entprofile__mid">
+        <q-tab-panel name="responses" class="entprofile__mid" style="display: flex; alignItems: flex-end; justifyContent: center">
+          <div class="line">
+            <q-btn color="positive" style="marginRight: 10px">Пригласить</q-btn>
+            <q-btn color="negative" style="marginRight: 10px">Отказать</q-btn>
+            <q-btn color="primary">Просмотрено</q-btn>
+          </div>
         </q-tab-panel>
         <q-tab-panel name="cabout" class="entprofile__mid">
         </q-tab-panel>
@@ -67,7 +72,7 @@ export default {
     newemail: '',
     newpw: '',
     isPwd: true,
-    tab: 'settings',
+    tab: 'published',
     editable: false
   }},
   components: {
@@ -97,6 +102,7 @@ export default {
   mounted(){
     this.newusername = this.username
     this.newsurname = this.surname
+    setTimeout(()=>{this.$emit('getOwnJobs')},50)
   },
   watch: {
     username(newu) {
@@ -139,6 +145,7 @@ export default {
     justify-content flex-end
     align-self center
     font-size 18px
+    padding-bottom 15px
   .tabs
     // border-top-left-radius 15px
     // border-top-right-radius 15px

@@ -13,7 +13,7 @@
           </tr>
         </thead>
         <tr class="jobstat" v-for="item in jobslist" :key="item.job_id">
-          <td>{{item.title}}</td>
+          <td><a class="link1" :href="'/jobBy.Id?id=' + item.job_id">{{item.title}}</a></td>
           <td>{{item.hits_all}}</td>
           <td>{{item.hits_uniq}}</td>
           <td>0</td>
@@ -94,5 +94,12 @@ export default {
   .jobstat
     &:hover
       transition-duration 0.3s
-      background-color #eee
+      background-color #359DFD
+      color white
+      .link1
+        color white
+  .link1
+    text-decoration none
+    color #248CEC
+    transition-duration 0.6s
 </style>

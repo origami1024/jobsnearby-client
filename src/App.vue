@@ -49,7 +49,8 @@
               </q-tooltip>
             </q-btn>
             <q-btn push glossy @click="getFavedFull" :color="$route.path == '/subprofile' ? 'purple' : 'gray'" :text-color="$route.path == '/subprofile' ? 'white' : 'black'" no-caps icon="person" v-if="role === 'subscriber'" to="/subprofile"/>
-            <q-btn push glossy @click.native="getOwnJobs" no-caps icon="person" v-if="role === 'company'" to="/entprofile"/>
+            <q-btn push glossy no-caps icon="person" v-if="role === 'company'" to="/entprofile"/>
+            <!-- @click.native="getOwnJobs" -->
           </q-btn-group>
           
         </div>
@@ -418,7 +419,10 @@ export default {
       } else
       if (to.name === 'addjob') {
         this.newJobSentState = 'none'
-        
+      } else
+      if (to.name === 'entprofile') {
+        console.log(343)
+        this.getOwnJobs()
       }
 
     }
