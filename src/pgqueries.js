@@ -233,10 +233,23 @@ async function getOwnJobs (req, res) {
         return false
       }
       //after cookies check, get the actual data from db
-      let que2nd = `SELECT jobs.job_id, jobs.city, jobs.experience, jobs.jobtype, jobs.title, jobs.edu, jobs.currency, jobs.salary_min, jobs.salary_max, jobs.sex, jobs.description, jobs.worktime1, jobs.worktime2, jobs.age1, jobs.age2, jobs.langs, jobs.time_published as published, jobs.time_updated as updated, jobs.contact_tel, jobs.contact_mail
-            FROM jobs
-            WHERE jobs.author_id = $1
-            ORDER BY (jobs.time_updated, jobs.job_id) DESC` //TODO: paginate this too
+      let que2nd = `SELECT * FROM (SELECT jobs.job_id, jobs.city, jobs.experience, jobs.jobtype, jobs.title, jobs.edu, jobs.currency, jobs.salary_min, jobs.salary_max, jobs.sex, jobs.description, jobs.worktime1, jobs.worktime2, jobs.age1, jobs.age2, jobs.langs, jobs.time_published as published, jobs.time_updated as updated, jobs.contact_tel, jobs.contact_mail, cardinality(jobs.hits_log) as hits_all
+        FROM jobs
+        WHERE jobs.author_id = $1
+        ORDER BY (jobs.time_updated, jobs.job_id) DESC) a,
+        (select count(distinct hits_log1) as hits_uniq
+        from (
+          select unnest(hits_log) as hits_log1
+          from jobs
+          WHERE jobs.author_id = $1
+          ORDER BY (jobs.time_updated, jobs.job_id) DESC) as ss) b`
+        //TODO: paginate this too
+
+            // `SELECT jobs.job_id, jobs.city, jobs.experience, jobs.jobtype, jobs.title, jobs.edu, jobs.currency, jobs.salary_min, jobs.salary_max, jobs.sex, jobs.description, jobs.worktime1, jobs.worktime2, jobs.age1, jobs.age2, jobs.langs, jobs.time_published as published, jobs.time_updated as updated, jobs.contact_tel, jobs.contact_mail
+            // FROM jobs
+            // WHERE jobs.author_id = $1
+            // ORDER BY (jobs.time_updated, jobs.job_id) DESC`
+            
       let params2nd = [results.rows[0].user_id]
       //make second que
       pool.query(que2nd, params2nd, (error2, results2) => {

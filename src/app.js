@@ -53,6 +53,7 @@ app.post('/entrance', db.addJobs)
 app.post('/oneJob', db.addOneJob)
 app.post('/updateJob', db.updateJob)
 app.post('/getOwnJobs.json', db.getOwnJobs)
+//app.post('/getOwnJobsShort.json', db.getOwnJobsShort)
 
 app.post('/favOne.json', db.favOne)
 app.post('/delFavOne.json', db.delFavOne)

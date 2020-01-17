@@ -12,7 +12,7 @@
       >
         <q-tab-panel name="published" class="entprofile__published entprofile__mid">
           <h4 class="entprofile__header">Опубликованные вакансии({{ownJobs.length}}):</h4>
-          <JobsTable @editJob="editJob" @delJob="delJob" :jobslist="ownJobs"/>
+          <JobsStats @editJob="editJob" @delJob="delJob" :jobslist="ownJobs"/>
         </q-tab-panel>
         <q-tab-panel name="responses" class="entprofile__mid">
         </q-tab-panel>
@@ -46,7 +46,7 @@
 </template>
 
 <script>
-import JobsTable from '@/components/organisms/JobsTable.vue'
+import JobsStats from '@/components/organisms/JobsStats.vue'
 import EntProfileNav from '@/components/molecules/EntProfileNav.vue'
 
 export default {
@@ -72,7 +72,7 @@ export default {
   }},
   components: {
     //JobsList,
-    JobsTable,
+    JobsStats,
     EntProfileNav
   },
   methods: {
@@ -137,6 +137,7 @@ export default {
   &__header
     display flex
     justify-content flex-end
+    align-self center
     font-size 18px
   .tabs
     // border-top-left-radius 15px

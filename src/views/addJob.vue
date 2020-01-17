@@ -404,7 +404,6 @@ export default {
     }
   },
   mounted(){
-    console.log('cpmount: ', this.jobEditedObj)
     if (this.newJobsPageType == 'edit') {
         this.job = Object.assign({}, jobInit, this.jobEditedObj)
     } else {

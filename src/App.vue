@@ -191,18 +191,15 @@ export default {
   },
   methods: {
     setSentState(state) {
-      console.log('cpcpcp: ', state)
       this.newJobSentState = state
     },
     newJobInit() {
-      console.log('tr')
       this.newJobsPageType = 'new'
       this.jobEditId = -1
       this.jobEditedObj = {}
       this.newJobSentState = 'none'
     },
     editJob(jid) {
-      console.log('editJOBCP')
       this.newJobsPageType = 'edit'
       this.jobEditId = jid
       //title: this.ownJobs.find(j => j.job_id == jid).title,
@@ -420,7 +417,6 @@ export default {
         this.getOwnJobs()
       } else
       if (to.name === 'addjob') {
-        console.log('going to addJOB')
         this.newJobSentState = 'none'
         
       }
