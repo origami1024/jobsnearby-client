@@ -22,7 +22,7 @@
             <q-item clickable v-ripple>
               <q-item-section class="padleft">
                 
-              <div v-html="job.description">
+              <div class="descriptionHTML" v-html="job.description">
               </div>
             </q-item-section>
             </q-item>
@@ -237,4 +237,11 @@ export default {
     font-size 20px
   .padleft
     padding-left 10px
+  .descriptionHTML
+    font-size 14px
+    line-height 1.1
+  .ql-size-small
+    font-size 12px
+  .ql-size-large
+    font-size 20px
 </style>

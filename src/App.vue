@@ -173,7 +173,7 @@ export default {
           this.token = undefined
           this.user = 'Гость'
           this.user_id = -1
-          this.role = 'guest'
+          this.role = 'guestUnau'
           this.surname = ''
           this.username = ''
           this.company = ''

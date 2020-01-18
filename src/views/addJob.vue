@@ -1,7 +1,7 @@
 <template>
   <div class="addJob">
     <transition name="bounce">
-      <div v-if="role === 'company' && sent == 'none'" class="authed" :key="1">
+      <div v-if="role === 'company' && sent == 'none'" class="jobpage__wrapper" :key="1">
         <router-link class="r-link" v-if="role === 'company'" to="/uploads"
           style="text-align: right; marginBottom: -15px"
         >
@@ -36,29 +36,34 @@
           <p class="star">*</p>
           <p class="startP" style="width: 140px; textAlign: left">Зарплата</p>
           <q-input
-            :disable="job.salaryOn"
+            :disable="salaryOn"
             :style="{width: '110px', marginRight: '10px'}"
             dense
             outlined
             bg-color="white"
             v-model="job.salary_min"
             ref="salary_min"
-            label="От" :hint="null"
+            placeholder="От" :hint="null"
+            @input="salaryValidated = true; $refs.salary_max.validate()"
             :rules="[sal => (sal >= 0 && String(sal).length < 6 && sal < 100000) || 'От 0 до 99999']"
           />
           <q-input
-            :disable="job.salaryOn"
+            :disable="salaryOn"
             :style="{width: '110px', marginRight: '10px'}"
             dense
             outlined
             bg-color="white"
             v-model="job.salary_max"
             ref="salary_max"
-            label="До" :hint="null"
-            :rules="[sal => (sal >= 0 && String(sal).length < 6 && sal < 100000) || 'От 0 до 99999']"
+            placeholder="До" :hint="null"
+            @input="salaryValidated = true"
+            :rules="[
+              sal => (sal >= 0 && String(sal).length < 6 && sal < 100000) || 'От 0 до 99999',
+              sal => salaryValidated || 'Укажите зп'
+            ]"
           />
           <q-select
-            :disable="job.salaryOn"
+            :disable="salaryOn"
             style="width: 95px; lineHeight: 3.2"
             dense
             outlined
@@ -70,26 +75,24 @@
             ]"
             :hint="null"
           />
-          <q-checkbox style="marginBottom: 12px; alignSelf: center" v-model="job.salaryOn">
+          <q-checkbox
+            style="marginBottom: 12px; alignSelf: center"
+            v-model="salaryOn" @input="$refs.salary_min.resetValidation(); $refs.salary_max.resetValidation(); salaryValidated = true"
+          >
             <q-tooltip>
               <p style="font-size: 15px; margin: 0">По итогам собеседования</p>
             </q-tooltip>
           </q-checkbox>
-          <!-- <q-toggle v-model="job.salaryOn" :style="{alignSelf: 'start'}" :hint="null">
-            <q-tooltip>
-              <p style="font-size: 15px; margin-bottom: 0">По итогам собеседования</p>
-            </q-tooltip>
-          </q-toggle> -->
         </div>
         <div class="line">
-          <p class="star" :style="{color: contactsValidated ? '#2c3e50' : '#C10015'}">*</p>
-          <p class="startP" :style="{color: contactsValidated ? '#2c3e50' : '#C10015'}" style="width: 140px; textAlign: left">Ваши контакты</p>
+          <p class="star">*</p>
+          <p class="startP" style="width: 140px; textAlign: left">Ваши контакты</p>
           <q-input
             dense
             outlined
             bg-color="white"
             v-model="job.contact_mail"
-            label="Email"
+            placeholder="Email"
             type="email"
             style="marginRight: 10px"
             :hint="null"
@@ -98,7 +101,7 @@
             :rules="[
               val => val.length < 41 || 'Максимум 40 символов',
               val => (val.length < 1 || isValidMail(val)) || 'Неправильный формат',
-              val => contactsValidated == true || 'Заполните 1 или 2 контакта'
+              val => contactsValidated || 'Укажите Email или Phone'
               ]"
             :lazy-rules="lazyRulesAll"
           />
@@ -112,15 +115,15 @@
             outlined
             bg-color="white"
             v-model="job.contact_tel"
-            label="Phone"
+            placeholder="Phone"
             type="tel"
             :hint="null"
             ref="contact_tel"
             @input="contactsValidated = true; $refs.contact_mail.validate()"
             :rules="[
               val => val.length < 16 || 'Максимум 15 символов',
+              val => (val.length == 0 || val.length > 5) || 'Минимум 5 символов',
               val => (val.length < 1 || /^[\+0-9\-\(\)]*$/.test(val)) || 'Неправильный формат',
-              val => contactsValidated == true || 'Заполните 1 или 2 контакта'
             ]"
             :lazy-rules="lazyRulesAll"
           />
@@ -146,6 +149,7 @@
             @keyup="addNewCity"
             :rules="[
               val => val.length < 71 || 'Максимум 70 символов',
+              val => /^[a-zA-Zа-яА-ЯÇçÄä£ſÑñňÖö$¢Üü¥ÿýŽžŞş\s\-\(\)]*$/.test(val) || 'Только буквы'
             ]"
             :lazy-rules="lazyRulesAll"
           />
@@ -163,9 +167,8 @@
         </div>
         <q-expansion-item
           expand-separator
-          icon="perm_identity"
           label="Дополнительно"
-          style="marginBottom: 10px"
+          style="marginBottom: 10px; font-size: 16px;text-align:left;"
         >
         
           <div class="line" style="marginTop: 10px">
@@ -201,7 +204,7 @@
               bg-color="white"
               v-model="job.age1"
               ref="age1"
-              label="От"
+              placeholder="От"
               :hint="null"
               :rules="[
                 val => isNaN(val) == false || 'Введите число',
@@ -215,7 +218,7 @@
               dense outlined
               bg-color="white"
               v-model="job.age2"
-              label="До"
+              placeholder="До"
               :hint="null"
               ref="age2"
               :rules="[
@@ -234,7 +237,7 @@
               dense outlined bg-color="white"
               v-model="job.worktime1"
               ref="worktime1"
-              label="От" :hint="null"
+              placeholder="От" :hint="null"
               :rules="[
                 val => isNaN(val) == false || 'Введите число',
                 val => val == (val | 0) || 'Целое число',
@@ -246,7 +249,7 @@
             <q-input
               :style="{width: '110px', marginRight: '10px'}"
               dense outlined bg-color="white" v-model="job.worktime2"
-              label="До" :hint="null"
+              placeholder="До" :hint="null"
               ref="worktime2"
               :rules="[
                 val => isNaN(val) == false || 'Введите число',
@@ -270,6 +273,7 @@
               ref="edu"
               :rules="[
                 val => val.length < 21 || '20 символов макс',
+                val => /^[a-zA-Zа-яА-ЯÇçÄä£ſÑñňÖö$¢Üü¥ÿýŽžŞş\s\-\(\)]*$/.test(val) || 'Только буквы'
               ]"
               :lazy-rules="lazyRulesAll"
             />
@@ -293,16 +297,16 @@
         </q-expansion-item>
         <q-btn style="marginTop: 0px" color="primary" :label="newJobsPageType == 'new' ? 'Разместить вакансию' : 'Отправить изменения'" @click="tryAdd"/>
       </div>
-      <div v-else-if="sent == 'good'" :key="2">
+      <div v-else-if="sent == 'good'" :key="2" class="jobpage__wrapper">
         <p>Вакансия <a :href="'/jobpage?id=' + returned.job_id" target="_blank">{{returned.title}}</a> успешно добавлена</p>
-        <q-btn color="primary" @click="$emit('setSentState', 'none'); resetFields(); $emit('newJobInit')" label="Загрузить еще одну"/>
+        <q-btn color="primary" @click="$emit('setSentState', 'none'); resetFields(); $emit('newJobInit')" label="Добавить еще одну"/>
         
       </div>
-      <div v-else-if="sent == 'fail'" :key="3">
+      <div v-else-if="sent == 'fail'" :key="3" class="jobpage__wrapper">
         <p>Ошибка на сервере, вакансия не добавлена</p>
-        <q-btn color="primary" @click="$emit('setSentState', 'none'); resetFields(); $emit('newJobInit')" label="Загрузить еще одну"/>
+        <q-btn color="primary" @click="$emit('setSentState', 'none'); resetFields(); $emit('newJobInit')" label="Добавить еще одну"/>
       </div>
-      <div v-else :key="4">
+      <div v-else-if="role == 'guestUnau'" :key="4" class="jobpage__wrapper">
         Авторизируйтесь, для возможности загрузки вакансий
       </div>
     </transition>
@@ -320,7 +324,6 @@ let jobInit = {
   salary_min: '',
   salary_max: '',
   currency: {label: 'манат', value: 'm'},
-  salaryOn: false,
   city: '',
   age1: '',
   age2: '',
@@ -354,6 +357,7 @@ export default {
   },
   data() {
     return {
+      salaryOn: false,
       returned: {
         title: '',
         job_id: -1
@@ -379,6 +383,7 @@ export default {
       ],
       job: Object.assign({}, jobInit),
       contactsValidated: true,
+      salaryValidated: true,
       descError: '',
       sexOptions: [{label: "Не имеет значения", value: ''}, {label: "Муж", value: 'm'}, {label: "Жен", value: 'w'},],
       langOptions: ["Туркменский", "Русский", "Китайский", "Английский", "Немецкий", "Французкий"],
@@ -429,9 +434,6 @@ export default {
       this.job = Object.assign({}, jobInit)
       this.lazyRulesAll = true
     },
-    logger1() {
-      console.log(this.editorContent)
-    },
     tryAdd() {
       //validate first
       //validate all
@@ -439,27 +441,34 @@ export default {
       //in the end if not all good scroll to that
       this.lazyRulesAll = false
       let scrollPos
-
-      console.log('cp1111')
       //title
       this.$refs.title.validate()
       if (this.$refs.title.hasError) {
         scrollPos = 130
       }
       //salary
-      this.$refs.salary_min.validate()
-      this.$refs.salary_max.validate()
-      if (this.$refs.salary_min.hasError || this.$refs.salary_max.hasError) {
-        if (!scrollPos) scrollPos = 150
+      if (!this.salaryOn) {
+        if ((this.job.salary_min > 0) || (this.job.salary_max > 0))
+          this.salaryValidated = true
+        else
+          this.salaryValidated = false
+
+        this.$refs.salary_min.validate()
+        this.$refs.salary_max.validate()
+        console.log('cp17: ', this.$refs.salary_max.hasError)
+        
+        
+        if (this.$refs.salary_min.hasError || this.$refs.salary_max.hasError) {
+          if (!scrollPos) scrollPos = 150
+        }
       }
       //contacts
-      this.$refs.contact_mail.validate()
-      this.$refs.contact_tel.validate()
       if ((this.job.contact_mail && this.job.contact_mail.length > 0) || (this.job.contact_tel && this.job.contact_tel.length > 0))
         this.contactsValidated = true
       else
         this.contactsValidated = false
-
+      this.$refs.contact_mail.validate()
+      this.$refs.contact_tel.validate()
       if (this.$refs.contact_mail.hasError || this.$refs.contact_tel.hasError || this.contactsValidated == false) {
         if (!scrollPos) scrollPos = 160
       }
@@ -501,7 +510,9 @@ export default {
     },
     editJobSend() {
       let j = Object.assign({}, this.job)
-      if (j.salary_min > j.salary_max) j.salary_max = j.salary_min
+      if (!this.salaryOn) {
+        if (j.salary_min > j.salary_max) j.salary_max = j.salary_min
+      } else j.salary_min = '', j.salary_max = ''
       j.currency = j.currency.value
       j.experience = j.experience.value
       j.jtype = j.jtype.value
@@ -523,7 +534,9 @@ export default {
       //console.dir(this.job)
       
       let j = Object.assign({}, this.job)
-      if (j.salary_min > j.salary_max) j.salary_max = j.salary_min
+      if (!this.salaryOn) {
+        if (j.salary_min > j.salary_max) j.salary_max = j.salary_min
+      } else j.salary_min = '', j.salary_max = ''
       j.sex = j.sex.value
       j.currency = j.currency.value
       j.experience = j.experience.value
@@ -575,7 +588,7 @@ export default {
 .addJob
   max-width 80%
   width 680px
-  .authed
+  .jobpage__wrapper
     margin-top 15px
     background-color #eee
     padding 10px
