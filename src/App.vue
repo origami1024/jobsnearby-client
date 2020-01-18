@@ -6,7 +6,7 @@
         class="logo"
         :text-color="$route.path == '/' ? 'white' : 'purple'"
         :color="$route.path == '/' ? 'purple' : 'gray'"
-        @click="refreshjobs" round glossy to="/" size="16px" label="ussat" style="padding: 6px;">
+        @click="refreshjobs('logoclick')" round glossy to="/" size="16px" label="ussat" style="padding: 6px;">
         <!-- <q-avatar size="46px">
           <img src="https://cdn.quasar.dev/app-icons/icon-128x128.png" />  
         </q-avatar> -->
@@ -365,29 +365,35 @@ export default {
       }
     },
     refreshjobs: function (param, param2) {
-      console.log('refresh jobs app level')
-      let jobslistUrl = config.jobsUrl + '/jobs.json'
-      if (param !== 'init') {
-        jobslistUrl += this.query
-        if (param === 'page') {
-          jobslistUrl += this.query.length > 0 ? '&page=' : '?page='
-          jobslistUrl += param2
+      if (this.$router.currentRoute.name == 'jobpage' && param != 'logoclick') {
+        console.log('get one job app level')
+        
+      } else {
+        console.log('refresh ALL jobs app level')
+        let jobslistUrl = config.jobsUrl + '/jobs.json'
+        if (param !== 'init') {
+          jobslistUrl += this.query
+          if (param === 'page') {
+            jobslistUrl += this.query.length > 0 ? '&page=' : '?page='
+            jobslistUrl += param2
+          }
         }
+        //console.log(jobslistUrl)
+        this.ajaxLoading = true
+        axios
+          .get(jobslistUrl, null, {headers: {'Content-Type' : 'application/json' }})
+          .then(response => {
+            this.jobslist = response.data.rows
+            this.jobsFullcount = Number(response.data.full_count)
+            this.perpage = Number(response.data.perpage)
+            this.page_current = Number(response.data.page)
+            //console.log('cppage: ', response.data.page)
+            //if (param === 'init') this.featuredJobslist = response.data.rows
+            this.ajaxLoading = false
+            
+          })
       }
-      //console.log(jobslistUrl)
-      this.ajaxLoading = true
-      axios
-        .get(jobslistUrl, null, {headers: {'Content-Type' : 'application/json' }})
-        .then(response => {
-          this.jobslist = response.data.rows
-          this.jobsFullcount = Number(response.data.full_count)
-          this.perpage = Number(response.data.perpage)
-          this.page_current = Number(response.data.page)
-          //console.log('cppage: ', response.data.page)
-          //if (param === 'init') this.featuredJobslist = response.data.rows
-          this.ajaxLoading = false
-          
-        })
+      
     },
     getOwnJobs() {
       console.log('getOwnJobs app level')

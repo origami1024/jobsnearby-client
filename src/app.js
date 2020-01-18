@@ -66,7 +66,8 @@ app.post('/getFavedFull.json', db.getFavedFull)
 
 app.get('/jobsu.json', params1)
 app.get('/jobs.json', db.getJobs)
-app.get('/jobBy.id', getJobById)
+//app.get('/jobBy.id', getJobById)
+app.get('/jobby.idjson=:id', getJobByIdJSON)
 
 app.post('/delJobBy.id', db.deleteJobById)
 
@@ -85,6 +86,31 @@ function params1(request, response) {
 
 
 
+async function getJobByIdJSON(req, res) {
+  console.log('get job by idJSON first func. ip: ', req.headers['x-forwarded-for'] || req.connection.remoteAddress)
+  const id = parseInt(req.params.id)
+  console.log('url: ', req.url)
+  console.log('params: ', req.params)
+  console.log('dd ', id)
+  if (isNaN(id) || id < 0 || String(id).length > 10) {
+    console.log('Error: wrong id')
+    res.status(400).send('Неправильный id вакансии.')
+    return false
+  }
+  
+  let job = await db.getJobById(id).catch(error => {
+    console.log(error)
+    return false
+  })
+  if (job == false) {
+    res.status(400).json('Неправильный id вакансии')
+    return false
+  }
+  console.log('cp99: ', job)
+  let jobjson = job
+  res.status(200).send(jobjson)
+  db.hitJobById(id, req.headers['x-forwarded-for'] || req.connection.remoteAddress)
+}
 
 async function getJobById(req, res) {
   console.log('get job by id first func. ip: ', req.headers['x-forwarded-for'] || req.connection.remoteAddress)
@@ -103,7 +129,7 @@ async function getJobById(req, res) {
     res.status(400).json('Неправильный id вакансии')
     return false
   }
-  console.log('cp', job)
+  //console.log('cp', job)
   let jobpage = pageParts.jobinfo(job)
   res.status(200).send(jobpage)
   db.hitJobById(id, req.headers['x-forwarded-for'] || req.connection.remoteAddress)

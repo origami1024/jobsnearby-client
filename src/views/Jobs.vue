@@ -1,8 +1,5 @@
 <template>
   <div class="jobs">
-    
-      
-    
     <div class="jobs__main">
       <div style="padding-top: 10px">
         <div class="jobs__filterpart">
@@ -54,6 +51,7 @@
                           {label: '50 на стр', value: '50'},
                           {label: '100 на стр', value: '100'}]"
             />
+            <div>По запросу: <strong>{{jobsFullcount}}</strong></div>
             <!-- <q-pagination
               :value="page_current"
               :max="pages"

@@ -13,7 +13,7 @@
           </tr>
         </thead>
         <tr class="jobstat" v-for="item in jobslist" :key="item.job_id">
-          <td><a class="link1" :href="'/jobBy.Id?id=' + item.job_id">{{item.title}}</a></td>
+          <td><a class="link1" target="_blank" :href="'/jobpage?id=' + item.job_id">{{item.title}}</a></td>
           <td>{{item.hits_all}}</td>
           <td>{{item.hits_uniq}}</td>
           <td>0</td>

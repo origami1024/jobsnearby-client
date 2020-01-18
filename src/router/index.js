@@ -4,6 +4,7 @@ import Registration from '../views/Registration.vue'
 import Jobs from '../views/Jobs.vue'
 import SubProfile from '../views/SubProfile.vue'
 import EntProfile from '../views/EntProfile.vue'
+import JobPage from '../views/JobPage.vue'
 
 
 
@@ -14,6 +15,11 @@ const routes = [
     path: '/',
     name: 'home',
     component: Jobs //Home
+  },
+  {
+    path: '/jobpage',
+    name: 'jobpage',
+    component: JobPage //Home
   },
   {
     path: '/subprofile',

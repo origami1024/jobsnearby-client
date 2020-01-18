@@ -194,7 +194,7 @@ async function getJobById (id) {
   //'SELECT * FROM jobs WHERE job_id = $1'
 
   
-  let que = `SELECT * FROM (SELECT jobs.author_id, users.company as author, jobs.job_id, jobs.city, jobs.experience, jobs.jobtype, jobs.title, jobs.edu, jobs.currency, jobs.sex, jobs.salary_min, jobs.salary_max, jobs.description, jobs.worktime1, jobs.worktime2, jobs.age1, jobs.age2, jobs.langs, jobs.time_published as published, jobs.time_updated as updated, cardinality(jobs.hits_log) as hits_all
+  let que = `SELECT * FROM (SELECT jobs.author_id, users.company as author, jobs.job_id, jobs.city, jobs.experience, jobs.jobtype, jobs.title, jobs.edu, jobs.currency, jobs.sex, jobs.salary_min, jobs.salary_max, jobs.description, jobs.worktime1, jobs.worktime2, jobs.age1, jobs.age2, jobs.langs, jobs.time_published as published, jobs.time_updated as updated, contact_mail, contact_tel, cardinality(jobs.hits_log) as hits_all
             FROM jobs, users
             WHERE jobs.author_id = users.user_id AND jobs.job_id = $1) a,
             (select count(distinct hits_log1) as hits_uniq

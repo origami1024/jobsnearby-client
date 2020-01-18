@@ -3,7 +3,8 @@
     <div class="line">
       <div class="colx">
         <h4 class="cardHeader">
-          <a :href="'/jobBy.Id?id=' + job.job_id" target="_blank">
+          <!-- <a :href="'/jobBy.Id?id=' + job.job_id" target="_blank"> -->
+          <a :href="'/jobpage?id=' + job.job_id" target="_blank">
             <strong v-html="filteredTitle"/>
           </a>
         </h4>
@@ -145,12 +146,12 @@ export default {
     },
     filteredDesc: function() {
       if (this.searchFilter.length > 1 && this.job.description.toLowerCase().includes(this.searchFilter)) {
-        let tmpdesc = this.job.description.split('/').join('<br>')
+        let tmpdesc = this.job.description //.split('/').join('<br>')
         let i = tmpdesc.toLowerCase().indexOf(this.searchFilter)
         let res = tmpdesc.substr(0, i) + '<span class="searched">' + tmpdesc.substr(i, this.searchFilter.length) + '</span>' + tmpdesc.substr(i + this.searchFilter.length)
         //console.log(res)
         return res
-      } else return this.job.description.split('/').join('<br>')
+      } else return this.job.description //.split('/').join('<br>')
     },
   }
 }
