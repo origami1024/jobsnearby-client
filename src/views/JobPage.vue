@@ -1,10 +1,10 @@
 <template>
   <div class="jobpage">
     <main class="detailed__main">
-      <section class="detailed__line">
+      <section class="detailed__line" style="marginBottom: 5px">
         <div class="detailed__col">
           <h1 class="titleHeader">{{job.title}}</h1>
-          <p v-if="this.job.salary_max" style="font-size: 18px">{{this.job.salary_max}} {{this.currency}}</p>
+          <p v-if="this.job.salary_max" style="font-size: 16px; color: #666">{{this.job.salary_max}} {{this.currency}}</p>
         </div>
         <div class="detailed__logo">Лого</div>
       </section>
@@ -15,15 +15,15 @@
       <section>
         <button class="detailed__button">Откликнуться</button>
       </section>
-      <section>
+      <section v-if="job.description">
         <div>
           <q-list dense bordered padding class="rounded-borders">
             <h4 class="detailed__header">Обязанности</h4>
             <q-item clickable v-ripple>
-            <q-item-section class="padleft">
-              
-            <div v-html="job.description">
-            </div>
+              <q-item-section class="padleft">
+                
+              <div v-html="job.description">
+              </div>
             </q-item-section>
             </q-item>
           </q-list>
@@ -39,7 +39,7 @@
               </q-item-section>
             </q-item>
 
-            <q-item clickable v-ripple>
+            <q-item clickable v-ripple v-if="job.langs.length > 0">
               <q-item-section class="padleft">
                 Языки: {{job.langs.join(', ')}}
               </q-item-section>
@@ -179,7 +179,7 @@ export default {
     background-color: white;
     padding: 0 10px;
     padding-top: 10px;
-    min-height: 100vh;
+    
     box-sizing: border-box;
     box-shadow: 0 0 2px 3px #eee;
     display flex
@@ -190,6 +190,7 @@ export default {
     //border 1px solid black
     .titleHeader
       font-size 24px !important
+      margin-top 8px
   section
     margin-bottom 15px
     text-align left
@@ -233,7 +234,7 @@ export default {
     color #2242B4
     margin 10px 10px
     margin-bottom 5px
-    font-size 24px
+    font-size 20px
   .padleft
     padding-left 10px
 </style>

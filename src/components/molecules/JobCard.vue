@@ -20,7 +20,7 @@
         <p class="alignRight city" v-html="filteredCity"></p>
       </div>
     </div>
-    <div class="line" v-if="lenses == 'full'">
+    <div class="line" style="marginLeft: 5px" v-if="lenses == 'full'">
       <p v-html="filteredDesc"></p>
     </div>
     <div class="line">
@@ -163,6 +163,8 @@ export default {
   margin 0
   text-align left
 .jobscard
+  border-left 2px solid #06f
+  padding-left 2px
   //font-family 'Varela Round', sans-serif
   font-size 14px
   //margin-top 10px
