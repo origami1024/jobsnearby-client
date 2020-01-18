@@ -12,9 +12,9 @@
         <p><a href="#" class="detailed__author-link">{{job.author}}</a></p>
         <p>{{job.city}}</p>
       </section>
-      <section>
+      <!-- <section>
         <button class="detailed__button">Откликнуться</button>
-      </section>
+      </section> -->
       <section v-if="job.description">
         <div>
           <q-list dense bordered padding class="rounded-borders">

@@ -185,11 +185,11 @@ export default {
     box-shadow 0 0 3px 1px #bbb
   a
     text-decoration none
-    color #2837C6
+    color #06f
     &:visited
-      color #2837C6
+      color #06f
   .cardLink:visited
-    color #2837C6
+    color #06f//#2837C6
   .cardHeader
     font-weight 400
     font-size 20px

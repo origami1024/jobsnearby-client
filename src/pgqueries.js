@@ -417,7 +417,8 @@ async function updateJob (req, res) {
       //`UPDATE "users" SET auth_cookie = $1, last_logged_in = NOW() where user_id = $2`
       let que2nd = `UPDATE "jobs" SET ("time_updated", "title", "salary_max", "salary_min", "currency", "age1", "age2", "worktime1", "worktime2", "langs", "edu", "experience", "city", "jobtype", "description", "contact_tel", "contact_mail") =
                     (NOW(), $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16)
-                    WHERE author_id = $17 AND job_id = $18`
+                    WHERE author_id = $17 AND job_id = $18
+                    RETURNING job_id, title`
       let params2nd = [parsedData.title, parsedData.salary_max, parsedData.salary_min, parsedData.currency, parsedData.age1, parsedData.age2, parsedData.worktime1, parsedData.worktime2, parsedData.langs, parsedData.edu, parsedData.experience, parsedData.city, parsedData.jobtype, parsedData.description, parsedData.contact_tel, parsedData.contact_mail, results.rows[0].user_id, jid]
 
       pool.query(que2nd, params2nd, (error2, results2) => {
@@ -426,7 +427,10 @@ async function updateJob (req, res) {
           res.send('error')
           return false
         }
-        res.send('OK')
+        if (results2.rows.length > 0) {
+          //console.log('cp ll:', {...results2.rows[0], 'result': 'OK'})
+          res.send({...results2.rows[0], 'result': 'OK'})
+        } else res.send('error unkn')
       })
     })
   } else {res.send('auth fail edit')}
@@ -458,7 +462,8 @@ async function addOneJob (req, res) {
       parsedData.author_id = results.rows[0].user_id
       //console.log('addOneJob cp2: ', parsedData)
       let que2nd = `INSERT INTO "jobs" ("title", "salary_max", "salary_min", "currency", "age1", "age2", "worktime1", "worktime2", "langs", "edu", "experience", "city", "jobtype", "description", "author_id", "contact_tel", "contact_mail") VALUES
-                    ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17)`
+                    ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17)
+                    RETURNING job_id, title`
       let params2nd = [parsedData.title, parsedData.salary_max, parsedData.salary_min, parsedData.currency, parsedData.age1, parsedData.age2, parsedData.worktime1, parsedData.worktime2, parsedData.langs, parsedData.edu, parsedData.experience, parsedData.city, parsedData.jobtype, parsedData.description, parsedData.author_id, parsedData.contact_tel, parsedData.contact_mail]
       
       pool.query(que2nd, params2nd, (error2, results2) => {
@@ -467,7 +472,12 @@ async function addOneJob (req, res) {
           res.send('error')
           return false
         }
-        res.send('OK')
+        if (results2.rows.length > 0) {
+          //console.log('cp ll:', {...results2.rows[0], 'result': 'OK'})
+          res.send({...results2.rows[0], 'result': 'OK'})
+        } else res.send('error unkn')
+        
+        
       })
     })
 

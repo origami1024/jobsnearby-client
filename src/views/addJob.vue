@@ -294,8 +294,9 @@
         <q-btn style="marginTop: 0px" color="primary" :label="newJobsPageType == 'new' ? 'Разместить вакансию' : 'Отправить изменения'" @click="tryAdd"/>
       </div>
       <div v-else-if="sent == 'good'" :key="2">
-        <p>Вакансия успешно добавлена</p>
+        <p>Вакансия <a :href="'/jobpage?id=' + returned.job_id" target="_blank">{{returned.title}}</a> успешно добавлена</p>
         <q-btn color="primary" @click="$emit('setSentState', 'none'); resetFields(); $emit('newJobInit')" label="Загрузить еще одну"/>
+        
       </div>
       <div v-else-if="sent == 'fail'" :key="3">
         <p>Ошибка на сервере, вакансия не добавлена</p>
@@ -353,6 +354,10 @@ export default {
   },
   data() {
     return {
+      returned: {
+        title: '',
+        job_id: -1
+      },
       expOptions: [
         {label: "Не имеет значения", value: -1},
         {label: "Без опыта", value: 0},
@@ -504,7 +509,9 @@ export default {
         axios
           .post(config.jobsUrl + '/updateJob', j, {headers: {'Content-Type' : 'application/json' }, withCredentials: true,})
           .then(response => {
-            if (response.data === 'OK') {
+            if (response.data && response.data.result == 'OK') {
+              this.returned.title = response.data.title
+              this.returned.job_id = response.data.job_id
               this.$emit('setSentState', 'good')
               console.log('cp editJob: OK')
             } else {this.$emit('setSentState', 'fail'); console.log('trespasser')}
@@ -526,8 +533,9 @@ export default {
         axios
           .post(config.jobsUrl + '/oneJob', j, {headers: {'Content-Type' : 'application/json' }, withCredentials: true,})
           .then(response => {
-            if (response.data === 'OK') {
-              
+            if (response.data && response.data.result == 'OK') {
+              this.returned.title = response.data.title
+              this.returned.job_id = response.data.job_id
               this.$emit('setSentState', 'good')
               console.log('cp addOneJob: OK')
               
