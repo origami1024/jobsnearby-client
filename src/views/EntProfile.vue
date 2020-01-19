@@ -22,6 +22,25 @@
           </div>
         </q-tab-panel>
         <q-tab-panel name="cabout" class="entprofile__mid">
+          <q-input class="entprofile__inp" dense outlined bottom-slots :value="cabout.name" placeholder="Название компании" counter maxlength="80"/>
+          <div class="line" dense style="display: flex; width: 100%; justify-content: space-between;">
+            <q-input
+              style="width: 300px"
+              outlined dense
+              type="file"
+              hint=""
+            />
+            <div class="logo-placeholder">logo placeholder</div>
+          </div>
+          <q-input dense class="entprofile__inp" outlined bottom-slots :value="cabout.workfield" placeholder="Сфера деятельности" counter maxlength="80"/>
+          <q-input dense class="entprofile__inp" outlined bottom-slots :value="cabout.link" placeholder="Сайт" counter maxlength="80"/>
+          <q-input
+            v-model="cabout.desc"
+            outlined dense
+            placeholder="Описание"
+            type="textarea"
+          />
+          <q-btn color="primary" style="margin-top: 10px">Отправить изменения</q-btn>
         </q-tab-panel>
         <q-tab-panel class="entprofile__settings entprofile__mid" name="settings">
           <p>Добавить контакты</p>
@@ -29,9 +48,7 @@
           <q-input dense v-show="contacts_count > 1" class="entprofile__inp" outlined bottom-slots v-model="contacts2" label="Контакты" counter maxlength="30"/>
           <q-input dense v-show="contacts_count > 2" class="entprofile__inp" outlined bottom-slots v-model="contacts3" label="Контакты" counter maxlength="30"/>
           <q-btn round color="primary" @click="contacts_count < 4 ? contacts_count += 1 : ''" size="sm" icon="add" :disable="contacts_count > 2"/>
-          <div>
-            <q-toggle v-model="editable" label="Изменить личные данные"/>
-          </div>
+          <q-toggle v-model="editable" label="Изменить личные данные"/>
           <q-input class="entprofile__inp" outlined bottom-slots :value="company" label="Название компании" counter maxlength="80" :readonly="!editable" />
           <q-input type="email" class="entprofile__inp" outlined bottom-slots v-model="newemail" label="Email" counter maxlength="50" :readonly="!editable" />
           <q-input :type="isPwd ? 'password' : 'text'" class="entprofile__inp" outlined bottom-slots v-model="newpw" label="Пароль" counter maxlength="25" :readonly="!editable">
@@ -62,6 +79,13 @@ export default {
     role: String
   },
   data: ()=>{return {
+    cabout: {
+      name: '',
+      logo: '',
+      workfield: '',
+      link: '',
+      desc: ''
+    },
     lenses: 'full',
     contacts1: '',
     contacts2: '',
@@ -170,6 +194,11 @@ export default {
   .anim1
     animation-duration 0.3s
     transition-duration 0.3s
+  .logo-placeholder
+    width 120px
+    height 50px
+    background-color pink
+    line-height 50px
   *
     margin 0
 </style>

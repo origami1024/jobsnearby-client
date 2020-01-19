@@ -8,11 +8,12 @@
           <q-btn round icon="description">
             <q-tooltip>
               <p style="font-size: 15px; margin: 0">Публикация вакансий XLS</p>
-          </q-tooltip>
+            </q-tooltip>
           </q-btn>
           
         </router-link>
-        <p style="fontSize: 20px; marginBottom: 22px">{{pageTypes[newJobsPageType].label}} {{jobEditId != -1 ? jobEditId : ''}}</p>
+        <p style="fontSize: 20px; marginBottom: 22px">{{pageTypes[newJobsPageType].label}}</p>
+        <!--  {{jobEditId != -1 ? jobEditId : ''}} -->
         <div class="line">
           <p class="star">*</p>
           <p class="startP" style="min-width: 140px; textAlign: left">Название вакансии</p>
@@ -70,7 +71,7 @@
             bg-color="white"
             v-model="job.currency"
             :options="[
-              {label: 'манат', value: 'm'},      
+              {label: 'манат', value: 'm'},
               {label: '$', value: '$'},
             ]"
             :hint="null"
@@ -101,7 +102,7 @@
             :rules="[
               val => val.length < 41 || 'Максимум 40 символов',
               val => (val.length < 1 || isValidMail(val)) || 'Неправильный формат',
-              val => contactsValidated || 'Укажите Email или Phone'
+              val => contactsValidated || 'Укажите Email или Телефон'
               ]"
             :lazy-rules="lazyRulesAll"
           />
@@ -115,14 +116,14 @@
             outlined
             bg-color="white"
             v-model="job.contact_tel"
-            placeholder="Phone"
+            placeholder="Телефон"
             type="tel"
             :hint="null"
             ref="contact_tel"
             @input="contactsValidated = true; $refs.contact_mail.validate()"
             :rules="[
               val => val.length < 16 || 'Максимум 15 символов',
-              val => (val.length == 0 || val.length > 5) || 'Минимум 5 символов',
+              val => (val.length == 0 || val.length > 4) || 'Минимум 5 символов',
               val => (val.length < 1 || /^[\+0-9\-\(\)]*$/.test(val)) || 'Неправильный формат',
             ]"
             :lazy-rules="lazyRulesAll"
@@ -155,7 +156,7 @@
           />
           <!-- <q-input :style="{width: '250px'}" dense filled v-model="job.city" label="Город" :hint="null"/> -->
         </div>
-        <p style="fontSize: 16px; marginBottom: 5px">Описание <span style="color: red">{{descError}}</span></p>
+        <p style="fontSize: 16px; marginBottom: 10px">Описание <span style="color: red">{{descError}}</span></p>
         <div class="line">
           <vue-editor
             v-model="job.description"
@@ -168,7 +169,7 @@
         <q-expansion-item
           expand-separator
           label="Дополнительно"
-          style="marginBottom: 10px; font-size: 16px;text-align:left;"
+          style="marginBottom: 10px; font-size: 16px;text-align:right;"
         >
         
           <div class="line" style="marginTop: 10px">
@@ -259,6 +260,29 @@
               ]"
               :lazy-rules="lazyRulesAll"
             />
+            <q-select
+              :value="job.schedule"
+              @input="scheduleUpd"
+              outlined
+              bg-color="white"
+              style="max-width: 110px"
+              dense
+              use-input
+              input-debounce="0"
+              fill-input
+              hide-selected
+              placeholder="Режим"
+              ref="schedule"
+              :options="scheduleOptions"
+              @filter="filterSchedule"
+              :hint="null"
+              @keyup="addNewSchedule"
+              :rules="[
+                val => val.length < 11 || 'Максимум 10 символов',
+                val => /^[\wа-яА-ЯÇçÄä£ſÑñňÖö$¢Üü¥ÿýŽžŞş\s\-\(\)\\\/]*$/.test(val) || 'Неправильный формат'
+              ]"
+              :lazy-rules="lazyRulesAll"
+            />
           </div>
           <div class="line">
             <p class="star"> </p>
@@ -276,7 +300,12 @@
                 val => /^[a-zA-Zа-яА-ЯÇçÄä£ſÑñňÖö$¢Üü¥ÿýŽžŞş\s\-\(\)]*$/.test(val) || 'Только буквы'
               ]"
               :lazy-rules="lazyRulesAll"
-            />
+            >
+              <q-tooltip>
+                <p style="font-size: 15px; margin: 0">Например: высшее, среднее, высшее/среднее и т.д</p>
+              </q-tooltip>
+            </q-input>
+            
           </div>
           <div class="line">
             <p class="star"> </p>
@@ -298,7 +327,7 @@
         <q-btn style="marginTop: 0px" color="primary" :label="newJobsPageType == 'new' ? 'Разместить вакансию' : 'Отправить изменения'" @click="tryAdd"/>
       </div>
       <div v-else-if="sent == 'good'" :key="2" class="jobpage__wrapper">
-        <p>Вакансия <a :href="'/jobpage?id=' + returned.job_id" target="_blank">{{returned.title}}</a> успешно добавлена</p>
+        <p>Вакансия <a :href="'/jobpage?id=' + returned.job_id" target="_blank">{{returned.title}}</a> успешно изменена</p>
         <q-btn color="primary" @click="$emit('setSentState', 'none'); resetFields(); $emit('newJobInit')" label="Добавить еще одну"/>
         
       </div>
@@ -319,6 +348,7 @@ import axios from 'axios'
 const config = require('@/configs/main_config')
 
 let stringOptions = ["Ашхабад", "Дашогуз", "Мары", "Туркменабад", "Туркменбаши"]
+let scheduleOptions = ["5/2", "6/1", "2/2", "3/2", "3/1", "15/15"]
 let jobInit = {
   title: '',
   salary_min: '',
@@ -329,6 +359,7 @@ let jobInit = {
   age2: '',
   worktime1: '',
   worktime2: '',
+  schedule: '',
   sex: {label: "Не имеет значения", value: ''},
   langs: [],
   edu: '',
@@ -388,6 +419,7 @@ export default {
       sexOptions: [{label: "Не имеет значения", value: ''}, {label: "Муж", value: 'm'}, {label: "Жен", value: 'w'},],
       langOptions: ["Туркменский", "Русский", "Китайский", "Английский", "Немецкий", "Французкий"],
       cityOptions: stringOptions,
+      scheduleOptions: scheduleOptions,
       jtypeOptions: [
         {label: "Постоянная", value: 'c'},
         {label: "Временная", value: 'v'}],
@@ -432,6 +464,7 @@ export default {
     },
     resetFields() {
       this.job = Object.assign({}, jobInit)
+      this.salaryOn = false
       this.lazyRulesAll = true
     },
     tryAdd() {
@@ -565,7 +598,9 @@ export default {
     },
     addNewCity(e){
       this.cityUpd(e.target.value)
-      //this.cityOptions.push(this.city)
+    },
+    addNewSchedule(e){
+      this.scheduleUpd(e.target.value)
     },
     filterFn (val, update, abort) {
       update(() => {
@@ -573,8 +608,17 @@ export default {
         this.cityOptions = stringOptions.filter(v => v.toLowerCase().indexOf(needle) > -1)
       })
     },
+    filterSchedule (val, update, abort) {
+      update(() => {
+        const needle = val.toLowerCase()
+        this.scheduleOptions = scheduleOptions.filter(v => v.toLowerCase().indexOf(needle) > -1)
+      })
+    },
     cityUpd(new1) {
       this.job.city = new1
+    },
+    scheduleUpd(new1) {
+      this.job.schedule = new1
     },
   },
   components: {
@@ -583,11 +627,25 @@ export default {
 }
 </script>
 
-
+<style lang="stylus">
+.q-field__bottom
+  padding 5px
+  // display flex
+  // justify-content flex-end
+div.q-field__messages
+  display flex
+  justify-content center
+  //border 1px solid green !important
+  //text-weight 900
+  //line-height 20px
+  //justify-self center
+</style>
 <style scoped lang="stylus">
 .addJob
   max-width 80%
   width 680px
+  .q-field__bottom
+    border 1px solid green !important
   .jobpage__wrapper
     margin-top 15px
     background-color #eee

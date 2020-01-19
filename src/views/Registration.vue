@@ -1,6 +1,6 @@
 <template>
   <div class="registration">
-    <div v-if="role === 'guest'" class="registration__main">
+    <div v-if="role && role.startsWith('guest')" class="registration__main">
       <q-tabs
         :value="regState"
         @input="regStateUpd"

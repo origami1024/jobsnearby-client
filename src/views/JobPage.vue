@@ -4,7 +4,7 @@
       <section class="detailed__line" style="marginBottom: 5px">
         <div class="detailed__col">
           <h1 class="titleHeader">{{job.title}}</h1>
-          <p v-if="this.job.salary_max" style="font-size: 16px; color: #666">{{this.job.salary_max}} {{this.currency}}</p>
+          <p class="salary-deriv" style="font-size: 16px; color: #666">{{salary_deriv}}</p>
         </div>
         <div class="detailed__logo">Лого</div>
       </section>
@@ -15,11 +15,70 @@
       <!-- <section>
         <button class="detailed__button">Откликнуться</button>
       </section> -->
+      <section>
+        <div>
+          <q-list dense bordered padding class="rounded-borders">
+            <h4 class="detailed__header">Требования</h4>
+            <q-item clickable v-if="job.experience >= 0">
+              <q-item-section class="padleft">
+                {{
+                  job.experience == 0 ?
+                    'Без опыта'
+                  :job.experience == 2 ?
+                    'Опыт: от 1 до 3 лет'
+                  :job.experience == 4 ?
+                    'Опыт: от 3 до 5 лет'
+                  :job.experience == 6 ?
+                    'Опыт: от 5 лет'
+                  : ''
+                }}
+              </q-item-section>
+            </q-item>
+            <q-item clickable v-if="job.age1 > 0 || job.age2 > 0">
+              <q-item-section class="padleft">
+                Возраст:{{job.age1 > 0 ? ' от ' + job.age1 : ''}}{{job.age2 > 0 ? ' до ' + job.age2 : ''}} лет
+              </q-item-section>
+            </q-item>
+            <q-item v-if="job.edu" clickable >
+              <q-item-section class="padleft">
+                Образование: {{job.edu}}
+              </q-item-section>
+            </q-item>
+            <q-item clickable v-if="job.langs && job.langs.length > 0">
+              <q-item-section class="padleft">
+                Языки: {{job.langs.join(', ')}}
+              </q-item-section>
+            </q-item>
+          </q-list>
+        </div>
+      </section>
+      <section>
+        <div>
+          <q-list dense bordered padding class="rounded-borders">
+            <h4 class="detailed__header">Условия работы</h4>
+            <q-item clickable  v-if="salary_deriv">
+              <q-item-section class="padleft">
+                Оклад {{salary_deriv}}
+              </q-item-section>
+            </q-item>
+            <q-item v-if="(job.worktime1 > 0 && job.worktime2 > 0) || job.schedule" clickable >
+              <q-item-section class="padleft">
+                График работы: {{job.schedule}} {{job.worktime1 ? 'с ' + job.worktime1 : ''}} {{job.worktime2 ? 'до ' + job.worktime2 : ''}}
+              </q-item-section>
+            </q-item>
+            <q-item clickable >
+              <q-item-section class="padleft">
+                Вакансия {{job.jobtype == 'c' ? 'постоянная' : 'временная'}}
+              </q-item-section>
+            </q-item>
+          </q-list>
+        </div>
+      </section>
       <section v-if="job.description">
         <div>
           <q-list dense bordered padding class="rounded-borders">
-            <h4 class="detailed__header">Обязанности</h4>
-            <q-item clickable v-ripple>
+            <h4 class="detailed__header">Описание</h4>
+            <q-item clickable >
               <q-item-section class="padleft">
                 
               <div class="descriptionHTML" v-html="job.description">
@@ -32,59 +91,13 @@
       <section>
         <div>
           <q-list dense bordered padding class="rounded-borders">
-            <h4 class="detailed__header">Требования</h4>
-            <q-item clickable v-ripple v-if="job.age1 > 0 && job.age2 > 0">
-              <q-item-section class="padleft">
-                Возраст: {{(job.age1 && job.age1 > 0) ? 'от ' + job.age1 : ''}} {{(job.age2 && job.age2 > 0) ? 'до ' + job.age2 + ' лет': ''}} {{(job.age1 && !job.age2) ? ' лет' : ''}}
-              </q-item-section>
-            </q-item>
-
-            <q-item clickable v-ripple v-if="job.langs.length > 0">
-              <q-item-section class="padleft">
-                Языки: {{job.langs.join(', ')}}
-              </q-item-section>
-            </q-item>
-
-            <q-item v-if="job.edu" clickable v-ripple>
-              <q-item-section class="padleft">
-                {{job.edu}}
-              </q-item-section>
-            </q-item>
-            <q-item clickable v-ripple v-if="job.experience">
-              <q-item-section class="padleft">
-                {{job.experience > 0 ? `Минимальный стаж ${job.experience} лет` : 'Без опыта'}}
-              </q-item-section>
-            </q-item>
-          </q-list>
-        </div>
-      </section>
-      <section>
-        <div>
-          <q-list dense bordered padding class="rounded-borders">
-            <h4 class="detailed__header">Условия работы</h4>
-            <q-item clickable v-ripple v-if="salary_deriv">
-              <q-item-section class="padleft">
-                Оклад {{salary_deriv}} {{currency}}
-              </q-item-section>
-            </q-item>
-            <q-item v-if="job.worktime1 > 0 && job.worktime2 > 0" clickable v-ripple>
-              <q-item-section class="padleft">
-                График {{job.worktime1}} - {{job.worktime2}}
-              </q-item-section>
-            </q-item>
-          </q-list>
-        </div>
-      </section>
-      <section>
-        <div>
-          <q-list dense bordered padding class="rounded-borders">
             <h4 class="detailed__header">Контакты</h4>
-            <q-item clickable v-ripple v-if="job.contact_mail">
+            <q-item clickable  v-if="job.contact_mail">
               <q-item-section class="padleft">
                 {{job.contact_mail}}
               </q-item-section>
             </q-item>
-            <q-item v-if="job.contact_tel" clickable v-ripple>
+            <q-item v-if="job.contact_tel" clickable >
               <q-item-section class="padleft">
                 {{job.contact_tel}}
               </q-item-section>
@@ -93,8 +106,12 @@
         </div>
       </section>
       <section style="display: flex; justifyContent: space-between">
-        <p>Всех просмотров: {{job.hits_all || 1}}</p>
-        <p>Уникальных просмотров: {{job.hits_uniq || 1}}</p>
+        <p>Всех просмотров: {{job.hits_all > 0 ? job.hits_all : 1}}</p>
+        <p>Уникальных просмотров: {{job.hits_uniq > 0 ? job.hits_uniq : 1}}</p>
+      </section>
+      <section style="display: flex; justifyContent: space-between">
+        <p>Дата публикации: {{published}}</p>
+        <p>Последние изменения: {{updated}}</p>
       </section>
     </main>
   </div>
@@ -128,9 +145,19 @@ export default {
     salary_deriv: '',
     //langs: [],
   }},
-  mounted(){
+  mounted() {
     console.log(this.$route.query.id)
     this.getJobData()
+  },
+  computed: {
+    updated() {
+      let d = new Date(this.job.updated)
+      return 'в ' + ("0" + d.getHours()).slice(-2) + ':' + ("0" + d.getMinutes()).slice(-2) + ', ' + d.getDate() + '.' + (d.getMonth() + 1) + '.' + d.getFullYear()
+    },
+    published() {
+      let d = new Date(this.job.published)
+      return d.getDate() + '.' + (d.getMonth() + 1) + '.' + d.getFullYear()
+    }
   },
   methods: {
     getJobData() {
@@ -154,14 +181,14 @@ export default {
       if (this.job.salary_min < 1) {
         if (this.job.salary_max < 1) {
           this.salary_deriv = 'по итогам собеседования'
-        } else this.salary_deriv = this.job.salary_max
+        } else this.salary_deriv = this.job.salary_max + ' ' + this.currency
       } else {
         if (this.job.salary_min < this.job.salary_max) {
-          this.salary_deriv = `${this.job.salary_min} - ${this.job.salary_max}`
+          this.salary_deriv = `${this.job.salary_min} - ${this.job.salary_max}` + ' ' + this.currency
         } else
         if (this.job.salary_min = this.job.salary_max) {
-          this.salary_deriv = `${this.job.salary_max}`
-        } else this.salary_deriv = `${this.job.salary_max}`
+          this.salary_deriv = `${this.job.salary_max}` + ' ' + this.currency
+        } else this.salary_deriv = `${this.job.salary_max}` + ' ' + this.currency
       }
     }
   }
@@ -244,4 +271,6 @@ export default {
     font-size 12px
   .ql-size-large
     font-size 20px
+  .salary-deriv::first-letter
+    text-transform uppercase
 </style>

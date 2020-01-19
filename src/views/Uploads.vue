@@ -48,6 +48,7 @@
                   <td>возр до</td>
                   <td>время от</td>
                   <td>время до</td>
+                  <td>режим</td>
                   <td>Языки</td>
                   <td>Образование</td>
                   <td>Стаж</td>
@@ -67,6 +68,7 @@
                 <td contenteditable="true">{{item.age2}}</td>
                 <td contenteditable="true">{{item.worktime1}}</td>
                 <td contenteditable="true">{{item.worktime2}}</td>
+                <td contenteditable="true">{{item.schedule}}</td>
                 <td contenteditable="true">{{item.langs}}</td>
                 <td contenteditable="true">{{item.edu}}</td>
                 <td contenteditable="true">{{item.experience}}</td>
@@ -187,7 +189,7 @@ export default {
         
         let entries = [
           'title', 'salary_min', 'salary_max', 'currency', 'contact_tel', 'contact_mail', 'description',
-          'age1', 'age2', 'worktime1', 'worktime2', 'edu', 'experience', 'city'
+          'age1', 'age2', 'worktime1', 'worktime2', 'schedule', 'edu', 'experience', 'city'
         ]
         let len = lastLineIndex
         lastLineIndex = 0

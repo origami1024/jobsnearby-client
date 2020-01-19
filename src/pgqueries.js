@@ -69,7 +69,7 @@ const getJobs = (req, res) => {
   else curr_line = ''
   console.log('curr_line: ', curr_line)
 
-  let que =  `SELECT jobs.author_id, users.company as author, jobs.job_id, jobs.city, jobs.experience, jobs.jobtype, jobs.title, jobs.edu, jobs.currency, jobs.sex, jobs.salary_min, jobs.salary_max, jobs.description, jobs.worktime1, jobs.worktime2, jobs.age1, jobs.age2, jobs.langs, jobs.time_published as published, jobs.time_updated as updated, jobs.jobtype
+  let que =  `SELECT jobs.author_id, users.company as author, jobs.job_id, jobs.city, jobs.experience, jobs.jobtype, jobs.title, jobs.edu, jobs.currency, jobs.sex, jobs.salary_min, jobs.salary_max, jobs.description, jobs.worktime1, jobs.worktime2, jobs.schedule, jobs.age1, jobs.age2, jobs.langs, jobs.time_published as published, jobs.time_updated as updated, jobs.jobtype
               FROM jobs, users
               WHERE jobs.author_id = users.user_id
                   ${timerange} 
@@ -194,7 +194,7 @@ async function getJobById (id) {
   //'SELECT * FROM jobs WHERE job_id = $1'
 
   
-  let que = `SELECT * FROM (SELECT jobs.author_id, users.company as author, jobs.job_id, jobs.city, jobs.experience, jobs.jobtype, jobs.title, jobs.edu, jobs.currency, jobs.sex, jobs.salary_min, jobs.salary_max, jobs.description, jobs.worktime1, jobs.worktime2, jobs.age1, jobs.age2, jobs.langs, jobs.time_published as published, jobs.time_updated as updated, contact_mail, contact_tel, cardinality(jobs.hits_log) as hits_all
+  let que = `SELECT * FROM (SELECT jobs.author_id, users.company as author, jobs.job_id, jobs.city, jobs.experience, jobs.jobtype, jobs.title, jobs.edu, jobs.currency, jobs.sex, jobs.salary_min, jobs.salary_max, jobs.description, jobs.worktime1, jobs.worktime2, jobs.schedule, jobs.age1, jobs.age2, jobs.langs, jobs.time_published as published, jobs.time_updated as updated, contact_mail, contact_tel, cardinality(jobs.hits_log) as hits_all
             FROM jobs, users
             WHERE jobs.author_id = users.user_id AND jobs.job_id = $1) a,
             (select count(distinct hits_log1) as hits_uniq
@@ -233,7 +233,7 @@ async function getOwnJobs (req, res) {
         return false
       }
       //after cookies check, get the actual data from db
-      let que2nd = `SELECT * FROM (SELECT jobs.job_id, jobs.city, jobs.experience, jobs.jobtype, jobs.title, jobs.edu, jobs.currency, jobs.salary_min, jobs.salary_max, jobs.sex, jobs.description, jobs.worktime1, jobs.worktime2, jobs.age1, jobs.age2, jobs.langs, jobs.time_published as published, jobs.time_updated as updated, jobs.contact_tel, jobs.contact_mail, cardinality(jobs.hits_log) as hits_all
+      let que2nd = `SELECT * FROM (SELECT jobs.job_id, jobs.city, jobs.experience, jobs.jobtype, jobs.title, jobs.edu, jobs.currency, jobs.salary_min, jobs.salary_max, jobs.sex, jobs.description, jobs.worktime1, jobs.worktime2, jobs.schedule, jobs.age1, jobs.age2, jobs.langs, jobs.time_published as published, jobs.time_updated as updated, jobs.contact_tel, jobs.contact_mail, cardinality(jobs.hits_log) as hits_all
         FROM jobs
         WHERE jobs.author_id = $1
         ORDER BY (jobs.time_updated, jobs.job_id) DESC) a,
@@ -286,7 +286,7 @@ async function getFavedFull (req, res) {
         return false
       }
       //res.send(results.rows[0])
-      let que2nd = `SELECT jobs.author_id, users.company as author, jobs.job_id, jobs.city, jobs.experience, jobs.jobtype, jobs.title, jobs.edu, jobs.currency, jobs.sex, jobs.salary_min, jobs.salary_max, jobs.description, jobs.worktime1, jobs.worktime2, jobs.age1, jobs.age2, jobs.langs, jobs.time_published as published, jobs.time_updated as updated
+      let que2nd = `SELECT jobs.author_id, users.company as author, jobs.job_id, jobs.city, jobs.experience, jobs.jobtype, jobs.title, jobs.edu, jobs.currency, jobs.sex, jobs.salary_min, jobs.salary_max, jobs.description, jobs.worktime1, jobs.worktime2, jobs.schedule, jobs.age1, jobs.age2, jobs.langs, jobs.time_published as published, jobs.time_updated as updated
                     FROM jobs, users
                     WHERE jobs.author_id = users.user_id AND
                           jobs.job_id = ANY($1)
@@ -415,11 +415,11 @@ async function updateJob (req, res) {
       if (parsedData == false) return false
       //parsedData.author_id = results.rows[0].user_id - NO NEED TO UPDATE THIS FIELD
       //`UPDATE "users" SET auth_cookie = $1, last_logged_in = NOW() where user_id = $2`
-      let que2nd = `UPDATE "jobs" SET ("time_updated", "title", "salary_max", "salary_min", "currency", "age1", "age2", "worktime1", "worktime2", "langs", "edu", "experience", "city", "jobtype", "description", "contact_tel", "contact_mail") =
-                    (NOW(), $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16)
-                    WHERE author_id = $17 AND job_id = $18
+      let que2nd = `UPDATE "jobs" SET ("time_updated", "title", "salary_max", "salary_min", "currency", "age1", "age2", "worktime1", "worktime2", "schedule", "langs", "edu", "experience", "city", "jobtype", "description", "contact_tel", "contact_mail") =
+                    (NOW(), $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17)
+                    WHERE author_id = $18 AND job_id = $19
                     RETURNING job_id, title`
-      let params2nd = [parsedData.title, parsedData.salary_max, parsedData.salary_min, parsedData.currency, parsedData.age1, parsedData.age2, parsedData.worktime1, parsedData.worktime2, parsedData.langs, parsedData.edu, parsedData.experience, parsedData.city, parsedData.jobtype, parsedData.description, parsedData.contact_tel, parsedData.contact_mail, results.rows[0].user_id, jid]
+      let params2nd = [parsedData.title, parsedData.salary_max, parsedData.salary_min, parsedData.currency, parsedData.age1, parsedData.age2, parsedData.worktime1, parsedData.worktime2, parsedData.schedule, parsedData.langs, parsedData.edu, parsedData.experience, parsedData.city, parsedData.jobtype, parsedData.description, parsedData.contact_tel, parsedData.contact_mail, results.rows[0].user_id, jid]
 
       pool.query(que2nd, params2nd, (error2, results2) => {
         if (error2) {
@@ -461,10 +461,10 @@ async function addOneJob (req, res) {
       //author_id - проверка не нужна
       parsedData.author_id = results.rows[0].user_id
       //console.log('addOneJob cp2: ', parsedData)
-      let que2nd = `INSERT INTO "jobs" ("title", "salary_max", "salary_min", "currency", "age1", "age2", "worktime1", "worktime2", "langs", "edu", "experience", "city", "jobtype", "description", "author_id", "contact_tel", "contact_mail") VALUES
-                    ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17)
+      let que2nd = `INSERT INTO "jobs" ("title", "salary_max", "salary_min", "currency", "age1", "age2", "worktime1", "worktime2", "schedule", "langs", "edu", "experience", "city", "jobtype", "description", "author_id", "contact_tel", "contact_mail") VALUES
+                    ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18)
                     RETURNING job_id, title`
-      let params2nd = [parsedData.title, parsedData.salary_max, parsedData.salary_min, parsedData.currency, parsedData.age1, parsedData.age2, parsedData.worktime1, parsedData.worktime2, parsedData.langs, parsedData.edu, parsedData.experience, parsedData.city, parsedData.jobtype, parsedData.description, parsedData.author_id, parsedData.contact_tel, parsedData.contact_mail]
+      let params2nd = [parsedData.title, parsedData.salary_max, parsedData.salary_min, parsedData.currency, parsedData.age1, parsedData.age2, parsedData.worktime1, parsedData.worktime2, parsedData.schedule, parsedData.langs, parsedData.edu, parsedData.experience, parsedData.city, parsedData.jobtype, parsedData.description, parsedData.author_id, parsedData.contact_tel, parsedData.contact_mail]
       
       pool.query(que2nd, params2nd, (error2, results2) => {
         if (error2) {
@@ -526,10 +526,10 @@ function validateOneJob (data) {
     if (parsedData.age2 < 18) parsedData.age2 = 18
   } else parsedData.age2 = 0
   //возр проверки
-  if (parsedData.age1 > parsedData.age2) {
-    parsedData.age2 = parsedData.age1
-    parsedData.age1 = 0
-  }
+  // if (parsedData.age1 > 0 && parsedData.age1 > parsedData.age2) {
+  //   parsedData.age2 = parsedData.age1
+  //   parsedData.age1 = 0
+  // }
   if (parsedData.age2 == 18) {
     parsedData.age1 = 18
     parsedData.age2 = 0
@@ -542,6 +542,10 @@ function validateOneJob (data) {
   if (data.worktime2 && isNaN(data.worktime2) === false && data.worktime2 > -1 && data.worktime2 < 25) {
     parsedData.worktime2 = data.worktime2
   } else parsedData.worktime2 = ''
+  //режим
+  if (data.schedule && data.schedule.length > 0 && data.schedule.length < 11) {
+    parsedData.schedule = data.schedule
+  } else parsedData.schedule = ''
   //языки - обязательно массив, длина каждого языка - 50, макс кол-во языков - 3
   if (data.langs && Array.isArray(data.langs) && data.langs.length < 4) {
     let langsFiltered = data.langs.filter(lang => lang.length < 51)
@@ -552,9 +556,10 @@ function validateOneJob (data) {
     parsedData.edu = data.edu
   } else parsedData.edu = ''
   //experience - стаж в годах, дробное число от 0 до 250
-  if (data.experience && isNaN(data.experience) === false && data.experience >= 0 && data.experience < 250) {
+  console.log('expcheck cp: ', data.experience)
+  if (data.experience != undefined && isNaN(data.experience) === false && data.experience >= -1 && data.experience < 250) {
     parsedData.experience = Number(data.experience)
-  } else parsedData.experience = 0
+  } else parsedData.experience = -1 //не указано = -1, без опыта = 0
   //city - необязат, от 2х символов до 100
   if (data.city && data.city.length > 1 && data.city.length < 101) {
     parsedData.city = data.city
@@ -604,9 +609,9 @@ async function addJobs (req, res) {
       //console.log('cp19: ', results)
       //console.log('r: ', req.body[0])
       //console.log('r: ', Array.isArray(req.body[0].langs))
-      let que2nd = `INSERT INTO "jobs" ("title", "salary_max", "salary_min", "currency", "age1", "age2", "worktime1", "worktime2", "langs", "edu", "experience", "city", "jobtype", "description", "contact_tel", "contact_mail", "author_id") VALUES`
+      let que2nd = `INSERT INTO "jobs" ("title", "salary_max", "salary_min", "currency", "age1", "age2", "worktime1", "worktime2", "schedule", "langs", "edu", "experience", "city", "jobtype", "description", "contact_tel", "contact_mail", "author_id") VALUES`
       let params2nd = []
-      let n = 17
+      let n = 18
       let iSkipped = 0
 
       for (let i = 0; i < req.body.length; i++) {
@@ -680,7 +685,7 @@ async function addJobs (req, res) {
         
         
         let j = i - iSkipped
-        que2nd += ` ($${(j * n) + 1}, $${(j * n) + 2}, $${(j * n) + 3}, $${(j * n) + 4}, $${(j * n) + 5}, $${(j * n) + 6}, $${(j * n) + 7}, $${(j * n) + 8}, $${(j * n) + 9}, $${(j * n) + 10}, $${(j * n) + 11}, $${(j * n) + 12}, $${(j * n) + 13}, $${(j * n) + 14}, $${(j * n) + 15}, $${(j * n) + 16}, $${(j * n) + 17}),`
+        que2nd += ` ($${(j * n) + 1}, $${(j * n) + 2}, $${(j * n) + 3}, $${(j * n) + 4}, $${(j * n) + 5}, $${(j * n) + 6}, $${(j * n) + 7}, $${(j * n) + 8}, $${(j * n) + 9}, $${(j * n) + 10}, $${(j * n) + 11}, $${(j * n) + 12}, $${(j * n) + 13}, $${(j * n) + 14}, $${(j * n) + 15}, $${(j * n) + 16}, $${(j * n) + 17}, $${(j * n) + 18}),`
         params2nd = [
           ...params2nd,
           ...Object.values(parsedData)

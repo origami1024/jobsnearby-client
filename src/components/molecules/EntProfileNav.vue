@@ -1,5 +1,5 @@
 <template>
-  <div class="q-px-md" style="min-width: 270px">
+  <div class="q-pr-md" style="min-width: 270px">
     <q-list bordered padding class="rounded-borders text-primary">
       <q-item
         clickable

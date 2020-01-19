@@ -42,7 +42,7 @@
           <!-- <div> {{status}} </div>
           <div> {{user}} ({{user_id}})</div> -->
           <q-btn-group>
-            <q-btn push glossy :color="$route.path == '/registration' ? 'purple' : 'gray'" :text-color="$route.path == '/registration' ? 'white' : 'black'" no-caps v-if="role === 'guest'" @click.native="regState='login'" label="Вход" to="/registration"/>
+            <q-btn push glossy :color="$route.path == '/registration' ? 'purple' : 'gray'" :text-color="$route.path == '/registration' ? 'white' : 'black'" no-caps v-if="role && role.startsWith('guest')" @click.native="regState='login'" label="Вход" to="/registration"/>
             <q-btn push glossy no-caps v-if="user_id !== -1" @click="logout" icon="logout">
               <q-tooltip>
                 <p style="font-size: 15px; margin: 0">Выйти</p>

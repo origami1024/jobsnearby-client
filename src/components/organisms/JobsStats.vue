@@ -4,16 +4,16 @@
       <table>
         <thead>
           <tr>
-            <td style="width: 50%">Название</td>
-            <td style="width: 10%">Всего просмотров</td>
-            <td style="width: 10%">Униальных просмотров</td>
-            <td style="width: 10%">Подали резюме</td>
-            <td style="width: 10%">Изменить</td>
-            <td style="width: 10%">Удалить</td>
+            <td style="width: 35%; min-width: 35%; max-width: 35%; text-align: left">Название</td>
+            <td style="width: 15%; min-width: 15%; max-width: 15%;">Всего просмотров</td>
+            <td style="width: 15%; min-width: 15%; max-width: 15%;">Уникальных просмотров</td>
+            <td style="width: 15%; min-width: 15%; max-width: 15%;">Подали резюме</td>
+            <td style="width: 10%; min-width: 15%; max-width: 15%;">Изменить</td>
+            <td style="width: 10%; min-width: 10%; max-width: 10%;">Удалить</td>
           </tr>
         </thead>
         <tr class="jobstat" v-for="item in jobslist" :key="item.job_id">
-          <td><a class="link1" target="_blank" :href="'/jobpage?id=' + item.job_id">{{item.title}}</a></td>
+          <td style="text-align: left"><a class="link1" target="_blank" :href="'/jobpage?id=' + item.job_id">{{item.title}}</a></td>
           <td>{{item.hits_all}}</td>
           <td>{{item.hits_uniq}}</td>
           <td>0</td>
@@ -76,11 +76,12 @@ export default {
     border-spacing: 0
   thead td
     border-bottom 15px solid transparent
-
+    font-size 16px
   td
     padding 3px
     font-size 12px
     max-width 85px
+    font-size 16px
   .line
     display flex
     align-items center
