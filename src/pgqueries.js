@@ -233,16 +233,26 @@ async function getOwnJobs (req, res) {
         return false
       }
       //after cookies check, get the actual data from db
-      let que2nd = `SELECT * FROM (SELECT jobs.job_id, jobs.city, jobs.experience, jobs.jobtype, jobs.title, jobs.edu, jobs.currency, jobs.salary_min, jobs.salary_max, jobs.sex, jobs.description, jobs.worktime1, jobs.worktime2, jobs.schedule, jobs.age1, jobs.age2, jobs.langs, jobs.time_published as published, jobs.time_updated as updated, jobs.contact_tel, jobs.contact_mail, cardinality(jobs.hits_log) as hits_all
-        FROM jobs
-        WHERE jobs.author_id = $1
-        ORDER BY (jobs.time_updated, jobs.job_id) DESC) a,
-        (select count(distinct hits_log1) as hits_uniq
-        from (
-          select unnest(hits_log) as hits_log1
-          from jobs
-          WHERE jobs.author_id = $1
-          ORDER BY (jobs.time_updated, jobs.job_id) DESC) as ss) b`
+
+      //array_length(array_agg(distinct jobs.hits_log)) as hits_uniq
+      let que2nd = `SELECT jobs.job_id, jobs.city, jobs.experience, jobs.jobtype, jobs.title, jobs.edu, jobs.currency, jobs.salary_min, jobs.salary_max, jobs.sex, jobs.description, jobs.worktime1, jobs.worktime2, jobs.age1, jobs.age2, jobs.langs, jobs.time_published as published, jobs.time_updated as updated, jobs.contact_tel, jobs.contact_mail, cardinality(jobs.hits_log) as hits_all, (select count(distinct a) from unnest(jobs.hits_log) as a) as hits_uniq
+      FROM jobs
+      WHERE jobs.author_id = $1
+      GROUP BY jobs.job_id
+      ORDER BY (jobs.time_updated, jobs.job_id) DESC
+      `
+      // let que2nd = `SELECT * FROM (SELECT jobs.job_id, jobs.city, jobs.experience, jobs.jobtype, jobs.title, jobs.edu, jobs.currency, jobs.salary_min, jobs.salary_max, jobs.sex, jobs.description, jobs.worktime1, jobs.worktime2, jobs.schedule, jobs.age1, jobs.age2, jobs.langs, jobs.time_published as published, jobs.time_updated as updated, jobs.contact_tel, jobs.contact_mail, cardinality(jobs.hits_log) as hits_all
+      //   FROM jobs
+      //   WHERE jobs.author_id = $1
+      //   ORDER BY (jobs.time_updated, jobs.job_id) DESC) a,
+      //   (select count(distinct hits_log1) as hits_uniq
+      //   from (
+      //     select unnest(hits_log) as hits_log1
+      //     from jobs
+      //     WHERE jobs.author_id = $1
+      //     ORDER BY (jobs.time_updated, jobs.job_id) DESC) as ss
+      //     GROUP BY ss.job_id) b
+      //   `
         //TODO: paginate this too
 
             // `SELECT jobs.job_id, jobs.city, jobs.experience, jobs.jobtype, jobs.title, jobs.edu, jobs.currency, jobs.salary_min, jobs.salary_max, jobs.sex, jobs.description, jobs.worktime1, jobs.worktime2, jobs.age1, jobs.age2, jobs.langs, jobs.time_published as published, jobs.time_updated as updated, jobs.contact_tel, jobs.contact_mail
@@ -569,7 +579,7 @@ function validateOneJob (data) {
   else if (data.jtype && data.jtype == 'v') parsedData.jobtype = 'v'
   else parsedData.jobtype = ''
   //description - необязат, от 2х символов до 500
-  if (data.description && data.description.length > 1 && data.description.length < 501) {
+  if (data.description && data.description.length > 1 && data.description.length < 2001) {
     parsedData.description = data.description
   } else parsedData.description = ''
   //"contact_tel", "contact_mail", 
@@ -619,71 +629,6 @@ async function addJobs (req, res) {
         if (parsedData == false) { iSkipped += 1; continue}
         //author_id - проверка не нужна
         parsedData.author_id = results.rows[0].user_id
-
-
-        // //title - обязат поле, без него вакансия пропускается; длина от 2 до 75 символов
-        // if (req.body[i].title && req.body[i].title.length > 1 && req.body[i].title.length < 76) {
-        //   parsedData.title = req.body[i].title
-        // } else { iSkipped += 1; continue}
-        // //console.log('cp567: ', req.body[i].title)
-        
-        // //salary_max - необязат, целое число
-        // if (req.body[i].salary_max && isNaN(req.body[i].salary_max) === false && req.body[i].salary_max > -1 && Number.isInteger(req.body[i].salary_max)) {
-        //   parsedData.salary_max = req.body[i].salary_max
-        // } else parsedData.salary_max = 0
-        // //salary_min - необязат, целое число
-        // if (req.body[i].salary_min && isNaN(req.body[i].salary_min) === false && req.body[i].salary_min > -1 && Number.isInteger(req.body[i].salary_min)) {
-        //   parsedData.salary_min = req.body[i].salary_min
-        // } else parsedData.salary_min = 0
-        // //если указана min но не указана max, то добавить max
-        // if (parsedData.salary_max == 0 && parsedData.salary_min > 0) parsedData.salary_max = parsedData.salary_min
-        // //валюта - необязат, [m, $, р, e], по умолчанию m
-        // if (req.body[i].currency && (req.body[i].currency === '$' || req.body[i].currency === 'm' || req.body[i].currency === 'р' || req.body[i].currency === 'e')) {
-        //   parsedData.currency = req.body[i].currency
-        // } else parsedData.currency = 'm'
-        // //пол - необязат, [m, w или пропуск]
-        // if (req.body[i].sex && (req.body[i].sex === 'm' || req.body[i].sex === 'w')) {
-        //   parsedData.sex = req.body[i].sex
-        // } else parsedData.sex = ''
-        // //возр от - необязат, целое число
-        // if (req.body[i].age1 && isNaN(req.body[i].age1) === false && req.body[i].age1 > -1 && req.body[i].age1 < 250 && Number.isInteger(req.body[i].age1)) {
-        //   parsedData.age1 = req.body[i].age1
-        // } else parsedData.age1 = 0
-        // //возр до - необязат, целое число
-        // if (req.body[i].age2 && isNaN(req.body[i].age2) === false && req.body[i].age2 > -1 && req.body[i].age2 < 250 && Number.isInteger(req.body[i].age2)) {
-        //   parsedData.age2 = req.body[i].age2
-        // } else parsedData.age2 = 0
-        // //время от - необязат
-        // if (req.body[i].worktime1 && isNaN(req.body[i].worktime1) === false && req.body[i].worktime1 > -1 && req.body[i].worktime1 < 25) {
-        //   parsedData.worktime1 = req.body[i].worktime1
-        // } else parsedData.worktime1 = ''
-        // //время до - необязат
-        // if (req.body[i].worktime2 && isNaN(req.body[i].worktime2) === false && req.body[i].worktime2 > -1 && req.body[i].worktime2 < 25) {
-        //   parsedData.worktime2 = req.body[i].worktime2
-        // } else parsedData.worktime2 = ''
-        // //языки - обязательно массив, длина каждого языка - 50, макс кол-во языков - 3
-        // if (req.body[i].langs && Array.isArray(req.body[i].langs) && req.body[i].langs.length < 4) {
-        //   let langsFiltered = req.body[i].langs.filter(lang => lang.length < 51)
-        //   parsedData.langs = langsFiltered
-        // } else parsedData.langs = []
-        // //edu - необязат, от 2х символов до 20
-        // if (req.body[i].edu && req.body[i].edu.length > 1 && req.body[i].edu.length < 21) {
-        //   parsedData.edu = req.body[i].edu
-        // } else parsedData.edu = ''
-        // //experience - стаж в годах, дробное число от 0 до 250
-        // if (req.body[i].experience && isNaN(req.body[i].experience) === false && req.body[i].experience >= 0 && req.body[i].experience < 250) {
-        //   parsedData.experience = req.body[i].experience
-        // } else parsedData.experience = 0
-        // //city - необязат, от 2х символов до 100
-        // if (req.body[i].city && req.body[i].city.length > 1 && req.body[i].city.length < 101) {
-        //   parsedData.city = req.body[i].city
-        // } else parsedData.city = ''
-        // //description - необязат, от 2х символов до 500
-        // if (req.body[i].description && req.body[i].description.length > 1 && req.body[i].description.length < 501) {
-        //   parsedData.description = req.body[i].description
-        // } else parsedData.description = ''
-        
-        
         let j = i - iSkipped
         que2nd += ` ($${(j * n) + 1}, $${(j * n) + 2}, $${(j * n) + 3}, $${(j * n) + 4}, $${(j * n) + 5}, $${(j * n) + 6}, $${(j * n) + 7}, $${(j * n) + 8}, $${(j * n) + 9}, $${(j * n) + 10}, $${(j * n) + 11}, $${(j * n) + 12}, $${(j * n) + 13}, $${(j * n) + 14}, $${(j * n) + 15}, $${(j * n) + 16}, $${(j * n) + 17}, $${(j * n) + 18}),`
         params2nd = [

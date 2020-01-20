@@ -1,25 +1,26 @@
 <template>
   <div class="uploads">
     <div v-if="role === 'company'" class="authed">
-      <h4 class="uploads__header">Публикация</h4>
+      <h4 class="uploads__header">Добавление нескольких вакансий</h4>
       <q-stepper
         v-model="step"
         ref="stepper"
         color="primary"
         animated
+        style="paddingLeft: 0"
       >
         <q-step
           :name="1"
-          title="Спарсить данные из файла"
-          caption="Шаг 1"
+          title="Добавить несколько вакансий через Excel"
           icon="settings"
           :done="step > 1"
         >
-          Выберите файл с вакансиями. <a href="#">пример файла</a>
+          Выберите файл с вакансиями. <a href="/Vacancy_V5.xlsx">Пример файла</a>
           <q-input
-            
             @change="parseFile"
-            filled
+            outlined
+            dense
+            style="max-width: 250px"
             type="file"
             hint=".xls и .xlsx файлы"
             accept=".xls, .xlsx"
@@ -27,75 +28,73 @@
             name="fileUploader"
             id="fileUploader"
           />
-          <!-- <q-btn :disable="parsed.length == 0" @click="step = 2" color="primary" :label="step === 3 ? 'Finish' : 'Далее'" /> -->
         </q-step>
         <q-step
           :name="2"
-          title="Отправить данные на сервер"
-          caption="Шаг 2"
+          title="Опубликовать вакансии"
           icon="create_new_folder"
           :done="step > 2"
         >
           <div>
-            <table>
+            <table style="border-spacing: 0">
               <thead :style="{backgroundColor: 'black', color: 'white'}">
-                <tr>
-                  <td>Название</td>
-                  <td>Зарп от</td>
-                  <td>Зарп до</td>
-                  <td>Валюта</td>
-                  <td>возр от</td>
-                  <td>возр до</td>
-                  <td>время от</td>
-                  <td>время до</td>
-                  <td>режим</td>
-                  <td>Языки</td>
-                  <td>Образование</td>
-                  <td>Стаж</td>
-                  <td>Город</td>
-                  <td>Тип занятости</td>
-                  <td>Дополнительно</td>
-                  <td>Тел</td>
-                  <td>Почта</td>
-                </tr>
+                <td>Название</td>
+                <td>Зарп от</td>
+                <td>Зарп до</td>
+                <td>Вал юта</td>
+                <td>возр от</td>
+                <td>возр до</td>
+                <td>время от</td>
+                <td>время до</td>
+                <td>режим</td>
+                <td>Языки</td>
+                <td>Образ ование</td>
+                <td>Стаж</td>
+                <td>Город</td>
+                <td>Тип занят ости</td>
+                <td>Дополнительно</td>
+                <td>Тел</td>
+                <td>Почта</td>
               </thead>
               <tr @input="onEditableInput" v-for="(item, index) in parsed" :key="index" :itemindex="index">
                 <td contenteditable="true" propname="title">{{item.title}}</td>
                 <td contenteditable="true" propname="salary_min">{{item.salary_min}}</td>
                 <td contenteditable="true" propname="salary_max">{{item.salary_max}}</td>
-                <td contenteditable="true">{{item.currency}}</td>
-                <td contenteditable="true">{{item.age1}}</td>
-                <td contenteditable="true">{{item.age2}}</td>
-                <td contenteditable="true">{{item.worktime1}}</td>
-                <td contenteditable="true">{{item.worktime2}}</td>
-                <td contenteditable="true">{{item.schedule}}</td>
-                <td contenteditable="true">{{item.langs}}</td>
-                <td contenteditable="true">{{item.edu}}</td>
-                <td contenteditable="true">{{item.experience}}</td>
-                <td contenteditable="true">{{item.city}}</td>
-                <td contenteditable="true">{{item.jtype}}</td>
-                <td contenteditable="true">{{item.description}}</td>
-                <td contenteditable="true">{{item.contact_tel}}</td>
-                <td contenteditable="true">{{item.contact_mail}}</td>
+                <td contenteditable="true" propname="currency">{{item.currency}}</td>
+                <td contenteditable="true" propname="age1">{{item.age1}}</td>
+                <td contenteditable="true" propname="age2">{{item.age2}}</td>
+                <td contenteditable="true" propname="worktime1">{{item.worktime1}}</td>
+                <td contenteditable="true" propname="worktime2">{{item.worktime2}}</td>
+                <td contenteditable="true" propname="schedule">{{item.schedule}}</td>
+                <td contenteditable="true" propname="langs">{{item.langs}}</td>
+                <td contenteditable="true" propname="edu">{{item.edu}}</td>
+                <td contenteditable="true" propname="experience">{{item.experience}}</td>
+                <td contenteditable="true" propname="city">{{item.city}}</td>
+                <td contenteditable="true" propname="jtype">{{item.jtype}}</td>
+                <td contenteditable="true" propname="description">{{item.description}}</td>
+                <td contenteditable="true" propname="contact_tel">{{item.contact_tel}}</td>
+                <td contenteditable="true" propname="contact_mail">{{item.contact_mail}}</td>
               </tr>
             </table>
             <q-btn v-if="step > 1" flat color="primary" @click="resetParsed" label="Сбросить" class="q-ml-sm" />
-            <q-btn color="primary" @click="sendNewJobs" :disabled="parsed.length < 1" label="Отправить на сервер"/>
+            <q-btn color="primary" @click="sendNewJobs" :disabled="parsed.length < 1" label="Опубликовать"/>
           </div>
         </q-step>
-        <!-- <template v-slot:navigation>
-          <q-stepper-navigation>
-            <q-btn :disable="parsed.length == 0" @click="$refs.stepper.next()" color="primary" :label="step === 3 ? 'Finish' : 'Далее'" />
-            <q-btn v-if="step > 1" flat color="primary" @click="$refs.stepper.previous()" label="Back" class="q-ml-sm" />
-          </q-stepper-navigation>
-        </template> -->
+        <q-step
+          :name="3"
+          title="Финиш"
+          icon="done"
+          :done="step > 3"
+        >
+          <p>{{uploadStatus}}</p>
+          <q-btn color="primary" @click="step = 1" :disabled="step.length < 3" label="Добавить еще несколько вакансий через Excel"/>
+        </q-step>
       </q-stepper>
-
-      
-      
-      <p>Статус: {{uploadStatus}}</p>
-      <h4 class="uploads__header">Опубликованные вакансии({{ownJobs.length}}):</h4>
-      <JobsList :jobslist="ownJobs" msg="Опубликованные"/>
+      <h4 class="uploads__header">Все опубликованные вакансии({{ownJobs.length}})</h4>
+      <div class="uploads__published">
+        <JobsStats @editJob="editJob" @delJob="delJob" :jobslist="ownJobs"/>
+        <!-- <JobsList :jobslist="ownJobs"/> -->
+      </div>
     </div>
     <div v-else>
       Авторизируйтесь, для возможности загрузки вакансий
@@ -111,7 +110,7 @@ const config = require('@/configs/main_config')
 
 
 import JobsList from '@/components/organisms/JobsList.vue'
-
+import JobsStats from '@/components/organisms/JobsStats.vue'
 
 export default {
   name: 'uploads',
@@ -135,6 +134,13 @@ export default {
     // }
   },
   methods:{
+    editJob(jid) {
+      console.log('edit jab: ', jid)
+      this.$emit('editJob', jid)
+    },
+    delJob(jid) {
+      this.$emit('delJob', jid)
+    },
     onEditableInput(e) {
       //console.log('event: ', e)
       let itemindex = e.target.parentElement.getAttribute('itemindex')
@@ -158,13 +164,13 @@ export default {
           .post(config.jobsUrl + '/entrance', this.parsed, {headers: {'Content-Type' : 'application/json' }, withCredentials: true,})
           .then(response => {
             if (response.data === 'OK') {
-              this.uploadStatus = 'Вакансии загружены и опубликованы, готов к работе'
+              this.uploadStatus = 'Вакансии успешно опубликованы'
               this.$emit('getOwnJobs')
-            } else {this.uploadStatus = 'Загрузка не удалась'; console.log('trespasser')}
+            } else {this.uploadStatus = 'Загрузка не удалась'}
             
           })
-        this.resetParsed()
-        //this.$refs.fileUploader.files = null
+        this.parsed = []
+        this.step = 3
         
       } else {this.uploadStatus = 'Загрузите данные'}
     },
@@ -253,8 +259,10 @@ export default {
     },
     
   },
+
   components: {
-    JobsList
+    JobsList,
+    JobsStats,
   }
 }
 </script>
@@ -262,11 +270,22 @@ export default {
 
 <style scoped lang="stylus">
 .uploads
-  width 90%
   max-width 1280px
   &__header
-    margin 8px 0
+    //margin 8px 0
     margin-top 16px
+    margin-bottom 8px
     font-size 15px
     font-weight 600
+  &__published
+    //margin-top 15px
+    padding 10px 10px
+    box-shadow 0 1px 4px 2px #ddd
+    border-radius 4px
+  table
+    border-collapse:collapse
+  tr:nth-child(odd)
+    background-color #eee
+  .authed
+    margin 10px
 </style>

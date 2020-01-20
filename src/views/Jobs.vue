@@ -272,6 +272,7 @@ export default {
   .jobs__contents
     
     width 100%
+    max-width calc(1000px - 310px) //that is including the filters to the left
   .jobs_prefilters
     margin-bottom 10px
     background-color #eee

@@ -73,7 +73,7 @@ export default {
   width 100%
   min-width 300px
   table
-    border-spacing: 0
+    border-spacing 0
   thead td
     border-bottom 15px solid transparent
     font-size 16px

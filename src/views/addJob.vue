@@ -156,15 +156,18 @@
           />
           <!-- <q-input :style="{width: '250px'}" dense filled v-model="job.city" label="Город" :hint="null"/> -->
         </div>
-        <p style="fontSize: 16px; marginBottom: 10px">Описание <span style="color: red">{{descError}}</span></p>
+        <p style="fontSize: 16px; marginBottom: 10px">Описание <span style="color: #c10015">{{descError}}</span></p>
         <div class="line">
-          <vue-editor
-            v-model="job.description"
-            @blur="descBlur"
-            @input="descUpd"
-            :editorToolbar="customToolbar"
-            style="textAlign: left; width: 100%; backgroundColor: white; marginBottom: 22px"
-          />
+          <div class="desc-col-wrap" style="textAlign: left; width: 100%">
+            <vue-editor
+              v-model="job.description"
+              @blur="descBlur"
+              @input="descUpd"
+              :editorToolbar="customToolbar"
+              style="backgroundColor: white;"
+            />
+            <div class="hint" :style="{color: job.description.length > 2000 ? '#c10015' : 'inherit'}">{{job.description.length}} / 2000</div>
+          </div>
         </div>
         <q-expansion-item
           expand-separator
@@ -455,11 +458,11 @@ export default {
   },
   methods:{
     descUpd(e) {
-      if (e.length < 751) {this.descError = ''}
+      if (e.length < 2001) {this.descError = ''}
     },
     descBlur(e) {
       // if (e.root.innerHTML.length < 15) {this.descError = '(15 символов минимум)'}
-      if (e.root.innerHTML.length > 750) {this.descError = '(750 символов максимум)'}
+      if (e.root.innerHTML.length > 2000) {this.descError = '(2000 символов максимум)'}
       //this.job.description = e.root.innerHTML
     },
     resetFields() {
@@ -511,8 +514,8 @@ export default {
         scrollPos = 190
       }
       //description
-      if (this.job.description.length > 750) {
-        this.descError = '(750 символов максимум)'
+      if (this.job.description.length > 2000) {
+        this.descError = '(2000 символов максимум)'
         scrollPos = 240
       }
       //age
@@ -621,6 +624,14 @@ export default {
       this.job.schedule = new1
     },
   },
+  watch: {
+    $route (to, from){
+      if (to.name === 'addjob') {
+        console.log('cp u1')
+        this.resetFields()
+      }
+    },
+  },
   components: {
     VueEditor
   }
@@ -644,6 +655,10 @@ div.q-field__messages
 .addJob
   max-width 80%
   width 680px
+  .hint
+    line-height 22px
+    font-size 10px
+    text-align right
   .q-field__bottom
     border 1px solid green !important
   .jobpage__wrapper
