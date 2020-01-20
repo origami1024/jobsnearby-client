@@ -25,12 +25,18 @@
           <q-input class="entprofile__inp" dense outlined bottom-slots :value="cabout.name" placeholder="Название компании" counter maxlength="80"/>
           <div class="line" dense style="display: flex; width: 100%; justify-content: space-between;">
             <q-input
+              @input="val => { logofile = val[0] }"
               style="width: 300px"
               outlined dense
               type="file"
               hint=""
+              accept=".jpg, .png, .svg"
+              ref="logoUploader"
             />
-            <div class="logo-placeholder">logo placeholder</div>
+            <q-btn @click="uploadLogo" :disable="logofile == null">Загрузить</q-btn>
+            <div class="logo-placeholder" :style="{'background-image': 'url(' + logolink + ')'}" >{{logolink == '' ? 'logo placeholder' : ''}}</div>
+            <!-- v-if="logolink == ''" -->
+            <!-- <img v-else :src="logolink" alt="Лого"> -->
           </div>
           <q-input dense class="entprofile__inp" outlined bottom-slots :value="cabout.workfield" placeholder="Сфера деятельности" counter maxlength="80"/>
           <q-input dense class="entprofile__inp" outlined bottom-slots :value="cabout.link" placeholder="Сайт" counter maxlength="80"/>
@@ -71,6 +77,8 @@
 import JobsStats from '@/components/organisms/JobsStats.vue'
 import EntProfileNav from '@/components/molecules/EntProfileNav.vue'
 
+import axios from 'axios'
+
 export default {
   name: 'EntProfile',
   props: {
@@ -79,6 +87,8 @@ export default {
     role: String
   },
   data: ()=>{return {
+    logolink: '',
+    logofile: null,
     cabout: {
       name: '',
       logo: '',
@@ -105,6 +115,25 @@ export default {
     EntProfileNav
   },
   methods: {
+    uploadLogo() {
+      let dumper = 'https://decreed-silk.000webhostapp.com/outer.php'
+      //logoUploader
+
+      var formData = new FormData();
+      formData.append("image", this.logofile);
+      axios
+        .post(dumper, formData, {
+          headers: {'Content-Type': 'multipart/form-data'}
+        })
+        .then(resp => {
+          //console.log('cp219: ', resp)
+          if (resp.data && resp.data.startsWith('link:')) {
+            console.log('uploading is ok')
+            this.logolink = resp.data.replace('link:', '')
+          } else {console.log('error uploading: ', resp.data)}
+          //if (response.data === 'OK') {} else 
+        })
+    },
     changeTabs(newT) {
       //if (newT == 'published') this.$emit('getOwnJobs')
       newT != 'published' || this.$emit('getOwnJobs')
@@ -197,6 +226,7 @@ export default {
   .logo-placeholder
     width 120px
     height 50px
+    background-size 120px 50px
     background-color pink
     line-height 50px
   *
