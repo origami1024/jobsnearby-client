@@ -749,6 +749,102 @@ async function checkAuthGetProfile(token) {
   }
 }
 
+async function checkIfUserAuthed(session) {
+  let que1st = `SELECT user_id FROM "users" WHERE "auth_cookie" = ($1)`
+  let params1st = [session]
+  let result1 = await pool.query(que1st, params1st).catch(error => {
+    console.log('cp checkIfUserAu err: ', error)
+    //throw new Error('job by id error')
+  })
+  //console.log('cpc p2: ', result1)
+  if (result1.rows && result1.rows.length == 1) return result1.rows[0].user_id
+  else return false
+}
+
+async function getOneCompany(uid) {
+  //uid - is prechecked user_id
+  //check auth and if its a company
+  let que = `
+    SELECT company, logo_url, domains, website, full_description
+    FROM users
+    WHERE user_id = $1
+  `
+
+  let result = await pool.query(que, [uid]).catch(error => {
+    console.log('cp getonecompany err: ', error)
+    //throw new Error('job by id error')
+  })
+  //console.log(result.rows)
+  if (result.rows && result.rows.length === 1) return result.rows[0]
+  else return false
+}
+async function updateOneCompany(req, res) {
+  //check auth and if its a company
+  if (req.cookies.session && req.cookies.session.length > 50) {
+    //console.log(req.body)
+    let que1st = `SELECT user_id, company, logo_url, role FROM "users" WHERE "auth_cookie" = ($1)`
+    let params1st = [req.cookies.session]
+    pool.query(que1st, params1st, (error, results) => {
+      if (error) {
+        res.send('step2')
+        console.log('addJobs Error: ', error)
+      }
+      if (results.rows.length < 1) {
+        //Если юзера с таким куки не найдено, то выходим из функции прост
+        res.send('step3')
+        return false
+      }
+      if (results.rows[0].role != 'company') {
+        res.send('step3')
+        return false
+      }
+
+      let uid = results.rows[0].user_id
+      console.log('cp99: ', req.body)
+      
+      let parsedData = {}
+      //VALIDATE SHIET HERE!
+      if (req.body.company && req.body.company.length < 80 && titleRegex.test(req.body.company)) {
+        parsedData.company = req.body.company
+      } else parsedData.company = results.rows[0].company
+      if (req.body.logo_url && req.body.logo_url.length < 86) {
+        parsedData.logo_url = req.body.logo_url
+      } else parsedData.logo_url = results.rows[0].logo_url
+      console.log('cp100: ', req.body.logo_url)
+      if (req.body.domains) {
+        parsedData.domains = req.body.domains.slice(0, 3)
+      } else parsedData.domains = '{}'
+      if (req.body.website) {
+        parsedData.website = req.body.website
+      } else parsedData.website = ''
+      if (req.body.full_description && req.body.full_description.length < 2001) {
+        parsedData.full_description = req.body.full_description
+      } else parsedData.full_description = ''
+
+      let que2nd = `UPDATE "users" SET ("company", "logo_url", "domains", "website", "full_description") =
+                    ($1, $2, $3, $4, $5)
+                    WHERE user_id = $6`
+      let params2nd = [parsedData.company, parsedData.logo_url, parsedData.domains, parsedData.website, parsedData.full_description, uid]
+
+      pool.query(que2nd, params2nd, (error2, results2) => {
+        if (error2) {
+          console.log('updateOneCompany, err2: ', error2)
+          res.send('error')
+          return false
+        }
+        if (results2.rows.length > 0) {
+          //console.log('cp ll:', {...results2.rows[0], 'result': 'OK'})
+          res.send('OK')
+        } else res.send('error unkn')
+      })
+
+
+    })
+  }
+  //then by company id insert data
+
+}
+
 module.exports = {
   checkAuthGetProfile,
   tryInsertAuthToken,
@@ -766,5 +862,8 @@ module.exports = {
   getFavedFull,
   hitJobById,
   deleteJobById,
-  updateJob
+  updateJob,
+  getOneCompany,
+  updateOneCompany,
+  checkIfUserAuthed
 }

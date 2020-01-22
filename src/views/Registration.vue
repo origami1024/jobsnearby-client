@@ -181,7 +181,7 @@ export default {
         this.submitting = true
         console.log('cp10: ',this.agency)
         axios
-          .post(config.jobsUrl + '/reg', [this.mail, this.pw, this.usertype, this.usertype === 'subscriber' ? this.name : this.company, this.usertype === 'subscriber' ? this.surname : this.agency], {headers: {'Content-Type' : 'application/json' }})
+          .post(config.jobsUrl + '/reg', [this.mail.toLowerCase(), this.pw, this.usertype, this.usertype === 'subscriber' ? this.name : this.company, this.usertype === 'subscriber' ? this.surname : this.agency], {headers: {'Content-Type' : 'application/json' }})
           .then(response => {
             if (response.data == 'OK') {
               this.status = 'Регистрация удалась'
@@ -220,7 +220,7 @@ export default {
       //let nameregex = /^[\wа-яА-Я]+$/
       if (this.mail.length === 0)
         this.validation.mail = 'Введите email'
-      else if (!mailregex.test(this.mail)) 
+      else if (!mailregex.test(this.mail.toLowerCase())) 
         this.validation.mail = 'Неправильный формат адреса'
       else this.validation.mail = ''
 
@@ -307,7 +307,7 @@ export default {
         this.login.status = 'Попытка входа'
         this.submitting = true
         axios
-          .post(config.jobsUrl + '/login', [this.login.mail, this.login.pw, this.login.rememberme], {headers: {'Content-Type' : 'application/json' }, withCredentials: true,})
+          .post(config.jobsUrl + '/login', [this.login.mail.toLowerCase(), this.login.pw, this.login.rememberme], {headers: {'Content-Type' : 'application/json' }, withCredentials: true,})
           .then(response => {
             //fix: need to send auth data on login
             if (response.data && response.data[0] === 'OK' && response.data.length > 3) {
@@ -335,7 +335,7 @@ export default {
       let mailregex = /(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/
       if (this.login.mail.length === 0) 
         this.login.validation.mail = 'Введите email'
-      else if (!mailregex.test(this.login.mail)) 
+      else if (!mailregex.test(this.login.mail.toLowerCase())) 
         this.login.validation.mail = 'Неправильный формат адреса'
       else this.login.validation.mail = ''
 

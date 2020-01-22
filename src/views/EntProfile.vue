@@ -1,7 +1,10 @@
 <template>
   <div v-if="role === 'company'" class="entprofile">
     <div class="entprofile__inner">
-      <EntProfileNav :localRoute="tab" @setLocalRoute="setLocalRoute"/>
+      <EntProfileNav
+        :localRoute="tab"
+        @setLocalRoute="setLocalRoute"
+      />
       <q-tab-panels
         class="qtpans"
         @before-transition="changeTabs"
@@ -22,31 +25,56 @@
           </div>
         </q-tab-panel>
         <q-tab-panel name="cabout" class="entprofile__mid">
-          <q-input class="entprofile__inp" dense outlined bottom-slots :value="cabout.name" placeholder="Название компании" counter maxlength="80"/>
+          <q-input class="entprofile__inp" dense outlined bottom-slots v-model="cabout.company" placeholder="Название компании" counter maxlength="80"/>
           <div class="line" dense style="display: flex; width: 100%; justify-content: space-between;">
-            <q-input
-              @input="val => { logofile = val[0] }"
-              style="width: 300px"
-              outlined dense
-              type="file"
-              hint=""
-              accept=".jpg, .png, .svg"
-              ref="logoUploader"
-            />
-            <q-btn @click="uploadLogo" :disable="logofile == null">Загрузить</q-btn>
-            <div class="logo-placeholder" :style="{'background-image': 'url(' + logolink + ')'}" >{{logolink == '' ? 'logo placeholder' : ''}}</div>
-            <!-- v-if="logolink == ''" -->
-            <!-- <img v-else :src="logolink" alt="Лого"> -->
+            <form action="" ref="uplForm">
+              <label
+                for="fileinput1"
+                class="entprofile__inp"
+                style="display: block; marginBottom: 6px;"
+                :style="{color: logo_upload_error != null ? '#c10015' : inherit}"
+              >
+                {{logo_upload_error ? logo_upload_error : 'Путь к лого: ' + cabout.logo_url}}
+              </label>
+              <!-- white-space: nowrap; max-width: 300px; overflow: hidden; text-overflow: ellipsis; -->
+              <q-input
+                id="fileinput1"
+                @input="val => { logofile = val[0] }"
+                style="width: 300px"
+                outlined dense
+                type="file"
+                hint=""
+                accept=".jpg, .png, .svg"
+                ref="logoUploader"
+              />
+            </form>
+            <q-btn @click="uploadLogo" style="marginBottom: 22px" dense color="primary" v-if="logofile != null">Загрузить</q-btn>
+            <div class="logo-placeholder" :style="{'background-image': 'url(' + cabout.logo_url + ')'}" >{{cabout.logo_url == '' || !cabout.logo_url ? 'logo placeholder' : ''}}</div>
+            <!-- v-if="cabout.logo_url == ''" -->
+            <!-- <img v-else :src="cabout.logo_url" alt="Лого"> -->
           </div>
-          <q-input dense class="entprofile__inp" outlined bottom-slots :value="cabout.workfield" placeholder="Сфера деятельности" counter maxlength="80"/>
-          <q-input dense class="entprofile__inp" outlined bottom-slots :value="cabout.link" placeholder="Сайт" counter maxlength="80"/>
+          <q-select
+              multiple
+              use-chips
+              dense
+              outlined
+              placeholder="Сфера деятельности"
+              bg-color="white"
+              :style="{width: '100%'}"
+              max-values="3"
+              v-model="cabout.domains"
+              :options="domainsAll"
+              :hint="null"
+            />
+          <q-input dense class="entprofile__inp" outlined v-model="cabout.website" placeholder="Сайт" counter maxlength="80"/>
           <q-input
-            v-model="cabout.desc"
+            v-model="cabout.full_description"
             outlined dense
             placeholder="Описание"
             type="textarea"
+            counter maxlength="2000"
           />
-          <q-btn color="primary" style="margin-top: 10px">Отправить изменения</q-btn>
+          <q-btn @click="updateCompanyData" color="primary" style="margin-top: 10px">Отправить изменения</q-btn>
         </q-tab-panel>
         <q-tab-panel class="entprofile__settings entprofile__mid" name="settings">
           <p>Добавить контакты</p>
@@ -79,6 +107,9 @@ import EntProfileNav from '@/components/molecules/EntProfileNav.vue'
 
 import axios from 'axios'
 
+let domainsAll = ["Автомобильный бизнес", "Гостиницы, рестораны, общепит, кейтеринг", "Государственные организации", "Добывающая отрасль", "ЖКХ", "Информационные технологии, системная интеграция, интернет", "Искусство, культура", "Лесная промышленность, деревообработка", "Медицина, фармацевтика, аптеки", "Металлургия, металлообработка", "Нефть и газ", "Образовательные учреждения", "Общественная деятельность, партии, благотворительность, НКО", "Перевозки, логистика, склад, ВЭД", "Продукты питания", "Промышленное оборудование, техника, станки и комплектующие", "Розничная торговля", "СМИ, маркетинг, реклама, BTL, PR, дизайн", "Сельское хозяйство", "Строительство, эксплуатация, проектирование", "Недвижимость", "Телекоммуникации, связь", "Товары народного потребления (непищевые)", "Тяжелое машиностроение", "Управление многопрофильными активами", "Услуги для бизнеса", "Услуги для населения", "Финансовый сектор", "Химическое производство, удобрения", "Электроника, приборостроение, бытовая техника, компьютеры и оргтехника", "Энергетика"]
+const config = require('./../configs/main_config')
+
 export default {
   name: 'EntProfile',
   props: {
@@ -87,15 +118,16 @@ export default {
     role: String
   },
   data: ()=>{return {
-    logolink: '',
+    logo_upload_error: null,
     logofile: null,
     cabout: {
-      name: '',
-      logo: '',
-      workfield: '',
-      link: '',
-      desc: ''
+      company: '',
+      logo_url: '',
+      domains: [], //3max
+      website: '',
+      full_description: ''
     },
+    domainsAll: domainsAll,
     lenses: 'full',
     contacts1: '',
     contacts2: '',
@@ -115,22 +147,52 @@ export default {
     EntProfileNav
   },
   methods: {
+    updateCompanyData() {
+      let url = config.jobsUrl + '/companyUpdate.json'
+      axios
+        .post(url, this.cabout, {headers: {'Content-Type' : 'application/json' }, withCredentials: true,})
+        .then(response => {
+        console.log('updateCompanyData resp: ', response.data)
+        //if error, show like popup or status update
+      })
+    },
+    getOwnCompanyData() {
+      let url = config.jobsUrl + '/ownCompany.json'
+      axios
+        .post(url, [], {withCredentials: true,})
+        .then(response => {
+        console.log('getOwnCompany resp: ', response.data)
+        
+        if (response.data && response.data.company) {
+          this.cabout = response.data
+        } 
+      })
+    },
     uploadLogo() {
       let dumper = 'https://decreed-silk.000webhostapp.com/outer.php'
       //logoUploader
-
-      var formData = new FormData();
-      formData.append("image", this.logofile);
+      console.log('start uploa')
+      var formData = new FormData()
+      formData.append("image", this.logofile)
+      this.$refs.uplForm.reset()
+      this.logofile = null
       axios
         .post(dumper, formData, {
           headers: {'Content-Type': 'multipart/form-data'}
         })
         .then(resp => {
           //console.log('cp219: ', resp)
+          console.log('end uploa')
           if (resp.data && resp.data.startsWith('link:')) {
             console.log('uploading is ok')
-            this.logolink = resp.data.replace('link:', '')
-          } else {console.log('error uploading: ', resp.data)}
+            this.logo_upload_error = null
+            this.cabout.logo_url = resp.data.replace('link:', '')
+          } else {
+            console.log('error uploading: ', resp.data)
+            if (resp.data.startsWith('Error in file size')) {
+              this.logo_upload_error = 'Картинка больше 50кб'
+            }
+          }
           //if (response.data === 'OK') {} else 
         })
     },
@@ -139,6 +201,10 @@ export default {
       newT != 'published' || this.$emit('getOwnJobs')
     },
     setLocalRoute(rou) {
+      if (rou == 'cabout') {
+        this.logo_upload_error = null
+        this.getOwnCompanyData()
+      }
       this.tab = rou
     },
     editJob(jid) {
@@ -217,16 +283,16 @@ export default {
     //background-color #eee
     display flex
     flex-direction column
-    align-items flex-end
+    align-items flex-start
     // border-bottom-left-radius 15px
     // border-bottom-right-radius 15px
   .anim1
     animation-duration 0.3s
     transition-duration 0.3s
   .logo-placeholder
-    width 120px
-    height 50px
-    background-size 120px 50px
+    width 180px
+    height 80px
+    background-size 180px 80px
     background-color pink
     line-height 50px
   *

@@ -61,8 +61,10 @@ app.post('/getFaved.json', db.getFaved)
 app.post('/getFavedFull.json', db.getFavedFull)
 
 
-///favOne.json?jid=
 
+app.post('/ownCompany.json', getOwnCompanyJSON)
+app.post('/companyUpdate.json', db.updateOneCompany)
+//also get companybyid for detail
 
 app.get('/jobsu.json', params1)
 app.get('/jobs.json', db.getJobs)
@@ -84,7 +86,29 @@ function params1(request, response) {
 //   serveStatic(path.join(__dirname, './../dist'))
 // })
 
-
+async function getOwnCompanyJSON(req, res) {
+  
+  if (req.cookies.session && req.cookies.session.length > 50) {
+    //console.log(req.body)
+    
+    let user_id = await db.checkIfUserAuthed(req.cookies.session).catch(error => {
+      console.log(error)
+      return false
+    })
+    if (user_id == false) {
+      res.send('error1, wrong user data 1')
+      return false
+    }
+    console.log('uew:', user_id)
+    let company = await db.getOneCompany(user_id).catch(error => {
+      console.log(error)
+      res.send('err2')
+      return false
+    })
+    console.log('cp own company', company)
+    res.send(company)
+  } else res.send('error0, wrong userdata')
+}
 
 async function getJobByIdJSON(req, res) {
   console.log('get job by idJSON first func. ip: ', req.headers['x-forwarded-for'] || req.connection.remoteAddress)
@@ -168,7 +192,7 @@ async function auth(req, res) {
 
 async function login(req, res) {
   console.log('cp login: ', req.cookies)
-  let mail = req.body[0]
+  let mail = req.body[0].toLowerCase()
   let pw = req.body[1]
   let rememberme = req.body[2]
   console.log('cp login rm: ', rememberme)
@@ -228,7 +252,7 @@ async function login(req, res) {
 async function reg(req, res) {
   console.log('cp register', req.body)
   //first server-side literal validation
-  let mail = req.body[0]
+  let mail = req.body[0].toLowerCase()
   let pw = req.body[1]
   let usertype = req.body[2]
   let arg1 = req.body[3]
