@@ -6,7 +6,7 @@
           <h1 class="titleHeader">{{job.title}}</h1>
           <p class="salary-deriv" style="font-size: 16px; color: #666">{{salary_deriv}}</p>
         </div>
-        <div class="detailed__logo">Лого</div>
+        <div class="detailed__logo" :style="{'background-image': 'url(' + job.logo_url + ')'}" >{{job.logo_url == '' || !job.logo_url ? 'logo placeholder' : ''}}</div>
       </section>
       <section>
         <p><a href="#" class="detailed__author-link">{{job.author}}</a></p>
@@ -250,12 +250,13 @@ export default {
     
   }
   .detailed__logo{
-    width: 120px;
-    height: 50px;
     box-shadow 0 0 4px 2px #ddd
-    line-height 50px
     text-align center
-    background-color: coral;
+    width 150px
+    height 50px
+    background-size 150px 50px
+    background-color coral
+    line-height 50px
   }
   .detailed__header
     color #2242B4

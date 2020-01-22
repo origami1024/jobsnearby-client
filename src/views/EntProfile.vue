@@ -32,7 +32,7 @@
                 for="fileinput1"
                 class="entprofile__inp"
                 style="display: block; marginBottom: 6px;"
-                :style="{color: logo_upload_error != null ? '#c10015' : inherit}"
+                :style="{color: logo_upload_error != null ? '#c10015' : 'inherit'}"
               >
                 {{logo_upload_error ? logo_upload_error : 'Путь к лого: ' + cabout.logo_url}}
               </label>
