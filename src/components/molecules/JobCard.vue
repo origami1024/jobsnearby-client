@@ -11,7 +11,7 @@
         <div class="author" v-html="filteredAuthor"></div>
       </div>
       <div class="colx">
-        <strong class="alignRight">
+        <strong class="alignRight jobcard__salary">
           <p v-if="job.salary_min === job.salary_max && job.salary_min > 0">{{job.salary_max}} {{currency}}</p>
           <p v-else-if="job.salary_min && job.salary_min > 0">от {{job.salary_min}} до {{job.salary_max}} {{currency}}</p>
           <p v-else-if="job.salary_max > 0">{{job.salary_max}} {{currency}}</p>
@@ -21,18 +21,44 @@
       </div>
     </div>
     <div class="line" style="marginLeft: 5px" v-if="lenses == 'full'">
-      <p v-html="filteredDesc"></p>
+      <p class="filteredDesc" v-html="filteredDesc"></p>
+    </div>
+    <div class="line">
+      <div>{{
+            job.experience == -1 ?
+              'Опыт не указан'
+            :(1 > job.experience) ?
+              'Без опыта'
+            :(job.experience >= 1 && 3 > job.experience) ?
+              'Опыт: от 1 до 3 лет'
+            :(job.experience >= 3 && 5 > job.experience) ?
+              'Опыт: от 3 до 5 лет'
+            :job.experience >= 5 ?
+              'Опыт: от 5 лет'
+            : ''
+          }}
+      </div>
+      <div v-if="(job.worktime1 > 0 && job.worktime2 > 0) || job.schedule">
+        График работы: {{job.schedule}} {{job.worktime1 ? 'с ' + job.worktime1 : ''}} {{job.worktime2 ? 'до ' + job.worktime2 : ''}}
+      </div>
+      <div v-else>
+        График работы не указан
+      </div>
     </div>
     <div class="line">
       <div :class="{ line50: true, spbtw: lenses =='full' }">
-        <a v-if="lenses == 'full'" class="cardLink" href="#">Откликнуться</a>
-        <q-btn class="mr-5px" v-else round size="xs" icon="work"/>
-        <a v-if="lenses == 'full'" class="cardLink" href="#">Контакты</a>
-        <q-btn class="mr-5px" v-else round size="xs" icon="people"/>
+        <a v-if="lenses == 'full' && role == 'subscriber'" class="cardLink" href="#">Подать резюме</a>
+        <q-btn class="mr-5px" v-else-if="role == 'subscriber'" round size="xs" icon="work"/>
+        <a v-if="lenses == 'full'" class="cardLink" @click.prevent="isContactsShown = !isContactsShown" href="#">Контакты</a>
+        <q-btn class="mr-5px" v-else round size="xs" @click="isContactsShown = !isContactsShown" icon="people"/>
         <q-btn v-if="showLiked" :text-color="liked ? 'primary' : 'grey'" round size="xs" icon="star" @click="$emit('favOne', job.job_id)"/>
       </div>
+      <div v-if="isContactsShown" class="contactsPanel">
+        <div>{{job.contact_mail}}</div>
+        <div>{{job.contact_tel}}</div>
+      </div>
       <div :class="{colx: lenses == 'full', linej: lenses == 'short'}">
-        <div class="circle alignRight"></div>
+        <!-- <div class="circle alignRight"></div> -->
         <p class="alignRight" v-html="lastUpdated"></p>
       </div>
     </div>
@@ -78,29 +104,30 @@
 </template>
 
 <script>
+const currencyDic = {
+  '$': '$',
+  'm': 'манат',
+  'р': 'руб',
+  'e': 'евро'
+}
+const sexDic = {
+  'w': '<li>Женщина</li>',
+  'm': '<li>Мужчина</li>',
+}
 
 export default {
   name: 'JobCard',
   props: {
     showLiked: Boolean,
     liked: Boolean,
+    role: String, 
     way: String,
     job: Object,
     searchFilter: {type: String, default: ''},
     lenses: {type: String, default: 'full'},
   },
   data: ()=>{return {
-    info: {},
-    currencyDic: {
-      '$': '$',
-      'm': 'манат',
-      'р': 'руб',
-      'e': 'евро'
-    },
-    sexDic: {
-      'w': '<li>Женщина</li>',
-      'm': '<li>Мужчина</li>',
-    },
+    isContactsShown: false  
   }},
   computed: {
     lastUpdated() {
@@ -115,10 +142,10 @@ export default {
       return result
     },
     currency() {
-      return this.currencyDic[this.job.currency]
+      return currencyDic[this.job.currency]
     },
     gender() {
-      return this.sexDic[this.job.sex] || ''
+      return sexDic[this.job.sex] || ''
     },
     filteredTitle: function() {
       if (this.searchFilter.length > 1 && this.job.title.toLowerCase().includes(this.searchFilter)) {
@@ -146,12 +173,13 @@ export default {
     },
     filteredDesc: function() {
       if (this.searchFilter.length > 1 && this.job.description.toLowerCase().includes(this.searchFilter)) {
-        let tmpdesc = this.job.description //.split('/').join('<br>')
+        let tmpdesc = this.job.description.split('<br>').slice(0,1).join('')
+        //console.log(this.job.description)
         let i = tmpdesc.toLowerCase().indexOf(this.searchFilter)
         let res = tmpdesc.substr(0, i) + '<span class="searched">' + tmpdesc.substr(i, this.searchFilter.length) + '</span>' + tmpdesc.substr(i + this.searchFilter.length)
         //console.log(res)
         return res
-      } else return this.job.description //.split('/').join('<br>')
+      } else return this.job.description.split('<br>').slice(0,1).join('')
     },
   }
 }
@@ -163,6 +191,7 @@ export default {
   margin 0
   text-align left
 .jobscard
+  position relative
   border-left 2px solid #06f
   padding-left 2px
   //font-family 'Varela Round', sans-serif
@@ -232,4 +261,19 @@ export default {
   margin 10px 5px
   border 1px solid gray
   min-width 220px
+.contactsPanel
+  position absolute
+  left 50%
+  bottom 5px
+  background-color #ddf
+  padding 2px
+.jobcard__salary p
+  font-size 16px
+.filteredDesc
+  max-height 60px
+  overflow hidden
+  max-width 100%
+  padding 5px
+  margin-right 10px
+  word-break break-all
 </style>

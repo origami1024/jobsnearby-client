@@ -69,7 +69,7 @@ const getJobs = (req, res) => {
   else curr_line = ''
   console.log('curr_line: ', curr_line)
 
-  let que =  `SELECT jobs.author_id, users.company as author, jobs.job_id, jobs.city, jobs.experience, jobs.jobtype, jobs.title, jobs.edu, jobs.currency, jobs.sex, jobs.salary_min, jobs.salary_max, jobs.description, jobs.worktime1, jobs.worktime2, jobs.schedule, jobs.age1, jobs.age2, jobs.langs, jobs.time_published as published, jobs.time_updated as updated, jobs.jobtype
+  let que =  `SELECT jobs.author_id, users.company as author, jobs.job_id, jobs.city, jobs.experience, jobs.jobtype, jobs.title, jobs.edu, jobs.currency, jobs.sex, jobs.salary_min, jobs.salary_max, jobs.description, jobs.worktime1, jobs.worktime2, jobs.schedule, jobs.age1, jobs.age2, jobs.langs, jobs.time_published as published, jobs.time_updated as updated, jobs.jobtype, jobs.contact_mail, contact_tel
               FROM jobs, users
               WHERE jobs.author_id = users.user_id
                   ${timerange} 
@@ -423,6 +423,7 @@ async function updateJob (req, res) {
       }
       let parsedData = validateOneJob(req.body)
       if (parsedData == false) return false
+      console.log('editing, exp: ', parsedData.experience)
       //parsedData.author_id = results.rows[0].user_id - NO NEED TO UPDATE THIS FIELD
       //`UPDATE "users" SET auth_cookie = $1, last_logged_in = NOW() where user_id = $2`
       let que2nd = `UPDATE "jobs" SET ("time_updated", "title", "salary_max", "salary_min", "currency", "age1", "age2", "worktime1", "worktime2", "schedule", "langs", "edu", "experience", "city", "jobtype", "description", "contact_tel", "contact_mail") =

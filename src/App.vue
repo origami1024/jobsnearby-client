@@ -237,6 +237,7 @@ export default {
       this.jobEditedObj = Object.assign({}, tmpObj)
       if (this.jobEditedObj.contact_mail == null) this.jobEditedObj.contact_mail = ''
       if (this.jobEditedObj.contact_tel == null) this.jobEditedObj.contact_tel = ''
+      
       this.$router.push('/addJob')
     },
     deleteJobById(jid) {
@@ -427,7 +428,6 @@ export default {
         this.newJobSentState = 'none'
       } else
       if (to.name === 'entprofile') {
-        console.log(343)
         this.getOwnJobs()
       }
 

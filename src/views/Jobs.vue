@@ -63,8 +63,13 @@
             <div v-if="pages && pages > 0" class="paginationWrap">
               <button
                 :class="{pageBtns: true, currentPage: page_current == i}"
-                v-for="i of pages" :key="i"
+                v-for="i of (
+                  page_current == 1
+                    ? Math.min(pages, 3) 
+                    : Math.min(pages, page_current + 1)
+                )" :key="i"
                 @click="switchPage(i)"
+                v-show="(i >= (page_current != pages ? page_current - 1 : page_current - 2))"
               >
                 {{i}}
               </button>
@@ -82,12 +87,12 @@
             />
           </div>
         
-          <JobsList :showLiked="role === 'subscriber'" :likedJobs="likedJobs" @favOne="favOne" :lenses="lenses" :searchFilter="searchFilter" :jobslist="jobslist" msg="Полученные"/>
+          <JobsList :role="role" :showLiked="role === 'subscriber'" :likedJobs="likedJobs" @favOne="favOne" :lenses="lenses" :searchFilter="searchFilter" :jobslist="jobslist" msg="Полученные"/>
         </div>
         <div v-if="pages && pages > 0" class="paginationWrap">
           <button
             :class="{pageBtns: true, currentPage: page_current == i}"
-            v-for="i of pages" :key="888 + i"
+            v-for="i of Math.min(pages, 3)" :key="888 + i"
             @click="switchPage(i)"
           >
             {{i}}

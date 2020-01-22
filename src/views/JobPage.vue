@@ -250,7 +250,7 @@ export default {
     
   }
   .detailed__logo{
-    box-shadow 0 0 4px 2px #ddd
+    //box-shadow 0 0 4px 2px #ddd
     text-align center
     width 150px
     height 50px

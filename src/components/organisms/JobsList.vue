@@ -7,7 +7,7 @@
       </h3>
     </div> -->
     <div :class="{ rowed: way=='row' }">
-      <JobCard :showLiked="showLiked" :liked="likedJobs.includes(item.job_id)" @favOne="favOne" :way="way" :lenses="lenses" :searchFilter="searchFilter" :job="item" v-for="item in jobslistFiltered" :key="item.job_id"></JobCard>
+      <JobCard :role="role" :showLiked="showLiked" :liked="likedJobs.includes(item.job_id)" @favOne="favOne" :way="way" :lenses="lenses" :searchFilter="searchFilter" :job="item" v-for="item in jobslistFiltered" :key="item.job_id"></JobCard>
       <p v-if="jobslist.length == 0 && searchFilter == ''">Нет ни одной вакансии</p>
       <p v-else-if="jobslist.length == 0 && searchFilter != ''">на ваш запрос "{{searchFilter}}" ничего не найдено</p>
     </div>
@@ -25,6 +25,7 @@ export default {
     lenses: String,
     way: String,
     msg: String,
+    role: String,
     jobslist: {type: Array, default: ()=>[]},
     //salaryFilter: {type: Array, default: ()=>[-Infinity, Infinity]},
     sort: String,

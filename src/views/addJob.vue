@@ -13,7 +13,10 @@
           
         </router-link>
         <p style="fontSize: 20px; marginBottom: 22px">{{pageTypes[newJobsPageType].label}}</p>
-        <!--  {{jobEditId != -1 ? jobEditId : ''}} -->
+         <!-- {{jobEditId != -1 ? jobEditId : ''}}
+         {{newJobsPageType}}
+         <br>Название ВРЕМЕННОЕ: {{job.title}}
+         <br>Назв в пропе {{jobEditedObj.title}} -->
         <div class="line">
           <p class="star">*</p>
           <p class="startP" style="min-width: 140px; textAlign: left">Название вакансии</p>
@@ -436,6 +439,12 @@ export default {
     // }
   },
   watch: {
+    $route (to, from){
+      if (to.name === 'addjob') {
+        console.log('cp route addjob - fields reset')
+        this.resetFields()
+      }
+    },
     jobEditedObj(newObj) {
       console.log('jobEditorWatcher cp0')
       if (this.newJobsPageType == 'edit') {
@@ -447,7 +456,8 @@ export default {
         this.job = Object.assign({}, jobInit)
         
       }
-    }
+    },
+    
   },
   mounted(){
     if (this.newJobsPageType == 'edit') {
@@ -625,14 +635,9 @@ export default {
       this.job.schedule = new1
     },
   },
-  watch: {
-    $route (to, from){
-      if (to.name === 'addjob') {
-        console.log('cp u1')
-        this.resetFields()
-      }
-    },
-  },
+  // watch: {
+    
+  // },
   components: {
     VueEditor
   }
