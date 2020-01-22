@@ -152,8 +152,7 @@ export default {
       axios
         .post(url, this.cabout, {headers: {'Content-Type' : 'application/json' }, withCredentials: true,})
         .then(response => {
-        console.log('updateCompanyData resp: ', response.data)
-        //if error, show like popup or status update
+          //if error, show like popup or status update
       })
     },
     getOwnCompanyData() {
@@ -161,11 +160,11 @@ export default {
       axios
         .post(url, [], {withCredentials: true,})
         .then(response => {
-        console.log('getOwnCompany resp: ', response.data)
+          //console.log('getOwnCompany resp: ', response.data)
         
-        if (response.data && response.data.company) {
-          this.cabout = response.data
-        } 
+          if (response.data && response.data.company) {
+            this.cabout = response.data
+          } 
       })
     },
     uploadLogo() {
@@ -182,7 +181,7 @@ export default {
         })
         .then(resp => {
           //console.log('cp219: ', resp)
-          console.log('end uploa')
+          //console.log('end uploa')
           if (resp.data && resp.data.startsWith('link:')) {
             console.log('uploading is ok')
             this.logo_upload_error = null

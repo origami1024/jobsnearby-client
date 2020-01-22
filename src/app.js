@@ -99,13 +99,12 @@ async function getOwnCompanyJSON(req, res) {
       res.send('error1, wrong user data 1')
       return false
     }
-    console.log('uew:', user_id)
     let company = await db.getOneCompany(user_id).catch(error => {
       console.log(error)
       res.send('err2')
       return false
     })
-    console.log('cp own company', company)
+    //console.log('cp own company', company)
     res.send(company)
   } else res.send('error0, wrong userdata')
 }

@@ -146,7 +146,7 @@ async function deleteJobById(req, res) {
   }
 
   if (req.cookies.session && req.cookies.session.length > 50) {
-    console.log('cpsrv', jid)
+    //console.log('cpsrv', jid)
     let que1st = `SELECT user_id FROM "users" WHERE "auth_cookie" = $1`
     let params1st = [req.cookies.session]
     pool.query(que1st, params1st, (error, results) => {
@@ -800,7 +800,7 @@ async function updateOneCompany(req, res) {
       }
 
       let uid = results.rows[0].user_id
-      console.log('cp99: ', req.body)
+      //console.log('cp99: ', req.body)
       
       let parsedData = {}
       //VALIDATE SHIET HERE!
@@ -810,7 +810,7 @@ async function updateOneCompany(req, res) {
       if (req.body.logo_url && req.body.logo_url.length < 86) {
         parsedData.logo_url = req.body.logo_url
       } else parsedData.logo_url = results.rows[0].logo_url
-      console.log('cp100: ', req.body.logo_url)
+      //console.log('cp100: ', req.body.logo_url)
       if (req.body.domains) {
         parsedData.domains = req.body.domains.slice(0, 3)
       } else parsedData.domains = '{}'
