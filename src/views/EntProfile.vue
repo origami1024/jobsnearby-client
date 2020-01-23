@@ -161,7 +161,7 @@ export default {
       axios
         .post(url, [], {withCredentials: true,})
         .then(response => {
-          //console.log('getOwnCompany resp: ', response.data)
+          console.log('getOwnCompany ajax req cp')
         
           if (response.data && response.data.company) {
             this.cabout = response.data
@@ -230,6 +230,12 @@ export default {
     surname(news) {
       this.newsurname = news
     },
+    $route (to, from){
+      if (to.name === 'entprofile' && this.tab == 'cabout') {
+        this.getOwnCompanyData()
+      }
+
+    }
     // username(newu) {
     //   this.newusername = newu
     // },
