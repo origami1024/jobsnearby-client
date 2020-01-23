@@ -53,6 +53,7 @@ export default {
     jtype: {type: Object},
     salary: {type: Object},
     currency: {type: Object},
+    outerResetNeeded: {type: Boolean}
   },
   data: ()=>{return {
     cityOptions: stringOptions,
@@ -92,20 +93,27 @@ export default {
       else if (this.currency.value != 'idc') res = true
       else if (this.exp.value != 'idc') res = true
       else if (this.jtype.value != '') res = true
+      else if (this.outerResetNeeded != false) res = true
       return res
     }
   },
   methods: {
     cityUpd(new1) {
+      //console.log(new1)
+      if (new1 == 'Не имеет значения') new1 = ''
       this.$emit('cityUpd', new1)
+      
     },
     salaryUpd(new1) {
+      if (new1.value == 'idc') new1 = {label: '',value : "idc"}
       this.$emit('salaryUpd', new1)
     },
     expUpd(new1) {
+      if (new1.value == 'idc') new1 = {label: '',value : "idc"}
       this.$emit('expUpd', new1)
     },
     jtypeUpd(new1) {
+      if (new1.value == '') new1 = {label: '',value : "idc"}
       this.$emit('jtypeUpd', new1)
     },
     currUpd(new1) {

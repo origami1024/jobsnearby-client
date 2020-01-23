@@ -3,7 +3,7 @@
     <div class="jobs__main">
       <div style="padding-top: 10px">
         <div class="jobs__filterpart">
-          <JobsFilter @resetFilters="resetFilters" @currUpd="currUpd" :currency="currency" @cityUpd="cityUpd" @jtypeUpd="jtypeUpd" @expUpd="expUpd" @salaryUpd="salaryUpd" :city="city" :salary="salary" :exp="exp" :jtype="jtype" :pending="pending" @refresh="$emit('refresh')" :langOptions="langOptions" @updLangs="updLangs" @slideEnd="slideEnd" :highest="maxSal" :lowest="minSal"></JobsFilter>
+          <JobsFilter :outerResetNeeded="outerResetNeeded" @resetFilters="resetFilters" @currUpd="currUpd" :currency="currency" @cityUpd="cityUpd" @jtypeUpd="jtypeUpd" @expUpd="expUpd" @salaryUpd="salaryUpd" :city="city" :salary="salary" :exp="exp" :jtype="jtype" :pending="pending" @refresh="$emit('refresh')" :langOptions="langOptions" @updLangs="updLangs" @slideEnd="slideEnd" :highest="maxSal" :lowest="minSal"></JobsFilter>
         </div>
       </div>
       <div class="jobs__contents">
@@ -33,6 +33,7 @@
             <q-select dense outlined
               :style="{minWidth: '170px'}"
               v-model="sort"
+              @input="sort.value != 'new' ? outerResetNeeded = true : null"
               :options="[ {label: 'По дате', value: 'new'},
                           {label: 'По убыванию зп', value: 'saldesc'},
                           {label: 'По возрастанию зп', value: 'salasc'}]"
@@ -40,6 +41,7 @@
             <q-select dense outlined
               :style="{minWidth: '130px'}"
               v-model="timerange"
+              @input="timerange.value != 'mon' ? outerResetNeeded = true : null"
               :options="[ {label: 'За месяц', value: 'mon'},
                           {label: 'За неделю', value: 'wee'},
                           {label: 'За сутки', value: 'day'}]"
@@ -47,6 +49,7 @@
             <q-select dense outlined
               :style="{minWidth: '120px'}"
               v-model="perpage"
+              @input="perpage.value != '25' ? outerResetNeeded = true : null"
               :options="[ {label: '25 на стр', value: '25'},
                           {label: '50 на стр', value: '50'},
                           {label: '100 на стр', value: '100'}]"
@@ -121,6 +124,7 @@ export default {
     jobsFullcount: {type: Number, default: 0}
   },
   data: ()=>{return {
+    outerResetNeeded: false,
     lenses: 'full',
     txt: '',
     wordRegex: /^[\wа-яА-ЯÇçÄä£ſÑñňÖö$¢Üü¥ÿýŽžŞş\s\\-]*$/,
@@ -133,10 +137,10 @@ export default {
     maxSal: 100000,
     minSal: 0,
     langOptions: ["Русский", "Английский", "Немецкий", "Французкий"],
-    city: 'Не имеет значения',
-    jtype: {label: "Не имеет значения", value: ''},
-    salary: {label: "Не имеет значения", value: 'idc'},
-    exp: {label: "Не имеет значения", value: 'idc'}, 
+    city: '',
+    jtype: {label: "", value: ''},
+    salary: {label: "", value: 'idc'},
+    exp: {label: "", value: 'idc'}, 
     currency: {label: "все", value: 'idc'},
   }},
   components: {
@@ -177,11 +181,16 @@ export default {
   },
   methods: {
     resetFilters() {
-      this.city = 'Не имеет значения'
-      this.jtype= {label: "Не имеет значения", value: ''}
-      this.salary= {label: "Не имеет значения", value: 'idc'}
-      this.exp= {label: "Не имеет значения", value: 'idc'}
+      this.city = ''
+      this.jtype= {label: "", value: ''}
+      this.salary= {label: "", value: 'idc'}
+      this.exp= {label: "", value: 'idc'}
       this.currency= {label: "все", value: 'idc'}
+
+      this.sort = {label: 'По дате', value: 'new'}
+      this.timerange = {label: 'За месяц', value: 'mon'}
+      this.perpage = {label: '25 на стр', value: '25'}
+
       this.$emit('updQue', this.query)
       this.$emit('refresh')
     },
