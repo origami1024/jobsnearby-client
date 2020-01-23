@@ -64,7 +64,7 @@ app.post('/getFavedFull.json', db.getFavedFull)
 
 app.post('/ownCompany.json', getOwnCompanyJSON)
 app.post('/companyUpdate.json', db.updateOneCompany)
-//also get companybyid for detail
+app.get('/companyby.idjson=:id', getCompanyById)
 
 app.get('/jobsu.json', params1)
 app.get('/jobs.json', db.getJobs)
@@ -85,6 +85,8 @@ function params1(request, response) {
 //   console.log('cp reached', path.join(__dirname, './../dist'))
 //   serveStatic(path.join(__dirname, './../dist'))
 // })
+
+
 
 async function getOwnCompanyJSON(req, res) {
   
@@ -109,12 +111,32 @@ async function getOwnCompanyJSON(req, res) {
   } else res.send('error0, wrong userdata')
 }
 
+async function getCompanyById(req, res) {
+  console.log('cp123')
+  const id = parseInt(req.params.id)
+  if (isNaN(id) || id < 0 || String(id).length > 10) {
+    console.log('Error: wrong company id')
+    res.status(400).send('Неправильный id компании.')
+    return false
+  }
+  let company = await db.getOneCompany(id).catch(error => {
+    console.log(error)
+    return false
+  })
+  if (company == false) {
+    res.status(400).json('Неправильный id компании. Ошибка 2')
+    return false
+  }
+  console.log('derp')
+  res.status(200).send(company)
+}
+
 async function getJobByIdJSON(req, res) {
   console.log('get job by idJSON first func. ip: ', req.headers['x-forwarded-for'] || req.connection.remoteAddress)
   const id = parseInt(req.params.id)
-  console.log('url: ', req.url)
-  console.log('params: ', req.params)
-  console.log('dd ', id)
+  // console.log('url: ', req.url)
+  // console.log('params: ', req.params)
+  // console.log('dd ', id)
   if (isNaN(id) || id < 0 || String(id).length > 10) {
     console.log('Error: wrong id')
     res.status(400).send('Неправильный id вакансии.')
@@ -129,9 +151,7 @@ async function getJobByIdJSON(req, res) {
     res.status(400).json('Неправильный id вакансии')
     return false
   }
-  console.log('cp99: ', job)
-  let jobjson = job
-  res.status(200).send(jobjson)
+  res.status(200).send(job)
   db.hitJobById(id, req.headers['x-forwarded-for'] || req.connection.remoteAddress)
 }
 

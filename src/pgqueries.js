@@ -768,7 +768,7 @@ async function getOneCompany(uid) {
   let que = `
     SELECT company, logo_url, domains, website, full_description
     FROM users
-    WHERE user_id = $1
+    WHERE user_id = $1 AND role = 'company'
   `
 
   let result = await pool.query(que, [uid]).catch(error => {
@@ -779,6 +779,7 @@ async function getOneCompany(uid) {
   if (result.rows && result.rows.length === 1) return result.rows[0]
   else return false
 }
+
 async function updateOneCompany(req, res) {
   //check auth and if its a company
   if (req.cookies.session && req.cookies.session.length > 50) {

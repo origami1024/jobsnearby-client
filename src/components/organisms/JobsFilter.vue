@@ -4,12 +4,14 @@
       :value="city"
       @input="cityUpd"
       use-input
-      input-debounce="0"
+      
       fill-input
       hide-selected
+      dense
       :options="cityOptions"
       @filter="filterFn"
       label="Город"
+      stack-label
       @keyup="addNewCity"
     />
     
