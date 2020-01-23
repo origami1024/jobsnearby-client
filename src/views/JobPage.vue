@@ -9,7 +9,7 @@
         <div class="detailed__logo" :style="{'background-image': 'url(' + job.logo_url + ')'}" >{{job.logo_url == '' || !job.logo_url ? 'logo placeholder' : ''}}</div>
       </section>
       <section>
-        <p><a href="#" class="detailed__author-link">{{job.author}}</a></p>
+        <p><a :href="'/companypage?id=' + job.author_id" target="_blank" class="detailed__author-link">{{job.author}}</a></p>
         <p>{{job.city}}</p>
       </section>
       <!-- <section>

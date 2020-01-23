@@ -762,6 +762,22 @@ async function checkIfUserAuthed(session) {
   else return false
 }
 
+async function getOneCompanyBroad(uid) {
+
+  let que = `
+    SELECT company, logo_url, domains, website, full_description, users.time_created, count(*) as jobs_count
+    FROM users JOIN jobs ON (jobs.author_id = users.user_id)
+    WHERE users.user_id = $1 AND users.role = 'company'
+    GROUP BY users.user_id
+  `
+  let result = await pool.query(que, [uid]).catch(error => {
+    console.log('cp getonecompanyBroad err: ', error)
+    //throw new Error('job by id error')
+  })
+  //console.log(result.rows)
+  if (result.rows && result.rows.length === 1) return result.rows[0]
+  else return false
+}
 async function getOneCompany(uid) {
   //uid - is prechecked user_id
   //check auth and if its a company
@@ -770,7 +786,6 @@ async function getOneCompany(uid) {
     FROM users
     WHERE user_id = $1 AND role = 'company'
   `
-
   let result = await pool.query(que, [uid]).catch(error => {
     console.log('cp getonecompany err: ', error)
     //throw new Error('job by id error')
@@ -863,6 +878,7 @@ module.exports = {
   deleteJobById,
   updateJob,
   getOneCompany,
+  getOneCompanyBroad,
   updateOneCompany,
   checkIfUserAuthed
 }

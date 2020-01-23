@@ -38,16 +38,10 @@
             : ''
           }}
       </div>
-      <div v-if="(job.worktime1 > 0 && job.worktime2 > 0) || job.schedule">
-        График работы: {{job.schedule}} {{job.worktime1 ? 'с ' + job.worktime1 : ''}} {{job.worktime2 ? 'до ' + job.worktime2 : ''}}
-      </div>
-      <div v-else>
-        График работы не указан
-      </div>
     </div>
     <div class="line">
       <div :class="{ line50: true, spbtw: lenses =='full' }">
-        <a v-if="lenses == 'full' && role == 'subscriber'" class="cardLink" href="#">Подать резюме</a>
+        <a v-if="lenses == 'full' && role != 'company'" class="cardLink" href="#">Подать резюме</a>
         <q-btn class="mr-5px" v-else-if="role == 'subscriber'" round size="xs" icon="work"/>
         <a v-if="lenses == 'full'" class="cardLink" @click.prevent="isContactsShown = !isContactsShown" href="#">Контакты</a>
         <q-btn class="mr-5px" v-else round size="xs" @click="isContactsShown = !isContactsShown" icon="people"/>
@@ -203,15 +197,16 @@ export default {
   margin-bottom 10px
   box-sizing border-box
   transition-duration 0.3s
-  &:nth-child(odd)
-    //border 1px solid black
-    background-color #efefef
-    box-shadow 0 0 3px 2px #dfdfdf
-  &:nth-child(even)
-    background-color #fefefe
-    box-shadow 0 0 3px 2px #eee
+  box-shadow 0 0 2px 1px #dfdfdf
+  // &:nth-child(odd)
+  //   //border 1px solid black
+  //   background-color #efefef
+  //   box-shadow 0 0 3px 2px #dfdfdf
+  // &:nth-child(even)
+  //   background-color #fefefe
+  //   box-shadow 0 0 3px 2px #eee
   &:hover
-    box-shadow 0 0 3px 1px #bbb
+    box-shadow 0 0 2px 1px #bbb
   a
     text-decoration none
     color #06f
@@ -270,6 +265,7 @@ export default {
 .jobcard__salary p
   font-size 16px
 .filteredDesc
+  height 60px
   max-height 60px
   overflow hidden
   max-width 100%

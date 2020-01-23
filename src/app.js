@@ -119,7 +119,7 @@ async function getCompanyById(req, res) {
     res.status(400).send('Неправильный id компании.')
     return false
   }
-  let company = await db.getOneCompany(id).catch(error => {
+  let company = await db.getOneCompanyBroad(id).catch(error => {
     console.log(error)
     return false
   })

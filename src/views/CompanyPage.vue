@@ -3,19 +3,52 @@
     <main class="detailed__main">
       <section class="detailed__line" style="marginBottom: 5px">
         <div class="detailed__col">
-          <h1 class="titleHeader">{{job.title}}</h1>
-          <p class="salary-deriv" style="font-size: 16px; color: #666">{{salary_deriv}}</p>
+          <h1 class="titleHeader">{{cdata.company}}</h1>
+          <div style="width: 100%">
+            <p>
+              {{cdata.website}}
+            </p>
+          </div>
         </div>
-        <div class="detailed__logo" :style="{'background-image': 'url(' + job.logo_url + ')'}" >{{job.logo_url == '' || !job.logo_url ? 'logo placeholder' : ''}}</div>
+        <div class="detailed__logo" :style="{'background-image': 'url(' + cdata.logo_url + ')'}" >{{cdata.logo_url == '' || !cdata.logo_url ? 'logo placeholder' : ''}}</div>
       </section>
-      
-      <section style="display: flex; justifyContent: space-between">
-        <p>Всех просмотров: {{job.hits_all > 0 ? job.hits_all : 1}}</p>
-        <p>Уникальных просмотров: {{job.hits_uniq > 0 ? job.hits_uniq : 1}}</p>
+      <section>
+        <q-list dense bordered padding class="rounded-borders">
+          <h4 class="detailed__header">Сферы деятельности компании</h4>
+          <q-item clickable  v-if="cdata.domains[0]">
+            <q-item-section class="padleft">
+              {{cdata.domains[0]}}
+            </q-item-section>
+          </q-item>
+          <q-item clickable  v-if="cdata.domains[1]">
+            <q-item-section class="padleft">
+              {{cdata.domains[1]}}
+            </q-item-section>
+          </q-item>
+          <q-item clickable  v-if="cdata.domains[2]">
+            <q-item-section class="padleft">
+              {{cdata.domains[2]}}
+            </q-item-section>
+          </q-item>
+        </q-list>
+      </section>
+      <section>
+        <div>
+          <q-list dense bordered padding class="rounded-borders">
+            <h4 class="detailed__header">Описание</h4>
+            <q-item clickable >
+              <q-item-section class="padleft">
+              <div class="descriptionHTML">
+                {{cdata.full_description}}
+              </div>
+            </q-item-section>
+            </q-item>
+          </q-list>
+        </div>
       </section>
       <section style="display: flex; justifyContent: space-between">
-        <p>Дата публикации: {{published}}</p>
-        <p>Последние изменения: {{updated}}</p>
+        <p>Размещено вакансий: {{cdata.jobs_count > 0 ? cdata.jobs_count : 1}}</p>
+        <p>Зарегистрирована: {{created}}</p>
       </section>
     </main>
   </div>
@@ -32,33 +65,38 @@ export default {
     
   },
   data: ()=>{return {
-    cdata: {}
+    cdata: {
+      company: '',
+      logo_url: '',
+      domains: [], //3max
+      website: '',
+      full_description: '',
+      time_created: '',
+      jobs_count: 0
+    },
+    ajaxLoading: false
   }},
   mounted() {
-    //console.log(this.$route.query.id)
-    //this.getJobData()
+    console.log(this.$route.query.id)
+    this.getCompanyData()
   },
   computed: {
-    updated() {
-      let d = new Date(this.job.updated)
-      return 'в ' + ("0" + d.getHours()).slice(-2) + ':' + ("0" + d.getMinutes()).slice(-2) + ', ' + d.getDate() + '.' + (d.getMonth() + 1) + '.' + d.getFullYear()
-    },
-    published() {
-      let d = new Date(this.job.published)
+    created() {
+      let d = new Date(this.cdata.time_created)
       return d.getDate() + '.' + (d.getMonth() + 1) + '.' + d.getFullYear()
     }
   },
   methods: {
-    getJobData() {
-      let jobUrl = config.jobsUrl + '/jobby.idjson=' + this.$route.query.id
+    getCompanyData() {
+      let companyUrl = config.jobsUrl + '/companyby.idjson=' + this.$route.query.id
         this.ajaxLoading = true
         axios
-          .get(jobUrl, null, {headers: {'Content-Type' : 'application/json' }})
+          .get(companyUrl, null, {headers: {'Content-Type' : 'application/json' }})
           .then(response => {
             //getting the one page data
-            console.log('cpJJ1', response.data)
-            this.job = response.data
-            this.setVariables()
+            console.log('cpJJ2', response.data)
+            this.cdata = response.data
+            //this.setVariables()
             this.ajaxLoading = false
             
           })
