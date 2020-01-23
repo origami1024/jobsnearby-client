@@ -5,6 +5,7 @@ import Jobs from '../views/Jobs.vue'
 import SubProfile from '../views/SubProfile.vue'
 import EntProfile from '../views/EntProfile.vue'
 import JobPage from '../views/JobPage.vue'
+import CompanyPage from '../views/CompanyPage.vue'
 
 
 
@@ -20,6 +21,11 @@ const routes = [
     path: '/jobpage',
     name: 'jobpage',
     component: JobPage //Home
+  },
+  {
+    path: '/companypage',
+    name: 'companyPage',
+    component: CompanyPage //Home
   },
   {
     path: '/subprofile',

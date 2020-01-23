@@ -190,7 +190,7 @@ export default {
       this.sort = {label: 'По дате', value: 'new'}
       this.timerange = {label: 'За месяц', value: 'mon'}
       this.perpage = {label: '25 на стр', value: '25'}
-
+      this.outerResetNeeded = false
       this.$emit('updQue', this.query)
       this.$emit('refresh')
     },
