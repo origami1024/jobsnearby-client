@@ -248,6 +248,7 @@ export default {
 }
 </script>
 
+
 <style scoped lang="stylus">
 .jobs
   display flex

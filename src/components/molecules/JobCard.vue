@@ -174,9 +174,15 @@ export default {
         let i = tmpdesc.toLowerCase().indexOf(this.searchFilter)
         let res = tmpdesc.substr(0, i) + '<span class="searched">' + tmpdesc.substr(i, this.searchFilter.length) + '</span>' + tmpdesc.substr(i + this.searchFilter.length)
         //console.log(res)
-        return res
-      } else return this.job.description.split('<br>').slice(0,1).join('')
+        return this.strip(res)
+      } else return this.strip(this.job.description.split('<br>').slice(0,1).join(''))
     },
+  },
+  methods: {
+    strip(html) {
+      var doc = new DOMParser().parseFromString(html, 'text/html');
+      return doc.body.textContent || "";
+    }
   }
 }
 </script>
@@ -267,8 +273,10 @@ export default {
 .jobcard__salary p
   font-size 16px
 .filteredDesc
-  height 60px
-  max-height 60px
+  height 42px
+  max-height 42px
+  line-height 20px
+  font-size 16px
   overflow hidden
   max-width 100%
   padding 5px
