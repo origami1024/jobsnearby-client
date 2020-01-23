@@ -195,6 +195,8 @@ export default {
   .descriptionHTML
     font-size 14px
     line-height 1.1
+    word-wrap break-word
+    max-width 100%
   .ql-size-small
     font-size 12px
   .ql-size-large
