@@ -8,7 +8,9 @@
             <strong v-html="filteredTitle"/>
           </a>
         </h4>
-        <div class="author" v-html="filteredAuthor"></div>
+        <a :href="'/companypage?id=' + job.author_id" target="_blank">
+          <div class="author" v-html="filteredAuthor"></div>
+        </a>
       </div>
       <div class="colx">
         <strong class="alignRight jobcard__salary">

@@ -13,7 +13,7 @@
         <div class="detailed__logo" :style="{'background-image': 'url(' + cdata.logo_url + ')'}" >{{cdata.logo_url == '' || !cdata.logo_url ? 'logo placeholder' : ''}}</div>
       </section>
       <section>
-        <q-list dense bordered padding class="rounded-borders">
+        <q-list dense bordered padding class="rounded-borders" v-if="cdata.domains.length > 0">
           <h4 class="detailed__header">Сферы деятельности компании</h4>
           <q-item clickable  v-if="cdata.domains[0]">
             <q-item-section class="padleft">
@@ -34,7 +34,7 @@
       </section>
       <section>
         <div>
-          <q-list dense bordered padding class="rounded-borders">
+          <q-list dense bordered padding class="rounded-borders" v-if="cdata.full_description.length > 0">
             <h4 class="detailed__header">Описание</h4>
             <q-item clickable >
               <q-item-section class="padleft">

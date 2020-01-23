@@ -77,13 +77,14 @@
           <q-btn @click="updateCompanyData" color="primary" style="margin-top: 10px">Отправить изменения</q-btn>
         </q-tab-panel>
         <q-tab-panel class="entprofile__settings entprofile__mid" name="settings">
+          <h3 style="width: 100%; marginBottom: 10px; text-align: center;">Компания <strong>{{company}}</strong></h3>
+          
           <p>Добавить контакты</p>
           <q-input dense class="entprofile__inp" outlined bottom-slots v-model="contacts1" label="Контакты" counter maxlength="30"/>
           <q-input dense v-show="contacts_count > 1" class="entprofile__inp" outlined bottom-slots v-model="contacts2" label="Контакты" counter maxlength="30"/>
           <q-input dense v-show="contacts_count > 2" class="entprofile__inp" outlined bottom-slots v-model="contacts3" label="Контакты" counter maxlength="30"/>
           <q-btn round color="primary" @click="contacts_count < 4 ? contacts_count += 1 : ''" size="sm" icon="add" :disable="contacts_count > 2"/>
           <q-toggle v-model="editable" label="Изменить личные данные"/>
-          <q-input class="entprofile__inp" outlined bottom-slots :value="company" label="Название компании" counter maxlength="80" :readonly="!editable" />
           <q-input type="email" class="entprofile__inp" outlined bottom-slots v-model="newemail" label="Email" counter maxlength="50" :readonly="!editable" />
           <q-input :type="isPwd ? 'password' : 'text'" class="entprofile__inp" outlined bottom-slots v-model="newpw" label="Пароль" counter maxlength="25" :readonly="!editable">
             <template v-slot:append>
