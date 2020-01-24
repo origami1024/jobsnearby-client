@@ -239,8 +239,8 @@ async function changepw(req, res) {
             //console.log('cp134 ', updator)
             if (updator) res.send('OK')
             //else res.send('smthngs')
-          }
-        }
+          } else {res.send('step4')}
+        } else {res.send('step5')}
       } else {res.send('step1'); console.log('not valid cookies')}
     } else {res.send('step1'); console.log('not valid mail or pw')}
   } else {res.send('step1'); console.log('not valid stuff')}

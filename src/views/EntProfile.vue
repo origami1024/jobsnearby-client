@@ -164,7 +164,11 @@ export default {
       axios
         .post(url, udata, {headers: {'Content-Type' : 'application/json' }, withCredentials: true,})
         .then(response => {
-          console.log('trychpw')
+          console.log('trychpw', response.data)
+          if (response.data == 'OK') {
+            this.$q.notify('Пароль изменен')
+          }
+          else this.$q.notify('Неправильные данные')
           //if ok show like compnenet
           //reset fields
           //error like validation
@@ -175,6 +179,9 @@ export default {
       axios
         .post(url, this.cabout, {headers: {'Content-Type' : 'application/json' }, withCredentials: true,})
         .then(response => {
+          if (response.data == 'OK') {
+            this.$q.notify('Данные изменены')
+          }
           //if error, show like popup or status update
       })
     },
@@ -206,13 +213,14 @@ export default {
           //console.log('cp219: ', resp)
           //console.log('end uploa')
           if (resp.data && resp.data.startsWith('link:')) {
-            console.log('uploading is ok')
             this.logo_upload_error = null
             this.cabout.logo_url = resp.data.replace('link:', '')
+            this.$q.notify('Изображение загружено')
           } else {
             console.log('error uploading: ', resp.data)
             if (resp.data.startsWith('Error in file size')) {
               this.logo_upload_error = 'Картинка больше 50кб'
+              this.$q.notify('Картинка больше 50кб')
             }
           }
           //if (response.data === 'OK') {} else 

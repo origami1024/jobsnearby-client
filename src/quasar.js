@@ -42,11 +42,14 @@ import {
   QTooltip,
   QMenu,
   ClosePopup,
-  QExpansionItem
+  QExpansionItem,
+  Notify
 } from 'quasar'
 
 Vue.use(Quasar, {
-  config: {},
+  config: {
+    notify: { timeout: 1000 }
+  },
   components: {
     QLayout,
     QHeader,
@@ -91,5 +94,6 @@ Vue.use(Quasar, {
     ClosePopup
   },
   plugins: {
+    Notify
   }
  })
