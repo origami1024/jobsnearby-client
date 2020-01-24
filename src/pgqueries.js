@@ -504,7 +504,8 @@ function validateOneJob (data) {
     parsedData.title = data.title
   } else return false//{ iSkipped += 1; continue}
   //salary_max - необязат, целое число
-  
+  console.log(data.salary_min)
+  console.log(data.salary_max)
   if (data.salary_max && isNaN(data.salary_max) === false && data.salary_max > -1 && Number.isInteger(Number(data.salary_max))) {
     if (String(data.salary_max).length > 5) data.salary_max = String(data.salary_max).substring(0,5)
     parsedData.salary_max = Number(data.salary_max)

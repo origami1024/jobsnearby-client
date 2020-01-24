@@ -558,7 +558,7 @@ export default {
     editJobSend() {
       let j = Object.assign({}, this.job)
       if (!this.salaryOn) {
-        if (j.salary_min > j.salary_max) j.salary_max = j.salary_min
+        if (Number(j.salary_min) > Number(j.salary_max)) j.salary_max = j.salary_min
       } else j.salary_min = '', j.salary_max = ''
       j.currency = j.currency.value
       j.experience = j.experience.value
@@ -582,13 +582,14 @@ export default {
       
       let j = Object.assign({}, this.job)
       if (!this.salaryOn) {
-        if (j.salary_min > j.salary_max) j.salary_max = j.salary_min
+        
+        if (Number(j.salary_min) > Number(j.salary_max)) j.salary_max = j.salary_min
       } else j.salary_min = '', j.salary_max = ''
       j.sex = j.sex.value
       j.currency = j.currency.value
       j.experience = j.experience.value
       j.jtype = j.jtype.value
-      
+          
       if (j.title != '' && j.title.length > 1) {
         axios
           .post(config.jobsUrl + '/oneJob', j, {headers: {'Content-Type' : 'application/json' }, withCredentials: true,})
