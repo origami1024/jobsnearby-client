@@ -10,6 +10,8 @@ import '@mdi/font/css/materialdesignicons.css'
 
 import './quasar'
 
+import VueI18n from 'vue-i18n'
+Vue.use(VueI18n)
 
 // import Throttle from 'vue-throttle'
 // Vue.use(Throttle)
@@ -17,12 +19,21 @@ import './quasar'
 
 
 
+import loc from './localization/locals.js'
+
+
+
+const i18n = new VueI18n({
+  locale: 'ru', // set locale
+  messages: loc.loc, // set locale messages
+})
+
 Vue.config.productionTip = false
 
 
 new Vue({
-  router,
+  i18n,
 
-  //vuetify,
+  router,
   render: h => h(App)
 }).$mount('#app')

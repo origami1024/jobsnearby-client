@@ -19,7 +19,7 @@
          <br>Назв в пропе {{jobEditedObj.title}} -->
         <div class="line">
           <p class="star">*</p>
-          <p class="startP" style="min-width: 140px; textAlign: left">Название вакансии</p>
+          <p class="startP" style="min-width: 140px; textAlign: left">{{$t('addJob.titleLabel')}}</p>
           <q-input
             outlined
             bg-color="white"

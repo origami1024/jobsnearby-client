@@ -10,17 +10,17 @@
       dense
       :options="cityOptions"
       @filter="filterFn"
-      label="Город"
+      :label="$t('home.city')"
       stack-label
       @keyup="addNewCity"
     />
     
     <div class="line">
-      <q-select style="width: 65%" @input="salaryUpd" dense :value="salary" :options="salOptions" label="Зарплата" />
-      <q-select style="width: 30%" dense @input="currUpd" :value="currency" :options="currOptions" label="Валюта" />
+      <q-select style="width: 65%" @input="salaryUpd" dense :value="salary" :options="salOptions" :label="$t('home.sal')" />
+      <q-select style="width: 30%" dense @input="currUpd" :value="currency" :options="currOptions" :label="$t('home.curr')" />
     </div>
-    <q-select @input="expUpd" dense :value="exp" :options="expOptions" label="Опыт" />
-    <q-select @input="jtypeUpd" dense :value="jtype" :options="jtypeOptions" label="Занятость" />
+    <q-select @input="expUpd" dense :value="exp" :options="expOptions" :label="$t('home.exp')" />
+    <q-select @input="jtypeUpd" dense :value="jtype" :options="jtypeOptions" :label="$t('home.jtyp')" />
     <div class="w100" :style="{justifyContent: isResetShown ? 'space-between': 'flex-end'}">
       <q-btn
         v-if="isResetShown"
@@ -29,7 +29,7 @@
         color="red"
         @click="$emit('resetFilters')"
       />
-      <q-btn :loading="pending" color="primary" label="Применить" @click="refreshPlus"/>
+      <q-btn :loading="pending" color="primary" :label="$t('home.applyBtn')" @click="refreshPlus"/>
     </div>
     
   </div>
@@ -58,7 +58,7 @@ export default {
     outerResetNeeded: {type: Boolean}
   },
   data: ()=>{return {
-    cityOptions: stringOptions,
+    cityOptions: stringOptions, //i18n.$t('home.cityOpts'),
     //perpage: '25',
     //timerange: 'mon',
     //txt: '',

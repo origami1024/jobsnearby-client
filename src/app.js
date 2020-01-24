@@ -48,6 +48,8 @@ app.post('/auth', auth)//auth by cookie
 app.post('/login', login)
 app.post('/reg', reg)
 app.post('/out', out)
+app.post('/changepw', changepw)
+
 
 app.post('/entrance', db.addJobs)
 app.post('/oneJob', db.addOneJob)
@@ -209,12 +211,47 @@ async function auth(req, res) {
   }
 }
 
+async function changepw(req, res) {
+  //check data for validity
+  console.log('cp changepw:')
+  if (req.body && req.body.oldmail && req.body.oldpw && req.body.newpw) {
+
+    let mail = req.body.oldmail.toLowerCase()
+    let oldpw = req.body.oldpw
+    let newpw = req.body.newpw
+    if (SupremeValidator.isValidEmail(mail) && SupremeValidator.isValidPW(oldpw) && SupremeValidator.isValidPW(newpw)) {
+      //if cookies present
+      if (req.cookies.session && req.cookies.session.length > 50) {
+        //check data in db
+        let userData = await db.getDiapers(req.cookies.session, mail).catch(error => {
+          res.send('step2')
+          return undefined
+        })
+        if (userData) {
+          let authed = bcrypt.compareSync(oldpw, userData.pwhash) 
+          //console.log('cp219: ', userData, ' and ', authed)
+          if (authed) {
+            let newhash = bcrypt.hashSync(newpw, bcrypt.genSaltSync(9))
+            let updator = await db.updateDiaper(newhash, userData.pwhash, req.cookies.session).catch(error => {
+              res.send('step2')
+              return undefined
+            })
+            //console.log('cp134 ', updator)
+            if (updator) res.send('OK')
+            //else res.send('smthngs')
+          }
+        }
+      } else {res.send('step1'); console.log('not valid cookies')}
+    } else {res.send('step1'); console.log('not valid mail or pw')}
+  } else {res.send('step1'); console.log('not valid stuff')}
+}
+
 async function login(req, res) {
   console.log('cp login: ', req.cookies)
   let mail = req.body[0].toLowerCase()
   let pw = req.body[1]
   let rememberme = req.body[2]
-  console.log('cp login rm: ', rememberme)
+  //console.log('cp login rm: ', rememberme)
   if (SupremeValidator.isValidEmail(mail) && SupremeValidator.isValidPW(pw)) {
     //console.log('user validated')
     //get hash from db checking if mail exists

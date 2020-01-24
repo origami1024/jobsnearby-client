@@ -79,14 +79,14 @@
         <q-tab-panel class="entprofile__settings entprofile__mid" name="settings">
           <h3 style="width: 100%; marginBottom: 10px; text-align: center;">Компания <strong>{{company}}</strong></h3>
           
-          <p>Добавить контакты</p>
+          <!-- <p>Добавить контакты</p>
           <q-input dense class="entprofile__inp" outlined bottom-slots v-model="contacts1" label="Контакты" counter maxlength="30"/>
           <q-input dense v-show="contacts_count > 1" class="entprofile__inp" outlined bottom-slots v-model="contacts2" label="Контакты" counter maxlength="30"/>
           <q-input dense v-show="contacts_count > 2" class="entprofile__inp" outlined bottom-slots v-model="contacts3" label="Контакты" counter maxlength="30"/>
-          <q-btn round color="primary" @click="contacts_count < 4 ? contacts_count += 1 : ''" size="sm" icon="add" :disable="contacts_count > 2"/>
-          <q-toggle v-model="editable" label="Изменить личные данные"/>
-          <q-input type="email" class="entprofile__inp" outlined bottom-slots v-model="newemail" label="Email" counter maxlength="50" :readonly="!editable" />
-          <q-input :type="isPwd ? 'password' : 'text'" class="entprofile__inp" outlined bottom-slots v-model="newpw" label="Пароль" counter maxlength="25" :readonly="!editable">
+          <q-btn round color="primary" @click="contacts_count < 4 ? contacts_count += 1 : ''" size="sm" icon="add" :disable="contacts_count > 2"/> -->
+          <!-- <q-toggle v-model="editable" label="Изменить личные данные"/> -->
+          <q-input type="email" class="entprofile__inp" outlined bottom-slots v-model="oldemail" label="Email" counter maxlength="50" />
+          <q-input :type="isPwd ? 'password' : 'text'" class="entprofile__inp" outlined bottom-slots v-model="oldpw" label="Старый пароль" counter maxlength="25">
             <template v-slot:append>
               <q-icon
                 :name="isPwd ? 'visibility_off' : 'visibility'"
@@ -95,7 +95,16 @@
               />
             </template>
           </q-input>
-          <q-btn color="primary" label="Изменить" :disable="!editable"/>
+          <q-input :type="isPwd ? 'password' : 'text'" class="entprofile__inp" outlined bottom-slots v-model="newpw" label="Новый пароль" counter maxlength="25">
+            <template v-slot:append>
+              <q-icon
+                :name="isPwd ? 'visibility_off' : 'visibility'"
+                class="cursor-pointer"
+                @click="isPwd = !isPwd"
+              />
+            </template>
+          </q-input>
+          <q-btn color="primary" @click="tryChangePw" label="Изменить"/>
         </q-tab-panel>
       </q-tab-panels>
     </div>
@@ -116,7 +125,7 @@ export default {
   props: {
     ownJobs: Array,
     company: {type: String, default: ''},
-    role: String
+    role: String,
   },
   data: ()=>{return {
     logo_upload_error: null,
@@ -136,7 +145,8 @@ export default {
     contacts_count: 1,
     newcompany: '',
     newsurname: '',
-    newemail: '',
+    oldemail: '',
+    oldpw: '',
     newpw: '',
     isPwd: true,
     tab: 'published',
@@ -148,6 +158,18 @@ export default {
     EntProfileNav
   },
   methods: {
+    tryChangePw() {
+      let url = config.jobsUrl + '/changepw'
+      let udata = { oldmail: this.oldemail, oldpw: this.oldpw, newpw: this.newpw }
+      axios
+        .post(url, udata, {headers: {'Content-Type' : 'application/json' }, withCredentials: true,})
+        .then(response => {
+          console.log('trychpw')
+          //if ok show like compnenet
+          //reset fields
+          //error like validation
+      })
+    },
     updateCompanyData() {
       let url = config.jobsUrl + '/companyUpdate.json'
       axios

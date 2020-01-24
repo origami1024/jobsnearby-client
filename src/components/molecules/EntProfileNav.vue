@@ -42,7 +42,7 @@
         @click="$emit('setLocalRoute', 'settings')"
         active-class="my-menu-link"
       >
-        <q-item-section>Личные данные</q-item-section>
+        <q-item-section>Изменить пароль</q-item-section>
       </q-item>
     </q-list>
   </div>

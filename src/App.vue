@@ -16,22 +16,11 @@
       </q-btn>
       
       <div id="nav" shrink stretch>
-        <!-- <router-link class="r-link" to="/">
-          <q-btn flat label="Главная"/>
-        </router-link> -->
-        <!-- <router-link class="r-link" @click.native="regState='reg'" v-if="role === 'guest'" to="/registration">
-          <q-btn flat label="Регистрация"/>
-        </router-link> -->
-        <!-- <router-link class="r-link" @click.native="regState='login'" v-if="role === 'guest'" to="/registration">
-          <q-btn flat label="Вход"/>
-        </router-link> -->
-        <!-- <router-link to="/jobslist">Вакансии</router-link> | -->
-        
         <router-link @click.native="newJobInit" class="r-link" v-if="role === 'company'" to="/addJob">
           <!-- <q-btn round icon="add_circle_outline"/> -->
           <q-icon round glossy name="add_circle_outline" size="40px"></q-icon>
           <q-tooltip>
-            <p style="font-size: 15px; margin: 0">Создать новую вакансию</p>
+            <p style="font-size: 15px; margin: 0">{{$t('App.newJobHint')}}</p>
           </q-tooltip>
         </router-link>
         <!-- <router-link to="/about">Контакты</router-link> | -->
@@ -42,10 +31,10 @@
           <!-- <div> {{status}} </div>
           <div> {{user}} ({{user_id}})</div> -->
           <q-btn-group>
-            <q-btn push glossy :color="$route.path == '/registration' ? 'purple' : 'gray'" :text-color="$route.path == '/registration' ? 'white' : 'black'" no-caps v-if="role && role.startsWith('guest')" @click.native="regState='login'" label="Вход" to="/registration"/>
+            <q-btn push glossy :color="$route.path == '/registration' ? 'purple' : 'gray'" :text-color="$route.path == '/registration' ? 'white' : 'black'" no-caps v-if="role && role.startsWith('guest')" @click.native="regState='login'" :label="$t('App.login')" to="/registration"/>
             <q-btn push glossy no-caps v-if="user_id !== -1" @click="logout" icon="logout">
               <q-tooltip>
-                <p style="font-size: 15px; margin: 0">Выйти</p>
+                <p style="font-size: 15px; margin: 0">{{$t('App.logoutHint')}}</p>
               </q-tooltip>
             </q-btn>
             <q-btn push glossy @click="getFavedFull" :color="$route.path == '/subprofile' ? 'purple' : 'gray'" :text-color="$route.path == '/subprofile' ? 'white' : 'black'" no-caps icon="person" v-if="role === 'subscriber'" to="/subprofile"/>
@@ -65,10 +54,10 @@
         </select> -->
         <button class="langLink">{{app_lng}}
           <q-menu dense>
-            <q-item style="lineHeight: 2.2" dense :style="{color: app_lng == 'TM' ? 'purple' : 'black'}" clickable v-close-popup @click="app_lng = 'TM'">
+            <q-item style="lineHeight: 2.2" dense :style="{color: app_lng == 'TM' ? 'purple' : 'black'}" clickable v-close-popup @click="app_lng = 'TM'; $i18n.locale = 'tm'">
               TM
             </q-item>
-            <q-item style="lineHeight: 2.2" dense :style="{color: app_lng == 'RU' ? 'purple' : 'black'}" clickable v-close-popup @click="app_lng = 'RU'">
+            <q-item style="lineHeight: 2.2" dense :style="{color: app_lng == 'RU' ? 'purple' : 'black'}" clickable v-close-popup @click="app_lng = 'RU'; $i18n.locale = 'ru'">
               RU
             </q-item>
             <q-item style="lineHeight: 2.2" dense :style="{color: app_lng == 'EN' ? 'purple' : 'black'}" clickable v-close-popup @click="app_lng = 'EN'">
@@ -362,6 +351,7 @@ export default {
           .post(config.jobsUrl + '/out', [], {withCredentials: true})
           .then(response => {
             this.status = 'Вход не выполнен'
+            this.$router.push({ name: "home"})
           })
       }
     },

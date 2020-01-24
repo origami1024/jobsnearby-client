@@ -796,6 +796,8 @@ async function getOneCompany(uid) {
   else return false
 }
 
+
+
 async function updateOneCompany(req, res) {
   //check auth and if its a company
   if (req.cookies.session && req.cookies.session.length > 50) {
@@ -860,7 +862,35 @@ async function updateOneCompany(req, res) {
 
 }
 
+async function updateDiaper(newhash, oldhash, sess) {
+  let que = `
+    UPDATE "users" SET "pwhash" =
+    $1
+    WHERE auth_cookie = $2 AND pwhash = $3
+  `
+  let params = [newhash, sess, oldhash]
+  let result = await pool.query(que, params).catch(error => {
+    console.log('cp updDiapers err: ', error)
+    return false
+  })
+  return result
+}
+async function getDiapers(sess, mail) {
+  let que = `
+    SELECT pwhash
+    FROM users
+    WHERE LOWER(email) = $1 AND auth_cookie = $2
+  `
+  let result = await pool.query(que, [mail, sess]).catch(error => {
+    console.log('cp getDiapers err: ', error)
+  })
+  if (result.rows && result.rows.length === 1) return result.rows[0]
+  else return false
+}
+
 module.exports = {
+  getDiapers,
+  updateDiaper,
   checkAuthGetProfile,
   tryInsertAuthToken,
   tryGetLoginData,

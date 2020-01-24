@@ -12,11 +12,11 @@
             <q-input
               v-model="txt"
               dense
-              label="Поиск"
+              :label="$t('home.searchPH')"
               class="jobsfilter__search"
-              :rules="[val => wordRegex.test(val) || 'некорректная строка поиска']"
+              :rules="[val => wordRegex.test(val) || $t('home.searchValSym')]"
               @keyup.enter="refreshPlus"
-              hint="Поиск по полям название, автор, город, основной текст"
+              :hint="$t('home.searchHint')"
             >
               <template v-if="txt" v-slot:append>
                 <q-icon name="cancel" @click.stop="txt = ''" class="cursor-pointer" />
@@ -25,7 +25,7 @@
                 <q-icon name="search" />
               </template>
             </q-input>
-            <q-btn @click="refreshPlus" color="primary" :loading="pending" class="jobsfilter__search-btn">Поиск</q-btn>
+            <q-btn @click="refreshPlus" color="primary" :loading="pending" class="jobsfilter__search-btn" :label="$t('home.searchBtn')"/>
           </div>
         </div>
         <div style="padding: 0 3px">
