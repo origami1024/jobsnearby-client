@@ -38,7 +38,7 @@
               </q-tooltip>
             </q-btn>
             <q-btn push glossy @click="getFavedFull" :color="$route.path == '/subprofile' ? 'purple' : 'gray'" :text-color="$route.path == '/subprofile' ? 'white' : 'black'" no-caps icon="person" v-if="role === 'subscriber'" to="/subprofile"/>
-            <q-btn push glossy no-caps icon="person" v-if="role === 'company'" to="/entprofile"/>
+            <q-btn push glossy no-caps icon="person" @click.native="getOwnJobs" v-if="role === 'company'" to="/entprofile"/>
             <!-- @click.native="getOwnJobs" -->
           </q-btn-group>
           
@@ -82,6 +82,7 @@
         @scrollTo="scrollTo"
         @delJob="deleteJobById"
         :likedJobsList="likedJobsList" :likedJobs="likedJobs"
+        @logoutAndRetry="logoutAndRetry"
         @favOne="favOne"
         @getOwnJobs="getOwnJobs" :ownJobs="ownJobs"
         @authed="authIt" @regStateUpd="regStateUpd" :regState="regState"
@@ -117,6 +118,7 @@ export default {
     app_lng: 'RU',
     regState: 'reg',
     modalShown: 'none',
+
     status: 'Вход не выполнен',
     username: 'abc',
     surname: 'def',
@@ -150,7 +152,39 @@ export default {
   created() {
     
   },
+  beforeDestroy() {
+    window.removeEventListener("storage", this.onStorageUpdate);
+  },
   mounted() {
+    if (localStorage.user) {
+      this.user = localStorage.user
+    }
+    if (localStorage.user_id) {
+      this.user_id = localStorage.user_id
+    }
+    if (localStorage.role) {
+      this.role = localStorage.role
+    }
+    if (localStorage.username) {
+      this.username = localStorage.username
+    }
+    if (localStorage.surname) {
+      this.surname = localStorage.surname
+    }
+    if (localStorage.company) {
+      this.company = localStorage.company
+    }
+    if (localStorage.isagency) {
+      this.isagency = localStorage.isagency
+    }
+    if (localStorage.insearch) {
+      this.insearch = Boolean(localStorage.insearch)
+    }
+    if (localStorage.likedJobs) {
+      this.likedJobs = Array(localStorage.likedJobs)
+    }
+    window.addEventListener("storage", this.onStorageUpdate)
+
     //send auth by cookies request
     axios
       .post(config.jobsUrl + '/auth', [], {withCredentials: true,})
@@ -173,13 +207,43 @@ export default {
           this.ownJobs = []
         } else if (response.data && response.data[0] && response.data[1] && response.data[2]) {
           this.authIt(response.data)
+          console.log(response.data)
         }
       })
-    //get all jobs
+    //need to do these two only depending on the route
     this.refreshjobs('init')
     this.getFavedFull()
   },
   methods: {
+    onStorageUpdate(event) {
+      if (event.key === "user") {
+        this.user = event.newValue;
+      } else
+      if (event.key === "user_id") {
+        this.user_id = event.newValue;
+      } else
+      if (event.key === "role") {
+        this.role = event.newValue;
+      } else
+      if (event.key === "username") {
+        this.username = event.newValue;
+      } else
+      if (event.key === "surname") {
+        this.surname = event.newValue;
+      } else
+      if (event.key === "company") {
+        this.company = event.newValue;
+      } else
+      if (event.key === "isagency") {
+        this.isagency = event.newValue;
+      } else
+      if (event.key === "insearch") {
+        this.insearch = event.newValue;
+      } else
+      if (event.key === "likedJobs") {
+        this.likedJobs = Array(event.newValue);
+      }
+    },
     setSentState(state) {
       this.newJobSentState = state
     },
@@ -341,6 +405,14 @@ export default {
       }
       //console.log('cp111')
     },
+    logoutAndRetry: function() {
+      this.status = 'Выход...'//имя пользователя?
+      this.user = 'Гость'
+      this.user_id = -1
+      this.role = 'guest'
+      this.status = 'Вход не выполнен'
+      this.$router.push({ name: "home"})
+    },
     logout: function() {
       if (this.user_id !== -1) {
         this.status = 'Выход...'//имя пользователя?
@@ -393,9 +465,13 @@ export default {
       axios
         .post(jobslistUrl, [], {withCredentials: true,})
         .then(response => {
-          //console.log('getOwnJobs response cp61: ', response.data)
+          
           if (response.data && response.data.rows) {
             this.ownJobs = response.data.rows
+          } else
+          if (response.data && response.data.startsWith('logout')) {
+            console.log('logged out on different tab')
+            this.logoutAndRetry()
           }
           this.ajaxLoading = false
         })
@@ -418,10 +494,38 @@ export default {
         this.newJobSentState = 'none'
       } else
       if (to.name === 'entprofile') {
-        this.getOwnJobs()
+        //this.getOwnJobs()
+        //console.log('from app')
       }
 
-    }
+    },
+    user(newName) {
+      localStorage.user = newName
+    },
+    user_id(newName) {
+      localStorage.user_id = newName
+    },
+    role(newName) {
+      localStorage.role = newName
+    },
+    username(newName) {
+      localStorage.username = newName
+    },
+    surname(newName) {
+      localStorage.surname = newName
+    },
+    company(newName) {
+      localStorage.company = newName
+    },
+    isagency(newName) {
+      localStorage.isagency = newName
+    },
+    insearch(newName) {
+      localStorage.insearch = newName
+    },
+    likedJobs(newName) {
+      localStorage.likedJobs = Array(newName)
+    },
   }
 }
 </script>

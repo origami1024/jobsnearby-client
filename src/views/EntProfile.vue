@@ -150,7 +150,8 @@ export default {
     newpw: '',
     isPwd: true,
     tab: 'published',
-    editable: false
+    editable: false,
+    from: null
   }},
   components: {
     //JobsList,
@@ -249,8 +250,8 @@ export default {
     }
   },
   mounted(){
-    this.newusername = this.username
-    this.newsurname = this.surname
+    //this.newusername = this.username
+    //this.newsurname = this.surname
     setTimeout(()=>{this.$emit('getOwnJobs')},50)
   },
   watch: {
@@ -261,8 +262,11 @@ export default {
       this.newsurname = news
     },
     $route (to, from){
-      if (to.name === 'entprofile' && this.tab == 'cabout') {
-        this.getOwnCompanyData()
+      if (to.name === 'entprofile') {
+        if (this.tab == 'cabout') {
+          this.getOwnCompanyData()
+        }
+        
       }
 
     }
