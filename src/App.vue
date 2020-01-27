@@ -236,10 +236,10 @@ export default {
         this.company = event.newValue;
       } else
       if (event.key === "isagency") {
-        this.isagency = event.newValue;
+        this.isagency = Boolean(event.newValue);
       } else
       if (event.key === "insearch") {
-        this.insearch = event.newValue;
+        this.insearch = Boolean(event.newValue);
       } else
       if (event.key === "likedJobs") {
         this.likedJobs = Array(event.newValue);
@@ -414,6 +414,7 @@ export default {
       this.role = 'guest'
       this.status = 'Вход не выполнен'
       this.$router.push({ name: "home"})
+      //this.$destroy() try this to flush data on logout
     },
     logout: function() {
       if (this.user_id !== -1) {

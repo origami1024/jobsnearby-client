@@ -1,40 +1,29 @@
 <template>
   <div v-if="role === 'subscriber'" class="subprofile">
-    <div class="subprofile__header">
-      <q-toggle
-        :label="insearch === true ? 'Я ищу работу' : 'Я не ищу работу'"
-        color="purple"
-        :value="insearch"
-      />
-    </div>
     <div class="subprofile__inner">
-      <q-tabs
-        align="justify"
-        v-model="tab"
-        class="bg-primary text-white shadow-2 tabs"
-        dense
-      >
-        <q-tab alert name="cv" icon="assignment_ind" label="Резюме">
-        </q-tab>
-        <q-tab disable name="responses" icon="work" label="Отклики">
-          <q-badge color="red" floating>0</q-badge>
-        </q-tab>
-        <q-tab name="starred" icon="star" label="Избранные вакансии">
-        </q-tab>
-        <q-tab name="settings" icon="settings" label="Личные данные">
-        </q-tab>
-      </q-tabs>
+      <ProfileNav
+        :localRoute="tab"
+        @setLocalRoute="setLocalRoute"
+        :localroutes="[{r: 'cv', l: 'Резюме'}, {r: 'invitations', l: 'Приглашения'}, {r: 'starred', l: 'Избранные вакансии'}]"
+        :localroutesX="{r: 'settings', l: 'Изменить пароль'}"
+      />
       <q-tab-panels
+        class="qtpans"
         v-model="tab"
         animated
         transition-prev="jump-up"
         transition-next="jump-up"
       >
         <q-tab-panel name="cv" class="subprofile__cv">
+          <q-toggle
+            :label="insearch === true ? 'Я ищу работу' : 'Я не ищу работу'"
+            color="purple"
+            :value="insearch"
+          />
           <button>Загрузить резюме</button>
           <button disabled="true">Отправить на сервер</button>
         </q-tab-panel>
-        <q-tab-panel name="responses">
+        <q-tab-panel name="invitations">
         </q-tab-panel>
         <q-tab-panel name="starred">
           <q-btn-toggle
@@ -85,6 +74,7 @@
 
 <script>
 import JobsList from '@/components/organisms/JobsList.vue'
+import ProfileNav from '@/components/molecules/ProfileNav.vue'
 
 export default {
   name: 'SubProfile',
@@ -112,8 +102,16 @@ export default {
   }},
   components: {
     JobsList,
+    ProfileNav
   },
   methods: {
+    setLocalRoute(rou) {
+      // if (rou == 'cabout') {
+      //   this.logo_upload_error = null
+      //   this.getOwnCompanyData()
+      // }
+      this.tab = rou
+    },
     favOne(id) {
       this.$emit('favOne', id)
     }
@@ -137,38 +135,43 @@ export default {
 </script>
 
 <style scoped lang="stylus">
+.qtpans
+  width 100%
+  min-height 75vh
+  border 1px solid #eee
+  border-radius 4px
 .subprofile
-  width 900px
+  max-width 900px
+  padding 0 10px
+  padding-top 10px
   display flex
   flex-direction column
   justify-content center
   p
     margin-bottom 15px
+  &__inner
+    display flex
   &__inp
     width 300px
   &__header
     display flex
     justify-content flex-end
   .tabs
-    border-top-left-radius 15px
-    border-top-right-radius 15px
+    // border-top-left-radius 15px
+    // border-top-right-radius 15px
     justify-content center
     animation-duration 0.3s
     transition-duration 0.3s
   .subprofile__cv
-    background-color #eee
+    //background-color #eee
     display flex
     flex-direction column
     align-items flex-start
-    border-bottom-left-radius 15px
-    border-bottom-right-radius 15px
   .subprofile__settings
-    background-color #eee
+    //background-color #eee
     display flex
     flex-direction column
     align-items flex-end
-    border-bottom-left-radius 15px
-    border-bottom-right-radius 15px
   .anim1
     animation-duration 0.3s
     transition-duration 0.3s

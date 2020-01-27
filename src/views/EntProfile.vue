@@ -1,9 +1,11 @@
 <template>
   <div v-if="role === 'company'" class="entprofile">
     <div class="entprofile__inner">
-      <EntProfileNav
+      <ProfileNav
         :localRoute="tab"
         @setLocalRoute="setLocalRoute"
+        :localroutes="[{r: 'published', l: 'Вакансии'}, {r: 'responses', l: 'Отклики'}, {r: 'cabout', l: 'О компании'}]"
+        :localroutesX="{r: 'settings', l: 'Изменить пароль'}"
       />
       <q-tab-panels
         class="qtpans"
@@ -113,7 +115,7 @@
 
 <script>
 import JobsStats from '@/components/organisms/JobsStats.vue'
-import EntProfileNav from '@/components/molecules/EntProfileNav.vue'
+import ProfileNav from '@/components/molecules/ProfileNav.vue'
 
 import axios from 'axios'
 
@@ -154,9 +156,8 @@ export default {
     from: null
   }},
   components: {
-    //JobsList,
     JobsStats,
-    EntProfileNav
+    ProfileNav
   },
   methods: {
     tryChangePw() {

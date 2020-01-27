@@ -315,6 +315,8 @@ export default {
               //console.log(this.status)
               this.$emit('authed', response.data.slice(1))
               this.$router.push({ name: 'home' })
+              this.login.mail = ''
+              this.login.pw = ''
             }
             else if (response.data == 'step3') {
               this.login.status = 'Не удалось выполнить вход'
