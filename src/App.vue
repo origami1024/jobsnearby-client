@@ -505,8 +505,13 @@ export default {
       localStorage.user = newName
     },
     user_id(newName) {
+      console.log(this.user_id)
+      console.log(newName)
+      if (newName == -1) {
+        this.$router.push({ name: "home"})
+        console.log('user_id change')
+      }
       localStorage.user_id = newName
-      console.log('user_id change')
     },
     role(newName) {
       localStorage.role = newName
