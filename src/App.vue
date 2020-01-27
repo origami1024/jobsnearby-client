@@ -208,7 +208,7 @@ export default {
           this.ownJobs = []
         } else if (response.data && response.data[0] && response.data[1] && response.data[2]) {
           this.authIt(response.data)
-          console.log(response.data)
+          
         }
       })
     //need to do these two only depending on the route
