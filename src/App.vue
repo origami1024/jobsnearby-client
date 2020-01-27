@@ -505,11 +505,10 @@ export default {
       localStorage.user = newName
     },
     user_id(newName) {
-      console.log(this.user_id)
-      console.log(newName)
-      if (newName == -1) {
+      //console.log(this.$route.name)
+      if (newName == -1 && (this.$route.name != 'home' && this.$route.name != 'feedback')) {
         this.$router.push({ name: "home"})
-        console.log('user_id change')
+        //console.log('user_id change')
       }
       localStorage.user_id = newName
     },
