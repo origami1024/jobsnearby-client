@@ -49,6 +49,7 @@ app.post('/login', login)
 app.post('/reg', reg)
 app.post('/out', out)
 app.post('/changepw', changepw)
+app.post('/changeuserstuff', changeuserstuff)
 
 
 app.post('/entrance', db.addJobs)
@@ -210,6 +211,59 @@ async function auth(req, res) {
     res.send('fail')
   }
 }
+
+
+async function changeuserstuff(req, res) {
+  console.log('cp change user stuff: ', req.body)
+  let udata = {}
+  if (req.body && req.body.username && req.body.username.length < 36 && req.body.username.length > 2) {
+    udata.name = req.body.username
+  } else {
+    res.send('error name')
+    return false
+  }
+  if (req.body.surname && req.body.surname.length < 36 && req.body.surname.length > 2) {
+    udata.surname = req.body.surname
+  } else {
+    res.send('error surname')
+    return false
+  }
+  console.log(req.body.insearch)
+  if (req.body.insearch != undefined && (req.body.insearch === true || req.body.insearch === false || req.body.insearch == 'true' || req.body.insearch == 'false')) {
+    
+    udata.insearch = Boolean(req.body.insearch)
+  } else {
+    res.send('error insearch')
+    return false
+  }
+  if (req.cookies.session && req.cookies.session.length > 50) {
+    let user_id = await db.authedForUserData(req.cookies.session, 'subscriber').catch(error => {
+      res.send('step2')
+      return undefined
+    })
+    if (user_id) {
+      console.log('cp256: ', user_id, udata)
+      let doit = await db.updateUserData(user_id, udata).catch(error => {
+        res.send('step3')
+        return undefined
+      })
+      if (doit) {
+        res.send('OK')
+      }
+    } else {
+      res.send('error bad userdata')
+      return false
+    }
+  } else {
+    res.send('error auth')
+    return false
+  }
+  //check incoming data for validity
+  //check cookie, usertype = 'subscriber', return user_id to write to
+  //send update
+}
+
+
 
 async function changepw(req, res) {
   //check data for validity

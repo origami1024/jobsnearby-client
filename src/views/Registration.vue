@@ -231,8 +231,8 @@ export default {
           this.validation.name = 'Введите имя'
         else if (this.name.length < 3)
           this.validation.name = 'Минимальная длина 3 символа'
-        else if (this.name.length > 60)
-          this.validation.name = 'Максимальная длина 60 символов'
+        else if (this.name.length > 35)
+          this.validation.name = 'Максимальная длина 35 символов'
         else if (!this.wordRegex.test(this.name))
           this.validation.name = 'Неправильный формат имени'
         else this.validation.name = ''
@@ -241,8 +241,8 @@ export default {
           this.validation.surname = 'Введите фамилию'
         else if (this.surname.length < 3)
           this.validation.surname = 'Минимальная длина 3 символа'
-        else if (this.surname.length > 60)
-          this.validation.surname = 'Максимальная длина 60 символов'
+        else if (this.surname.length > 35)
+          this.validation.surname = 'Максимальная длина 35 символов'
         else if (!this.wordRegex.test(this.surname))
           this.validation.surname = 'Неправильный формат фамилии'
         else this.validation.surname = ''

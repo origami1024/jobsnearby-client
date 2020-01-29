@@ -41,9 +41,9 @@
         </q-tab-panel>
         <q-tab-panel class="subprofile__settings" name="personal">
           <q-checkbox
-            :label="insearch === true ? 'Я ищу работу' : 'Я не ищу работу'"
+            :label="userdata.insearch === true ? 'Я ищу работу' : 'Я не ищу работу'"
             
-            :value="insearch"
+            v-model="userdata.insearch"
           />
           <!-- <p>Добавить контакты</p>
           <q-input dense class="subprofile__inp" outlined bottom-slots v-model="contacts1" label="Контакты" counter maxlength="30"/>
@@ -54,10 +54,15 @@
           <q-input
             class="subprofile__inp"
             outlined bottom-slots 
-            v-model="mailpw.username" label="Имя" counter maxlength="60"  />
-          <q-input class="subprofile__inp" outlined bottom-slots :value="surname" label="Фамилия" counter maxlength="60"  />
-          <q-btn color="primary" label="Изменить"/>
+            v-model="userdata.username" label="Имя"
+            counter maxlength="35"  />
+          <q-input class="subprofile__inp" outlined bottom-slots
+            v-model="userdata.surname" label="Фамилия"
+            counter maxlength="35"  />
+          <q-btn color="primary" @click="tryChangeUData" label="Изменить"/>
         </q-tab-panel>
+
+
         <q-tab-panel class="subprofile__settings" name="settings">
           <q-input type="email" class="subprofile__inp" 
             outlined bottom-slots v-model="mailpw.oldemail" label="Email" counter maxlength="50"  />
@@ -123,7 +128,7 @@ export default {
       oldpw: ''
     },
     isPwd: true,
-    tab: 'settings'
+    tab: 'cv'
   }},
   components: {
     JobsList,
@@ -134,8 +139,26 @@ export default {
     this.$destroy()
   },
   methods: {
-    clearData(){
-      Object.assign(this.$data, this.$options.data())
+    // clearData(){
+    //   Object.assign(this.$data, this.$options.data())
+    // },
+    tryChangeUData() {
+      let url = config.jobsUrl + '/changeuserstuff'
+      let udata = this.userdata
+      
+      axios
+        .post(url, udata, {headers: {'Content-Type' : 'application/json' }, withCredentials: true,})
+        .then(response => {
+          console.log('tryChangeUData', response.data)
+          if (response.data == 'OK') {
+            this.$emit('changeUDataSub', udata)
+            this.$q.notify('Данные изменены')
+          }
+          else this.$q.notify('Неправильные данные')
+          //if ok show like compnenet
+          //reset fields
+          //error like validation
+      })
     },
     tryChangePw() {
       let url = config.jobsUrl + '/changepw'
@@ -154,10 +177,11 @@ export default {
       })
     },
     setLocalRoute(rou) {
-      // if (rou == 'cabout') {
-      //   this.logo_upload_error = null
-      //   this.getOwnCompanyData()
-      // }
+      if (rou == 'personal') {
+        this.userdata.username = this.username
+        this.userdata.surname = this.surname
+        this.userdata.insearch = this.insearch
+      }
       this.tab = rou
     },
     favOne(id) {
@@ -165,8 +189,10 @@ export default {
     }
   },
   mounted(){
-    this.newusername = this.username
-    this.newsurname = this.surname
+    console.log('cp11: ', this.insearch)
+    this.userdata.username = this.username
+    this.userdata.surname = this.surname
+    this.userdata.insearch = this.insearch
   },
   watch: {
     username(newu) {

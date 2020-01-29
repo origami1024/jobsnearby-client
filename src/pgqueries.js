@@ -729,7 +729,7 @@ async function checkAuthGetProfile(token) {
     console.log(error)
     throw new Error('auth check failed')
   })
-  console.log('cp10: ', result.rowCount)
+  console.log('cp10: ', result.rows[0])
   if (result.rowCount !== 1) return false
   else {
     let res = {
@@ -749,6 +749,36 @@ async function checkAuthGetProfile(token) {
     }
     return res
   }
+}
+
+
+async function updateUserData(user_id, udata) {
+  //its prechecked for validity and existence
+  let que = `
+    UPDATE "users" SET ("name", "surname", "insearch") =
+    ($1, $2, $3)
+    WHERE user_id = $4
+  `
+  let params = [udata.name, udata.surname, udata.insearch, user_id]
+  let result = await pool.query(que, params).catch(error => {
+    console.log('cp updDiapers err: ', error)
+    return false
+  })
+  //res.send('OK')
+  return result
+}
+
+async function authedForUserData(session, usertype) {
+  let que1st = `SELECT user_id FROM "users" WHERE "auth_cookie" = $1 AND "role" = $2`
+  let params1st = [session, usertype]
+  //return user_id
+  let result1 = await pool.query(que1st, params1st).catch(error => {
+    console.log('cp authedForUserData err: ', error)
+    //throw new Error('job by id error')
+  })
+  //console.log('cpc p2: ', result1)
+  if (result1.rows && result1.rows.length == 1) return result1.rows[0].user_id
+  else return false
 }
 
 async function checkIfUserAuthed(session) {
@@ -911,5 +941,7 @@ module.exports = {
   getOneCompany,
   getOneCompanyBroad,
   updateOneCompany,
-  checkIfUserAuthed
+  checkIfUserAuthed,
+  authedForUserData,
+  updateUserData
 }

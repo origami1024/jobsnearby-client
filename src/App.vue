@@ -79,6 +79,7 @@
     </header>
     <keep-alive> <!-- @stepChange="stepChange" :step="step" -->
       <router-view
+        @changeUDataSub="uDataChangeFromSubProfile"
         @setSentState="setSentState" :sent="newJobSentState" @newJobInit="newJobInit" :jobEditedObj="jobEditedObj" :jobEditId="jobEditId" :newJobsPageType="newJobsPageType" @editJob="editJob"
         @scrollTo="scrollTo"
         @delJob="deleteJobById"
@@ -90,7 +91,8 @@
         class="r-view"
         :jobsFullcount="jobsFullcount"
         :page_current="page_current" :pages="pages_count"
-        :pending="ajaxLoading" @updQue="updQue" :role="role" :username="username" :surname="surname" :insearch="insearch" :company="company" :isagency="isagency" :jobslist="jobslist" @refresh="refreshjobs" :uid="user_id" :authed="user_id !== -1"
+        :pending="ajaxLoading" @updQue="updQue"
+        :role="role" :username="username" :surname="surname" :insearch="insearch" :company="company" :isagency="isagency" :jobslist="jobslist" @refresh="refreshjobs" :uid="user_id" :authed="user_id !== -1"
       />
     </keep-alive>
     <footer class="main__footer">
@@ -405,6 +407,11 @@ export default {
         this.likedJobs = []
       }
       //console.log('cp111')
+    },
+    uDataChangeFromSubProfile(udata) {
+      this.username = udata.username
+      this.surname = udata.surname
+      this.insearch = udata.insearch
     },
     logoutAndRetry: function() {
       console.log('logoutandretry')
