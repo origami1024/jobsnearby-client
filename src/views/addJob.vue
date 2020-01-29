@@ -82,7 +82,10 @@
           />
           <q-checkbox
             style="marginBottom: 12px; alignSelf: center"
-            v-model="salaryOn" @input="$refs.salary_min.resetValidation(); $refs.salary_max.resetValidation(); salaryValidated = true"
+            v-model="salaryOn"
+            @input="$refs.salary_min.resetValidation();
+            $refs.salary_max.resetValidation();
+            salaryValidated = true"
           >
             <q-tooltip>
               <p style="font-size: 15px; margin: 0">По итогам собеседования</p>

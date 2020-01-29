@@ -243,7 +243,7 @@ async function changepw(req, res) {
         } else {res.send('step5')}
       } else {res.send('step1'); console.log('not valid cookies')}
     } else {res.send('step1'); console.log('not valid mail or pw')}
-  } else {res.send('step1'); console.log('not valid stuff')}
+  } else {res.send('step1'); console.log('not valid stuff: ')}
 }
 
 async function login(req, res) {

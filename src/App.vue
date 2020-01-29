@@ -90,7 +90,8 @@
         class="r-view"
         :jobsFullcount="jobsFullcount"
         :page_current="page_current" :pages="pages_count"
-        :pending="ajaxLoading" @updQue="updQue" :role="role" :username="username" :surname="surname" :insearch="insearch" :company="company" :isagency="isagency" :jobslist="jobslist" @refresh="refreshjobs" :uid="user_id" :authed="user_id !== -1" />
+        :pending="ajaxLoading" @updQue="updQue" :role="role" :username="username" :surname="surname" :insearch="insearch" :company="company" :isagency="isagency" :jobslist="jobslist" @refresh="refreshjobs" :uid="user_id" :authed="user_id !== -1"
+      />
     </keep-alive>
     <footer class="main__footer">
       <q-btn push color="primary" label="Написать нам" to="/Feedback"/>
@@ -119,7 +120,6 @@ export default {
     app_lng: 'RU',
     regState: 'reg',
     modalShown: 'none',
-
     status: 'Вход не выполнен',
     username: 'abc',
     surname: 'def',
@@ -138,7 +138,7 @@ export default {
     ajaxLoading: false,
     ownJobs: [],
     likedJobs: [],
-    likedJobsList: []
+    likedJobsList: [],
     //step: 1, //для uploads
   }},
   computed: {
@@ -413,7 +413,7 @@ export default {
       this.user_id = -1
       this.role = 'guest'
       this.status = 'Вход не выполнен'
-      this.$router.push({ name: "home"})
+      this.$router.push("home")
       //this.$destroy() try this to flush data on logout
     },
     logout: function() {
@@ -426,7 +426,7 @@ export default {
           .post(config.jobsUrl + '/out', [], {withCredentials: true})
           .then(response => {
             this.status = 'Вход не выполнен'
-            this.$router.push({ name: "home"})
+            this.$router.push("home")
           })
       }
     },

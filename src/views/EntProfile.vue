@@ -160,6 +160,10 @@ export default {
     ProfileNav
   },
   methods: {
+    deactivated() {
+      //this is router hook right?
+      this.$destroy()
+    },
     tryChangePw() {
       let url = config.jobsUrl + '/changepw'
       let udata = { oldmail: this.oldemail, oldpw: this.oldpw, newpw: this.newpw }
