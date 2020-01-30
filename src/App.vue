@@ -79,6 +79,7 @@
     </header>
     <keep-alive> <!-- @stepChange="stepChange" :step="step" -->
       <router-view
+        @cvupd="cvupd"
         @changeUDataSub="uDataChangeFromSubProfile"
         @setSentState="setSentState" :sent="newJobSentState" @newJobInit="newJobInit" :jobEditedObj="jobEditedObj" :jobEditId="jobEditId" :newJobsPageType="newJobsPageType" @editJob="editJob"
         @scrollTo="scrollTo"
@@ -92,7 +93,7 @@
         :jobsFullcount="jobsFullcount"
         :page_current="page_current" :pages="pages_count"
         :pending="ajaxLoading" @updQue="updQue"
-        :role="role" :username="username" :surname="surname" :insearch="insearch" :company="company" :isagency="isagency" :jobslist="jobslist" @refresh="refreshjobs" :uid="user_id" :authed="user_id !== -1"
+        :cvurl="cvurl" :role="role" :username="username" :surname="surname" :insearch="insearch" :company="company" :isagency="isagency" :jobslist="jobslist" @refresh="refreshjobs" :uid="user_id" :authed="user_id !== -1"
       />
     </keep-alive>
     <footer class="main__footer">
@@ -132,6 +133,7 @@ export default {
     user_id: -1,
     company: '',
     isagency: false,
+    cvurl: '',
     jobslist: [],
     jobsFullcount: 0,
     perpage: 25,
@@ -206,6 +208,7 @@ export default {
           this.isagency = false
           this.insearch = false
           this.likedJobs = []
+          this.cvurl = ''
           this.likedJobsList = []
           this.ownJobs = []
         } else if (response.data && response.data[0] && response.data[1] && response.data[2]) {
@@ -218,6 +221,9 @@ export default {
     this.getFavedFull()
   },
   methods: {
+    cvupd(e) {
+      this.cvurl = e
+    },
     onStorageUpdate(event) {
       if (event.key === "user") {
         this.user = event.newValue;
@@ -400,6 +406,7 @@ export default {
         this.surname = token[4]
         this.insearch = token[5]
         this.likedJobs = token[6]
+        this.cvurl = token[7]
       } else
       if (token[2] === 'company') {
         this.company = token[3]

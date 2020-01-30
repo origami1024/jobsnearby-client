@@ -15,8 +15,31 @@
         transition-next="jump-up"
       >
         <q-tab-panel name="cv" class="subprofile__cv">
-          <button>Загрузить резюме</button>
-          <button disabled="true">Отправить на сервер</button>
+          <div class="urlpanel" style="margin-bottom: 10px">
+            Текущая ссылка на резюме {{cvurl}}
+          </div>
+          <form action="" ref="cvForm">
+            <q-input
+              id="fileinput1"
+              @input="cvinput"
+              style="width: 300px"
+              outlined dense
+              type="file"
+              hint=""
+              accept=".doc, .docx, .pdf, .rtf"
+              ref="cvUploader"
+            />
+          </form>
+          <div class="urlpanel" style="margin-bottom: 10px">
+            <a :href="cvurlnew" target="_blank">{{cvurlnew}}</a>
+          </div>
+          <q-btn
+            @click="updateCVLink"
+            style="marginBottom: 22px" dense color="primary"
+            v-if="cvurlnew != ''"
+          >
+            Обновить ссылку
+          </q-btn>
         </q-tab-panel>
         <q-tab-panel name="invitations">
         </q-tab-panel>
@@ -109,9 +132,13 @@ export default {
     username: {type: String, default: ''},
     surname: {type: String, default: ''},
     insearch: {type: Boolean, default: false},
-    role: String
+    role: String,
+    cvurl: String
   },
   data: ()=>{return {
+    cvfile: null,
+    cvurlnew: '',
+    cv_upload_error: '',
     lenses: 'full',
     contacts1: '',
     contacts2: '',
@@ -139,6 +166,53 @@ export default {
     this.$destroy()
   },
   methods: {
+    updateCVLink() {
+      let url = config.jobsUrl + '/cvupdate.json'
+      axios
+        .post(url, {cvurl: this.cvurlnew}, {headers: {'Content-Type' : 'application/json' }, withCredentials: true,})
+        .then(response => {
+          if (response.data == 'OK') {
+            this.$q.notify('Данные изменены')
+            this.$emit('cvupd', this.cvurlnew)
+          } else this.$q.notify('Ошибка')
+          this.cvurlnew = ''
+          //if error, show like popup or status update
+      })
+    },
+    cvinput(val) {
+      //console.log('11', val)
+      this.cvfile = val[0]
+      this.uploadCV()
+    },
+    uploadCV() {
+      let dumper = 'https://decreed-silk.000webhostapp.com/cvu.php'
+      //logoUploader
+      console.log('start cvu')
+      var formData = new FormData()
+      formData.append("cv", this.cvfile)
+      this.$refs.cvForm.reset()
+      this.cvfile = null
+      axios
+        .post(dumper, formData, {
+          headers: {'Content-Type': 'multipart/form-data'}
+        })
+        .then(resp => {
+          //console.log('cp219: ', resp)
+          //console.log('end uploa')
+          if (resp.data && resp.data.startsWith('link:')) {
+            this.logo_upload_error = null
+            this.cvurlnew = resp.data.replace('link:', '')
+            this.$q.notify('Резюме загружено')
+          } else {
+            console.log('error cv uploading: ', resp.data)
+            if (resp.data.startsWith('Error in file size')) {
+              this.cv_upload_error = 'Резюме больше 100кб'
+              this.$q.notify('Резюме больше 100кб')
+            }
+          }
+          //if (response.data === 'OK') {} else 
+        })
+    },
     // clearData(){
     //   Object.assign(this.$data, this.$options.data())
     // },
@@ -193,6 +267,7 @@ export default {
     this.userdata.username = this.username
     this.userdata.surname = this.surname
     this.userdata.insearch = this.insearch
+    //this.cvurlnew = this.cvurl
   },
   watch: {
     username(newu) {
@@ -201,6 +276,9 @@ export default {
     surname(news) {
       this.newsurname = news
     },
+    // cvurl(newu) {
+    //   this.cvurlnew = newu
+    // }
     // username(newu) {
     //   this.newusername = newu
     // },

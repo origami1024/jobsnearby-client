@@ -187,7 +187,7 @@ export default {
         .then(response => {
           if (response.data == 'OK') {
             this.$q.notify('Данные изменены')
-          }
+          } else this.$q.notify('Ошибка')
           //if error, show like popup or status update
       })
     },
@@ -225,8 +225,8 @@ export default {
           } else {
             console.log('error uploading: ', resp.data)
             if (resp.data.startsWith('Error in file size')) {
-              this.logo_upload_error = 'Картинка больше 50кб'
-              this.$q.notify('Картинка больше 50кб')
+              this.logo_upload_error = 'Картинка больше 100кб'
+              this.$q.notify('Картинка больше 100кб')
             }
           }
           //if (response.data === 'OK') {} else 

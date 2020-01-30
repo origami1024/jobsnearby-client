@@ -723,7 +723,7 @@ async function tryInsertAuthToken(id,token) {
   return true
 }
 async function checkAuthGetProfile(token) {
-  let que = `SELECT email, user_id, role, name, surname, insearch, company, isagency, "likedJobs" FROM "users" WHERE "auth_cookie" = ($1)`
+  let que = `SELECT email, user_id, role, name, surname, insearch, company, isagency, "likedJobs", cvurl FROM "users" WHERE "auth_cookie" = ($1)`
   let params = [token]
   let result = await pool.query(que, params).catch(error => {
     console.log(error)
@@ -742,6 +742,7 @@ async function checkAuthGetProfile(token) {
       res['surname'] = result.rows[0].surname
       res['insearch'] = result.rows[0].insearch
       res['likedJobs'] = result.rows[0].likedJobs
+      res['cvurl'] = result.rows[0].cvurl
     } else
     if (result.rows[0].role === 'company') {
       res['cname'] = result.rows[0].company
@@ -918,7 +919,38 @@ async function getDiapers(sess, mail) {
   else return false
 }
 
+async function cvurlupdate(req, res) {
+  //check auth and role
+  console.log('cp')
+  if (req.body && req.body.cvurl && req.body.cvurl.length > 4 && req.body.cvurl.length < 86) {
+    if (req.cookies.session && req.cookies.session.length > 50) {
+      //console.log(req.body)
+      let que = `
+        UPDATE "users" SET "cvurl" = $1
+        WHERE auth_cookie = $2 AND role = 'subscriber'
+      `
+      let params = [req.body.cvurl, req.cookies.session]
+      let result = await pool.query(que, params).catch(error => {
+        console.log('cp cvurlupdate err: ', error)
+        return undefined
+      })
+      if (result) {
+        res.send('OK')
+        return true
+      } else {
+        res.send('User non existent')
+        return false
+      }
+    } else res.send('err2')
+  } else res.send('err1')
+  
+  //validate url
+  //update url
+  //send OK
+}
+
 module.exports = {
+  cvurlupdate,
   getDiapers,
   updateDiaper,
   checkAuthGetProfile,

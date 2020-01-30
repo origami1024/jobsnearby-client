@@ -50,6 +50,7 @@ app.post('/reg', reg)
 app.post('/out', out)
 app.post('/changepw', changepw)
 app.post('/changeuserstuff', changeuserstuff)
+app.post('/cvupdate.json', db.cvurlupdate)
 
 
 app.post('/entrance', db.addJobs)
@@ -88,6 +89,9 @@ function params1(request, response) {
 //   console.log('cp reached', path.join(__dirname, './../dist'))
 //   serveStatic(path.join(__dirname, './../dist'))
 // })
+
+
+
 
 
 
