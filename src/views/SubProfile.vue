@@ -16,7 +16,7 @@
       >
         <q-tab-panel name="cv" class="subprofile__cv">
           <div class="urlpanel" style="margin-bottom: 10px">
-            Текущая ссылка на резюме <a :href="cvurlnew" target="_blank">{{cvurl}}</a>
+            Текущая ссылка на резюме <a :href="cvurl" target="_blank">{{cvurl}}</a>
           </div>
           <form action="" ref="cvForm">
             <q-input
@@ -39,6 +39,22 @@
           </q-btn> -->
         </q-tab-panel>
         <q-tab-panel name="invitations">
+          <q-btn-toggle
+            v-if="likedJobs.length > 0"
+            v-model="lenses"
+            toggle-color="primary"
+            size="sm"
+            dense
+            :options="[ {value: 'short', icon: 'list'},
+                        {value: 'full', icon: 'code'},]"
+          />
+          <JobsList
+            :showLiked="role === 'subscriber'"
+            :likedJobs="likedJobs"
+            @favOne="favOne"
+            :lenses="lenses"
+            :jobslist="likedJobsList"
+          />
         </q-tab-panel>
         <q-tab-panel name="starred">
           <q-btn-toggle
@@ -57,7 +73,6 @@
             :lenses="lenses"
             :jobslist="likedJobsList"
           />
-          <!-- <p v-for="faved in likedJobsList" :key="faved.job_id">{{faved}}</p> -->
         </q-tab-panel>
         <q-tab-panel class="subprofile__settings" name="personal">
           <q-checkbox
