@@ -16,7 +16,7 @@
       >
         <q-tab-panel name="cv" class="subprofile__cv">
           <div class="urlpanel" style="margin-bottom: 10px">
-            Текущая ссылка на резюме {{cvurl}}
+            Текущая ссылка на резюме <a :href="cvurlnew" target="_blank">{{cvurl}}</a>
           </div>
           <form action="" ref="cvForm">
             <q-input
@@ -30,16 +30,13 @@
               ref="cvUploader"
             />
           </form>
-          <div class="urlpanel" style="margin-bottom: 10px">
-            <a :href="cvurlnew" target="_blank">{{cvurlnew}}</a>
-          </div>
-          <q-btn
+          <!-- <q-btn
             @click="updateCVLink"
             style="marginBottom: 22px" dense color="primary"
             v-if="cvurlnew != ''"
           >
             Обновить ссылку
-          </q-btn>
+          </q-btn> -->
         </q-tab-panel>
         <q-tab-panel name="invitations">
         </q-tab-panel>
@@ -202,12 +199,16 @@ export default {
           if (resp.data && resp.data.startsWith('link:')) {
             this.logo_upload_error = null
             this.cvurlnew = resp.data.replace('link:', '')
-            this.$q.notify('Резюме загружено')
+            //this.$q.notify('Резюме загружено')
+            this.updateCVLink()
           } else {
             console.log('error cv uploading: ', resp.data)
             if (resp.data.startsWith('Error in file size')) {
               this.cv_upload_error = 'Резюме больше 100кб'
               this.$q.notify('Резюме больше 100кб')
+            } else {
+              this.cv_upload_error = 'Ошибка'
+              this.$q.notify('Ошибка')
             }
           }
           //if (response.data === 'OK') {} else 
