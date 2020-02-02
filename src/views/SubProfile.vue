@@ -4,7 +4,7 @@
       <ProfileNav
         :localRoute="tab"
         @setLocalRoute="setLocalRoute"
-        :localroutes="[{r: 'cv', l: 'Резюме'}, {r: 'invitations', l: 'Приглашения'}, {r: 'starred', l: 'Избранные вакансии'}, {r: 'personal', l: 'Личные данные'}]"
+        :localroutes="[{r: 'cv', l: 'Резюме'}, {r: 'sentCVS', l: 'Поданные резюме'}, {r: 'starred', l: 'Избранные вакансии'}, {r: 'personal', l: 'Личные данные'}]"
         :localroutesX="{r: 'settings', l: 'Изменить пароль'}"
       />
       <q-tab-panels
@@ -38,7 +38,7 @@
             Обновить ссылку
           </q-btn> -->
         </q-tab-panel>
-        <q-tab-panel name="invitations">
+        <q-tab-panel name="sentCVS">
           <q-btn-toggle
             v-if="likedJobs.length > 0"
             v-model="lenses"
@@ -49,11 +49,12 @@
                         {value: 'full', icon: 'code'},]"
           />
           <JobsList
+            :ownCVs="ownCVs"
             :showLiked="role === 'subscriber'"
             :likedJobs="likedJobs"
             @favOne="favOne"
             :lenses="lenses"
-            :jobslist="likedJobsList"
+            :jobslist="sentCVJobsList"
           />
         </q-tab-panel>
         <q-tab-panel name="starred">
@@ -139,6 +140,7 @@ const config = require('./../configs/main_config')
 export default {
   name: 'SubProfile',
   props: {
+    ownCVs: {type: Array, default: ()=>[]},
     likedJobs: {type: Array, default: ()=>[]},
     likedJobsList: {type: Array, default: ()=>[]},
     username: {type: String, default: ''},
@@ -148,6 +150,7 @@ export default {
     cvurl: String
   },
   data: ()=>{return {
+    sentCVJobsList: [],
     cvfile: null,
     cvurlnew: '',
     cv_upload_error: '',
@@ -178,6 +181,22 @@ export default {
     this.$destroy()
   },
   methods: {
+    getSentCVJobs() {
+      //let sentCVJobsList = []
+      let url = config.jobsUrl + '/getcvedjobs'
+      axios
+        .post(url, null, {headers: {'Content-Type' : 'application/json' }, withCredentials: true,})
+        .then(response => {
+          if (response.data && response.data.jobs) {
+            this.sentCVJobsList = response.data.jobs
+            console.log(response.data.jobs)
+            //this.$q.notify('Данные изменены')
+            //this.$emit('cvupd', this.cvurlnew)
+          } else console.log('cp123 - ошибка getsentcvjobs')
+          
+          //if error, show like popup or status update
+      })
+    },
     updateCVLink() {
       let url = config.jobsUrl + '/cvupdate.json'
       axios
@@ -271,6 +290,10 @@ export default {
         this.userdata.username = this.username
         this.userdata.surname = this.surname
         this.userdata.insearch = this.insearch
+      } else
+      if (rou == 'sentCVS') {
+        //do axious shiet to get the listOfSentJobs
+        this.getSentCVJobs()
       }
       this.tab = rou
     },

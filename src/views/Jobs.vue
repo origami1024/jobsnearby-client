@@ -89,8 +89,13 @@
                           {value: 'full', icon: 'code'},]"
             />
           </div>
-        
-          <JobsList :role="role" :showLiked="role === 'subscriber'" :likedJobs="likedJobs" @favOne="favOne" :lenses="lenses" :searchFilter="searchFilter" :jobslist="jobslist" msg="Полученные"/>
+          <JobsList
+            :ownCVs="ownCVs"
+            :role="role" :showLiked="role === 'subscriber'"
+            :likedJobs="likedJobs" 
+            @favOne="favOne"
+            @hitcv="hitcv"
+            :lenses="lenses" :searchFilter="searchFilter" :jobslist="jobslist" msg="Полученные"/>
         </div>
         <div v-if="pages && pages > 0" class="paginationWrap">
           <button
@@ -122,6 +127,7 @@ export default {
     role: String,
     jobslist: {type: Array, default: ()=>[]},
     likedJobs: {type: Array, default: ()=>[]},
+    ownCVs: {type: Array, default: ()=>[]},
     likedJobsList: {type: Array, default: ()=>[]},
     pending: {type: Boolean, default: false},
     pages: {type: Number, default: 1},
@@ -202,6 +208,9 @@ export default {
     favOne(id) {
       console.log('favOne from Jobs')
       this.$emit('favOne', id)
+    },
+    hitcv(id) {
+      this.$emit('hitcv', id)
     },
     refreshPlus(){
       

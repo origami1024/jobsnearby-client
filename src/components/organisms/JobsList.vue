@@ -7,7 +7,13 @@
       </h3>
     </div> -->
     <div :class="{ rowed: way=='row' }">
-      <JobCard :role="role" :showLiked="showLiked" :liked="likedJobs.includes(item.job_id)" @favOne="favOne" :way="way" :lenses="lenses" :searchFilter="searchFilter" :job="item" v-for="item in jobslistFiltered" :key="item.job_id"></JobCard>
+      <JobCard
+        :cved="ownCVs.map(v=>v.cvjob_id).includes(item.job_id)"
+        :hitcv="ownCVs.find(v=>v.cvjob_id == item.job_id)"
+        :role="role" :showLiked="showLiked" 
+        :liked="likedJobs.includes(item.job_id)" 
+        @favOne="favOne" @hitcv="hitcv" :way="way" :lenses="lenses" :searchFilter="searchFilter" :job="item" v-for="item in jobslistFiltered" :key="item.job_id">
+        </JobCard>
       <p v-if="jobslist.length == 0 && searchFilter == ''">Нет ни одной вакансии</p>
       <p v-else-if="jobslist.length == 0 && searchFilter != ''">на ваш запрос "{{searchFilter}}" ничего не найдено</p>
     </div>
@@ -22,6 +28,7 @@ export default {
   props: {
     showLiked: Boolean,
     likedJobs: {type: Array, default: ()=>[]},
+    ownCVs: {type: Array, default: ()=>[]},
     lenses: String,
     way: String,
     msg: String,
@@ -54,6 +61,9 @@ export default {
     favOne(id) {
       console.log('favOne Click from jobsList')
       this.$emit('favOne', id)
+    },
+    hitcv(id) {
+      this.$emit('hitcv', id)
     }
   },
   components: {

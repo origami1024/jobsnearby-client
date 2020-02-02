@@ -79,6 +79,7 @@
     </header>
     <keep-alive> <!-- @stepChange="stepChange" :step="step" -->
       <router-view
+        :ownCVs="ownCVs"
         @cvupd="cvupd"
         @changeUDataSub="uDataChangeFromSubProfile"
         @setSentState="setSentState" :sent="newJobSentState" @newJobInit="newJobInit" :jobEditedObj="jobEditedObj" :jobEditId="jobEditId" :newJobsPageType="newJobsPageType" @editJob="editJob"
@@ -87,6 +88,7 @@
         :likedJobsList="likedJobsList" :likedJobs="likedJobs"
         @logoutAndRetry="logoutAndRetry"
         @favOne="favOne"
+        @hitcv="hitcv"
         @getOwnJobs="getOwnJobs" :ownJobs="ownJobs"
         @authed="authIt" @regStateUpd="regStateUpd" :regState="regState"
         class="r-view"
@@ -143,6 +145,7 @@ export default {
     ownJobs: [],
     likedJobs: [],
     likedJobsList: [],
+    ownCVs: [],
     //step: 1, //для uploads
   }},
   computed: {
@@ -211,6 +214,7 @@ export default {
           this.cvurl = ''
           this.likedJobsList = []
           this.ownJobs = []
+          this.ownCVs = []
         } else if (response.data && response.data[0] && response.data[1] && response.data[2]) {
           this.authIt(response.data)
           
@@ -368,6 +372,39 @@ export default {
           this.ajaxLoading = false
         })
     },
+    getOwnCVHits() {
+      let owncvhitsUrl = config.jobsUrl + '/getallcvuser'
+      this.ajaxLoading = true
+      axios
+        .post(owncvhitsUrl, [], {withCredentials: true,})
+        .then(response => {
+          if (response.data.cvs) {
+            //console.log('getOwnCVHits response cp621: ', response.data.cvs)
+            this.ownCVs = response.data.cvs //wat
+          }
+          
+          this.ajaxLoading = false
+        })
+    },
+    hitcv(id) {
+      console.log('app hitOne', id)
+      console.log('cppcp44: ', this.cvurl)
+      if (!this.cvurl || this.cvurl.length < 5) {
+        this.$q.notify('Сначала загрузите резюме!')
+        return false
+      }
+      let hitcvUrl = config.jobsUrl + '/hitjobcv?jid=' + id
+      this.ajaxLoading = true
+      axios
+        .post(hitcvUrl, {cvurl: this.cvurl}, {withCredentials: true,})
+        .then(response => {
+          if (response && response.data && response.data.cvhit_id) {
+            this.ownCVs.push(response.data)
+          }
+          //console.log('getOwnJobs response cp61: ', response.newCV, response.data)
+          this.ajaxLoading = false
+        })
+    },
     favOne(id) {
       console.log('app favOne1', this.likedJobs)
       let favOneUrl
@@ -407,6 +444,7 @@ export default {
         this.insearch = token[5]
         this.likedJobs = token[6]
         this.cvurl = token[7]
+        setTimeout(()=>{this.getOwnCVHits()}, 50)
       } else
       if (token[2] === 'company') {
         this.company = token[3]

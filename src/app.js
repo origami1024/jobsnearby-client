@@ -65,6 +65,10 @@ app.post('/getFaved.json', db.getFaved)
 app.post('/getFavedFull.json', db.getFavedFull)
 
 
+app.post('/hitjobcv', db.hitjobcv)
+app.post('/getallcvuser', db.getAllCVHitsOfUser)
+app.post('/getcvedjobs', db.getCVedJobs)
+
 
 app.post('/ownCompany.json', getOwnCompanyJSON)
 app.post('/companyUpdate.json', db.updateOneCompany)

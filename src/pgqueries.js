@@ -949,7 +949,138 @@ async function cvurlupdate(req, res) {
   //send OK
 }
 
+async function hitjobcv(req, res) {
+  //получить job_id
+  //выяснить user_id
+  const jid = parseInt(req.query.jid)
+  //проверить жоб айди формально
+  if (isNaN(jid) || jid < 0 || String(jid).length > 10) {
+    console.log('Error: wrong id')
+    res.status(400).send('Неправильный id вакансии.')
+    return false
+  }
+  if (!req.body.cvurl || req.body.cvurl.length > 85) {
+    //и еще надо проверить cv url  - что начинается с webhost000
+    res.send('Error: CV not loaded')
+    return false
+  }
+  if (req.cookies.session && req.cookies.session.length > 50) {
+    let que = `
+      SELECT user_id
+      FROM users
+      WHERE auth_cookie = $1 AND role = 'subscriber'
+    `
+    let result = await pool.query(que, [req.cookies.session]).catch(error => {
+      console.log('cp hitjobcv err: ', error)
+    })
+    if (result && result.rows && result.rows.length == 1) {
+      let uid = result.rows[0].user_id
+      console.log('cp yuu3:', uid)
+
+      //ПРОВЕРКА - существует ли такая cvhit уже - по job_id, user_id
+      let precheck_que = `
+        SELECT cvhit_id
+        FROM cvhits WHERE
+        cvjob_id = $1 AND cvuser_id = $2
+      `
+      let precheck_params = [jid, uid]
+      let precheck_result = await pool.query(precheck_que, precheck_params).catch(error => {
+        console.log('cp hitjobcv1.5 err: ', error)
+      })
+      console.log('cp234yy: ', precheck_result.rows.length)
+      if (precheck_result.rows.length != 0) {
+        res.send('Уже подано')
+        return false
+      }
+
+      let que2 = `INSERT INTO "cvhits" ("cvjob_id", "cvuser_id", "cv_url") VALUES ($1, $2, $3) RETURNING *`
+      let params2 = [jid, uid, req.body.cvurl]
+      let result2 = await pool.query(que2, params2).catch(error => {
+        console.log('cp hitjobcv2 err: ', error)
+      })
+      if (result2 && result2.rows.length == 1) {
+        console.log(result2.rows[0])
+        res.send(result2.rows[0])
+      }
+      else res.send('Ошбика в бд')
+    } else {
+      res.send('Ошибка 1')
+      return false
+    }
+    
+    
+  } else res.send('Ошибка авторизации')
+}
+
+async function getAllCVHitsOfUser(req, res) {
+  //получить свой айди по сессии
+  //отправить список назад
+  if (req.cookies.session && req.cookies.session.length > 50) {
+    let que = `
+      SELECT user_id
+      FROM users
+      WHERE auth_cookie = $1 AND role = 'subscriber'
+    `
+    let result = await pool.query(que, [req.cookies.session]).catch(error => {
+      console.log('cp getAllCVHitsOfUser err1: ', error)
+    })
+    if (result.rows.length == 1) {
+      let que = `
+        SELECT *
+        FROM cvhits
+        WHERE cvuser_id = $1
+      `
+      params = [result.rows[0].user_id]
+      let result2 = await pool.query(que, params).catch(error => {
+        console.log('cp getAllCVHitsOfUser err2: ', error)
+      })
+      if (result2) {
+        res.send({cvs: result2.rows})
+        return false
+      } else res.send('Ошибка рес2')
+    } else res.send('Ошибка авт')
+
+    
+  } else res.send('Ошибка авторизации')
+}
+
+
+async function getCVedJobs(req, res) {
+  if (req.cookies.session && req.cookies.session.length > 50) {
+    let que = `
+      SELECT user_id
+      FROM users
+      WHERE auth_cookie = $1 AND role = 'subscriber'
+    `
+    let result = await pool.query(que, [req.cookies.session]).catch(error => {
+      console.log('cp getCVedJobs err1: ', error)
+    })
+    if (result.rows.length == 1) {
+      //Change que to select jobs 
+      let que = `
+        SELECT *
+        FROM jobs
+        WHERE job_id
+        IN (SELECT cvjob_id
+          FROM cvhits
+          WHERE cvuser_id = $1)
+      `
+      params = [result.rows[0].user_id]
+      let result2 = await pool.query(que, params).catch(error => {
+        console.log('cp getCVedJobs err2: ', error)
+      })
+      if (result2) res.send({jobs: result2.rows})
+      else res.send('error 3')
+    } else res.send('error 2')
+  } else res.send('error 1')
+  //by session
+  //get only the ids
+}
+
 module.exports = {
+  getCVedJobs,
+  getAllCVHitsOfUser,
+  hitjobcv,
   cvurlupdate,
   getDiapers,
   updateDiaper,

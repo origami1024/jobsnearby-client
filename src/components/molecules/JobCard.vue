@@ -43,7 +43,18 @@
     </div>
     <div class="line">
       <div :class="{ line50: true, spbtw: lenses =='full' }">
-        <a v-if="lenses == 'full' && role != 'company'" class="cardLink" href="#">Подать резюме</a>
+        <!-- <a v-if="lenses == 'full' && role != 'company'" class="cardLink" href="#">Подать резюме</a> -->
+        <q-btn 
+          v-if="lenses == 'full' && role != 'company'" text-color="primary" 
+          round size="xs" 
+          :icon="cved ? 'assignment_turned_in': 'assignment'"
+          @click="$emit('hitcv', job.job_id)">
+          <q-tooltip v-if="hitcv">
+            <p v-if="(hitcv && hitcv.date_created)" style="font-size: 15px; margin: 0">Отправлено {{hitcv.date_created}}</p>
+            <p v-if="(hitcv && hitcv.date_checked)" style="font-size: 15px; margin: 0">Просмотрено {{hitcv.date_checked}}</p>
+            <p v-else style="font-size: 15px; margin: 0">Не просмотрено</p>
+          </q-tooltip>
+        </q-btn>
         <q-btn class="mr-5px" v-else-if="role == 'subscriber'" round size="xs" icon="work"/>
         <a v-if="lenses == 'full'" class="cardLink" @click.prevent="isContactsShown = !isContactsShown" href="#">Контакты</a>
         <q-btn class="mr-5px" v-else round size="xs" @click="isContactsShown = !isContactsShown" icon="people"/>
@@ -114,8 +125,12 @@ const sexDic = {
 export default {
   name: 'JobCard',
   props: {
+    hitcvDateStart: String,
+    hitcv: Object,
+    hitcvDateEnd: String,
     showLiked: Boolean,
     liked: Boolean,
+    cved: Boolean,
     role: String, 
     way: String,
     job: Object,
