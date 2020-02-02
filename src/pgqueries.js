@@ -653,7 +653,7 @@ async function addJobs (req, res) {
 }
 
 async function tryGetLoginData (mail) {
-  let que = `SELECT pwhash, user_id, role, name, surname, insearch, company, isagency, "likedJobs" FROM "users" WHERE "email" = ($1)`
+  let que = `SELECT pwhash, user_id, role, name, surname, insearch, company, isagency, "likedJobs", cvurl FROM "users" WHERE "email" = ($1)`
   let params = [mail]
   let result = await pool.query(que, params).catch(error => {
     console.log(error)  
@@ -673,6 +673,7 @@ async function tryGetLoginData (mail) {
       res['surname'] = result.rows[0].surname
       res['insearch'] = result.rows[0].insearch
       res['likedJobs'] = result.rows[0].likedJobs
+      res['cvurl'] = result.rows[0].cvurl
     } else
     if (result.rows[0].role === 'company') {
       res['cname'] = result.rows[0].company
