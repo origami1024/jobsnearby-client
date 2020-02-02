@@ -459,12 +459,25 @@ export default {
       this.insearch = udata.insearch
     },
     logoutAndRetry: function() {
+      //this is logout when logout has happened on different tab - no need to send data to server
       console.log('logoutandretry')
       this.status = 'Выход...'//имя пользователя?
       this.user = 'Гость'
       this.user_id = -1
       this.role = 'guest'
       this.status = 'Вход не выполнен'
+      this.cvurl = ''
+      this.token = undefined
+      this.surname = ''
+      this.username = ''
+      this.company = ''
+      this.isagency = false
+      this.insearch = false
+      this.likedJobs = []
+      this.cvurl = ''
+      this.likedJobsList = []
+      this.ownJobs = []
+      this.ownCVs = []
       //console.log(this.$route)
       if (this.$route.name != 'home') this.$router.push("/")
       //this.$destroy() try this to flush data on logout
@@ -475,6 +488,19 @@ export default {
         this.user = 'Гость'
         this.user_id = -1
         this.role = 'guest'
+        this.status = 'Вход не выполнен'
+        this.cvurl = ''
+        this.token = undefined
+        this.surname = ''
+        this.username = ''
+        this.company = ''
+        this.isagency = false
+        this.insearch = false
+        this.likedJobs = []
+        this.cvurl = ''
+        this.likedJobsList = []
+        this.ownJobs = []
+        this.ownCVs = []
         axios
           .post(config.jobsUrl + '/out', [], {withCredentials: true})
           .then(response => {
