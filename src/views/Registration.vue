@@ -312,7 +312,7 @@ export default {
             //fix: need to send auth data on login
             if (response.data && response.data[0] === 'OK' && response.data.length > 3) {
               this.login.status = 'Вход осуществлен'
-              //console.log(this.status)
+              console.log('cp123ss:', response.data.slice(1))
               this.$emit('authed', response.data.slice(1))
               this.$router.push({ name: 'home' })
               this.login.mail = ''

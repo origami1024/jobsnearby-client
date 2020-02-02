@@ -679,6 +679,7 @@ async function tryGetLoginData (mail) {
       res['cname'] = result.rows[0].company
       res['isagency'] = result.rows[0].isagency
     }
+    //console.log('cp31rr3: ', res)
     return res
   }
   //return {'pwHash': result.rows[0].pwhash, 'userId': result.rows[0].user_id, 'role': result.rows[0].role}
