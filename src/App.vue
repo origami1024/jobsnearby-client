@@ -465,7 +465,8 @@ export default {
       this.user_id = -1
       this.role = 'guest'
       this.status = 'Вход не выполнен'
-      this.$router.push("home")
+      //console.log(this.$route)
+      if (this.$route.name != 'home') this.$router.push("/")
       //this.$destroy() try this to flush data on logout
     },
     logout: function() {
@@ -478,7 +479,8 @@ export default {
           .post(config.jobsUrl + '/out', [], {withCredentials: true})
           .then(response => {
             this.status = 'Вход не выполнен'
-            this.$router.push("home")
+            //console.log(this.$route)
+            if (this.$route.name != 'home') this.$router.push("/")
           })
       }
     },

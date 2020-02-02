@@ -43,19 +43,23 @@
     </div>
     <div class="line">
       <div :class="{ line50: true, spbtw: lenses =='full' }">
-        <!-- <a v-if="lenses == 'full' && role != 'company'" class="cardLink" href="#">Подать резюме</a> -->
+        <a v-if="role != 'company' && !cved" class="cardLink" @click.prevent="$emit('hitcv', job.job_id)" href="#">
+          Подать резюме
+        </a>
         <q-btn 
-          v-if="lenses == 'full' && role != 'company'" text-color="primary" 
-          round size="xs" 
+          v-if="role != 'company' && cved" text-color="primary" 
+          round
+          size="xs" 
           :icon="cved ? 'assignment_turned_in': 'assignment'"
-          @click="$emit('hitcv', job.job_id)">
+          @click="$emit('hitcv', job.job_id)"
+        >
           <q-tooltip v-if="hitcv">
             <p v-if="(hitcv && hitcv.date_created)" style="font-size: 15px; margin: 0">Отправлено {{formatDate(hitcv.date_created)}}</p>
             <p v-if="(hitcv && hitcv.date_checked)" style="font-size: 15px; margin: 0">Просмотрено {{formatDate(hitcv.date_checked)}}</p>
             <p v-else style="font-size: 15px; margin: 0">Не просмотрено</p>
           </q-tooltip>
         </q-btn>
-        <q-btn class="mr-5px" v-else-if="role == 'subscriber'" round size="xs" icon="work"/>
+        <!-- <q-btn class="mr-5px" v-else-if="role == 'subscriber'" round size="xs" icon="work"/> -->
         <a v-if="lenses == 'full'" class="cardLink" @click.prevent="isContactsShown = !isContactsShown" href="#">Контакты</a>
         <q-btn class="mr-5px" v-else round size="xs" @click="isContactsShown = !isContactsShown" icon="people"/>
         <q-btn v-if="showLiked" :text-color="liked ? 'primary' : 'grey'" round size="xs" icon="star" @click="$emit('favOne', job.job_id)"/>
@@ -239,6 +243,8 @@ export default {
     color #06f
     &:visited
       color #06f
+  .cardLink
+    margin-right 10px
   .cardLink:visited
     color #06f//#2837C6
   .cardHeader
