@@ -561,7 +561,7 @@ export default {
     },
     user_id(newName) {
       //console.log(this.$route.name)
-      if (newName == -1 && (this.$route.name != 'home' && this.$route.name != 'feedback')) {
+      if (newName == -1 && (this.$route.name != 'home' && this.$route.name != 'jobpage' && this.$route.name != 'companyPage' && this.$route.name != 'registration' && this.$route.name != 'feedback')) {
         this.$router.push({ name: "home"})
         //console.log('user_id change')
       }
