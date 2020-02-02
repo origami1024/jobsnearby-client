@@ -50,8 +50,8 @@
           :icon="cved ? 'assignment_turned_in': 'assignment'"
           @click="$emit('hitcv', job.job_id)">
           <q-tooltip v-if="hitcv">
-            <p v-if="(hitcv && hitcv.date_created)" style="font-size: 15px; margin: 0">Отправлено {{hitcv.date_created}}</p>
-            <p v-if="(hitcv && hitcv.date_checked)" style="font-size: 15px; margin: 0">Просмотрено {{hitcv.date_checked}}</p>
+            <p v-if="(hitcv && hitcv.date_created)" style="font-size: 15px; margin: 0">Отправлено {{formatDate(hitcv.date_created)}}</p>
+            <p v-if="(hitcv && hitcv.date_checked)" style="font-size: 15px; margin: 0">Просмотрено {{formatDate(hitcv.date_checked)}}</p>
             <p v-else style="font-size: 15px; margin: 0">Не просмотрено</p>
           </q-tooltip>
         </q-btn>
@@ -194,6 +194,10 @@ export default {
     },
   },
   methods: {
+    formatDate(e) {
+      let d = new Date(e)
+      return d.getDate() + '.' + (d.getMonth() + 1) + '.' + d.getFullYear()
+    },
     strip(html) {
       var doc = new DOMParser().parseFromString(html, 'text/html');
       return doc.body.textContent || "";
