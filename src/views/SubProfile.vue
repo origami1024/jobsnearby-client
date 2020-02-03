@@ -16,7 +16,7 @@
       >
         <q-tab-panel name="cv" class="subprofile__cv">
           <div class="urlpanel" style="margin-bottom: 10px">
-            Текущая ссылка на резюме <a :href="cvurl" target="_blank">{{cvurl}}</a>
+            Текущая ссылка на резюме <a :href="'https://docs.google.com/viewerng/viewer?url=' + cvurl" target="_blank">{{cvurl}}</a>
           </div>
           <form action="" ref="cvForm">
             <q-input

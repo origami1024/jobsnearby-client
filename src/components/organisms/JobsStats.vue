@@ -7,7 +7,7 @@
             <td style="width: 35%; min-width: 35%; max-width: 35%; text-align: left">Название</td>
             <td style="width: 15%; min-width: 15%; max-width: 15%;">Всего просмотров</td>
             <td style="width: 15%; min-width: 15%; max-width: 15%;">Уникальных просмотров</td>
-            <td style="width: 15%; min-width: 15%; max-width: 15%;">Подали резюме</td>
+            <!-- <td style="width: 15%; min-width: 15%; max-width: 15%;">Подали резюме</td> -->
             <td style="width: 10%; min-width: 15%; max-width: 15%;">Изменить</td>
             <td style="width: 10%; min-width: 10%; max-width: 10%;">Удалить</td>
           </tr>
@@ -16,7 +16,7 @@
           <td style="text-align: left"><a class="link1" target="_blank" :href="'/jobpage?id=' + item.job_id">{{item.title}}</a></td>
           <td>{{item.hits_all}}</td>
           <td>{{item.hits_uniq}}</td>
-          <td>0</td>
+          <!-- <td>0</td> -->
           <td>
             <q-btn
               icon="edit"

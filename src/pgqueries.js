@@ -1079,7 +1079,40 @@ async function getCVedJobs(req, res) {
   //get only the ids
 }
 
+async function getResps(req, res) {
+  if (req.cookies.session && req.cookies.session.length > 50) {
+    //get author_id first, also check role in the process
+    let que = `
+      SELECT user_id
+      FROM users
+      WHERE auth_cookie = $1 AND role = 'company'
+    `
+    let result = await pool.query(que, [req.cookies.session]).catch(error => {
+      console.log('cp getResps err1: ', error)
+    })
+    if (result.rows.length == 1) {
+      let que2 = `
+        SELECT cvhits.*, jobs.title, users.name, users.surname
+        FROM cvhits, jobs, users
+        WHERE jobs.author_id = $1 AND cvhits.cvjob_id = jobs.job_id AND cvhits.cvuser_id = users.user_id
+      `
+      let params2 = [result.rows[0].user_id]
+      let resps = await pool.query(que2, params2).catch(error => {
+        console.log('cp getResps err2: ', error)
+      })
+      if (resps.rows && resps.rows.length > 0) {
+        res.send({rows: resps.rows})
+      } else res.send({rows: []})
+
+    } else res.send('error 1')
+    
+  //do it by cookie and role, not by author_id
+  }
+}
+
+
 module.exports = {
+  getResps,
   getCVedJobs,
   getAllCVHitsOfUser,
   hitjobcv,

@@ -19,11 +19,38 @@
           <h4 class="entprofile__header">Опубликованные вакансии({{ownJobs.length}}):</h4>
           <JobsStats @editJob="editJob" @delJob="delJob" :jobslist="ownJobs"/>
         </q-tab-panel>
-        <q-tab-panel name="responses" class="entprofile__mid" style="display: flex; alignItems: flex-end; justifyContent: center">
-          <div class="line">
-            <q-btn color="positive" style="marginRight: 10px">Пригласить</q-btn>
-            <q-btn color="negative" style="marginRight: 10px">Отказать</q-btn>
-            <q-btn color="primary">Просмотрено</q-btn>
+        <q-tab-panel name="responses" class="entprofile__mid" style="display: flex">
+          <div class="line" style="width: 100%;">
+            <q-expansion-item
+              v-for="item in Object.keys(respsJreformat)"
+              :key="item"
+              
+              style="line-height: 30px; font-size: 16px;text-align:left;"
+            >
+              <template v-slot:header>
+                <a :href="'/jobpage?id=' + item" target="_blank">
+                  {{resps.find(val=>val.cvjob_id == item).title}}
+                  <!-- resps.find(val=>val.cvjob_id == item).cv_url -->
+                </a>
+                ({{respsJreformat[item].cvhits.length}})
+              </template>
+              <ul style="list-style-type:none">
+                <li style="padding: 5px 0;" v-for="hit in respsJreformat[item].cvhits" :key="hit">
+                  <a :href="'https://docs.google.com/viewerng/viewer?url=' + resps.find(val=>val.cvhit_id == hit).cv_url" target="_blank">
+                    {{
+                      resps.find(val=>val.cvhit_id == hit).name + ' ' + 
+                      resps.find(val=>val.cvhit_id == hit).surname
+                    }}
+                    <!-- :href="resps.find(val=>val.cvhit_id == hit).cv_url" -->
+                  </a>
+                    {{
+                      'Подано: ' +
+                      formatDate(resps.find(val=>val.cvhit_id == hit).date_created) + '. Просмотрено: ' +
+                      resps.find(val=>val.cvhit_id == hit).date_checked
+                    }}
+                </li>
+              </ul>
+            </q-expansion-item>
           </div>
         </q-tab-panel>
         <q-tab-panel name="cabout" class="entprofile__mid">
@@ -130,6 +157,8 @@ export default {
     role: String,
   },
   data: ()=>{return {
+    respsJreformat: [],
+    resps: [],
     logo_upload_error: null,
     logofile: null,
     cabout: {
@@ -159,10 +188,40 @@ export default {
     JobsStats,
     ProfileNav
   },
+  deactivated() {
+    //this is router hook right?
+    this.$destroy()
+  },
   methods: {
-    deactivated() {
-      //this is router hook right?
-      this.$destroy()
+    formatDate(e) {
+      let d = new Date(e)
+      return d.getDate() + '.' + (d.getMonth() + 1) + '.' + d.getFullYear()
+    },
+    getResps() {
+      let url = config.jobsUrl + '/getresps'
+      axios
+        .post(url, null, {headers: {'Content-Type' : 'application/json' }, withCredentials: true,})
+        .then(response => {
+          if (response.data && response.data.rows) {
+            console.log('getResps', response.data.rows)
+            this.resps = response.data.rows
+            let dic1 = { 
+            }
+            for (let x of response.data.rows) {
+              dic1[x.cvjob_id] = {}
+              dic1[x.cvjob_id]['cvhits'] = []
+            }
+            //console.log(response.data.rows)
+            for (let x of response.data.rows) {
+              dic1[x.cvjob_id]['cvhits'].push(x.cvhit_id)
+              //console.log(x.cvhit_id)
+            }
+            this.respsJreformat = dic1
+            //console.log(dic1)
+          }
+          
+          //this.$q.notify('Ошибка чот')
+      })
     },
     tryChangePw() {
       let url = config.jobsUrl + '/changepw'
@@ -240,6 +299,9 @@ export default {
       if (rou == 'cabout') {
         this.logo_upload_error = null
         this.getOwnCompanyData()
+      } else
+      if (rou == 'responses') {
+        this.getResps()
       }
       this.tab = rou
     },
@@ -271,6 +333,9 @@ export default {
         if (this.tab == 'cabout') {
           this.getOwnCompanyData()
         }
+        // elseif (this.tab == 'responses') {
+          
+        // }
         
       }
 
