@@ -14,10 +14,9 @@
               dense
               :label="$t('home.searchPH')"
               class="jobsfilter__search"
-              :rules="[val => wordRegex.test(val) || $t('home.searchValSym')]"
               @keyup.enter="refreshPlus"
-              :hint="$t('home.searchHint')"
             >
+              <!-- :rules="[val => wordRegex.test(val) || $t('home.searchValSym')]" -->
               <template v-if="txt" v-slot:append>
                 <q-icon name="cancel" @click.stop="txt = ''" class="cursor-pointer" />
               </template>
@@ -55,14 +54,6 @@
                           {label: '100 на стр', value: '100'}]"
             />
             <div>По запросу: <strong>{{jobsFullcount}}</strong></div>
-            <!-- <q-pagination
-              :value="page_current"
-              :max="pages"
-              :disable="pending"
-              @input="switchPage"
-              size="sm"
-              ellipses
-            /> -->
             <div v-if="pages && pages > 0" class="paginationWrap">
               <button
                 :class="{pageBtns: true, currentPage: page_current == i}"

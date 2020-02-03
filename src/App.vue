@@ -14,7 +14,7 @@
             <p style="font-size: 15px; margin: 0">Главная</p>
           </q-tooltip>
       </q-btn>
-      
+      <div class="separator" style="width: 150px"></div>
       <div id="nav" shrink stretch>
         <router-link @click.native="newJobInit" class="r-link" v-if="role === 'company'" to="/addJob">
           <!-- <q-btn round icon="add_circle_outline"/> -->
@@ -26,20 +26,22 @@
         <!-- <router-link to="/about">Контакты</router-link> | -->
         
       </div>
-      <div id="authmenu">
+      <div class="separator" style="width: 150px"></div>
+      <div id="authmenu" style="alignSelf: flex-end;">
         <div class="colx user-status-bar">
           <!-- <div> {{status}} </div>
           <div> {{user}} ({{user_id}})</div> -->
           <q-btn-group>
             
             <q-btn push glossy :color="$route.path == '/registration' ? 'purple' : 'gray'" :text-color="$route.path == '/registration' ? 'white' : 'black'" no-caps v-if="role && role.startsWith('guest')" @click.native="regState='login'" :label="$t('App.login')" to="/registration"/>
+            
+            <q-btn push glossy @click="getFavedFull" :color="$route.path == '/subprofile' ? 'purple' : 'gray'" :text-color="$route.path == '/subprofile' ? 'white' : 'black'" no-caps icon="person" v-if="role === 'subscriber'" to="/subprofile"/>
+            <q-btn push glossy no-caps icon="person" @click.native="getOwnJobs" v-if="role === 'company'" to="/entprofile"/>
             <q-btn push glossy no-caps v-if="user_id != -1" @click="logout" icon="logout">
               <q-tooltip>
                 <p style="font-size: 15px; margin: 0">{{$t('App.logoutHint')}}</p>
               </q-tooltip>
             </q-btn>
-            <q-btn push glossy @click="getFavedFull" :color="$route.path == '/subprofile' ? 'purple' : 'gray'" :text-color="$route.path == '/subprofile' ? 'white' : 'black'" no-caps icon="person" v-if="role === 'subscriber'" to="/subprofile"/>
-            <q-btn push glossy no-caps icon="person" @click.native="getOwnJobs" v-if="role === 'company'" to="/entprofile"/>
             <!-- @click.native="getOwnJobs" -->
           </q-btn-group>
           
