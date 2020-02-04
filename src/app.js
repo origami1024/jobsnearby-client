@@ -82,6 +82,7 @@ app.get('/jobs.json', db.getJobs)
 app.get('/jobby.idjson=:id', getJobByIdJSON)
 
 app.post('/delJobBy.id', db.deleteJobById)
+app.post('/closeJobBy.id', db.closeJobById)
 
 
 function params1(request, response) {

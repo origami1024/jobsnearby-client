@@ -87,6 +87,7 @@
         @setSentState="setSentState" :sent="newJobSentState" @newJobInit="newJobInit" :jobEditedObj="jobEditedObj" :jobEditId="jobEditId" :newJobsPageType="newJobsPageType" @editJob="editJob"
         @scrollTo="scrollTo"
         @delJob="deleteJobById"
+        @closeJob="closeJobById"
         :likedJobsList="likedJobsList" :likedJobs="likedJobs"
         @logoutAndRetry="logoutAndRetry"
         @favOne="favOne"
@@ -314,6 +315,18 @@ export default {
       //console.log(indx)
       this.ownJobs.splice(indx, 1)
       let url = config.jobsUrl + '/delJobBy.id?jid=' + jid
+      this.ajaxLoading = true
+      axios
+        .post(url, [], {withCredentials: true,})
+        .then(response => {
+          this.ajaxLoading = false
+        })
+    },
+    closeJobById(jid) {
+      //console.log('cpcpcp ', jid)
+      this.ownJobs.find(val=>val.job_id == jid).is_closed = true
+      //console.log(indx)
+      let url = config.jobsUrl + '/closeJobBy.id?jid=' + jid
       this.ajaxLoading = true
       axios
         .post(url, [], {withCredentials: true,})

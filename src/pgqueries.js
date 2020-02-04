@@ -135,6 +135,52 @@ async function hitJobById (job_id, ip) {
   })
 }
 
+
+async function closeJobById(req, res) {
+  const jid = parseInt(req.query.jid)
+  if (isNaN(jid) || jid < 0 || String(jid).length > 10) {
+    console.log('Error: wrong id')
+    res.status(400).send('Неправильный id вакансии.')
+    return false
+  }
+  if (req.cookies.session && req.cookies.session.length > 50) {
+    //console.log('cpsrv', jid)
+    let que1st = `SELECT user_id FROM "users" WHERE "auth_cookie" = $1 and role = 'company'`
+    let params1st = [req.cookies.session]
+    pool.query(que1st, params1st, (error, results) => {
+      if (error) {
+        console.log(error)
+        res.send('step2')
+        //throw error
+        return false
+      }
+      if (results.rows.length < 1) {
+        console.log('no cookie found')
+        //Если юзера с таким куки не найдено, то выходим из функции прост
+        res.send('step3')
+        return false
+      }
+      console.log('closejob cp1')
+      //по айди
+      //если есть в базе и автор сам удаляющий
+      //удалить
+      let que2nd = `UPDATE jobs SET is_closed = TRUE WHERE (author_id = $1 AND job_id = $2)`
+      //console.log(que2nd)
+      let params2nd = [results.rows[0].user_id, jid]
+      pool.query(que2nd, params2nd, (error2, results2) => {
+        if (error2) {
+          console.log('closeJobById Error2: ', error2)
+          res.status(400).send('error22')
+          return false
+        }
+        res.status(200).send('OK')
+        //res.send(results2.rows)
+      })
+
+    })
+  } else {res.send('wrong userinfo(closeJBI)')}
+}
+
 async function deleteJobById(req, res) {
   const jid = parseInt(req.query.jid)
   //проверить жоб айди формально
@@ -194,7 +240,7 @@ async function getJobById (id) {
   //'SELECT * FROM jobs WHERE job_id = $1'
 
   
-  let que = `SELECT * FROM (SELECT jobs.author_id, users.company as author, users.logo_url, jobs.job_id, jobs.city, jobs.experience, jobs.jobtype, jobs.title, jobs.edu, jobs.currency, jobs.sex, jobs.salary_min, jobs.salary_max, jobs.description, jobs.worktime1, jobs.worktime2, jobs.schedule, jobs.age1, jobs.age2, jobs.langs, jobs.time_published as published, jobs.time_updated as updated, contact_mail, contact_tel, cardinality(jobs.hits_log) as hits_all
+  let que = `SELECT * FROM (SELECT jobs.author_id, users.company as author, users.logo_url, jobs.job_id, jobs.city, jobs.experience, jobs.jobtype, jobs.title, jobs.edu, jobs.currency, jobs.sex, jobs.salary_min, jobs.salary_max, jobs.description, jobs.worktime1, jobs.worktime2, jobs.schedule, jobs.age1, jobs.age2, jobs.langs, jobs.time_published as published, jobs.time_updated as updated, contact_mail, contact_tel, cardinality(jobs.hits_log) as hits_all, jobs.is_closed
             FROM jobs, users
             WHERE jobs.author_id = users.user_id AND jobs.job_id = $1) a,
             (select count(distinct hits_log1) as hits_uniq
@@ -235,7 +281,7 @@ async function getOwnJobs (req, res) {
       //after cookies check, get the actual data from db
 
       //array_length(array_agg(distinct jobs.hits_log)) as hits_uniq
-      let que2nd = `SELECT jobs.job_id, jobs.city, jobs.experience, jobs.jobtype, jobs.title, jobs.edu, jobs.currency, jobs.salary_min, jobs.salary_max, jobs.sex, jobs.description, jobs.worktime1, jobs.worktime2, jobs.age1, jobs.age2, jobs.langs, jobs.time_published as published, jobs.time_updated as updated, jobs.contact_tel, jobs.contact_mail, cardinality(jobs.hits_log) as hits_all, (select count(distinct a) from unnest(jobs.hits_log) as a) as hits_uniq
+      let que2nd = `SELECT jobs.job_id, jobs.city, jobs.experience, jobs.jobtype, jobs.title, jobs.edu, jobs.currency, jobs.salary_min, jobs.salary_max, jobs.sex, jobs.description, jobs.worktime1, jobs.worktime2, jobs.age1, jobs.age2, jobs.langs, jobs.time_published as published, jobs.time_updated as updated, jobs.contact_tel, jobs.contact_mail, cardinality(jobs.hits_log) as hits_all, (select count(distinct a) from unnest(jobs.hits_log) as a) as hits_uniq, jobs.is_closed
       FROM jobs
       WHERE jobs.author_id = $1
       GROUP BY jobs.job_id
@@ -1174,6 +1220,7 @@ module.exports = {
   getFavedFull,
   hitJobById,
   deleteJobById,
+  closeJobById,
   updateJob,
   getOneCompany,
   getOneCompanyBroad,

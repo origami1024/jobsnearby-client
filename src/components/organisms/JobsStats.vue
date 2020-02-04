@@ -8,7 +8,8 @@
             <td style="width: 15%; min-width: 15%; max-width: 15%;">Всего просмотров</td>
             <td style="width: 15%; min-width: 15%; max-width: 15%;">Уникальных просмотров</td>
             <!-- <td style="width: 15%; min-width: 15%; max-width: 15%;">Подали резюме</td> -->
-            <td style="width: 10%; min-width: 15%; max-width: 15%;">Изменить</td>
+            <td style="width: 10%; min-width: 10%; max-width: 10%;">Изменить</td>
+            <td style="width: 10%; min-width: 10%; max-width: 10%;">Закрыть</td>
             <td style="width: 10%; min-width: 10%; max-width: 10%;">Удалить</td>
           </tr>
         </thead>
@@ -25,6 +26,19 @@
               round
               @click="$emit('editJob', item.job_id)"
             />
+          </td>
+          <td>
+            <q-btn
+              v-if="!item.is_closed"
+              icon="work_off"
+              size="sm"
+              color="orange"
+              round
+              @click="closeThis(item.job_id)"
+            />
+            <span v-else>
+              Закрыта
+            </span>
           </td>
           <td>
             <q-btn
@@ -57,6 +71,9 @@ export default {
   methods: {
     delThis(jid) {
       this.$emit('delJob', jid)
+    },
+    closeThis(jid) {
+      this.$emit('closeJob', jid)
     }
   },
   components: {

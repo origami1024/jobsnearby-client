@@ -1,6 +1,7 @@
 <template>
   <div class="jobpage">
     <main class="detailed__main">
+      <div v-if="job.is_closed" style="color: red; font-size: 18px">Вакансия уже закрыта</div>
       <section class="detailed__line" style="marginBottom: 5px">
         <div class="detailed__col">
           <h1 class="titleHeader">{{job.title}}</h1>

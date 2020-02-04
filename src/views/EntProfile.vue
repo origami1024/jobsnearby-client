@@ -17,7 +17,7 @@
       >
         <q-tab-panel name="published" class="entprofile__published entprofile__mid">
           <h4 class="entprofile__header">Опубликованные вакансии({{ownJobs.length}}):</h4>
-          <JobsStats @editJob="editJob" @delJob="delJob" :jobslist="ownJobs"/>
+          <JobsStats @editJob="editJob" @closeJob="closeJob" @delJob="delJob" :jobslist="ownJobs"/>
         </q-tab-panel>
         <q-tab-panel name="responses" class="entprofile__mid" style="display: flex">
           <div class="line" style="width: 100%;">
@@ -345,6 +345,9 @@ export default {
     },
     delJob(jid) {
       this.$emit('delJob', jid)
+    },
+    closeJob(jid) {
+      this.$emit('closeJob', jid)
     },
     favOne(id) {
       this.$emit('favOne', id)
