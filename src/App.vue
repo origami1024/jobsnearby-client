@@ -194,6 +194,9 @@ export default {
     if (localStorage.likedJobs) {
       this.likedJobs = Array(localStorage.likedJobs)
     }
+    if (localStorage.ownCVs) {
+      this.ownCVs = Array(localStorage.ownCVs)
+    }
     window.addEventListener("storage", this.onStorageUpdate)
 
     //send auth by cookies request
@@ -258,6 +261,9 @@ export default {
       } else
       if (event.key === "likedJobs") {
         this.likedJobs = Array(event.newValue);
+      } else
+      if (event.key === "ownCVs") {
+        this.ownCVs = Array(event.newValue);
       }
     },
     setSentState(state) {
@@ -403,7 +409,8 @@ export default {
     },
     hitcv(id) {
       console.log('app hitOne', id)
-      console.log('cppcp44: ', this.cvurl)
+      console.log(this.role)
+      console.log(this.ownCVs)
       if (!this.cvurl || this.cvurl.length < 5) {
         this.$router.push("/registration")
         this.$q.notify('Сначала загрузите резюме!')
@@ -495,6 +502,7 @@ export default {
       this.ownJobs = []
       this.ownCVs = []
       //console.log(this.$route)
+      
       if (this.$route.name != 'home') this.$router.push("/")
       //this.$destroy() try this to flush data on logout
     },
@@ -517,6 +525,7 @@ export default {
         this.likedJobsList = []
         this.ownJobs = []
         this.ownCVs = []
+        console.log('cplogout1: ', this.ownCVs)
         axios
           .post(config.jobsUrl + '/out', [], {withCredentials: true})
           .then(response => {
@@ -629,6 +638,9 @@ export default {
     },
     likedJobs(newName) {
       localStorage.likedJobs = Array(newName)
+    },
+    ownCVs(newName) {
+      localStorage.ownCVs = Array(newName)
     },
   }
 }
