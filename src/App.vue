@@ -392,6 +392,7 @@ export default {
       console.log('app hitOne', id)
       console.log('cppcp44: ', this.cvurl)
       if (!this.cvurl || this.cvurl.length < 5) {
+        this.$router.push("/registration")
         this.$q.notify('Сначала загрузите резюме!')
         return false
       }

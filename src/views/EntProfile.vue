@@ -24,7 +24,7 @@
             <q-expansion-item
               v-for="item in Object.keys(respsJreformat)"
               :key="item"
-              
+              default-opened
               style="line-height: 30px; font-size: 16px;text-align:left;"
             >
               <template v-slot:header>
@@ -34,9 +34,11 @@
                 </a>
                 ({{respsJreformat[item].cvhits.length}})
               </template>
+              
               <ul style="list-style-type:none">
                 <li style="padding: 5px 0;" v-for="hit in respsJreformat[item].cvhits" :key="hit">
-                  <a :href="'https://docs.google.com/viewerng/viewer?url=' + resps.find(val=>val.cvhit_id == hit).cv_url" target="_blank">
+                  <q-item clickable>
+                  <a @click="viewHit(hit)" :href="'https://docs.google.com/viewerng/viewer?url=' + resps.find(val=>val.cvhit_id == hit).cv_url" target="_blank">
                     {{
                       resps.find(val=>val.cvhit_id == hit).name + ' ' + 
                       resps.find(val=>val.cvhit_id == hit).surname
@@ -45,11 +47,26 @@
                   </a>
                     {{
                       'Подано: ' +
-                      formatDate(resps.find(val=>val.cvhit_id == hit).date_created) + '. Просмотрено: ' +
-                      resps.find(val=>val.cvhit_id == hit).date_checked
+                      formatDate(resps.find(val=>val.cvhit_id == hit).date_created)
+                      + '.'
                     }}
+                    {{
+                      resps.find(val=>val.cvhit_id == hit).date_checked != null
+                        ? 'Просмотрено: ' + formatDate(resps.find(val=>val.cvhit_id == hit).date_checked)
+                        : 'Просмотрено: нет'
+                    }}
+                    <q-btn
+                      v-if="resps.find(val=>val.cvhit_id == hit).date_checked == null"
+                      round
+                      color="primary"
+                      size="sm"
+                      icon="visibility"
+                      @click="viewHit(hit)"
+                    />
+                    </q-item>
                 </li>
               </ul>
+              
             </q-expansion-item>
           </div>
         </q-tab-panel>
@@ -193,6 +210,22 @@ export default {
     this.$destroy()
   },
   methods: {
+    viewHit(hit) {
+      console.log(hit)
+      if (this.resps.find(val=>val.cvhit_id == hit).date_checked == null) {
+        let url = config.jobsUrl + '/viewhit'
+        axios
+          .post(url, [hit], {headers: {'Content-Type' : 'application/json' }, withCredentials: true,})
+          .then(response => {
+            //console.log('viewHit', response.data)
+            if (response.data == 'OK') {
+              this.resps.find(val=>val.cvhit_id == hit).date_checked = Date.now()
+              //this.$q.notify('Пароль изменен')
+            }
+            // else this.$q.notify('Неправильные данные')
+        })
+      } else console.log('trying to hit second time')
+    },
     formatDate(e) {
       let d = new Date(e)
       return d.getDate() + '.' + (d.getMonth() + 1) + '.' + d.getFullYear()
@@ -203,7 +236,7 @@ export default {
         .post(url, null, {headers: {'Content-Type' : 'application/json' }, withCredentials: true,})
         .then(response => {
           if (response.data && response.data.rows) {
-            console.log('getResps', response.data.rows)
+            //console.log('getResps', response.data.rows)
             this.resps = response.data.rows
             let dic1 = { 
             }
@@ -217,7 +250,8 @@ export default {
               //console.log(x.cvhit_id)
             }
             this.respsJreformat = dic1
-            //console.log(dic1)
+
+            //console.log(response.data.rows)
           }
           
           //this.$q.notify('Ошибка чот')
@@ -229,7 +263,7 @@ export default {
       axios
         .post(url, udata, {headers: {'Content-Type' : 'application/json' }, withCredentials: true,})
         .then(response => {
-          console.log('trychpw', response.data)
+          //console.log('trychpw', response.data)
           if (response.data == 'OK') {
             this.$q.notify('Пароль изменен')
           }

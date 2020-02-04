@@ -1110,8 +1110,47 @@ async function getResps(req, res) {
   }
 }
 
+async function viewHit(req, res) {
+  let hit = parseInt(req.body[0])
+  if (isNaN(hit) || hit < 0 || String(hit).length > 10) {
+    console.log('Error: wrong hit')
+    res.status(400).send('Неправильный hit.')
+    return false
+  }
+  if (req.cookies.session && req.cookies.session.length > 50) {
+    let que = `
+      SELECT user_id
+      FROM users
+      WHERE auth_cookie = $1 AND role = 'company'
+    `
+    let result = await pool.query(que, [req.cookies.session]).catch(error => {
+      console.log('cp viewHit err1: ', error)
+    })
+    if (result.rows.length == 1) {
+      let que2 = `
+        UPDATE cvhits SET "date_checked" = NOW()
+        WHERE date_checked IS NULL AND cvhit_id = $1 AND (SELECT author_id
+          FROM jobs
+          WHERE job_id = cvhits.cvjob_id) = $2
+      `
+      let params2 = [hit,result.rows[0].user_id]
+      let result2 = await pool.query(que2, params2).catch(error => {
+        console.log('cp viewHit err2: ', error)
+        return false
+      })
+      console.log('h: ', hit)
+      console.log('uid: ', result.rows[0].user_id)
+      console.log('r2: ', result2.rows)
+      if (result2) {
+        res.send('OK')
+      } else res.send('BAD')
+    } else res.send('error 1')
+
+  }
+}
 
 module.exports = {
+  viewHit,
   getResps,
   getCVedJobs,
   getAllCVHitsOfUser,
