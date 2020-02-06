@@ -714,7 +714,7 @@ async function addJobs (req, res) {
       let n = 18
       let iSkipped = 0
 
-      for (let i = 0; i < req.body.length; i++) {
+      for (let i = 0; i < Math.min(req.body.length, 15); i++) {//Math.min - максимум 15
         let parsedData = validateOneJob(req.body[i])
         if (parsedData == false) { iSkipped += 1; continue}
         //author_id - проверка не нужна
