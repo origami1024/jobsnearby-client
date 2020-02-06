@@ -5,7 +5,7 @@
         :localRoute="tab"
         @setLocalRoute="setLocalRoute"
         :localroutes="[{r: 'published', l: 'Вакансии'}, {r: 'responses', l: 'Отклики'}, {r: 'cabout', l: 'О компании'}]"
-        :localroutesX="{r: 'settings', l: 'Изменить пароль'}"
+        :localroutesX="{r: 'settings', l: 'Настройки'}"
       />
       <q-tab-panels
         class="qtpans"
@@ -17,7 +17,7 @@
       >
         <q-tab-panel name="published" class="entprofile__published entprofile__mid">
           <h4 class="entprofile__header">Опубликованные вакансии({{ownJobs.length}}):</h4>
-          <JobsStats @editJob="editJob" @closeJob="closeJob" @delJob="delJob" :jobslist="ownJobs"/>
+          <JobsStats @reopenJob="reopenJob" @editJob="editJob" @closeJob="closeJob" @delJob="delJob" :jobslist="ownJobs"/>
         </q-tab-panel>
         <q-tab-panel name="responses" class="entprofile__mid" style="display: flex">
           <div class="line" style="width: 100%;">
@@ -36,7 +36,7 @@
               </template>
               
               <ul style="list-style-type:none">
-                <li style="padding: 5px 0;" v-for="hit in respsJreformat[item].cvhits" :key="hit">
+                <li v-for="hit in respsJreformat[item].cvhits" :key="hit">
                   <q-item clickable>
                   <a @click="viewHit(hit)" :href="'https://docs.google.com/viewerng/viewer?url=' + resps.find(val=>val.cvhit_id == hit).cv_url" target="_blank">
                     {{
@@ -56,6 +56,7 @@
                         : 'Просмотрено: нет'
                     }}
                     <q-btn
+                      style="margin-left: 5px"
                       v-if="resps.find(val=>val.cvhit_id == hit).date_checked == null"
                       round
                       color="primary"
@@ -131,7 +132,7 @@
           <q-input dense v-show="contacts_count > 2" class="entprofile__inp" outlined bottom-slots v-model="contacts3" label="Контакты" counter maxlength="30"/>
           <q-btn round color="primary" @click="contacts_count < 4 ? contacts_count += 1 : ''" size="sm" icon="add" :disable="contacts_count > 2"/> -->
           <!-- <q-toggle v-model="editable" label="Изменить личные данные"/> -->
-          <q-input type="email" class="entprofile__inp" outlined bottom-slots v-model="oldemail" label="Email" counter maxlength="50" />
+          <q-input type="email" class="entprofile__inp" outlined bottom-slots :value="user" label="Email" counter maxlength="50" />
           <q-input :type="isPwd ? 'password' : 'text'" class="entprofile__inp" outlined bottom-slots v-model="oldpw" label="Старый пароль" counter maxlength="25">
             <template v-slot:append>
               <q-icon
@@ -172,6 +173,7 @@ export default {
     ownJobs: Array,
     company: {type: String, default: ''},
     role: String,
+    user: String,
   },
   data: ()=>{return {
     respsJreformat: [],
@@ -193,7 +195,7 @@ export default {
     contacts_count: 1,
     newcompany: '',
     newsurname: '',
-    oldemail: '',
+    // oldemail: '',
     oldpw: '',
     newpw: '',
     isPwd: true,
@@ -259,7 +261,7 @@ export default {
     },
     tryChangePw() {
       let url = config.jobsUrl + '/changepw'
-      let udata = { oldmail: this.oldemail, oldpw: this.oldpw, newpw: this.newpw }
+      let udata = { oldmail: this.user, oldpw: this.oldpw, newpw: this.newpw }
       axios
         .post(url, udata, {headers: {'Content-Type' : 'application/json' }, withCredentials: true,})
         .then(response => {
@@ -337,11 +339,18 @@ export default {
       if (rou == 'responses') {
         this.getResps()
       }
+      //  else
+      // if (rou == 'settings') {
+      //   this.getResps()
+      // }
       this.tab = rou
     },
     editJob(jid) {
-      console.log('edit jab: ', jid)
+      ///console.log('edit jab: ', jid)
       this.$emit('editJob', jid)
+    },
+    reopenJob(jid) {
+      this.$emit('reopenJob', jid)
     },
     delJob(jid) {
       this.$emit('delJob', jid)

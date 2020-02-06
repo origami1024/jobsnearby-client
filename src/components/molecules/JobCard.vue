@@ -22,25 +22,21 @@
         <p class="alignRight city" v-html="filteredCity"></p>
       </div>
     </div>
-    <div class="line" style="marginLeft: 5px" v-if="lenses == 'full'">
-      <p class="filteredDesc" v-html="filteredDesc"></p>
+    <div class="line" v-if="lenses == 'full'">
+      <p class="filteredDesc" v-html="
+        `${job.experience == -1 ?
+            'Опыт не указан.'
+          :(1 > job.experience) ?
+            'Без опыта.'
+          :(job.experience >= 1 && 3 > job.experience) ?
+            'Опыт: от 1 до 3 лет.'
+          :(job.experience >= 3 && 5 > job.experience) ?
+            'Опыт: от 3 до 5 лет.'
+          :job.experience >= 5 ?
+            'Опыт: от 5 лет.'
+          : ''} ${filteredDesc}`"></p>
     </div>
-    <div class="line">
-      <div>{{
-            job.experience == -1 ?
-              'Опыт не указан'
-            :(1 > job.experience) ?
-              'Без опыта'
-            :(job.experience >= 1 && 3 > job.experience) ?
-              'Опыт: от 1 до 3 лет'
-            :(job.experience >= 3 && 5 > job.experience) ?
-              'Опыт: от 3 до 5 лет'
-            :job.experience >= 5 ?
-              'Опыт: от 5 лет'
-            : ''
-          }}
-      </div>
-    </div>
+    
     <div class="line">
       <div :class="{ line50: true, spbtw: lenses =='full' }">
         <a v-if="role != 'company' && !cved" class="cardLink" @click.prevent="$emit('hitcv', job.job_id)" href="#">
@@ -73,44 +69,6 @@
         <p class="alignRight" v-html="lastUpdated"></p>
       </div>
     </div>
-    <!-- <table>
-      <tr v-if="lenses == 'full'">
-        <td>Требуемый опыт</td>
-        <td>{{job.experience}} месяцев</td>
-      </tr>
-      <tr>
-        <td>Город</td>
-        <td v-html="filteredCity"></td>
-      </tr>
-      <tr v-if="lenses == 'full'">
-        <td>Тип работы</td>
-        <td>{{job.jobType}}</td>
-      </tr>
-      <tr>
-        <td>Зарплата</td>
-        <td v-if="job.salary_min">от {{job.salary_min}} до {{job.salary_max}}</td>
-        <td v-else>{{job.salary_max}}</td>
-      </tr>
-      <tr v-if="lenses == 'full'">
-        <td>График работы</td>
-        <td>с {{job.worktime1}} до {{job.worktime2}}</td>
-      </tr>
-      <tr v-if="lenses == 'full'">
-        <td>Языки</td>
-        <td>{{job.langs}}</td>
-      </tr>
-      <tr v-if="lenses == 'full'">
-        <td>Возраст</td>
-        <td>от {{job.age1}} до {{job.age2}}</td>
-      </tr>
-      <tr v-if="lenses == 'full'">
-        <td>Описание</td>
-        <td v-html="filteredDesc"></td>
-      </tr>
-    </table>
-    <p class="alignRight">Опубликована: {{new Date(job.published).toLocaleDateString()}} в {{new Date(job.published).toLocaleTimeString([],{hour: '2-digit', minute:'2-digit'})}}</p>
-    <p class="alignRight">Обновлена: {{new Date(job.updated).toLocaleDateString()}} в {{new Date(job.updated).toLocaleTimeString([],{hour: '2-digit', minute:'2-digit'})}}</p>
-     -->
   </div>
 </template>
 
@@ -267,6 +225,7 @@ export default {
     display flex
     align-items center
     min-width 190px
+    width 50%
   
     
   .spbtw
@@ -298,6 +257,15 @@ export default {
   padding 2px
 .jobcard__salary p
   font-size 16px
+.descFormats
+  height 21px
+  line-height 20px
+  font-size 16px
+  max-width 100%
+  padding 5px
+  padding-bottom 0
+  margin-right 10px
+  word-break break-all
 .filteredDesc
   height 42px
   max-height 42px
@@ -307,6 +275,7 @@ export default {
   max-width 100%
   padding 5px
   margin-right 10px
+  margin-bottom 5px
   word-break break-all
 
 </style>

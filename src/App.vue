@@ -35,8 +35,16 @@
             
             <q-btn push glossy :color="$route.path == '/registration' ? 'purple' : 'gray'" :text-color="$route.path == '/registration' ? 'white' : 'black'" no-caps v-if="role && role.startsWith('guest')" @click.native="regState='login'" :label="$t('App.login')" to="/registration"/>
             
-            <q-btn push glossy @click="getFavedFull" :color="$route.path == '/subprofile' ? 'purple' : 'gray'" :text-color="$route.path == '/subprofile' ? 'white' : 'black'" no-caps icon="person" v-if="role === 'subscriber'" to="/subprofile"/>
-            <q-btn push glossy no-caps icon="person" @click.native="getOwnJobs" v-if="role === 'company'" to="/entprofile"/>
+            <q-btn push glossy @click="getFavedFull" :color="$route.path == '/subprofile' ? 'purple' : 'gray'" :text-color="$route.path == '/subprofile' ? 'white' : 'black'" no-caps icon="person" v-if="role === 'subscriber'" to="/subprofile">
+              <q-tooltip>
+                <p style="font-size: 15px; margin: 0">{{user}}</p>
+              </q-tooltip>
+            </q-btn>
+            <q-btn push glossy no-caps icon="person" @click.native="getOwnJobs" v-if="role === 'company'" to="/entprofile">
+              <q-tooltip>
+                <p style="font-size: 15px; margin: 0">{{user}}</p>
+              </q-tooltip>
+            </q-btn>
             <q-btn push glossy no-caps v-if="user_id != -1" @click="logout" icon="logout">
               <q-tooltip>
                 <p style="font-size: 15px; margin: 0">{{$t('App.logoutHint')}}</p>
@@ -86,8 +94,7 @@
         @changeUDataSub="uDataChangeFromSubProfile"
         @setSentState="setSentState" :sent="newJobSentState" @newJobInit="newJobInit" :jobEditedObj="jobEditedObj" :jobEditId="jobEditId" :newJobsPageType="newJobsPageType" @editJob="editJob"
         @scrollTo="scrollTo"
-        @delJob="deleteJobById"
-        @closeJob="closeJobById"
+        @delJob="deleteJobById" @closeJob="closeJobById" @reopenJob="reopenJobById"
         :likedJobsList="likedJobsList" :likedJobs="likedJobs"
         @logoutAndRetry="logoutAndRetry"
         @favOne="favOne"
@@ -98,7 +105,7 @@
         :jobsFullcount="jobsFullcount"
         :page_current="page_current" :pages="pages_count"
         :pending="ajaxLoading" @updQue="updQue"
-        :cvurl="cvurl" :role="role" :username="username" :surname="surname" :insearch="insearch" :company="company" :isagency="isagency" :jobslist="jobslist" @refresh="refreshjobs" :uid="user_id" :authed="user_id !== -1"
+        :user="user" :cvurl="cvurl" :role="role" :username="username" :surname="surname" :insearch="insearch" :company="company" :isagency="isagency" :jobslist="jobslist" @refresh="refreshjobs" :uid="user_id" :authed="user_id !== -1"
       />
     </keep-alive>
     <footer class="main__footer">
@@ -321,6 +328,18 @@ export default {
       //console.log(indx)
       this.ownJobs.splice(indx, 1)
       let url = config.jobsUrl + '/delJobBy.id?jid=' + jid
+      this.ajaxLoading = true
+      axios
+        .post(url, [], {withCredentials: true,})
+        .then(response => {
+          this.ajaxLoading = false
+        })
+    },
+    reopenJobById(jid) {
+      //console.log('cpcpcp ', jid)
+      this.ownJobs.find(val=>val.job_id == jid).is_closed = false
+      //console.log(indx)
+      let url = config.jobsUrl + '/reopenJobBy.id?jid=' + jid
       this.ajaxLoading = true
       axios
         .post(url, [], {withCredentials: true,})

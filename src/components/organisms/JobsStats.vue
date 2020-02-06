@@ -20,11 +20,20 @@
           <!-- <td>0</td> -->
           <td>
             <q-btn
+              v-if="!item.is_closed"
               icon="edit"
               size="sm"
               color="green"
               round
               @click="$emit('editJob', item.job_id)"
+            />
+            <q-btn
+              v-else
+              icon="work"
+              size="sm"
+              color="blue"
+              round
+              @click="$emit('reopenJob', item.job_id)"
             />
           </td>
           <td>

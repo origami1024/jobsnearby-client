@@ -71,19 +71,20 @@ const getJobs = (req, res) => {
 
   let que =  `SELECT jobs.author_id, users.company as author, jobs.job_id, jobs.city, jobs.experience, jobs.jobtype, jobs.title, jobs.edu, jobs.currency, jobs.sex, jobs.salary_min, jobs.salary_max, jobs.description, jobs.worktime1, jobs.worktime2, jobs.schedule, jobs.age1, jobs.age2, jobs.langs, jobs.time_published as published, jobs.time_updated as updated, jobs.jobtype, jobs.contact_mail, contact_tel
               FROM jobs, users
-              WHERE jobs.author_id = users.user_id
-                  ${timerange} 
-                  ${txt != undefined ? ` AND
-                  (LOWER(jobs.title) LIKE $2 OR
-                  LOWER(users.company) LIKE $2 OR
-                  LOWER(jobs.description) LIKE $2 OR
-                  LOWER(jobs.city) LIKE $2)` : ''}
-                  ${city != undefined ? ` AND 
-                  LOWER(jobs.city) LIKE ${cityN}`: ''}
-                  ${jtype != undefined ? ` AND jobs.jobtype = ${jtype}`: ''}
-                  ${exp_line}
-                  ${sal_line}
-                  ${curr_line}
+              WHERE jobs.author_id = users.user_id AND 
+                jobs.is_closed = FALSE
+                ${timerange} 
+                ${txt != undefined ? ` AND
+                (LOWER(jobs.title) LIKE $2 OR
+                LOWER(users.company) LIKE $2 OR
+                LOWER(jobs.description) LIKE $2 OR
+                LOWER(jobs.city) LIKE $2)` : ''}
+                ${city != undefined ? ` AND 
+                LOWER(jobs.city) LIKE ${cityN}`: ''}
+                ${jtype != undefined ? ` AND jobs.jobtype = ${jtype}`: ''}
+                ${exp_line}
+                ${sal_line}
+                ${curr_line}
               ${sort}
               LIMIT $1 ${'OFFSET ' + offset}`
   //console.log('cp_getJobs2: ', que)
@@ -98,19 +99,20 @@ const getJobs = (req, res) => {
     qparams[0] = 1
     let countque =  `SELECT count(*) OVER() AS full_count
                     FROM jobs, users
-                    WHERE jobs.author_id = users.user_id
-                        ${timerange} 
-                        ${txt != undefined ? ` AND
-                        (LOWER(jobs.title) LIKE $2 OR
-                        LOWER(users.company) LIKE $2 OR
-                        LOWER(jobs.description) LIKE $2 OR
-                        LOWER(jobs.city) LIKE $2)` : ''}
-                        ${city != undefined ? ` AND 
-                        LOWER(jobs.city) LIKE ${cityN}`: ''}
-                        ${jtype != undefined ? ` AND jobs.jobtype = ${jtype}`: ''}
-                        ${exp_line}
-                        ${sal_line}
-                        ${curr_line}
+                    WHERE jobs.author_id = users.user_id AND
+                      jobs.is_closed = FALSE
+                      ${timerange} 
+                      ${txt != undefined ? ` AND
+                      (LOWER(jobs.title) LIKE $2 OR
+                      LOWER(users.company) LIKE $2 OR
+                      LOWER(jobs.description) LIKE $2 OR
+                      LOWER(jobs.city) LIKE $2)` : ''}
+                      ${city != undefined ? ` AND 
+                      LOWER(jobs.city) LIKE ${cityN}`: ''}
+                      ${jtype != undefined ? ` AND jobs.jobtype = ${jtype}`: ''}
+                      ${exp_line}
+                      ${sal_line}
+                      ${curr_line}
                     ${sort} 
                     LIMIT $1`
     pool.query(countque, qparams, (error2, results2) => {
@@ -135,6 +137,46 @@ async function hitJobById (job_id, ip) {
   })
 }
 
+async function reopenJobById(req, res) {
+  const jid = parseInt(req.query.jid)
+  if (isNaN(jid) || jid < 0 || String(jid).length > 10) {
+    console.log('Error: wrong id')
+    res.status(400).send('Неправильный id вакансии.')
+    return false
+  }
+  if (req.cookies.session && req.cookies.session.length > 50) {
+    //console.log('cpsrv', jid)
+    let que1st = `SELECT user_id FROM "users" WHERE "auth_cookie" = $1 and role = 'company'`
+    let params1st = [req.cookies.session]
+    pool.query(que1st, params1st, (error, results) => {
+      if (error) {
+        console.log(error)
+        res.send('step2')
+        //throw error
+        return false
+      }
+      if (results.rows.length < 1) {
+        console.log('reopenJobById err1')
+        //Если юзера с таким куки не найдено, то выходим из функции прост
+        res.send('step3')
+        return false
+      }
+      let que2nd = `UPDATE jobs SET is_closed = FALSE WHERE (author_id = $1 AND job_id = $2)`
+      //console.log(que2nd)
+      let params2nd = [results.rows[0].user_id, jid]
+      pool.query(que2nd, params2nd, (error2, results2) => {
+        if (error2) {
+          console.log('reopenJobById Error2: ', error2)
+          res.status(400).send('error22')
+          return false
+        }
+        res.status(200).send('OK')
+        //res.send(results2.rows)
+      })
+
+    })
+  } else {res.send('wrong userinfo(reopenJobById)')}
+}
 
 async function closeJobById(req, res) {
   const jid = parseInt(req.query.jid)
@@ -1125,6 +1167,36 @@ async function getCVedJobs(req, res) {
   //get only the ids
 }
 
+
+async function getCVHitsHistory(req, res) {
+  if (req.cookies.session && req.cookies.session.length > 50) {
+    let que = `
+      SELECT user_id
+      FROM users
+      WHERE auth_cookie = $1 AND role = 'subscriber'
+    `
+    let result = await pool.query(que, [req.cookies.session]).catch(error => {
+      console.log('cp getResps err1: ', error)
+    })
+    if (result.rows.length == 1) {
+      let que2 = `
+        SELECT cvhits.*, jobs.title, jobs.is_closed, users.company
+        FROM cvhits, jobs, users
+        WHERE jobs.author_id = users.user_id AND cvhits.cvjob_id = jobs.job_id AND cvhits.cvuser_id = $1
+        ORDER BY (cvhits.date_created) DESC
+      `
+      let params2 = [result.rows[0].user_id]
+      let history = await pool.query(que2, params2).catch(error => {
+        console.log('cp getResps err2: ', error)
+      })
+      if (history.rows && history.rows.length > 0) {
+        res.send({rows: history.rows})
+      } else res.send({rows: []})
+
+    } else res.send('error 2')
+  } else res.send('error 1')
+}
+
 async function getResps(req, res) {
   if (req.cookies.session && req.cookies.session.length > 50) {
     //get author_id first, also check role in the process
@@ -1153,7 +1225,7 @@ async function getResps(req, res) {
     } else res.send('error 1')
     
   //do it by cookie and role, not by author_id
-  }
+  } else res.send('error 0')
 }
 
 async function viewHit(req, res) {
@@ -1195,7 +1267,10 @@ async function viewHit(req, res) {
   }
 }
 
+
+
 module.exports = {
+  getCVHitsHistory,
   viewHit,
   getResps,
   getCVedJobs,
@@ -1221,6 +1296,7 @@ module.exports = {
   hitJobById,
   deleteJobById,
   closeJobById,
+  reopenJobById,
   updateJob,
   getOneCompany,
   getOneCompanyBroad,

@@ -70,6 +70,7 @@ app.post('/getallcvuser', db.getAllCVHitsOfUser)
 app.post('/getcvedjobs', db.getCVedJobs)
 app.post('/getresps', db.getResps)
 app.post('/viewhit', db.viewHit)
+app.post('/getcvhitshistory', db.getCVHitsHistory)
 
 
 app.post('/ownCompany.json', getOwnCompanyJSON)
@@ -83,6 +84,8 @@ app.get('/jobby.idjson=:id', getJobByIdJSON)
 
 app.post('/delJobBy.id', db.deleteJobById)
 app.post('/closeJobBy.id', db.closeJobById)
+app.post('/reopenJobBy.id', db.reopenJobById)
+
 
 
 function params1(request, response) {

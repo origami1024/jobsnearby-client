@@ -29,31 +29,121 @@
         </div>
         <div style="padding: 0 3px">
           <div class="line jobs_prefilters">
-            <q-select dense outlined
+            <button class="orderLink">
+              {{sort.label}}
+              <q-icon name="arrow_drop_down"/>
+              <q-menu dense>
+                <q-item
+                  style="lineHeight: 2"
+                  dense :style="{color: sort.value == 'new' ? 'purple' : 'black'}"
+                  clickable v-close-popup
+                  @click="sort = {label: 'По дате', value: 'new'}"
+                >
+                  По дате
+                </q-item>
+                <q-item
+                  style="lineHeight: 2"
+                  dense :style="{color: sort.value == 'saldesc' ? 'purple' : 'black'}"
+                  clickable v-close-popup
+                  @click="sort = {label: 'По убыв зп', value: 'saldesc'}"
+                >
+                  По убыв зп
+                </q-item>
+                <q-item
+                  style="lineHeight: 2"
+                  dense :style="{color: sort.value == 'salasc' ? 'purple' : 'black'}"
+                  clickable v-close-popup
+                  @click="sort = {label: 'По возр зп', value: 'salasc'}"
+                >
+                  По возр зп
+                </q-item>
+              </q-menu>
+            </button>
+            <!-- <q-select dense outlined
               :style="{minWidth: '170px'}"
               v-model="sort"
               @input="sort.value != 'new' ? outerResetNeeded = true : null"
               :options="[ {label: 'По дате', value: 'new'},
                           {label: 'По убыванию зп', value: 'saldesc'},
                           {label: 'По возрастанию зп', value: 'salasc'}]"
-            />
-            <q-select dense outlined
+            /> -->
+            <button class="orderLink">
+              {{timerange.label}}
+              <q-icon name="arrow_drop_down"/>
+              <q-menu dense>
+                <q-item
+                  style="lineHeight: 2"
+                  dense :style="{color: timerange.value == 'mon' ? 'purple' : 'black'}"
+                  clickable v-close-popup
+                  @click="timerange = {label: 'За месяц', value: 'mon'}"
+                >
+                  За месяц
+                </q-item>
+                <q-item
+                  style="lineHeight: 2"
+                  dense :style="{color: timerange.value == 'wee' ? 'purple' : 'black'}"
+                  clickable v-close-popup
+                  @click="timerange = {label: 'За неделю', value: 'wee'}"
+                >
+                  За неделю
+                </q-item>
+                <q-item
+                  style="lineHeight: 2"
+                  dense :style="{color: timerange.value == 'day' ? 'purple' : 'black'}"
+                  clickable v-close-popup
+                  @click="timerange = {label: 'За сутки', value: 'day'}"
+                >
+                  За сутки
+                </q-item>
+              </q-menu>
+            </button>
+            <!-- <q-select dense outlined
               :style="{minWidth: '130px'}"
               v-model="timerange"
               @input="timerange.value != 'mon' ? outerResetNeeded = true : null"
               :options="[ {label: 'За месяц', value: 'mon'},
                           {label: 'За неделю', value: 'wee'},
                           {label: 'За сутки', value: 'day'}]"
-            />
-            <q-select dense outlined
+            /> -->
+            <button class="orderLink">
+              {{perpage.label}}
+              <q-icon name="arrow_drop_down"/>
+              <q-menu dense>
+                <q-item
+                  style="lineHeight: 2"
+                  dense :style="{color: perpage.value == '25' ? 'purple' : 'black'}"
+                  clickable v-close-popup
+                  @click="perpage = {label: '25 на стр', value: '25'}"
+                >
+                  25 на стр
+                </q-item>
+                <q-item
+                  style="lineHeight: 2"
+                  dense :style="{color: perpage.value == '50' ? 'purple' : 'black'}"
+                  clickable v-close-popup
+                  @click="perpage = {label: '50 на стр', value: '50'}"
+                >
+                  50 на стр
+                </q-item>
+                <q-item
+                  style="lineHeight: 2"
+                  dense :style="{color: perpage.value == '100' ? 'purple' : 'black'}"
+                  clickable v-close-popup
+                  @click="perpage = {label: '100 на стр', value: '100'}"
+                >
+                  100 на стр
+                </q-item>
+              </q-menu>
+            </button>
+            <!-- <q-select dense outlined
               :style="{minWidth: '120px'}"
               v-model="perpage"
               @input="perpage.value != '25' ? outerResetNeeded = true : null"
               :options="[ {label: '25 на стр', value: '25'},
                           {label: '50 на стр', value: '50'},
                           {label: '100 на стр', value: '100'}]"
-            />
-            <div>По запросу: <strong>{{jobsFullcount}}</strong></div>
+            /> -->
+            <!-- <div>По запросу: <strong>{{jobsFullcount}}</strong></div> -->
             <div v-if="pages && pages > 0" class="paginationWrap">
               <button
                 :class="{pageBtns: true, currentPage: page_current == i}"
@@ -319,4 +409,15 @@ export default {
     border 1px solid #06f
     color #fff
     background-color #06f
+  .orderLink
+    white-space nowrap
+    border 0
+    background-color transparent
+    color purple
+    cursor pointer
+    font-size 14px
+    &:hover
+      color blue
+  .paginationWrap
+    padding 0 3px
 </style>

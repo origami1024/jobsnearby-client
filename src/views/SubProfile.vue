@@ -5,7 +5,7 @@
         :localRoute="tab"
         @setLocalRoute="setLocalRoute"
         :localroutes="[{r: 'cv', l: 'Резюме'}, {r: 'sentCVS', l: 'Поданные резюме'}, {r: 'starred', l: 'Избранные вакансии'}, {r: 'personal', l: 'Личные данные'}]"
-        :localroutesX="{r: 'settings', l: 'Изменить пароль'}"
+        :localroutesX="{r: 'settings', l: 'Настройки'}"
       />
       <q-tab-panels
         class="qtpans"
@@ -39,22 +39,8 @@
           </q-btn> -->
         </q-tab-panel>
         <q-tab-panel name="sentCVS">
-          <q-btn-toggle
-            v-if="likedJobs.length > 0"
-            v-model="lenses"
-            toggle-color="primary"
-            size="sm"
-            dense
-            :options="[ {value: 'short', icon: 'list'},
-                        {value: 'full', icon: 'code'},]"
-          />
-          <JobsList
-            :ownCVs="ownCVs"
-            :showLiked="role === 'subscriber'"
-            :likedJobs="likedJobs"
-            @favOne="favOne"
-            :lenses="lenses"
-            :jobslist="sentCVJobsList"
+          <HitsList
+            :cvhitsHistory="cvhitsHistory"
           />
         </q-tab-panel>
         <q-tab-panel name="starred">
@@ -101,7 +87,7 @@
 
         <q-tab-panel class="subprofile__settings" name="settings">
           <q-input type="email" class="subprofile__inp" 
-            outlined bottom-slots v-model="mailpw.oldemail" label="Email" counter maxlength="50"  />
+            outlined bottom-slots :value="user" label="Email" counter maxlength="50"  />
           <q-input :type="isPwd ? 'password' : 'text'" class="subprofile__inp" outlined bottom-slots v-model="mailpw.oldpw" label="Пароль" counter maxlength="25" >
             <template v-slot:append>
               <q-icon
@@ -132,6 +118,7 @@
 
 <script>
 import JobsList from '@/components/organisms/JobsList.vue'
+import HitsList from '@/components/organisms/HitsList.vue'
 import ProfileNav from '@/components/molecules/ProfileNav.vue'
 
 import axios from 'axios'
@@ -147,9 +134,11 @@ export default {
     surname: {type: String, default: ''},
     insearch: {type: Boolean, default: false},
     role: String,
-    cvurl: String
+    cvurl: String,
+    user: String,
   },
   data: ()=>{return {
+    cvhitsHistory: [],
     sentCVJobsList: [],
     cvfile: null,
     cvurlnew: '',
@@ -165,7 +154,7 @@ export default {
       insearch: false
     },
     mailpw: {
-      oldemail: '',
+      // oldemail: '', - заменено на user props из app
       newpw: '',
       oldpw: ''
     },
@@ -174,6 +163,7 @@ export default {
   }},
   components: {
     JobsList,
+    HitsList,
     ProfileNav
   },
   deactivated() {
@@ -181,6 +171,21 @@ export default {
     this.$destroy()
   },
   methods: {
+    getCVHitsHistory() {
+      let url = config.jobsUrl + '/getcvhitshistory'
+      axios
+        .post(url, null, {headers: {'Content-Type' : 'application/json' }, withCredentials: true,})
+        .then(response => {
+          if (response.data && response.data.rows) {
+            this.cvhitsHistory = response.data.rows
+            console.log(response.data.rows)
+            //this.$q.notify('Данные изменены')
+            //this.$emit('cvupd', this.cvurlnew)
+          } else console.log('cp124 - ошибка cvhitsHistory')
+          
+          //if error, show like popup or status update
+      })
+    },
     getSentCVJobs() {
       //let sentCVJobsList = []
       let url = config.jobsUrl + '/getcvedjobs'
@@ -271,7 +276,7 @@ export default {
     },
     tryChangePw() {
       let url = config.jobsUrl + '/changepw'
-      let udata = { oldmail: this.mailpw.oldemail, oldpw: this.mailpw.oldpw, newpw: this.mailpw.newpw }
+      let udata = { oldmail: this.user, oldpw: this.mailpw.oldpw, newpw: this.mailpw.newpw }
       axios
         .post(url, udata, {headers: {'Content-Type' : 'application/json' }, withCredentials: true,})
         .then(response => {
@@ -293,8 +298,9 @@ export default {
       } else
       if (rou == 'sentCVS') {
         //do axious shiet to get the listOfSentJobs
-        this.getSentCVJobs()
+        this.getCVHitsHistory()
       }
+      
       this.tab = rou
     },
     favOne(id) {
@@ -302,7 +308,7 @@ export default {
     }
   },
   mounted(){
-    console.log('cp11: ', this.insearch)
+    //console.log('cp11: ', this.insearch)
     this.userdata.username = this.username
     this.userdata.surname = this.surname
     this.userdata.insearch = this.insearch
