@@ -105,7 +105,8 @@
         :jobsFullcount="jobsFullcount"
         :page_current="page_current" :pages="pages_count"
         :pending="ajaxLoading" @updQue="updQue"
-        :user="user" :cvurl="cvurl" :role="role" :username="username" :surname="surname" :insearch="insearch" :company="company" :isagency="isagency" :jobslist="jobslist" @refresh="refreshjobs" :uid="user_id" :authed="user_id !== -1"
+        :user="user" :cvurl="cvurl" :role="role" :username="username" :surname="surname" :insearch="insearch" :company="company" :isagency="isagency" :jobslist="jobslist" @refresh="refreshjobs" 
+        :uid="user_id" :authed="user_id !== -1"
       />
     </keep-alive>
     <footer class="main__footer">
@@ -178,7 +179,7 @@ export default {
       this.user = localStorage.user
     }
     if (localStorage.user_id) {
-      this.user_id = localStorage.user_id
+      this.user_id = Number(localStorage.user_id)
     }
     if (localStorage.role) {
       this.role = localStorage.role
@@ -246,7 +247,7 @@ export default {
         this.user = event.newValue;
       } else
       if (event.key === "user_id") {
-        this.user_id = event.newValue;
+        this.user_id = Number(event.newValue);
       } else
       if (event.key === "role") {
         this.role = event.newValue;

@@ -7,7 +7,7 @@
         >
           <q-btn round icon="description">
             <q-tooltip>
-              <p style="font-size: 15px; margin: 0">Публикация вакансий XLS</p>
+              <p style="font-size: 15px; margin: 0">{{$t('addJob.xlsBtn')}}</p>
             </q-tooltip>
           </q-btn>
           
@@ -28,10 +28,10 @@
             v-model="job.title"
             ref="title"
             :rules="[
-              val => (lazyRulesAll || !!val) || '* Обязательное поле',
-              val => (lazyRulesAll || val.length > 1) || 'Минимум 2 символа',
-              val => val.length < 76 || 'Максимум 75 символов',
-              val => /^[\wа-яА-ЯÇçÄä£ſÑñňÖö$¢Üü¥ÿýŽžŞş\s\-\+\$\%\(\)\№\:\#]*$/.test(val) || 'Используются запрещенные символы'
+              val => (lazyRulesAll || !!val) || $t('addJob.titleValidationRequired'),
+              val => (lazyRulesAll || val.length > 1) || $t('addJob.titleValidationMin'),
+              val => val.length < 76 || $t('addJob.titleValidationMax'),
+              val => /^[\wа-яА-ЯÇçÄä£ſÑñňÖö$¢Üü¥ÿýŽžŞş\s\-\+\$\%\(\)\№\:\#]*$/.test(val) || $t('addJob.titleValidationSymbols'),
               ]"
             :lazy-rules="lazyRulesAll"
             
@@ -39,7 +39,7 @@
         </div>
         <div class="line">
           <p class="star">*</p>
-          <p class="startP" style="width: 140px; textAlign: left">Зарплата</p>
+          <p class="startP" style="width: 140px; textAlign: left">{{$t('addJob.salaryLabel')}}</p>
           <q-input
             :disable="salaryOn"
             :style="{width: '110px', marginRight: '10px'}"
@@ -48,9 +48,9 @@
             bg-color="white"
             v-model="job.salary_min"
             ref="salary_min"
-            placeholder="От" :hint="null"
+            :placeholder="$t('addJob.salaryMinPH')" :hint="null"
             @input="salaryValidated = true; $refs.salary_max.validate()"
-            :rules="[sal => (sal >= 0 && String(sal).length < 6 && sal < 100000) || 'От 0 до 99999']"
+            :rules="[sal => (sal >= 0 && String(sal).length < 6 && sal < 100000) || $t('addJob.salaryValidationRange')]"
           />
           <q-input
             :disable="salaryOn"
@@ -60,11 +60,11 @@
             bg-color="white"
             v-model="job.salary_max"
             ref="salary_max"
-            placeholder="До" :hint="null"
+            :placeholder="$t('addJob.salaryMaxPH')" :hint="null"
             @input="salaryValidated = true"
             :rules="[
-              sal => (sal >= 0 && String(sal).length < 6 && sal < 100000) || 'От 0 до 99999',
-              sal => salaryValidated || 'Укажите зп'
+              sal => (sal >= 0 && String(sal).length < 6 && sal < 100000) || $t('addJob.salaryValidationRange'),
+              sal => salaryValidated || $t('addJob.salaryValidationEnter')
             ]"
           />
           <q-select
@@ -75,8 +75,8 @@
             bg-color="white"
             v-model="job.currency"
             :options="[
-              {label: 'манат', value: 'm'},
-              {label: '$', value: '$'},
+              {label: $t('addJob.manat'), value: 'm'},
+              {label: $t('addJob.dollars'), value: '$'},
             ]"
             :hint="null"
           />
@@ -88,50 +88,45 @@
             salaryValidated = true"
           >
             <q-tooltip>
-              <p style="font-size: 15px; margin: 0">По итогам собеседования</p>
+              <p style="font-size: 15px; margin: 0">{{$t('addJob.salaryCB1Hint')}}</p>
             </q-tooltip>
           </q-checkbox>
         </div>
         <div class="line">
           <p class="star">*</p>
-          <p class="startP" style="width: 140px; textAlign: left">Ваши контакты</p>
+          <p class="startP" style="width: 140px; textAlign: left">{{$t('addJob.contactsLabel')}}</p>
           <q-input
             dense
             outlined
             bg-color="white"
             v-model="job.contact_mail"
-            placeholder="Email"
+            :placeholder="$t('addJob.emailPH')"
             type="email"
             style="marginRight: 10px"
             :hint="null"
             ref="contact_mail"
             @input="contactsValidated = true; $refs.contact_mail.validate()"
             :rules="[
-              val => val.length < 41 || 'Максимум 40 символов',
-              val => (val.length < 1 || isValidMail(val)) || 'Неправильный формат',
-              val => contactsValidated || 'Укажите Email или Телефон'
+              val => val.length < 41 || $t('addJob.emailValidationLength'),
+              val => (val.length < 1 || isValidMail(val)) || $t('addJob.emailValidationFormat'),
+              val => contactsValidated || $t('addJob.emailValidationEnter')
               ]"
             :lazy-rules="lazyRulesAll"
           />
-          <!-- :rules="[mail => (
-              mail.length < 60 && 
-              isValidMail(mail)
-              ) || 'Введите валидный адрес электронной почты (*@*.*)']"
-            :lazy-rules="lazyRulesAll" -->
           <q-input
             dense
             outlined
             bg-color="white"
             v-model="job.contact_tel"
-            placeholder="Телефон"
+            :placeholder="$t('addJob.telPH')"
             type="tel"
             :hint="null"
             ref="contact_tel"
             @input="contactsValidated = true; $refs.contact_mail.validate()"
             :rules="[
-              val => val.length < 16 || 'Максимум 15 символов',
-              val => (val.length == 0 || val.length > 4) || 'Минимум 5 символов',
-              val => (val.length < 1 || /^[\+0-9\-\(\)]*$/.test(val)) || 'Неправильный формат',
+              val => val.length < 16 || $t('addJob.telValidationLengthMax'),
+              val => (val.length == 0 || val.length > 4) || $t('addJob.telValidationLengthMin'),
+              val => (val.length < 1 || /^[\+0-9\-\(\)]*$/.test(val)) || $t('addJob.telValidationFormat'),
             ]"
             :lazy-rules="lazyRulesAll"
           />
@@ -139,7 +134,7 @@
         <div class="line">
           <!-- <p class="startP">Город</p> -->
           <p class="star"> </p>
-          <p class="startP" style="width: 140px; textAlign: left">Город</p>
+          <p class="startP" style="width: 140px; textAlign: left">{{$t('addJob.cityLabel')}}</p>
           <q-select
             :value="job.city"
             @input="cityUpd"
@@ -156,14 +151,13 @@
             :hint="null"
             @keyup="addNewCity"
             :rules="[
-              val => val.length < 71 || 'Максимум 70 символов',
-              val => /^[a-zA-Zа-яА-ЯÇçÄä£ſÑñňÖö$¢Üü¥ÿýŽžŞş\s\-\(\)]*$/.test(val) || 'Только буквы'
+              val => val.length < 71 || $t('addJob.cityValidationLength'),
+              val => /^[a-zA-Zа-яА-ЯÇçÄä£ſÑñňÖö$¢Üü¥ÿýŽžŞş\s\-\(\)]*$/.test(val) || $t('addJob.cityValidationFormat')
             ]"
             :lazy-rules="lazyRulesAll"
           />
-          <!-- <q-input :style="{width: '250px'}" dense filled v-model="job.city" label="Город" :hint="null"/> -->
         </div>
-        <p style="fontSize: 16px; marginBottom: 10px">Описание <span style="color: #c10015">{{descError}}</span></p>
+        <p style="fontSize: 16px; marginBottom: 10px">{{$t('addJob.descLabel')}}<span style="color: #c10015">{{descError}}</span></p>
         <div class="line">
           <div class="desc-col-wrap" style="textAlign: left; width: 100%">
             <vue-editor
@@ -178,13 +172,13 @@
         </div>
         <q-expansion-item
           expand-separator
-          label="Дополнительно"
+          :label="$t('addJob.moreLabel')"
           style="marginBottom: 10px; font-size: 16px;text-align:right;"
         >
         
           <div class="line" style="marginTop: 10px">
             <p class="star"> </p>
-            <p class="startP" style="width: 140px; textAlign: left">Опыт</p>
+            <p class="startP" style="width: 140px; textAlign: left">{{$t('addJob.expLabel')}}</p>
             <q-select
               v-model="job.experience"
               style="width: 180px"
@@ -196,7 +190,7 @@
           </div>
           <div class="line">
             <p class="star"> </p>
-            <p class="startP" style="width: 140px; textAlign: left">Тип занятости</p>
+            <p class="startP" style="width: 140px; textAlign: left">{{$t('addJob.jobTypeLabel')}}</p>
             <q-select
               v-model="job.jtype"
               outlined bg-color="white"
@@ -208,19 +202,19 @@
           </div>
           <div class="line">
             <p class="star"> </p>
-            <p class="startP" style="width: 140px; textAlign: left">Возраст</p>
+            <p class="startP" style="width: 140px; textAlign: left">{{$t('addJob.ageLabel')}}</p>
             <q-input
               :style="{width: '110px', marginRight: '10px'}"
               dense outlined
               bg-color="white"
               v-model="job.age1"
               ref="age1"
-              placeholder="От"
+              :placeholder="$t('addJob.genericFrom')"
               :hint="null"
               :rules="[
-                val => isNaN(val) == false || 'Введите число',
-                val => (val == undefined || val == '' || val >= 18) || 'От 18',
-                val => val < 100 || 'Слишком много',
+                val => isNaN(val) == false || $t('addJob.genericEnterNumber'),
+                val => (val == undefined || val == '' || val >= 18) || $t('addJob.genericFrom18'),
+                val => val < 100 || $t('addJob.genericTooMuch'),
               ]"
               :lazy-rules="lazyRulesAll"
             />
@@ -229,44 +223,46 @@
               dense outlined
               bg-color="white"
               v-model="job.age2"
-              placeholder="До"
+              :placeholder="$t('addJob.genericTo')"
               :hint="null"
               ref="age2"
               :rules="[
-                val => isNaN(val) == false || 'Введите число',
-                val => (val == undefined || val == '' || val >= 18) || 'От 18',
-                val => val < 100 || 'Слишком много',
+                val => isNaN(val) == false || $t('addJob.genericEnterNumber'),
+                val => (val == undefined || val == '' || val >= 18) || $t('addJob.genericFrom18'),
+                val => val < 100 || $t('addJob.genericTooMuch'),
               ]"
               :lazy-rules="lazyRulesAll"
             />
           </div>
           <div class="line">
             <p class="star"> </p>
-            <p class="startP" style="width: 140px; textAlign: left">График работы</p>
+            <p class="startP" style="width: 140px; textAlign: left">{{$t('addJob.labelSchedule')}}</p>
             <q-input
               :style="{width: '110px', marginRight: '10px'}"
               dense outlined bg-color="white"
               v-model="job.worktime1"
               ref="worktime1"
-              placeholder="От" :hint="null"
+              :placeholder="$t('addJob.genericFrom')"
+              :hint="null"
               :rules="[
-                val => isNaN(val) == false || 'Введите число',
-                val => val == (val | 0) || 'Целое число',
-                val => (val == undefined || val == '' || val >= 0) || 'Положительное',
-                val => val < 25 || '24 макс',
+                val => isNaN(val) == false || $t('addJob.genericEnterNumber'),
+                val => val == (val | 0) || $t('addJob.genericWholeNumber'),
+                val => (val == undefined || val == '' || val >= 0) || $t('addJob.genericPositiveNumber'),
+                val => val < 25 || $t('addJob.generic24Max'),
               ]"
               :lazy-rules="lazyRulesAll"
             />
             <q-input
               :style="{width: '110px', marginRight: '10px'}"
               dense outlined bg-color="white" v-model="job.worktime2"
-              placeholder="До" :hint="null"
+              :placeholder="$t('addJob.genericTo')"
+              :hint="null"
               ref="worktime2"
               :rules="[
-                val => isNaN(val) == false || 'Введите число',
-                val => val == (val | 0) || 'Целое число',
-                val => (val == undefined || val == '' || val >= 0) || 'Положительное',
-                val => val < 25 || '24 макс',
+                val => isNaN(val) == false || $t('addJob.genericEnterNumber'),
+                val => val == (val | 0) || $t('addJob.genericWholeNumber'),
+                val => (val == undefined || val == '' || val >= 0) || $t('addJob.genericPositiveNumber'),
+                val => val < 25 || $t('addJob.generic24Max'),
               ]"
               :lazy-rules="lazyRulesAll"
             />
@@ -281,22 +277,22 @@
               input-debounce="0"
               fill-input
               hide-selected
-              placeholder="Режим"
+              :placeholder="$t('addJob.schedulePH')"
               ref="schedule"
               :options="scheduleOptions"
               @filter="filterSchedule"
               :hint="null"
               @keyup="addNewSchedule"
               :rules="[
-                val => val.length < 11 || 'Максимум 10 символов',
-                val => /^[\wа-яА-ЯÇçÄä£ſÑñňÖö$¢Üü¥ÿýŽžŞş\s\-\(\)\\\/]*$/.test(val) || 'Неправильный формат'
+                val => val.length < 11 || $t('addJob.scheduleValidationLengthMax'),
+                val => /^[\wа-яА-ЯÇçÄä£ſÑñňÖö$¢Üü¥ÿýŽžŞş\s\-\(\)\\\/]*$/.test(val) || $t('addJob.scheduleValidationFormat')
               ]"
               :lazy-rules="lazyRulesAll"
             />
           </div>
           <div class="line">
             <p class="star"> </p>
-            <p class="startP" style="width: 140px; textAlign: left">Образование</p>
+            <p class="startP" style="width: 140px; textAlign: left">{{$t('addJob.eduLabel')}}</p>
             <q-input
               dense
               outlined
@@ -306,20 +302,20 @@
               :hint="null"
               ref="edu"
               :rules="[
-                val => val.length < 21 || '20 символов макс',
-                val => /^[a-zA-Zа-яА-ЯÇçÄä£ſÑñňÖö$¢Üü¥ÿýŽžŞş\s\-\(\)]*$/.test(val) || 'Только буквы'
+                val => val.length < 21 || $t('addJob.eduValidationLengthMax'),
+                val => /^[a-zA-Zа-яА-ЯÇçÄä£ſÑñňÖö$¢Üü¥ÿýŽžŞş\s\-\(\)]*$/.test(val) || $t('addJob.eduValidationFormat')
               ]"
               :lazy-rules="lazyRulesAll"
             >
               <q-tooltip>
-                <p style="font-size: 15px; margin: 0">Например: высшее, среднее, высшее/среднее и т.д</p>
+                <p style="font-size: 15px; margin: 0">{{$t('addJob.eduTooltip')}}</p>
               </q-tooltip>
             </q-input>
             
           </div>
           <div class="line">
             <p class="star"> </p>
-            <p class="startP" style="width: 140px; textAlign: left">Языки</p>
+            <p class="startP" style="width: 140px; textAlign: left">{{$t('addJob.langsLabel')}}</p>
             <q-select
               multiple
               use-chips
@@ -334,19 +330,23 @@
             />
           </div>
         </q-expansion-item>
-        <q-btn style="marginTop: 0px" color="primary" :label="newJobsPageType == 'new' ? 'Разместить вакансию' : 'Отправить изменения'" @click="tryAdd"/>
+        <q-btn
+          color="primary"
+          :label="newJobsPageType == 'new' ? $t('addJob.sendJobBtnLabelNew') : $t('addJob.sendJobBtnLabelUpdate')"
+          @click="tryAdd"
+        />
       </div>
       <div v-else-if="sent == 'good'" :key="2" class="jobpage__wrapper">
-        <p>Вакансия <a :href="'/jobpage?id=' + returned.job_id" target="_blank">{{returned.title}}</a> успешно изменена</p>
-        <q-btn color="primary" @click="$emit('setSentState', 'none'); resetFields(); $emit('newJobInit')" label="Добавить еще одну"/>
+        <p>{{$t('addJob.sendJobSuccess1')}}<a :href="'/jobpage?id=' + returned.job_id" target="_blank">{{returned.title}}</a>{{$t('addJob.sendJobSuccess2')}}</p>
+        <q-btn color="primary" @click="$emit('setSentState', 'none'); resetFields(); $emit('newJobInit')" :label="$t('addJob.btnAddOneMore')"/>
         
       </div>
       <div v-else-if="sent == 'fail'" :key="3" class="jobpage__wrapper">
-        <p>Ошибка на сервере, вакансия не добавлена</p>
-        <q-btn color="primary" @click="$emit('setSentState', 'none'); resetFields(); $emit('newJobInit')" label="Добавить еще одну"/>
+        <p>{{$t('addJob.sendJobError1')}}</p>
+        <q-btn color="primary" @click="$emit('setSentState', 'none'); resetFields(); $emit('newJobInit')" :label="$t('addJob.btnAddOneMore')"/>
       </div>
       <div v-else-if="role == 'guestUnau'" :key="4" class="jobpage__wrapper">
-        Авторизируйтесь, для возможности загрузки вакансий
+        {{$t('addJob.unauthorized')}}
       </div>
     </transition>
   </div>
