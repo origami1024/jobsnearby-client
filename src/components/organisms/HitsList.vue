@@ -15,7 +15,7 @@
         </thead>
         <tr class="jobstat" v-for="item in cvhitsHistory" :key="item.job_id">
           <td style="text-align: left">
-            <a class="link1" target="_blank" :href="'/jobpage?id=' + item.job_id">
+            <a class="link1" target="_blank" :href="'/jobpage?id=' + item.cvjob_id">
               {{item.title}}
             </a>
           </td>
