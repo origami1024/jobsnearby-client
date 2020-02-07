@@ -13,7 +13,7 @@
             <td style="width: 15%; min-width: 15%; max-width: 15%;">Просмотрено</td>
           </tr>
         </thead>
-        <tr class="jobstat" v-for="item in cvhitsHistory" :key="item.job_id">
+        <tr class="jobstat" v-for="item in cvhitsHistory" :key="item.cvjob_id">
           <td style="text-align: left">
             <a class="link1" target="_blank" :href="'/jobpage?id=' + item.cvjob_id">
               {{item.title}}
