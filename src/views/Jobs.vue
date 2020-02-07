@@ -45,7 +45,7 @@
                   style="lineHeight: 2"
                   dense :style="{color: sort.value == 'saldesc' ? 'purple' : 'black'}"
                   clickable v-close-popup
-                  @click="sort = {label: 'По убыв зп', value: 'saldesc'}"
+                  @click="sort = {label: 'По убыв зп', value: 'saldesc'};outerResetNeeded = true"
                 >
                   По убыв зп
                 </q-item>
@@ -53,7 +53,7 @@
                   style="lineHeight: 2"
                   dense :style="{color: sort.value == 'salasc' ? 'purple' : 'black'}"
                   clickable v-close-popup
-                  @click="sort = {label: 'По возр зп', value: 'salasc'}"
+                  @click="sort = {label: 'По возр зп', value: 'salasc'};outerResetNeeded = true"
                 >
                   По возр зп
                 </q-item>
@@ -83,7 +83,7 @@
                   style="lineHeight: 2"
                   dense :style="{color: timerange.value == 'wee' ? 'purple' : 'black'}"
                   clickable v-close-popup
-                  @click="timerange = {label: 'За неделю', value: 'wee'}"
+                  @click="timerange = {label: 'За неделю', value: 'wee'};outerResetNeeded = true"
                 >
                   За неделю
                 </q-item>
@@ -91,7 +91,7 @@
                   style="lineHeight: 2"
                   dense :style="{color: timerange.value == 'day' ? 'purple' : 'black'}"
                   clickable v-close-popup
-                  @click="timerange = {label: 'За сутки', value: 'day'}"
+                  @click="timerange = {label: 'За сутки', value: 'day'};outerResetNeeded = true"
                 >
                   За сутки
                 </q-item>
@@ -121,7 +121,7 @@
                   style="lineHeight: 2"
                   dense :style="{color: perpage.value == '50' ? 'purple' : 'black'}"
                   clickable v-close-popup
-                  @click="perpage = {label: '50 на стр', value: '50'}"
+                  @click="perpage = {label: '50 на стр', value: '50'};outerResetNeeded = true"
                 >
                   50 на стр
                 </q-item>
@@ -129,7 +129,7 @@
                   style="lineHeight: 2"
                   dense :style="{color: perpage.value == '100' ? 'purple' : 'black'}"
                   clickable v-close-popup
-                  @click="perpage = {label: '100 на стр', value: '100'}"
+                  @click="perpage = {label: '100 на стр', value: '100'};outerResetNeeded = true"
                 >
                   100 на стр
                 </q-item>
