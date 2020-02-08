@@ -32,6 +32,19 @@ const loc = {
       jtyp: 'Занятость',
       applyBtn: 'Применить'
     },
+    companyPage: {
+      categoriesHeader: 'Сферы деятельности компании',
+      descHeader: 'Описание',
+      publishedJobsCountLabel: 'Размещено вакансий: ',
+      registrationDate: 'Зарегистрирована: ',
+    },
+    entProfile: {
+      navPublishedLabel: 'Вакансии',
+      navResponsesLabel: 'Отклики',
+      navAboutLabel: 'О компании',
+      navSettingsLabel: 'Настройки',
+      publishedHeader: 'Опубликованные вакансии',
+    },
     addJob: {
       titleLabel: 'Название вакансии',
       xlsBtn: 'Публикация вакансий XLS',
@@ -126,7 +139,8 @@ const loc = {
       titleValidationRequired: '* GSIGSIGISG',
       cityOptions: ["AASDQWDQW", "SSS", "UUU", "XXX", "ЧЧЧ"],
     }
-  }
+  },
+  en: {},
 }
 
 module.exports = {

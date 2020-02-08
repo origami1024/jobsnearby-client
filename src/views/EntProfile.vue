@@ -4,8 +4,8 @@
       <ProfileNav
         :localRoute="tab"
         @setLocalRoute="setLocalRoute"
-        :localroutes="[{r: 'published', l: 'Вакансии'}, {r: 'responses', l: 'Отклики'}, {r: 'cabout', l: 'О компании'}]"
-        :localroutesX="{r: 'settings', l: 'Настройки'}"
+        :localroutes="[{r: 'published', l: $t('entProfile.navPublishedLabel')}, {r: 'responses', l: $t('entProfile.navResponsesLabel')}, {r: 'cabout', l: $t('entProfile.navAboutLabel')}]"
+        :localroutesX="{r: 'settings', l: $t('entProfile.navSettingsLabel')}"
       />
       <q-tab-panels
         class="qtpans"
@@ -16,7 +16,7 @@
         transition-next="jump-up"
       >
         <q-tab-panel name="published" class="entprofile__published entprofile__mid">
-          <h4 class="entprofile__header">Опубликованные вакансии({{ownJobs.length}}):</h4>
+          <h4 class="entprofile__header">{{$t('entProfile.publishedHeader')}}({{ownJobs.length}}):</h4>
           <JobsStats @reopenJob="reopenJob" @editJob="editJob" @closeJob="closeJob" @delJob="delJob" :jobslist="ownJobs"/>
         </q-tab-panel>
         <q-tab-panel name="responses" class="entprofile__mid" style="display: flex">

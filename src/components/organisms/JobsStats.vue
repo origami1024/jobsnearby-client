@@ -15,7 +15,7 @@
         </thead>
         <tr class="jobstat" v-for="item in jobslist" :key="item.job_id">
           <td style="text-align: left"><a class="link1" target="_blank" :href="'/jobpage?id=' + item.job_id">{{item.title}}</a></td>
-          <td>{{item.hits_all}}</td>
+          <td>{{Number(item.hits_all)}}</td>
           <td>{{item.hits_uniq}}</td>
           <!-- <td>0</td> -->
           <td>

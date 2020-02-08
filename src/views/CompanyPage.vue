@@ -14,7 +14,7 @@
       </section>
       <section>
         <q-list dense bordered padding class="rounded-borders" v-if="cdata.domains.length > 0">
-          <h4 class="detailed__header">Сферы деятельности компании</h4>
+          <h4 class="detailed__header">{{$t('companyPage.categoriesHeader')}}</h4>
           <q-item clickable  v-if="cdata.domains[0]">
             <q-item-section class="padleft">
               {{cdata.domains[0]}}
@@ -35,7 +35,7 @@
       <section>
         <div>
           <q-list dense bordered padding class="rounded-borders" v-if="cdata.full_description.length > 0">
-            <h4 class="detailed__header">Описание</h4>
+            <h4 class="detailed__header">{{$t('companyPage.descHeader')}}</h4>
             <q-item clickable >
               <q-item-section class="padleft">
               <div class="descriptionHTML">
@@ -47,8 +47,8 @@
         </div>
       </section>
       <section style="display: flex; justifyContent: space-between">
-        <p>Размещено вакансий: {{cdata.jobs_count > 0 ? cdata.jobs_count : 1}}</p>
-        <p>Зарегистрирована: {{created}}</p>
+        <p>{{$t('companyPage.publishedJobsCountLabel')}}{{cdata.jobs_count > 0 ? cdata.jobs_count : 1}}</p>
+        <p>{{$t('companyPage.registrationDate')}}{{created}}</p>
       </section>
     </main>
   </div>
