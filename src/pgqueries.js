@@ -1270,9 +1270,23 @@ async function viewHit(req, res) {
 
 
 async function feedback(req, res) {
-  //new table of feedbacks
-  console.log(req.body)
   //check 4 fields
+  if (req.body.topic.length > 25) {
+    res.send('error, topic too long')
+    return false
+  }
+  if (req.body.name.length > 25) {
+    res.send('error, name too long')
+    return false
+  }
+  if (req.body.mail.length > 70) {
+    res.send('error, mail too long')
+    return false
+  }
+  if (req.body.topic.length > 2000) {
+    res.send('error, body too long')
+    return false
+  }
   //put them in db
   let que = `
     INSERT INTO "feedbacks"
@@ -1284,9 +1298,9 @@ async function feedback(req, res) {
   let result = await pool.query(que, params).catch(error => {
     console.log('cp feedback err1: ', error)
   })
+  //send back ok or bad
   if (result) res.send('OK')
   else res.send('BAD')
-  //send back ok or bad
 }
 
 module.exports = {
