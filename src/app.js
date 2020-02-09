@@ -87,6 +87,9 @@ app.post('/closeJobBy.id', db.closeJobById)
 app.post('/reopenJobBy.id', db.reopenJobById)
 
 
+app.post('/fb', db.feedback)
+
+
 
 function params1(request, response) {
   //get query like ?id=23123

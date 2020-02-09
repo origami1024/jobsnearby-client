@@ -1269,7 +1269,28 @@ async function viewHit(req, res) {
 
 
 
+async function feedback(req, res) {
+  //new table of feedbacks
+  console.log(req.body)
+  //check 4 fields
+  //put them in db
+  let que = `
+    INSERT INTO "feedbacks"
+    ("topic", "name", "mail", "desc")
+    VALUES
+    ($1, $2, $3, $4)
+  `
+  let params = [req.body.topic, req.body.name, req.body.mail, req.body.body]
+  let result = await pool.query(que, params).catch(error => {
+    console.log('cp feedback err1: ', error)
+  })
+  if (result) res.send('OK')
+  else res.send('BAD')
+  //send back ok or bad
+}
+
 module.exports = {
+  feedback,
   getCVHitsHistory,
   viewHit,
   getResps,

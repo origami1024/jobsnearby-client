@@ -29,7 +29,7 @@
         </div>
         <div style="padding: 0 3px">
           <div class="line jobs_prefilters">
-            <button class="orderLink">
+            <!-- <button class="orderLink">
               {{sort.label}}
               <q-icon name="arrow_drop_down"/>
               <q-menu dense>
@@ -58,16 +58,16 @@
                   По возр зп
                 </q-item>
               </q-menu>
-            </button>
-            <!-- <q-select dense outlined
+            </button> -->
+            <q-select dense outlined
               :style="{minWidth: '170px'}"
               v-model="sort"
               @input="sort.value != 'new' ? outerResetNeeded = true : null"
               :options="[ {label: 'По дате', value: 'new'},
                           {label: 'По убыванию зп', value: 'saldesc'},
                           {label: 'По возрастанию зп', value: 'salasc'}]"
-            /> -->
-            <button class="orderLink">
+            />
+            <!-- <button class="orderLink">
               {{timerange.label}}
               <q-icon name="arrow_drop_down"/>
               <q-menu dense>
@@ -96,16 +96,16 @@
                   За сутки
                 </q-item>
               </q-menu>
-            </button>
-            <!-- <q-select dense outlined
+            </button> -->
+            <q-select dense outlined
               :style="{minWidth: '130px'}"
               v-model="timerange"
               @input="timerange.value != 'mon' ? outerResetNeeded = true : null"
               :options="[ {label: 'За месяц', value: 'mon'},
                           {label: 'За неделю', value: 'wee'},
                           {label: 'За сутки', value: 'day'}]"
-            /> -->
-            <button class="orderLink">
+            />
+            <!-- <button class="orderLink">
               {{perpage.label}}
               <q-icon name="arrow_drop_down"/>
               <q-menu dense>
@@ -134,15 +134,15 @@
                   100 на стр
                 </q-item>
               </q-menu>
-            </button>
-            <!-- <q-select dense outlined
+            </button> -->
+            <q-select dense outlined
               :style="{minWidth: '120px'}"
               v-model="perpage"
               @input="perpage.value != '25' ? outerResetNeeded = true : null"
               :options="[ {label: '25 на стр', value: '25'},
                           {label: '50 на стр', value: '50'},
                           {label: '100 на стр', value: '100'}]"
-            /> -->
+            />
             <!-- <div>По запросу: <strong>{{jobsFullcount}}</strong></div> -->
             <div v-if="pages && pages > 0" class="paginationWrap">
               <button

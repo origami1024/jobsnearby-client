@@ -19,14 +19,23 @@
       <q-btn color="primary" label="Отправить" @click="sendFB" />
     </div>
     <div v-else class="fb_inner">
-      Успешно отправлено, / ошибка
-      отправить еще
-      вернуться на главную
+      <p>{{
+        state == 'OK'
+          ? 'Успешно отправлено'
+          : 'Ошибка на сервере'}}</p>
+      <div style="width: 100%;">
+        <q-btn style="margin-right: 10px" color="primary" label="Отправить еще" @click="state='ready'" />
+        <q-btn color="primary" label="На главную" @click="fbDataFlush(); state='ready'; $router.push('/')" />
+      </div>
     </div>
   </div>
 </template>
 
 <script>
+import axios from 'axios'
+
+const config = require('./../configs/main_config')
+
 export default {
   name: 'FeedBack',
   data: ()=>{return {
@@ -39,8 +48,30 @@ export default {
     }
   }},
   methods: {
+    fbDataFlush() {
+      this.fbData = {
+        topic: '',
+        name: '',
+        mail: '',
+        body: '',
+      }
+    },
     sendFB() {
       console.log(this.fbData)
+      let url = config.jobsUrl + '/fb'
+      axios
+        .post(url, this.fbData, {headers: {'Content-Type' : 'application/json' }, withCredentials: true,})
+        .then(response => {
+          //console.log('viewHit', response.data)
+          if (response.data == 'OK') {
+            this.$q.notify('Фидбэк отправлен')
+            this.state = 'OK'
+            this.fbDataFlush()
+          } else {
+            this.$q.notify('Ошибка на сервере')
+            this.state = 'BAD'
+          }
+      })
     }
   }
 }
@@ -51,6 +82,7 @@ export default {
   max-width 620px
   width 620px
   .fb_inner
+    min-height 70vh
     border-radius 5px
     box-shadow 0 0 3px 2px #a0a4
     margin-top 15px
