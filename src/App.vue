@@ -42,15 +42,15 @@
       <div id="authmenu" >
         <!-- style="alignSelf: flex-end;" -->
         <div class="colx user-status-bar">
-          <!-- <router-link
+          <router-link
             @click.native="regState='login'"
             v-if="role && role.startsWith('guest')"
             class="headerBtn"
             to="/registration">
             {{$t('App.login')}}
-          </router-link> -->
+          </router-link>
           <!-- :text-color="$route.path == '/registration' ? 'yellow' : 'white'"  -->
-          <q-btn
+          <!-- <q-btn
             color="white"
             text-color="indigo"
             size="16px"
@@ -60,7 +60,7 @@
             v-if="role && role.startsWith('guest')"
             @click.native="regState='login'"
             :label="$t('App.login')"
-            to="/registration"/>
+            to="/registration"/> -->
           <q-btn-group style="color: white">
             <q-btn flat @click="getFavedFull" :color="$route.path == '/subprofile' ? 'purple' : 'inherit'" :text-color="$route.path == '/subprofile' ? 'white' : 'black'" no-caps icon="person" v-if="role === 'subscriber'" to="/subprofile">
               <q-tooltip>
@@ -775,7 +775,7 @@ export default {
   .main__footer
     display flex
     justify-content flex-end
-    background-color var(--main-bg-color)
+    background-color var(--main-borders-color)
     box-shadow 0 0 3px 0px var(--main-borders-color)
     //position fixed
     //bottom 0
@@ -794,23 +794,31 @@ export default {
     font-size 14px
     &:hover
       color yellow
-  // .headerBtn
-  //   text-decoration none
-  //   color #bbb
-  //   text-transform uppercase
-  //   border 2px solid transparent
-  //   //transition-duration .4s
-  //   padding 5px
-  //   border-radius 5px
-  //   padding-right 0px
-  //   letter-spacing 2px
-  //   font-weight 700
-  //   &:hover
-  //     //border 2px solid white
-  //     color white
+  .headerBtn
+    text-decoration none
+    color var(--main-borders-color)
+    font-size 16px
+    background-color white
+    text-transform uppercase
+    border 2px solid transparent
+    //transition-duration .4s
+    padding 4px
+    border-radius 4px
+    padding-right 0px
+    letter-spacing 2px
+    font-weight 700
+    &:hover
+      color indigo
+      //border 2px solid white
+      //color white
   // .headerBtn.router-link-exact-active
   //   border 2px solid white
   //   color white
   //   &:visited
   //     border 2px solid white
+.q-item--active
+  color var(--main-borders-color) !important
+.q-manual-focusable--focused
+  background-color var(--main-borders-color)
+  color var(--main-bg-color) !important
 </style>

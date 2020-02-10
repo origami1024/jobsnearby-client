@@ -88,7 +88,7 @@
         <q-tab-panel class="subprofile__settings" name="settings">
           <q-input type="email" class="subprofile__inp" 
             outlined bottom-slots :value="user" label="Email" counter maxlength="50"  />
-          <q-input :type="isPwd ? 'password' : 'text'" class="subprofile__inp" outlined bottom-slots v-model="mailpw.oldpw" label="Пароль" counter maxlength="25" >
+          <q-input :type="isPwd ? 'password' : 'text'" class="subprofile__inp" outlined bottom-slots v-model="mailpw.oldpw" label="Старый пароль" counter maxlength="25" >
             <template v-slot:append>
               <q-icon
                 :name="isPwd ? 'visibility_off' : 'visibility'"
@@ -100,7 +100,7 @@
           <q-input 
             :type="isPwd ? 'password' : 'text'" 
             class="subprofile__inp" outlined bottom-slots 
-            v-model="mailpw.newpw" label="Пароль" counter maxlength="25" >
+            v-model="mailpw.newpw" label="Новый пароль" counter maxlength="25" >
             <template v-slot:append>
               <q-icon
                 :name="isPwd ? 'visibility_off' : 'visibility'"

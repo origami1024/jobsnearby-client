@@ -277,7 +277,7 @@ export default {
       this.jtype= {label: "", value: ''}
       this.salary= {label: "", value: 'idc'}
       this.exp= {label: "", value: 'idc'}
-      this.currency= {label: "все", value: 'idc'}
+      this.currency= {label: "", value: 'idc'}
 
       this.sort = {label: 'По дате', value: 'new'}
       this.timerange = {label: 'За месяц', value: 'mon'}

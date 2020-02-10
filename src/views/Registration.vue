@@ -14,6 +14,28 @@
       <q-tab-panels class="registration__inner" :value="regState" animated>
         <q-tab-panel name="login">
           <form action="#" @submit.prevent="trylog">
+            <div style="display:flex; width: 100%; margin-bottom: 10px">
+              <label style="alignSelf: center; width: 100px;margin-bottom: 15px" for="mailInput1">* Email</label>
+              <q-input
+                id='mailInput1'
+                dense
+                filled
+                v-model="login.mail"
+                hint=""
+                style="width: 100%;"
+              />
+            </div>
+            <div style="display:flex; width: 100%; margin-bottom: 10px">
+              <label style="alignSelf: center; width: 100px;margin-bottom: 15px" for="pwInput1">* Пароль</label>
+              <q-input
+                id='pwInput1'
+                dense
+                filled
+                v-model="login.mail"
+                hint=""
+                style="width: 100%;"
+              />
+            </div>
             <div class="colx">
               <div class="row">
                 <!-- <label for="email">Email</label> -->
@@ -360,7 +382,7 @@ export default {
 
 <style scoped lang="stylus">
 .registration
-  padding-top 15px
+  padding 15px 0
   margin 0
   max-width 400px
   width 400px

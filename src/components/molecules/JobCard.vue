@@ -57,7 +57,7 @@
         </q-btn>
         <!-- <q-btn class="mr-5px" v-else-if="role == 'subscriber'" round size="xs" icon="work"/> -->
         <a v-if="role == 'subscriber' && lenses == 'full'" class="cardLink" @click.prevent="isContactsShown = !isContactsShown" href="#">Контакты</a>
-        <q-btn class="mr-5px" v-else-if="role == subscriber" round size="xs" @click="isContactsShown = !isContactsShown" icon="people"/>
+        <q-btn class="mr-5px" v-else-if="role == 'subscriber'" round size="xs" @click="isContactsShown = !isContactsShown" icon="people"/>
         <q-btn v-if="showLiked" :text-color="liked ? 'primary' : 'grey'" round size="xs" icon="star" @click="$emit('favOne', job.job_id)"/>
       </div>
       <div v-if="isContactsShown" class="contactsPanel">
