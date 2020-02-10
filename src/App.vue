@@ -4,9 +4,8 @@
     <header>
       <q-btn
         class="logo"
-        :text-color="$route.path == '/' ? '#8080f1' : 'white'"
-        :color="$route.path == '/' ? 'white' : 'gray'"
-        @click="refreshjobs('logoclick')" round glossy to="/" size="16px" label="ussat" style="padding: 6px;">
+        text-color="white"
+        @click="refreshjobs('logoclick')" flat to="/" size="16px" label="ussat" style="padding: 6px;">
         <!-- <q-avatar size="46px">
           <img src="https://cdn.quasar.dev/app-icons/icon-128x128.png" />  
         </q-avatar> -->
@@ -36,9 +35,10 @@
             to="/registration">
             {{$t('App.login')}}
           </router-link> -->
+          <!-- :text-color="$route.path == '/registration' ? 'yellow' : 'white'"  -->
           <q-btn
             outline
-            :text-color="$route.path == '/registration' ? 'yellow' : 'white'" 
+            text-color="white"
             v-if="role && role.startsWith('guest')"
             @click.native="regState='login'"
             :label="$t('App.login')"
@@ -683,6 +683,8 @@ export default {
   font-family 'Varela Round', 'Nunito', sans-serif
   --main-bg-color #fff//#f7f7f7//#8080f1//
   --main-borders-color #8080f1
+  --btn-color #fff
+  --red red
 #app
   // font-family 'Avenir', Helvetica, Arial, sans-serif
   --maxW 1000px

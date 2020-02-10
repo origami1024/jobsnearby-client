@@ -24,7 +24,7 @@
                 <q-icon name="search" />
               </template>
             </q-input>
-            <q-btn @click="refreshPlus" color="primary" :loading="pending" class="jobsfilter__search-btn" :label="$t('home.searchBtn')"/>
+            <q-btn @click="refreshPlus" flat color="#8080f1" :loading="pending" class="jobsfilter__search-btn" :label="$t('home.searchBtn')"/>
           </div>
         </div>
         <div style="padding: 0 4px">
@@ -233,7 +233,7 @@ export default {
     jtype: {label: "", value: ''},
     salary: {label: "", value: 'idc'},
     exp: {label: "", value: 'idc'}, 
-    currency: {label: "все", value: 'idc'},
+    currency: {label: "", value: 'idc'},
   }},
   components: {
     JobsFilter,
@@ -384,7 +384,7 @@ export default {
     width 100%
     max-width calc(1000px - 310px) //that is including the filters to the left
   .jobs_prefilters
-    margin-bottom 10px
+    margin-bottom 15px
     background-color var(--main-bg-color)
     padding 5px
     border-radius 5px

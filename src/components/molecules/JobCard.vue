@@ -202,9 +202,13 @@ export default {
     &:visited
       color #06f
   .cardLink
-    margin-right 10px
+    margin-right 15px
+    &:hover
+      color #5af
   .cardLink:visited
     color #06f//#2837C6
+    &:hover
+      color #5af
   .cardHeader
     font-weight 400
     font-size 20px
@@ -224,8 +228,8 @@ export default {
   .line50
     display flex
     align-items center
-    min-width 190px
-    width 50%
+    min-width 120px
+    max-width 50%
   
     
   .spbtw

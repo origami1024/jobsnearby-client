@@ -17,7 +17,7 @@
     
     <div class="line">
       <q-select style="width: 65%" @input="salaryUpd" dense :value="salary" :options="salOptions" :label="$t('home.sal')" />
-      <q-select style="width: 30%" dense @input="currUpd" :value="currency" :options="currOptions" :label="$t('home.curr')" />
+      <q-select style="width: 30%; text-align: center" dense @input="currUpd" :value="currency" :options="currOptions" :label="$t('home.curr')" />
     </div>
     <q-select @input="expUpd" dense :value="exp" :options="expOptions" :label="$t('home.exp')" />
     <q-select @input="jtypeUpd" dense :value="jtype" :options="jtypeOptions" :label="$t('home.jtyp')" />
@@ -29,7 +29,7 @@
         color="red"
         @click="$emit('resetFilters')"
       />
-      <q-btn :loading="pending" color="primary" :label="$t('home.applyBtn')" @click="refreshPlus"/>
+      <q-btn :loading="pending" flat color="#8080f1" :label="$t('home.applyBtn')" @click="refreshPlus"/>
     </div>
     
   </div>
@@ -119,6 +119,7 @@ export default {
       this.$emit('jtypeUpd', new1)
     },
     currUpd(new1) {
+      if (new1.value == 'idc') new1 = {label: '',value : "idc"}
       this.$emit('currUpd', new1)
     },
     addNewCity(e){
