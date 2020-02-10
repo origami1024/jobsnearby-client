@@ -88,6 +88,7 @@ app.post('/reopenJobBy.id', db.reopenJobById)
 
 
 app.post('/fb', db.feedback)
+app.get('/allfb', getAllFB)
 
 
 
@@ -105,8 +106,28 @@ function params1(request, response) {
 
 
 
-
-
+async function getAllFB(req, res) {
+  let body = `
+    <table>
+      <th>
+        <td>Тема</td>
+        <td>Имя</td>
+        <td>Мэйл</td>
+        <td>Текст</td>
+        <td>Дата написания</td>
+      </th>
+      <tr>
+        <td>1</td>
+        <td>2</td>
+        <td>3</td>
+        <td>4</td>
+        <td>5</td>
+      </tr>
+    </table>
+  `
+  let allFBPage = pageParts.head + body + pageParts.footer
+  res.send(allFBPage)
+}
 
 async function getOwnCompanyJSON(req, res) {
   

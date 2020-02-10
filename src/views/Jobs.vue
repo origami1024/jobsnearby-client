@@ -27,7 +27,7 @@
             <q-btn @click="refreshPlus" color="primary" :loading="pending" class="jobsfilter__search-btn" :label="$t('home.searchBtn')"/>
           </div>
         </div>
-        <div style="padding: 0 3px">
+        <div style="padding: 0 4px">
           <div class="line jobs_prefilters">
             <!-- <button class="orderLink">
               {{sort.label}}
@@ -356,13 +356,13 @@ export default {
     border-bottom-left-radius 15px
     border-bottom-right-radius 15px
   .jobs__top
-    background-color #f7f7f7
+    background-color var(--main-bg-color)
     display flex
     margin 0
     padding 10px 15px
     box-sizing border-box
     //box-shadow 0 0 3px 0px #a0a9
-    box-shadow 0 0 4px 1px #06f
+    box-shadow 0 0 4px 1px var(--main-borders-color)
     border-radius 15px
   .jobs__filterpart
     position sticky
@@ -385,10 +385,10 @@ export default {
     max-width calc(1000px - 310px) //that is including the filters to the left
   .jobs_prefilters
     margin-bottom 10px
-    background-color #eee
+    background-color var(--main-bg-color)
     padding 5px
     border-radius 5px
-    box-shadow 0 0 3px 0px #a0a9
+    box-shadow 0 0 4px 1px var(--main-borders-color)
   *
     margin 0
   .line

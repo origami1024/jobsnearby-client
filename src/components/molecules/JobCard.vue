@@ -175,7 +175,7 @@ export default {
   text-align left
 .jobscard
   position relative
-  border-left 2px solid #06f
+  border-left 2px solid var(--main-borders-color)
   padding-left 2px
   //font-family 'Varela Round', sans-serif
   font-size 14px

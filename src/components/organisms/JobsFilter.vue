@@ -164,14 +164,14 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="stylus">
 .jobsfilter
-  background-color #f7f7f7
+  background-color var(--main-bg-color)
   flex 0 1 35%
   max-width 360px
   min-width 270px
   margin-bottom 15px
   padding 10px 15px
   box-sizing border-box
-  box-shadow 0 0 4px 1px #06f
+  box-shadow 0 0 4px 1px var(--main-borders-color)
   border-radius 15px
   .header
     background-color #ddd

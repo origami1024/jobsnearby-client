@@ -4,8 +4,8 @@
     <header>
       <q-btn
         class="logo"
-        :text-color="$route.path == '/' ? 'white' : 'purple'"
-        :color="$route.path == '/' ? 'purple' : 'gray'"
+        :text-color="$route.path == '/' ? '#8080f1' : 'white'"
+        :color="$route.path == '/' ? 'white' : 'gray'"
         @click="refreshjobs('logoclick')" round glossy to="/" size="16px" label="ussat" style="padding: 6px;">
         <!-- <q-avatar size="46px">
           <img src="https://cdn.quasar.dev/app-icons/icon-128x128.png" />  
@@ -31,9 +31,9 @@
         <div class="colx user-status-bar">
           <!-- <div> {{status}} </div>
           <div> {{user}} ({{user_id}})</div> -->
-          <q-btn-group>
+          <q-btn-group style="color: white">
             
-            <q-btn push glossy :color="$route.path == '/registration' ? 'purple' : 'gray'" :text-color="$route.path == '/registration' ? 'white' : 'black'" no-caps v-if="role && role.startsWith('guest')" @click.native="regState='login'" :label="$t('App.login')" to="/registration"/>
+            <q-btn push glossy :color="$route.path == '/registration' ? 'white' : 'gray'" :text-color="$route.path == '/registration' ? 'white' : 'black'" no-caps v-if="role && role.startsWith('guest')" @click.native="regState='login'" :label="$t('App.login')" to="/registration"/>
             
             <q-btn push glossy @click="getFavedFull" :color="$route.path == '/subprofile' ? 'purple' : 'gray'" :text-color="$route.path == '/subprofile' ? 'white' : 'black'" no-caps icon="person" v-if="role === 'subscriber'" to="/subprofile">
               <q-tooltip>
@@ -65,13 +65,13 @@
         </select> -->
         <button class="langLink">{{app_lng}}
           <q-menu dense>
-            <q-item style="lineHeight: 2.2" dense :style="{color: app_lng == 'TM' ? 'purple' : 'black'}" clickable v-close-popup @click="app_lng = 'TM'; $i18n.locale = 'tm'">
+            <q-item style="lineHeight: 2.2" dense :style="{color: app_lng == 'TM' ? 'white' : 'black'}" clickable v-close-popup @click="app_lng = 'TM'; $i18n.locale = 'tm'">
               TM
             </q-item>
-            <q-item style="lineHeight: 2.2" dense :style="{color: app_lng == 'RU' ? 'purple' : 'black'}" clickable v-close-popup @click="app_lng = 'RU'; $i18n.locale = 'ru'">
+            <q-item style="lineHeight: 2.2" dense :style="{color: app_lng == 'RU' ? 'white' : 'black'}" clickable v-close-popup @click="app_lng = 'RU'; $i18n.locale = 'ru'">
               RU
             </q-item>
-            <q-item style="lineHeight: 2.2" dense :style="{color: app_lng == 'EN' ? 'purple' : 'black'}" clickable v-close-popup @click="app_lng = 'EN'">
+            <q-item style="lineHeight: 2.2" dense :style="{color: app_lng == 'EN' ? 'white' : 'black'}" clickable v-close-popup @click="app_lng = 'EN'">
               EN
             </q-item>
           </q-menu>
@@ -669,6 +669,8 @@ export default {
 <style lang="stylus">
 *
   font-family 'Varela Round', 'Nunito', sans-serif
+  --main-bg-color #fff//#f7f7f7//#8080f1//
+  --main-borders-color #8080f1
 #app
   // font-family 'Avenir', Helvetica, Arial, sans-serif
   --maxW 1000px
@@ -681,7 +683,7 @@ export default {
   line-height 14px
   max-width var(--maxW)
   margin auto
-  margin-bottom 75px
+  margin-bottom 12px//75px
   header
     display flex
     align-items center
@@ -690,15 +692,15 @@ export default {
     margin-bottom 5px
     padding 5px 15px
     box-sizing border-box
-    box-shadow 0 0 3px 0px #a0a9
-    background-color #f7f7f7
+    box-shadow 0 0 3px 0px var(--main-borders-color)//#a0a9
+    background-color #8080f1//var(--main-bg-color)
     #nav
       display flex
   .r-link
     margin-right 10px
     display block
     border-radius 4px
-    color purple
+    color white//purple
     text-decoration none
   h1,h2,h3,h5,h6
     font-size 14px
@@ -710,10 +712,10 @@ export default {
   //     color purple
   .router-link-exact-active
     color white
-    background-color purple
+    background-color white//purple
     &:visited
       color white
-      background-color purple
+      background-color white//purple
   .searched
     background-color yellow
   .r-view
@@ -736,18 +738,21 @@ export default {
   .main__footer
     display flex
     justify-content flex-end
-    background-color #eee
-    box-shadow 0 0 3px 0px #a0a9
-    position fixed
-    bottom 0
+    background-color var(--main-bg-color)
+    box-shadow 0 0 3px 0px var(--main-borders-color)
+    //position fixed
+    //bottom 0
+    
+    margin 15px 10px
+    margin-top 5px
     padding 12px 10px
     box-sizing border-box
-    width 100%
+    //width 100%
     max-width var(--maxW)
   .langLink
     border 0
     background-color transparent
-    color purple
+    color white//purple
     cursor pointer
     font-size 18px
     &:hover
