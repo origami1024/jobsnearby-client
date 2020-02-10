@@ -56,8 +56,8 @@
           </q-tooltip>
         </q-btn>
         <!-- <q-btn class="mr-5px" v-else-if="role == 'subscriber'" round size="xs" icon="work"/> -->
-        <a v-if="lenses == 'full'" class="cardLink" @click.prevent="isContactsShown = !isContactsShown" href="#">Контакты</a>
-        <q-btn class="mr-5px" v-else round size="xs" @click="isContactsShown = !isContactsShown" icon="people"/>
+        <a v-if="role == 'subscriber' && lenses == 'full'" class="cardLink" @click.prevent="isContactsShown = !isContactsShown" href="#">Контакты</a>
+        <q-btn class="mr-5px" v-else-if="role == subscriber" round size="xs" @click="isContactsShown = !isContactsShown" icon="people"/>
         <q-btn v-if="showLiked" :text-color="liked ? 'primary' : 'grey'" round size="xs" icon="star" @click="$emit('favOne', job.job_id)"/>
       </div>
       <div v-if="isContactsShown" class="contactsPanel">
@@ -203,12 +203,15 @@ export default {
       color #06f
   .cardLink
     margin-right 15px
-    &:hover
-      color #5af
+    background-color var(--main-borders-color)
+    color white
+    text-decoration none
+    padding 5px
+    // &:hover
+    //   color #5af
   .cardLink:visited
-    color #06f//#2837C6
-    &:hover
-      color #5af
+    color white//#2837C6
+
   .cardHeader
     font-weight 400
     font-size 20px

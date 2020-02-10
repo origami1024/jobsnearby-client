@@ -17,7 +17,7 @@
         </q-tooltip>
       </q-btn> -->
       <router-link
-        @click="refreshjobs('logoclick')" to="/"
+        @click.native="refreshjobs('logoclick')" to="/"
         style="padding: 0px;"
         class="logolink"
       >
@@ -55,6 +55,7 @@
             text-color="indigo"
             size="16px"
             dense
+            class="no-shadow"
             style="font-weight: 700; alignSelf: flex-end; padding: 0 10px"
             v-if="role && role.startsWith('guest')"
             @click.native="regState='login'"
