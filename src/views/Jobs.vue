@@ -24,7 +24,7 @@
                 <q-icon name="search" />
               </template>
             </q-input>
-            <q-btn @click="refreshPlus" flat color="#8080f1" :loading="pending" class="jobsfilter__search-btn" :label="$t('home.searchBtn')"/>
+            <q-btn @click="refreshPlus" style="background-color: #8080f1; font-weight: 700" text-color="white" :loading="pending" class="jobsfilter__search-btn" :label="$t('home.searchBtn')"/>
           </div>
         </div>
         <div style="padding: 0 4px">

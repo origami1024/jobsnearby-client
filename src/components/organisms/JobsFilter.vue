@@ -16,7 +16,11 @@
     />
     
     <div class="line">
-      <q-select style="width: 65%" @input="salaryUpd" dense :value="salary" :options="salOptions" :label="$t('home.sal')" />
+      <q-select
+        :content-style="{ backgroundColor: 'red' }"
+        style="width: 65%;"
+        @input="salaryUpd" dense
+        :value="salary" :options="salOptions" :label="$t('home.sal')" />
       <q-select style="width: 30%; text-align: center" dense @input="currUpd" :value="currency" :options="currOptions" :label="$t('home.curr')" />
     </div>
     <q-select @input="expUpd" dense :value="exp" :options="expOptions" :label="$t('home.exp')" />
@@ -29,7 +33,9 @@
         color="red"
         @click="$emit('resetFilters')"
       />
-      <q-btn :loading="pending" flat color="#8080f1" :label="$t('home.applyBtn')" @click="refreshPlus"/>
+      <q-btn
+        :loading="pending"
+        style="background-color: #8080f1; font-weight: 700" text-color="white" :label="$t('home.applyBtn')" @click="refreshPlus"/>
     </div>
     
   </div>

@@ -2,17 +2,30 @@
   <div id="app">
     <q-btn v-if="$route.path == '/'" class="scrollTopBtn" icon="keyboard_arrow_up" glossy color="primary" round @click="scrollTop"/>
     <header>
-      <q-btn
-        class="logo"
+      <!-- <q-btn
         text-color="white"
-        @click="refreshjobs('logoclick')" flat to="/" size="16px" label="ussat" style="padding: 6px;">
-        <!-- <q-avatar size="46px">
+        @click="refreshjobs('logoclick')" flat to="/"
+        size="36px" 
+        label="USSAT" style="padding: 0px;"
+        class="logo"
+      >
+        <q-avatar size="46px">
           <img src="https://cdn.quasar.dev/app-icons/icon-128x128.png" />  
-        </q-avatar> -->
+        </q-avatar>
         <q-tooltip>
-            <p style="font-size: 15px; margin: 0">Главная</p>
-          </q-tooltip>
-      </q-btn>
+          <p style="font-size: 15px; margin: 0">Главная</p>
+        </q-tooltip>
+      </q-btn> -->
+      <router-link
+        @click="refreshjobs('logoclick')" to="/"
+        style="padding: 0px;"
+        class="logolink"
+      >
+        USSAT
+        <q-tooltip>
+          <p style="font-size: 15px; margin: 0">Главная</p>
+        </q-tooltip>
+      </router-link>
       <div class="separator" style="width: 150px"></div>
       <div id="nav" shrink stretch>
         <router-link @click.native="newJobInit" class="r-link" v-if="role === 'company'" to="/addJob">
@@ -26,7 +39,8 @@
         
       </div>
       <div class="separator" style="width: 150px"></div>
-      <div id="authmenu" style="alignSelf: flex-end;">
+      <div id="authmenu" >
+        <!-- style="alignSelf: flex-end;" -->
         <div class="colx user-status-bar">
           <!-- <router-link
             @click.native="regState='login'"
@@ -37,16 +51,16 @@
           </router-link> -->
           <!-- :text-color="$route.path == '/registration' ? 'yellow' : 'white'"  -->
           <q-btn
-            outline
-            text-color="white"
+            color="white"
+            text-color="indigo"
+            size="16px"
+            dense
+            style="font-weight: 700; alignSelf: flex-end; padding: 0 10px"
             v-if="role && role.startsWith('guest')"
             @click.native="regState='login'"
             :label="$t('App.login')"
             to="/registration"/>
           <q-btn-group style="color: white">
-            
-            
-            
             <q-btn flat @click="getFavedFull" :color="$route.path == '/subprofile' ? 'purple' : 'inherit'" :text-color="$route.path == '/subprofile' ? 'white' : 'black'" no-caps icon="person" v-if="role === 'subscriber'" to="/subprofile">
               <q-tooltip>
                 <p style="font-size: 15px; margin: 0">{{user}}</p>
@@ -67,7 +81,7 @@
           
         </div>
       </div>
-      <div>
+      <div style="alignSelf: flex-end;margin-bottom: 5px; margin-right: 0; padding-right: 0;">
         <!-- Язык -->
         <!-- <p style="margin: 0; margin-bottom: 5px;">Язык</p>
         <select v-model="app_lng" style="width: 40px">
@@ -75,7 +89,7 @@
           <option value="ru">ru</option>
           <option value="en">en</option>
         </select> -->
-        <button class="langLink">{{app_lng}}
+        <button class="langLink" style="margin-right: 0; padding-right: 0;">{{app_lng}}
           <q-menu dense>
             <q-item style="lineHeight: 2.2" dense :style="{color: app_lng == 'TM' ? 'indigo' : 'black'}" clickable v-close-popup @click="app_lng = 'TM'; $i18n.locale = 'tm'">
               TM
@@ -739,7 +753,15 @@ export default {
   .logo
     margin-right 10px
     font-weight 700
-    
+    letter-spacing 2px
+  .logolink
+    margin-right 10px
+    font-weight 700
+    letter-spacing 2px
+    text-decoration none
+    font-size 36px
+    color white
+    line-height 52px
   .user-status-bar
     text-align left
     align-items flex-start
@@ -768,9 +790,9 @@ export default {
     background-color transparent
     color white//purple
     cursor pointer
-    font-size 18px
+    font-size 14px
     &:hover
-      color blue
+      color yellow
   // .headerBtn
   //   text-decoration none
   //   color #bbb
