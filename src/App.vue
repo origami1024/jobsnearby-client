@@ -29,23 +29,35 @@
       <div class="separator" style="width: 150px"></div>
       <div id="authmenu" style="alignSelf: flex-end;">
         <div class="colx user-status-bar">
-          <!-- <div> {{status}} </div>
-          <div> {{user}} ({{user_id}})</div> -->
+          <!-- <router-link
+            @click.native="regState='login'"
+            v-if="role && role.startsWith('guest')"
+            class="headerBtn"
+            to="/registration">
+            {{$t('App.login')}}
+          </router-link> -->
+          <q-btn
+            outline
+            :text-color="$route.path == '/registration' ? 'yellow' : 'white'" 
+            v-if="role && role.startsWith('guest')"
+            @click.native="regState='login'"
+            :label="$t('App.login')"
+            to="/registration"/>
           <q-btn-group style="color: white">
             
-            <q-btn push glossy :color="$route.path == '/registration' ? 'white' : 'gray'" :text-color="$route.path == '/registration' ? 'white' : 'black'" no-caps v-if="role && role.startsWith('guest')" @click.native="regState='login'" :label="$t('App.login')" to="/registration"/>
             
-            <q-btn push glossy @click="getFavedFull" :color="$route.path == '/subprofile' ? 'purple' : 'gray'" :text-color="$route.path == '/subprofile' ? 'white' : 'black'" no-caps icon="person" v-if="role === 'subscriber'" to="/subprofile">
+            
+            <q-btn flat @click="getFavedFull" :color="$route.path == '/subprofile' ? 'purple' : 'inherit'" :text-color="$route.path == '/subprofile' ? 'white' : 'black'" no-caps icon="person" v-if="role === 'subscriber'" to="/subprofile">
               <q-tooltip>
                 <p style="font-size: 15px; margin: 0">{{user}}</p>
               </q-tooltip>
             </q-btn>
-            <q-btn push glossy no-caps icon="person" @click.native="getOwnJobs" v-if="role === 'company'" to="/entprofile">
+            <q-btn flat no-caps icon="person" @click.native="getOwnJobs" v-if="role === 'company'" to="/entprofile">
               <q-tooltip>
                 <p style="font-size: 15px; margin: 0">{{user}}</p>
               </q-tooltip>
             </q-btn>
-            <q-btn push glossy no-caps v-if="user_id != -1" @click="logout" icon="logout">
+            <q-btn flat no-caps v-if="user_id != -1" @click="logout" icon="logout">
               <q-tooltip>
                 <p style="font-size: 15px; margin: 0">{{$t('App.logoutHint')}}</p>
               </q-tooltip>
@@ -65,13 +77,13 @@
         </select> -->
         <button class="langLink">{{app_lng}}
           <q-menu dense>
-            <q-item style="lineHeight: 2.2" dense :style="{color: app_lng == 'TM' ? 'white' : 'black'}" clickable v-close-popup @click="app_lng = 'TM'; $i18n.locale = 'tm'">
+            <q-item style="lineHeight: 2.2" dense :style="{color: app_lng == 'TM' ? 'indigo' : 'black'}" clickable v-close-popup @click="app_lng = 'TM'; $i18n.locale = 'tm'">
               TM
             </q-item>
-            <q-item style="lineHeight: 2.2" dense :style="{color: app_lng == 'RU' ? 'white' : 'black'}" clickable v-close-popup @click="app_lng = 'RU'; $i18n.locale = 'ru'">
+            <q-item style="lineHeight: 2.2" dense :style="{color: app_lng == 'RU' ? 'indigo' : 'black'}" clickable v-close-popup @click="app_lng = 'RU'; $i18n.locale = 'ru'">
               RU
             </q-item>
-            <q-item style="lineHeight: 2.2" dense :style="{color: app_lng == 'EN' ? 'white' : 'black'}" clickable v-close-popup @click="app_lng = 'EN'">
+            <q-item style="lineHeight: 2.2" dense :style="{color: app_lng == 'EN' ? 'indigo' : 'black'}" clickable v-close-popup @click="app_lng = 'EN'">
               EN
             </q-item>
           </q-menu>
@@ -710,7 +722,7 @@ export default {
   // a 
   //   &:visited
   //     color purple
-  .router-link-exact-active
+  .logo.router-link-exact-active
     color white
     background-color white//purple
     &:visited
@@ -757,5 +769,23 @@ export default {
     font-size 18px
     &:hover
       color blue
-
+  // .headerBtn
+  //   text-decoration none
+  //   color #bbb
+  //   text-transform uppercase
+  //   border 2px solid transparent
+  //   //transition-duration .4s
+  //   padding 5px
+  //   border-radius 5px
+  //   padding-right 0px
+  //   letter-spacing 2px
+  //   font-weight 700
+  //   &:hover
+  //     //border 2px solid white
+  //     color white
+  // .headerBtn.router-link-exact-active
+  //   border 2px solid white
+  //   color white
+  //   &:visited
+  //     border 2px solid white
 </style>
