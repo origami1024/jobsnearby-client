@@ -712,7 +712,7 @@ export default {
   line-height 14px
   max-width var(--maxW)
   margin auto
-  margin-bottom 12px//75px
+  //margin-bottom 12px//75px
   header
     display flex
     align-items center
@@ -779,9 +779,8 @@ export default {
     box-shadow 0 0 3px 0px var(--main-borders-color)
     //position fixed
     //bottom 0
-    
-    margin 15px 10px
-    margin-top 5px
+    margin 5px 10px
+    margin-bottom 0px
     padding 12px 10px
     box-sizing border-box
     //width 100%

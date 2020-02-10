@@ -386,6 +386,7 @@ export default {
   margin 0
   max-width 400px
   width 400px
+  min-height calc(100vh - 148px)
   .registration__main
     //border 2px solid black
     
