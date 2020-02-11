@@ -159,7 +159,7 @@ async function adminJobs(req, res) {
   })
   console.log('cp33: ', data)
   data.forEach(val=>{
-    let d = new Date(val.time_updated).toString().split(' GMT')[0].substring(7)
+    let d = new Date(val.time_updated).toString().split(' GMT')[0].substring(3)
     let tmp = `
       <tr>
         <td>${val.job_id}</td>
@@ -216,7 +216,7 @@ async function adminUsers(req, res) {
   })
   //console.log('cp32: ', data)
   data.forEach(val=>{
-    let d = new Date(val.time_created).toString().split(' GMT')[0].substring(7)
+    let d = new Date(val.time_created).toString().split(' GMT')[0].substring(3)
     let tmp = `
       <tr>
         <td>${val.user_id}</td>
@@ -269,7 +269,7 @@ async function getAllFB(req, res) {
   })
   //console.log('cp31: ', data)
   data.forEach(val=>{
-    let d = new Date(val.date_created).toString().split(' GMT')[0].substring(7)
+    let d = new Date(val.date_created).toString().split(' GMT')[0].substring(3)
     let tmp = `
       <tr>
         <td>${val.topic}</td>

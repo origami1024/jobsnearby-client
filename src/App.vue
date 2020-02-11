@@ -61,8 +61,30 @@
             @click.native="regState='login'"
             :label="$t('App.login')"
             to="/registration"/> -->
-          <q-btn-group style="color: white">
-            <q-btn flat @click="getFavedFull" :color="$route.path == '/subprofile' ? 'purple' : 'inherit'" :text-color="$route.path == '/subprofile' ? 'white' : 'black'" no-caps icon="person" v-if="role === 'subscriber'" to="/subprofile">
+          <router-link
+            @click.native="getFavedFull"
+            v-if="role && role === 'subscriber'"
+            class="headerBtn"
+            to="/subprofile"
+          >
+            <q-icon name="person" size="36px"></q-icon>
+            <q-tooltip>
+              <p style="font-size: 15px; margin: 0">{{user}}</p>
+            </q-tooltip>
+          </router-link>
+          <router-link
+            @click.native="logout"
+            v-if="user_id != -1"
+            class="headerBtn"
+            to="/"
+          >
+            <q-icon name="logout" size="32px"></q-icon>
+            <q-tooltip>
+              <p style="font-size: 15px; margin: 0">{{$t('App.logoutHint')}}</p>
+            </q-tooltip>
+          </router-link>
+          <q-btn-group>
+            <q-btn flat @click="getFavedFull" :color="$route.path == '/subprofile' ? 'purple' : 'inherit'" :text-color="$route.path == '/subprofile' ? 'black' : 'black'" no-caps icon="person" v-if="role === 'subscriber'" to="/subprofile">
               <q-tooltip>
                 <p style="font-size: 15px; margin: 0">{{user}}</p>
               </q-tooltip>
