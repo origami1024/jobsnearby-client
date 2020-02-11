@@ -110,9 +110,10 @@
       <!-- <q-btn :loading="ajaxLoading" dense size="sm" color="primary" @click="refreshjobs" icon="refresh">debug</q-btn> -->
       <q-ajax-bar
         position="bottom"
-        color="accent"
+        style="backgroundColor: var(--btn-color);"
         size="10px"
       />
+      <!-- color="accent" -->
     </header>
     <keep-alive> <!-- @stepChange="stepChange" :step="step" -->
       <router-view
