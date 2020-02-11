@@ -24,7 +24,7 @@
                 <q-icon name="search" />
               </template>
             </q-input>
-            <q-btn @click="refreshPlus" style="background-color: #8080f1; font-weight: 700" text-color="white" :loading="pending" class="jobsfilter__search-btn" :label="$t('home.searchBtn')"/>
+            <q-btn @click="refreshPlus" style="background-color: var(--btn-color); font-weight: 700" text-color="white" :loading="pending" class="jobsfilter__search-btn" :label="$t('home.searchBtn')"/>
           </div>
         </div>
         <div style="padding: 0 4px">
@@ -406,9 +406,9 @@ export default {
     font-weight 700
     color #06f
   .currentPage
-    border 1px solid #06f
+    border 1px solid var(--main-borders-color)
     color #fff
-    background-color #06f
+    background-color var(--main-borders-color)
   .orderLink
     white-space nowrap
     border 0

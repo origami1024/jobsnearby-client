@@ -35,7 +35,7 @@
       />
       <q-btn
         :loading="pending"
-        style="background-color: #8080f1; font-weight: 700" text-color="white" :label="$t('home.applyBtn')" @click="refreshPlus"/>
+        style="background-color: var(--btn-color); font-weight: 700" text-color="white" :label="$t('home.applyBtn')" @click="refreshPlus"/>
     </div>
     
   </div>

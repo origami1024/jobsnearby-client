@@ -5,11 +5,11 @@
         <h4 class="cardHeader">
           <!-- <a :href="'/jobBy.Id?id=' + job.job_id" target="_blank"> -->
           <a :href="'/jobpage?id=' + job.job_id" target="_blank">
-            <strong v-html="filteredTitle"/>
+            <strong class="joblink" v-html="filteredTitle"/>
           </a>
         </h4>
         <a :href="'/companypage?id=' + job.author_id" target="_blank">
-          <div class="author" v-html="filteredAuthor"></div>
+          <div class="author joblink" v-html="filteredAuthor"></div>
         </a>
       </div>
       <div class="colx">
@@ -284,5 +284,6 @@ export default {
   margin-right 10px
   margin-bottom 5px
   word-break break-all
-
+.joblink
+  color var(--main-borders-color)
 </style>

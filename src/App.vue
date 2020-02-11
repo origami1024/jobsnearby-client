@@ -697,9 +697,9 @@ export default {
 *
   font-family 'Varela Round', 'Nunito', sans-serif
   --main-bg-color #fff//#f7f7f7//#8080f1//
-  --main-borders-color #8080f1
-  --btn-color #fff
-  --red red
+  --main-borders-color #3A6E8F
+  --btn-color #C00027
+  //--logocolor #3A6E8F
 #app
   // font-family 'Avenir', Helvetica, Arial, sans-serif
   --maxW 1000px
@@ -722,7 +722,7 @@ export default {
     padding 5px 15px
     box-sizing border-box
     box-shadow 0 0 3px 0px var(--main-borders-color)//#a0a9
-    background-color #8080f1//var(--main-bg-color)
+    background-color var(--main-bg-color)//#8080f1//var(--main-bg-color)
     #nav
       display flex
   .r-link
@@ -761,7 +761,7 @@ export default {
     letter-spacing 2px
     text-decoration none
     font-size 36px
-    color white
+    color var(--btn-color)
     line-height 52px
   .user-status-bar
     text-align left
@@ -788,11 +788,11 @@ export default {
   .langLink
     border 0
     background-color transparent
-    color white//purple
+    color black//purple
     cursor pointer
     font-size 14px
     &:hover
-      color yellow
+      color var(--btn-color)
   .headerBtn
     text-decoration none
     color var(--main-borders-color)
