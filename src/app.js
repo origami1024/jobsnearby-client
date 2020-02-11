@@ -88,7 +88,7 @@ app.post('/reopenJobBy.id', db.reopenJobById)
 
 
 app.post('/fb', db.feedback)
-app.get('/allfb', getAllFB)
+app.get('/allfb.json', getAllFB)
 
 
 
@@ -108,24 +108,45 @@ function params1(request, response) {
 
 async function getAllFB(req, res) {
   let body = `
-    <table>
-      <th>
+    <table style="width: 100%">
+      <thead style="background-color: blue; color: white;">
+        <tr style="padding: 5px">
         <td>Тема</td>
         <td>Имя</td>
         <td>Мэйл</td>
         <td>Текст</td>
         <td>Дата написания</td>
-      </th>
-      <tr>
-        <td>1</td>
-        <td>2</td>
-        <td>3</td>
-        <td>4</td>
-        <td>5</td>
-      </tr>
-    </table>
+        <td>Управление</td>
+        </tr>
+      </thead>
+      <tbody>
+    
   `
+  let data = await db.adminGetFB().catch(error => {
+    console.log('cp getAllFB err1: ', error)
+    return []
+  })
+  console.log('cp31: ', data)
+  data.forEach(val=>{
+    let d = new Date(val.date_created).toString().split(' GMT')[0]
+    let tmp = `
+      <tr>
+        <td>${val.topic}</td>
+        <td>${val.name}</td>
+        <td>${val.mail}</td>
+        <td>${val.desc}</td>
+        <td>${d}</td>
+        <td>
+          <button>Прочитано</button>
+          <button>Удалить</button>
+        </td>
+      </tr>
+    `
+    body += tmp
+  })
+  body += '</tbody></table>'
   let allFBPage = pageParts.head + body + pageParts.footer
+  
   res.send(allFBPage)
 }
 

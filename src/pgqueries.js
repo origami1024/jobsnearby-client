@@ -1268,6 +1268,22 @@ async function viewHit(req, res) {
 }
 
 
+async function adminGetFB() {
+  //check auth?
+  let que = `
+    SELECT *
+    FROM "feedbacks"
+  `
+  let result = await pool.query(que, null).catch(error => {
+    console.log('cp adminGetFB err1: ', error)
+    return false
+  })
+  let resu
+  if (result && result.rows && result.rows.length > 0) {
+    resu = result.rows
+  } else resu = []
+  return resu
+}
 
 async function feedback(req, res) {
   //check 4 fields
@@ -1303,7 +1319,10 @@ async function feedback(req, res) {
   else res.send('BAD')
 }
 
+
+
 module.exports = {
+  adminGetFB,
   feedback,
   getCVHitsHistory,
   viewHit,
