@@ -89,6 +89,7 @@ app.post('/reopenJobBy.id', db.reopenJobById)
 
 app.post('/fb', db.feedback)
 app.get('/allfb.json', getAllFB)
+app.get('/adminusers.json', adminUsers)
 
 
 
@@ -104,7 +105,60 @@ function params1(request, response) {
 //   serveStatic(path.join(__dirname, './../dist'))
 // })
 
-
+async function adminUsers(req, res) {
+  let body = `
+    <table style="width: 100%; font-size:14px">
+      <thead style="background-color: green; color: white;">
+        <tr style="padding: 5px">
+          <td>uid</td>
+          <td>email</td>
+          <td>role</td>
+          <td>time_created</td>
+          <td>name</td>
+          <td>surname</td>
+          <td>company</td>
+          <td>isagency</td>
+          <td>logo_url</td>
+          <td>cvurl</td>
+          <td>Управление</td>
+        </tr>
+      </thead>
+      <tbody>
+    
+  `
+  let data = await db.adminGetUsers().catch(error => {
+    console.log('cp adminGetUsers err1: ', error)
+    return []
+  })
+  console.log('cp32: ', data)
+  data.forEach(val=>{
+    let d = new Date(val.time_created).toString().split(' GMT')[0]
+    let tmp = `
+      <tr>
+        <td>${val.user_id}</td>
+        <td>${val.email}</td>
+        <td>${val.role}</td>
+        <td>${d}</td>
+        <td>${val.name}</td>
+        <td>${val.surname}</td>
+        <td>${val.company}</td>
+        <td>${val.isagency}</td>
+        <td>${val.logo_url}</td>
+        <td>${val.cvurl}</td>
+        <td>
+          <button>Редактировать</button>
+          <button>Применить</button>
+          <button>Удалить</button>
+        </td>
+      </tr>
+    `
+    body += tmp
+  })
+  body += '</tbody></table>'
+  let allUsersPage = pageParts.head + body + pageParts.footer
+  
+  res.send(allUsersPage)
+}
 
 async function getAllFB(req, res) {
   let body = `
@@ -115,6 +169,7 @@ async function getAllFB(req, res) {
         <td>Имя</td>
         <td>Мэйл</td>
         <td>Текст</td>
+        <td>Новая?</td>
         <td>Дата написания</td>
         <td>Управление</td>
         </tr>
@@ -126,7 +181,7 @@ async function getAllFB(req, res) {
     console.log('cp getAllFB err1: ', error)
     return []
   })
-  console.log('cp31: ', data)
+  //console.log('cp31: ', data)
   data.forEach(val=>{
     let d = new Date(val.date_created).toString().split(' GMT')[0]
     let tmp = `
@@ -135,6 +190,7 @@ async function getAllFB(req, res) {
         <td>${val.name}</td>
         <td>${val.mail}</td>
         <td>${val.desc}</td>
+        <td>${val.new}</td>
         <td>${d}</td>
         <td>
           <button>Прочитано</button>

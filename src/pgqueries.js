@@ -1267,6 +1267,25 @@ async function viewHit(req, res) {
   }
 }
 
+async function adminGetUsers() {
+  //check auth?
+  let que = `
+    SELECT *
+    FROM "users"
+  `
+  let result = await pool.query(que, null).catch(error => {
+    console.log('cp adminGetUsers err1: ', error)
+    return false
+  })
+  let resu
+  if (result && result.rows && result.rows.length > 0) {
+    resu = result.rows
+    resu.forEach(function(v){ delete v.pwhash; delete v.auth_cookie });
+
+  } else resu = []
+  return resu
+}
+
 
 async function adminGetFB() {
   //check auth?
@@ -1322,6 +1341,7 @@ async function feedback(req, res) {
 
 
 module.exports = {
+  adminGetUsers,
   adminGetFB,
   feedback,
   getCVHitsHistory,
