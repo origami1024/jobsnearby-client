@@ -90,6 +90,8 @@ app.post('/reopenJobBy.id', db.reopenJobById)
 app.post('/fb', db.feedback)
 app.get('/allfb.json', getAllFB)
 app.get('/adminusers.json', adminUsers)
+app.get('/adminjobs.json', adminJobs)
+app.get('/cp.json', adminPanel)
 
 
 
@@ -105,8 +107,90 @@ function params1(request, response) {
 //   serveStatic(path.join(__dirname, './../dist'))
 // })
 
-async function adminUsers(req, res) {
+async function adminPanel(req, res) {
+  //auth check
   let body = `
+    <div>
+      <ul>
+        <li>
+          <a href="/allfb.json">Фидбек пользователей</a>
+        </li>
+        <li>
+          <a href="/adminusers.json">Пользователи</a>
+        </li>
+        <li>
+          <a href="/adminjobs.json">Вакансии</a>
+        </li>
+      </ul>
+    </div>
+  `
+  let cpPage = pageParts.head + body + pageParts.footer
+  
+  res.send(cpPage)
+}
+
+
+async function adminJobs(req, res) {
+  //auth check
+  let body = `
+    <a href="/cp.json">Админка</a>
+    <table style="width: 100%; font-size:14px">
+      <thead style="background-color: purple; color: white;">
+        <tr style="padding: 5px">
+          <td>jid</td>
+          <td>title</td>
+          <td>aid</td>
+          <td>time_updated</td>
+          <td>salary_min</td>
+          <td>salary_max</td>
+          <td>currency</td>
+          <td>contact_mail</td>
+          <td>contact_tel</td>
+          <td>is_closed</td>
+          <td>Управление</td>
+        </tr>
+      </thead>
+      <tbody>
+    
+  `
+  let data = await db.adminGetJobs().catch(error => {
+    console.log('cp adminGetJobs err1: ', error)
+    return []
+  })
+  console.log('cp33: ', data)
+  data.forEach(val=>{
+    let d = new Date(val.time_updated).toString().split(' GMT')[0].substring(7)
+    let tmp = `
+      <tr>
+        <td>${val.job_id}</td>
+        <td>${val.title}</td>
+        <td>${val.author_id}</td>
+        <td>${d}</td>
+        <td>${val.salary_min}</td>
+        <td>${val.salary_max}</td>
+        <td>${val.currency}</td>
+        <td>${val.contact_mail}</td>
+        <td>${val.contact_tel}</td>
+        <td>${val.is_closed}</td>
+        <td>
+          <button>Редактировать</button>
+          <button>Применить</button>
+          <button>Удалить</button>
+        </td>
+      </tr>
+    `
+    body += tmp
+  })
+  body += '</tbody></table>'
+  let allJobsPage = pageParts.head + body + pageParts.footer
+  
+  res.send(allJobsPage)
+}
+
+async function adminUsers(req, res) {
+  //auth check
+  let body = `
+    <a href="/cp.json">Админка</a>
     <table style="width: 100%; font-size:14px">
       <thead style="background-color: green; color: white;">
         <tr style="padding: 5px">
@@ -130,9 +214,9 @@ async function adminUsers(req, res) {
     console.log('cp adminGetUsers err1: ', error)
     return []
   })
-  console.log('cp32: ', data)
+  //console.log('cp32: ', data)
   data.forEach(val=>{
-    let d = new Date(val.time_created).toString().split(' GMT')[0]
+    let d = new Date(val.time_created).toString().split(' GMT')[0].substring(7)
     let tmp = `
       <tr>
         <td>${val.user_id}</td>
@@ -143,8 +227,8 @@ async function adminUsers(req, res) {
         <td>${val.surname}</td>
         <td>${val.company}</td>
         <td>${val.isagency}</td>
-        <td>${val.logo_url}</td>
-        <td>${val.cvurl}</td>
+        <td style="max-width:100px">${val.logo_url}</td>
+        <td style="max-width:100px">${val.cvurl}</td>
         <td>
           <button>Редактировать</button>
           <button>Применить</button>
@@ -161,7 +245,9 @@ async function adminUsers(req, res) {
 }
 
 async function getAllFB(req, res) {
+  //auth check
   let body = `
+    <a href="/cp.json">Админка</a>
     <table style="width: 100%">
       <thead style="background-color: blue; color: white;">
         <tr style="padding: 5px">
@@ -183,7 +269,7 @@ async function getAllFB(req, res) {
   })
   //console.log('cp31: ', data)
   data.forEach(val=>{
-    let d = new Date(val.date_created).toString().split(' GMT')[0]
+    let d = new Date(val.date_created).toString().split(' GMT')[0].substring(7)
     let tmp = `
       <tr>
         <td>${val.topic}</td>

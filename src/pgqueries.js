@@ -161,7 +161,7 @@ async function reopenJobById(req, res) {
         res.send('step3')
         return false
       }
-      let que2nd = `UPDATE jobs SET is_closed = FALSE WHERE (author_id = $1 AND job_id = $2)`
+      let que2nd = `UPDATE jobs SET (is_closed, time_updated) = (FALSE, NOW()) WHERE (author_id = $1 AND job_id = $2)`
       //console.log(que2nd)
       let params2nd = [results.rows[0].user_id, jid]
       pool.query(que2nd, params2nd, (error2, results2) => {
@@ -206,7 +206,7 @@ async function closeJobById(req, res) {
       //по айди
       //если есть в базе и автор сам удаляющий
       //удалить
-      let que2nd = `UPDATE jobs SET is_closed = TRUE WHERE (author_id = $1 AND job_id = $2)`
+      let que2nd = `UPDATE jobs SET (is_closed, time_updated) = (TRUE, NOW()) WHERE (author_id = $1 AND job_id = $2)`
       //console.log(que2nd)
       let params2nd = [results.rows[0].user_id, jid]
       pool.query(que2nd, params2nd, (error2, results2) => {
@@ -1267,6 +1267,23 @@ async function viewHit(req, res) {
   }
 }
 
+async function adminGetJobs() {
+  //check auth?
+  let que = `
+    SELECT *
+    FROM "jobs"
+  `
+  let result = await pool.query(que, null).catch(error => {
+    console.log('cp adminGetJobs err1: ', error)
+    return false
+  })
+  let resu
+  if (result && result.rows && result.rows.length > 0) {
+    resu = result.rows
+    //resu.forEach(function(v){ delete v.pwhash; delete v.auth_cookie });
+  } else resu = []
+  return resu
+}
 async function adminGetUsers() {
   //check auth?
   let que = `
@@ -1285,8 +1302,6 @@ async function adminGetUsers() {
   } else resu = []
   return resu
 }
-
-
 async function adminGetFB() {
   //check auth?
   let que = `
@@ -1341,6 +1356,7 @@ async function feedback(req, res) {
 
 
 module.exports = {
+  adminGetJobs,
   adminGetUsers,
   adminGetFB,
   feedback,
