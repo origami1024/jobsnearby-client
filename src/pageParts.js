@@ -8,7 +8,7 @@ section {
 }
 </style></head><body>`
 exports.end  = `</body></html>`
-exports.footer = `<footer>Футер 2020</footer>`
+exports.footer = `<footer></footer>`
 exports.foot = exports.footer + exports.end
 exports.demo = `<h1>somethings</h1>`
 exports.headbody = `<head><style>
@@ -17,6 +17,11 @@ exports.headbody = `<head><style>
   }
 </style></head><body>`
 
+exports.cplink = () => {
+  return (
+    `<a href="/cp.json">&lt;Админка</a>`
+  )
+}
 exports.navbar = links => {
   return (
     `<nav>

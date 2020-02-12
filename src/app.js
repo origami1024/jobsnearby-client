@@ -92,7 +92,8 @@ app.get('/allfb.json', getAllFB)
 app.get('/adminusers.json', adminUsers)
 app.get('/adminjobs.json', adminJobs)
 app.get('/cp.json', adminPanel)
-
+app.get('/cplogin.json', adminLogin)
+app.get('/cpsuper.json', superAdmin)
 
 
 function params1(request, response) {
@@ -107,10 +108,48 @@ function params1(request, response) {
 //   serveStatic(path.join(__dirname, './../dist'))
 // })
 
+async function adminLogin(req, res) {
+  let body = `
+    <form action="#" method="post" style="width: 220px; margin: 0 auto; margin-top:25vh">
+      <div class="container" style="display: flex; flex-direction: column;">
+        <label for="uname"><b>Username</b></label>
+        <input type="text" placeholder="Enter Username" name="uname" required>
+
+        <label for="psw"><b>Password</b></label>
+        <input type="password" placeholder="Enter Password" name="psw" required>
+
+        <button type="submit">Login</button>
+        <label>
+          <input type="checkbox" checked="checked" name="remember"> Remember me
+        </label>
+      </div>
+
+    </form>
+
+  `
+  let loginPage = pageParts.head + body + pageParts.footer
+  res.send(loginPage)
+}
+async function superAdmin(req, res) {
+  let body = `
+    list of admins;
+    -disable/enable
+    -add new user
+    -delete user
+    -edit rights:
+    ---deleting, changing jobs, closing, opening jobs
+    ---deleting, changing, disabling/enabling users
+    ---reading feedback
+    ---entering pages: fb, jobs, users
+  `
+  let superPage = pageParts.head + body + pageParts.footer
+  res.send(superPage)
+}
 async function adminPanel(req, res) {
   //auth check
   let body = `
     <div>
+    <h2 style="text-align:center; margin: 0;">Башня управления</h2>
       <ul>
         <li>
           <a href="/allfb.json">Фидбек пользователей</a>
@@ -121,6 +160,9 @@ async function adminPanel(req, res) {
         <li>
           <a href="/adminjobs.json">Вакансии</a>
         </li>
+        <li>
+          <a href="#">Выйти</a>
+        </li>
       </ul>
     </div>
   `
@@ -128,12 +170,11 @@ async function adminPanel(req, res) {
   
   res.send(cpPage)
 }
-
-
 async function adminJobs(req, res) {
   //auth check
   let body = `
-    <a href="/cp.json">Админка</a>
+    <h2 style="text-align:center; margin: 0;">Вакансии</h2>
+    ${pageParts.cplink()}
     <table style="width: 100%; font-size:14px">
       <thead style="background-color: purple; color: white;">
         <tr style="padding: 5px">
@@ -161,7 +202,7 @@ async function adminJobs(req, res) {
   data.forEach(val=>{
     let d = new Date(val.time_updated).toString().split(' GMT')[0].substring(3)
     let tmp = `
-      <tr>
+      <tr id=${val.job_id}>
         <td>${val.job_id}</td>
         <td>${val.title}</td>
         <td>${val.author_id}</td>
@@ -173,8 +214,8 @@ async function adminJobs(req, res) {
         <td>${val.contact_tel}</td>
         <td>${val.is_closed}</td>
         <td>
-          <button>Редактировать</button>
-          <button>Применить</button>
+          <button>Закрыть</button>
+          <button>Открыть</button>
           <button>Удалить</button>
         </td>
       </tr>
@@ -190,7 +231,8 @@ async function adminJobs(req, res) {
 async function adminUsers(req, res) {
   //auth check
   let body = `
-    <a href="/cp.json">Админка</a>
+    <h2 style="text-align:center; margin: 0;">Пользователи</h2>
+    ${pageParts.cplink()}
     <table style="width: 100%; font-size:14px">
       <thead style="background-color: green; color: white;">
         <tr style="padding: 5px">

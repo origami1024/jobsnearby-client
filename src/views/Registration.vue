@@ -5,11 +5,16 @@
         :value="regState"
         @input="regStateUpd"
         inline-label
-        class="bg-primary text-white shadow-2 tabs"
-        
+        class="shadow-2 tabs"
+        style="fontWeight:700;"
       >
-        <q-tab name="login" label="Вход" />
-        <q-tab name="reg" label="Регистрация" />
+        <!-- style="color: white; backgroundColor: var(--main-borders-color);" -->
+        <q-tab name="login" style="width:50%;fontWeight:900;">
+          Вход
+        </q-tab>
+        <q-tab name="reg" style="width:50%;">
+          Регистрация
+        </q-tab>
       </q-tabs>
       <q-tab-panels class="registration__inner" :value="regState" animated>
         <q-tab-panel name="login">
@@ -18,54 +23,62 @@
               <label style="alignSelf: center; width: 100px;margin-bottom: 15px" for="mailInput1">* Email</label>
               <q-input
                 id='mailInput1'
+                square
                 dense
-                filled
+                outlined
+                bg-color="teal-1"
                 v-model="login.mail"
                 hint=""
+                :error-message="login.validation.mail"
+                :error="login.validation.mail != ''"
                 style="width: 100%;"
+                @blur="validateMail"
               />
             </div>
             <div style="display:flex; width: 100%; margin-bottom: 10px">
               <label style="alignSelf: center; width: 100px;margin-bottom: 15px" for="pwInput1">* Пароль</label>
               <q-input
                 id='pwInput1'
+                square
                 dense
-                filled
-                v-model="login.mail"
+                outlined
+                bg-color="teal-1"
+                v-model="login.pw"
                 hint=""
+                :error-message="login.validation.pw"
+                :error="login.validation.pw != ''"
                 style="width: 100%;"
+                @blur="validatePW"
               />
             </div>
-            <div class="colx">
+            <!-- <div class="colx">
               <div class="row">
-                <!-- <label for="email">Email</label> -->
+                
                 <span v-show="login.showErrors" class="err_span">{{login.validation.mail}}</span>
               </div>
               <input id="email" v-model="login.mail" type="text" placeholder="* Email">
             
               <div class="row">
-                <!-- <label for="pw">Пароль</label> -->
+                
                 <span v-show="login.showErrors" class="err_span">{{login.validation.pw}}</span>
               </div>
               <input id="pw" v-model="login.pw" type="text" placeholder="* Пароль">
-            </div>
+            </div> -->
+            
             <div class="row spacebetw">
-              <div class="row">
-                <input id="remember" type="checkbox" v-model="login.rememberme">
-                <label for="remember">Запомнить меня</label>
-              </div>
-              <a href="#">Забыл пароль?</a>
+              <q-checkbox color="red-10" v-model="login.rememberme" label="Запомнить меня" />
+              <a href="#" style="alignSelf: center; color:var(--main-borders-color)">Забыл пароль?</a>
             </div>
             
             <q-btn 
-              color="primary"
+              color="red-10"
               label="Войти"
               type="submit"
               :loading="submitting"
-              class="full-width"
+              style="margin: 0 auto; width: 35%; font-weight: 700; letter-spacing: 2px"
             />
             <!-- <input type="submit" value="Войти"> -->
-            <p>{{login.status}}</p>
+            <!-- <p>{{login.status}}</p> -->
           </form>
         </q-tab-panel>
         <q-tab-panel name="reg">
@@ -164,8 +177,8 @@ export default {
       rememberme: true,
       showErrors: false,
       validation: {
-        mail: 'Введите email',
-        pw: 'Введите пароль'
+        mail: '',
+        pw: ''
       }
     },
     submitting: false,
@@ -207,7 +220,7 @@ export default {
           .then(response => {
             if (response.data == 'OK') {
               this.status = 'Регистрация удалась'
-              console.log(this.status)
+              // console.log(this.status)
               this.mail = ''
               this.pw = ''
               this.pwc = ''
@@ -221,15 +234,15 @@ export default {
             }
             else if (response.data == 'step3') {
               this.status = 'Регистрация не удалась, ошибки на сервере'
-              console.log(this.status)
+              this.$q.notify(this.status)
             }
             else if (response.data == 'step2') {
               this.status = 'Такой email уже существует в базе данных'
-              console.log(this.status)
+              this.$q.notify(this.status)
             }
             else if (response.data == 'step1') {
               this.status = 'валидация на сервере не прошла хух'
-              console.log(this.status)
+              this.$q.notify(this.status)
             }
             else console.dir('successful registering', response.data)
             this.submitting = false
@@ -342,18 +355,38 @@ export default {
             }
             else if (response.data == 'step3') {
               this.login.status = 'Не удалось выполнить вход'
+              this.$q.notify(this.login.status)
             }
             else if (response.data == 'step2') {
               this.login.status = 'Такого пользователя не существует, либо неверный пароль'
+              this.$q.notify(this.login.status)
               //send this in both cases
             }
             else if (response.data == 'step1') {
               this.login.status = 'Валидация на сервере не прошла хух'
+              this.$q.notify(this.login.status)
             }
             else console.dir('successful login', response.data, response.headers)
             this.submitting = false
           })
       } else this.login.showErrors = true
+    },
+    validateMail(){
+      let mailregex = /(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/
+      if (this.login.mail.length === 0) 
+        this.login.validation.mail = 'Введите email'
+      else if (!mailregex.test(this.login.mail.toLowerCase())) 
+        this.login.validation.mail = 'Неправильный формат адреса'
+      else this.login.validation.mail = ''
+      return this.login.validation.mail === ''
+    },
+    validatePW(){
+      if (this.login.pw.length === 0)
+        this.login.validation.pw = 'Введите пароль'
+      else if (this.login.pw.length < 5 || this.login.pw.length > 25)
+        this.login.validation.pw = 'Кол-во символов от 5 до 25'
+      else this.login.validation.pw = ''
+      return this.login.validation.pw === ''
     },
     validateLogin(){
       let mailregex = /(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/
@@ -384,19 +417,23 @@ export default {
 .registration
   padding 15px 0
   margin 0
-  max-width 400px
-  width 400px
+  max-width 380px
+  width 380px
   min-height calc(100vh - 148px)
+  display flex
+  align-items center
   .registration__main
     //border 2px solid black
-    
+    width 380px
   .registration__inner
-    background-color #eee
-    border-bottom-left-radius 15px
-    border-bottom-right-radius 15px
+    background-color #fff//#eee
+    border-bottom-left-radius 5px
+    border-bottom-right-radius 5px
+    box-shadow 0 0 4px 1px var(--main-borders-color)
   .tabs
-    border-top-left-radius 15px
-    border-top-right-radius 15px
+    border-top-left-radius 5px
+    border-top-right-radius 5px
+    box-shadow 0 0 4px 1px var(--main-borders-color)
   form
     display flex
     flex-direction column

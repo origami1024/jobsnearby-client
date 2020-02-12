@@ -73,6 +73,17 @@
             </q-tooltip>
           </router-link>
           <router-link
+            @click.native="getOwnJobs"
+            v-if="role && role === 'company'"
+            class="headerBtn"
+            to="/entprofile"
+          >
+            <q-icon name="person" size="36px"></q-icon>
+            <q-tooltip>
+              <p style="font-size: 15px; margin: 0">{{user}}</p>
+            </q-tooltip>
+          </router-link>
+          <router-link
             @click.native="logout"
             v-if="user_id != -1"
             class="headerBtn"
@@ -83,22 +94,24 @@
               <p style="font-size: 15px; margin: 0">{{$t('App.logoutHint')}}</p>
             </q-tooltip>
           </router-link>
+
           <q-btn-group>
-            <q-btn flat @click="getFavedFull" :color="$route.path == '/subprofile' ? 'purple' : 'inherit'" :text-color="$route.path == '/subprofile' ? 'black' : 'black'" no-caps icon="person" v-if="role === 'subscriber'" to="/subprofile">
+            <!-- <q-btn flat @click="getFavedFull" :color="$route.path == '/subprofile' ? 'purple' : 'inherit'" :text-color="$route.path == '/subprofile' ? 'black' : 'black'" no-caps icon="person" v-if="role === 'subscriber'" to="/subprofile">
+              <q-tooltip>
+                <p style="font-size: 15px; margin: 0">{{user}}</p>
+              </q-tooltip>
+            </q-btn> -->
+            <q-btn flat no-caps icon="person" @click.native="getOwnJobs"
+            v-if="role === 'company'" to="/entprofile">
               <q-tooltip>
                 <p style="font-size: 15px; margin: 0">{{user}}</p>
               </q-tooltip>
             </q-btn>
-            <q-btn flat no-caps icon="person" @click.native="getOwnJobs" v-if="role === 'company'" to="/entprofile">
-              <q-tooltip>
-                <p style="font-size: 15px; margin: 0">{{user}}</p>
-              </q-tooltip>
-            </q-btn>
-            <q-btn flat no-caps v-if="user_id != -1" @click="logout" icon="logout">
+            <!-- <q-btn flat no-caps v-if="user_id != -1" @click="logout" icon="logout">
               <q-tooltip>
                 <p style="font-size: 15px; margin: 0">{{$t('App.logoutHint')}}</p>
               </q-tooltip>
-            </q-btn>
+            </q-btn> -->
             <!-- @click.native="getOwnJobs" -->
           </q-btn-group>
           
@@ -798,7 +811,7 @@ export default {
   .main__footer
     display flex
     justify-content flex-end
-    background-color var(--main-borders-color)
+    background-color var(--main-bg-color)
     box-shadow 0 0 3px 0px var(--main-borders-color)
     //position fixed
     //bottom 0
