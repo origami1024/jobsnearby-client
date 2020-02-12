@@ -163,7 +163,7 @@
             <!-- <p v-if="txt != ''">Найдено: {{jobsFullcount}}</p> -->
             <q-btn-toggle
               v-model="lenses"
-              toggle-color="primary"
+              toggle-color="red-10"
               size="sm"
               dense
               :options="[ {value: 'short', icon: 'list'},

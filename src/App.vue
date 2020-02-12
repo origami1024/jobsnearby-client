@@ -28,7 +28,8 @@
       </router-link>
       <div class="separator" style="width: 150px"></div>
       <div id="nav" shrink stretch>
-        <router-link @click.native="newJobInit" class="r-link" v-if="role === 'company'" to="/addJob">
+        <router-link @click.native="newJobInit" class="r-link" to="/addJob">
+          <!-- v-if="role === 'company'" -->
           <!-- <q-btn round icon="add_circle_outline"/> -->
           <q-icon round glossy name="add_circle_outline" size="40px"></q-icon>
           <q-tooltip>
@@ -145,7 +146,7 @@
       <!-- <q-btn :loading="ajaxLoading" dense size="sm" color="primary" @click="refreshjobs" icon="refresh">debug</q-btn> -->
       <q-ajax-bar
         position="bottom"
-        style="backgroundColor: var(--btn-color);"
+        color="red-10"
         size="10px"
       />
       <!-- color="accent" -->
@@ -736,6 +737,7 @@ export default {
   --main-borders-color #3A6E8F
   --btn-color #C00027
   //--logocolor #3A6E8F
+
 #app
   // font-family 'Avenir', Helvetica, Arial, sans-serif
   --maxW 1000px
@@ -765,7 +767,7 @@ export default {
     margin-right 10px
     display block
     border-radius 4px
-    color white//purple
+    color var(--main-borders-color)//purple
     text-decoration none
   h1,h2,h3,h5,h6
     font-size 14px
