@@ -9,10 +9,10 @@
         style="fontWeight:700;"
       >
         <!-- style="color: white; backgroundColor: var(--main-borders-color);" -->
-        <q-tab name="login" style="width:50%;fontWeight:900;">
+        <q-tab name="login" style="width:50%;fontWeight:900; letter-spacing: 2px">
           Вход
         </q-tab>
-        <q-tab name="reg" style="width:50%;">
+        <q-tab name="reg" style="width:50%; letter-spacing: 1px">
           Регистрация
         </q-tab>
       </q-tabs>
