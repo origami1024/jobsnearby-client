@@ -35,6 +35,7 @@ import {
   ClosePopup,
   QExpansionItem,
   Notify,
+  QRadio,
 } from 'quasar'
 
 Vue.use(Quasar, {
@@ -42,6 +43,7 @@ Vue.use(Quasar, {
     notify: { timeout: 1000 }
   },
   components: {
+    QRadio,
     QToolbar,
     QToolbarTitle,
     QIcon,

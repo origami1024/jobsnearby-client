@@ -82,12 +82,16 @@
         </q-tab-panel>
         <q-tab-panel name="reg">
           <form action="#" @submit.prevent="tryreg">
-            <div class="line">
+            <div style="display:flex; justify-content: space-around; width: 100%; margin-bottom: 10px">
+              <q-radio v-model="usertype" dense val="subscriber" label="Специалист" />
+              <q-radio v-model="usertype" dense val="company" label="Компания" />
+            </div>
+            <!-- <div class="line">
               <input type="radio" v-model="usertype" id="r1" name="usertype" value="subscriber">
               <label class="twolined" for="r1">Специалист (Ищу работу)</label>
               <input type="radio" v-model="usertype" id="r2" name="usertype" value="company">
               <label class="twolined" for="r2">Компания (Работодатель)</label>
-            </div>
+            </div> -->
             <div class="colx" v-show="usertype === 'company'">
               <div class="row">
                 <span v-show="showErrors" class="err_span">{{validation.company}}</span>
