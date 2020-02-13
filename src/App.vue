@@ -18,9 +18,10 @@
       </q-btn> -->
       <router-link
         @click.native="refreshjobs('logoclick')" to="/"
-        style="padding: 0px;"
+        style="padding: 0px;display: flex"
         class="logolink"
       >
+        <img src="logo1.png" style="align-self:center;height:40px; margin-top:-8px"/>
         USSAT
         <q-tooltip>
           <p style="font-size: 15px; margin: 0">Главная</p>

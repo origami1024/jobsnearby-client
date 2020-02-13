@@ -18,7 +18,7 @@
       </q-tabs>
       <q-tab-panels class="registration__inner" :value="regState" animated>
         <q-tab-panel name="login">
-          <form action="#" @submit.prevent="trylog">
+          <form action="#" @submit.prevent="trylog" style="margin-top: 5px">
             <div style="display:flex; width: 100%; margin-bottom: 10px">
               <label style="alignSelf: center; width: 100px;margin-bottom: 15px" for="mailInput1">* Email</label>
               <q-input
@@ -35,7 +35,7 @@
                 @blur="validateMail"
               />
             </div>
-            <div style="display:flex; width: 100%; margin-bottom: 10px">
+            <div style="display:flex; width: 100%;">
               <label style="alignSelf: center; width: 100px;margin-bottom: 15px" for="pwInput1">* Пароль</label>
               <q-input
                 id='pwInput1'
@@ -69,13 +69,12 @@
               <q-checkbox color="red-10" v-model="login.rememberme" label="Запомнить меня" />
               <a href="#" style="alignSelf: center; color:var(--main-borders-color)">Забыл пароль?</a>
             </div>
-            
             <q-btn 
               color="red-10"
               label="Войти"
               type="submit"
               :loading="submitting"
-              style="margin: 0 auto; width: 35%; font-weight: 700; letter-spacing: 2px"
+              class="submitBtn"
             />
             <!-- <input type="submit" value="Войти"> -->
             <!-- <p>{{login.status}}</p> -->
@@ -100,54 +99,137 @@
                 <label for="agency">Кадровое агенство</label>
               </div>
             </div>
-            <div class="colx" v-show="usertype === 'subscriber'">
+            <!-- <div class="colx" v-show="usertype === 'subscriber'">
               <div class="row">
-                <!-- <label for="name">Имя</label> -->
                 <span v-show="showErrors" class="err_span">{{validation.name}}</span>
               </div>
               <input v-model="name" id="name" placeholder="* Имя">
               <div class="row">
-                <!-- <label for="surname">Фамилия</label> -->
                 <span v-show="showErrors" class="err_span">{{validation.surname}}</span>
               </div>
               <input v-model="surname" id="surname" placeholder="* Фамилия">
-            </div>
-            <div class="colx">
+            </div> -->
+            <!-- <div class="colx">
               <div class="row">
-                <!-- <label for="email">Email</label> -->
                 <span v-show="showErrors" class="err_span">{{validation.mail}}</span>
               </div>
               <input v-model="mail" id="email" placeholder="* Укажите свой Email">
+            </div> -->
+            <div v-show="usertype === 'subscriber'">
+              <div style="display:flex; width: 100%; margin-bottom: 10px">
+                <label style="alignSelf: center; width: 100px;margin-bottom: 15px" for="name2">* Имя</label>
+                <q-input
+                  id='name2'
+                  square
+                  dense
+                  outlined
+                  bg-color="teal-1"
+                  v-model="name"
+                  hint=""
+                  :error-message="validation.name"
+                  :error="validation.name != ''"
+                  style="width: 100%;"
+                />
+                <!-- @blur="validateMail" -->
+              </div>
+              <div style="display:flex; width: 100%; margin-bottom: 10px">
+                <label style="alignSelf: center; width: 100px;margin-bottom: 15px" for="surname2">* Фамилия</label>
+                <q-input
+                  id='surname2'
+                  square
+                  dense
+                  outlined
+                  bg-color="teal-1"
+                  v-model="surname"
+                  hint=""
+                  :error-message="validation.surname"
+                  :error="validation.surname != ''"
+                  style="width: 100%;"
+                />
+                <!-- @blur="validateMail" -->
+              </div>
             </div>
-            <div class="colx">
+            <div style="display:flex; width: 100%; margin-bottom: 10px">
+              <label style="alignSelf: center; width: 100px;margin-bottom: 15px" for="mailInput2">* Email</label>
+              <q-input
+                id='mailInput2'
+                square
+                dense
+                outlined
+                bg-color="teal-1"
+                v-model="mail"
+                hint=""
+                :error-message="validation.mail"
+                :error="validation.mail != ''"
+                style="width: 100%;"
+              />
+              <!-- @blur="validateMail" -->
+            </div>
+            <div style="display:flex; width: 100%; margin-bottom: 10px">
+              <label style="alignSelf: center; width: 100px;margin-bottom: 15px" for="pw2">* Пароль</label>
+              <q-input
+                id='pw2'
+                square
+                dense
+                outlined
+                bg-color="teal-1"
+                v-model="pw"
+                hint=""
+                :error-message="validation.pw"
+                :error="validation.pw != ''"
+                style="width: 100%;"
+              />
+              <!-- @blur="validateMail" -->
+            </div>
+            <div style="display:flex; width: 100%; margin-bottom: 10px">
+              <label style="alignSelf: center; width: 100px;margin-bottom: 15px" for="pwc2">* Повтор пароля</label>
+              <q-input
+                id='pwc2'
+                square
+                dense
+                outlined
+                bg-color="teal-1"
+                v-model="pw"
+                hint=""
+                :error-message="validation.pwc"
+                :error="validation.pwc != ''"
+                style="width: 100%;"
+              />
+              <!-- @blur="validateMail" -->
+            </div>
+            <!-- <div class="colx">
               <div class="row">
-                <!-- <label for="pw">Пароль</label> -->
                 <span v-show="showErrors" class="err_span">{{validation.pw}}</span>
               </div>
               <input v-model="pw" id="pw" placeholder="* Пароль">
-              <!-- 6 - 25 символов, 1 буква англ алф -->
               <div class="row">
-                <!-- <label for="pwconfirm">Пароль еще раз</label> -->
                 <span v-show="showErrors" class="err_span">{{validation.pwc}}</span>
               </div>
               <input v-model="pwc" id="pwconfirm" placeholder="* Повторите пароль">
-            </div>
-            <div class="colx">
+            </div> -->
+            
+            <div style="display: flex; flex-direction:row; margin-bottom: 12px">
+              <q-checkbox color="red-10" id="rulescb1" v-model="rules" :error-message="validation.rules" :error="validation.rules != ''"/>
+              <label style="text-align: justify;" for="rulescb1">
+                * Я соглашаюсь с <a href="#">правилами использования сервиса</a>, а также с передачей и обработкой моих данных в TEST.com. Я подтверждаю своё совершеннолетие и ответственность за размещение объявления.
+              </label>
+            </div>              
+            <!-- <div class="colx">
               <div>
                 <input type="checkbox" id="rulescb" v-model="rules">
                 <label class="rulescb-label" for="rulescb">* Я соглашаюсь с <a href="#">правилами использования сервиса</a>, а также с передачей и обработкой моих данных в TEST.com. Я подтверждаю своё совершеннолетие и ответственность за размещение объявления.</label>
               </div>
               <span v-show="showErrors" class="err_span">{{validation.rules}}</span>
-            </div>
+            </div> -->
             <q-btn 
-              color="primary"
+              color="red-10"
               label="Регистрация"
               type="submit"
               :loading="submitting"
-              class="full-width"
+              class="submitBtn"
             />
             <!-- <input type="submit" value="Регистрация"> -->
-            <p>{{status}}</p>
+            <!-- <p>{{status}}</p> -->
           </form>
         </q-tab-panel>
       </q-tab-panels>
@@ -473,4 +555,9 @@ export default {
     .rulescb-label
       line-break normal
       display inline
+.submitBtn
+  margin 0 auto
+  width 45%
+  font-weight 700
+  letter-spacing 2px
 </style>

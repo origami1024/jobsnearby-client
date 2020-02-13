@@ -34,7 +34,7 @@ import {
   QMenu,
   ClosePopup,
   QExpansionItem,
-  Notify
+  Notify,
 } from 'quasar'
 
 Vue.use(Quasar, {
