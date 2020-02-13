@@ -4,7 +4,7 @@
       <ProfileNav
         :localRoute="tab"
         @setLocalRoute="setLocalRoute"
-        :localroutes="[{r: 'cv', l: 'Резюме'}, {r: 'sentCVS', l: 'Поданные резюме'}, {r: 'starred', l: 'Избранные вакансии'}, {r: 'personal', l: 'Личные данные'}]"
+        :localroutes="[{r: 'cv', l: 'Резюме'}, {r: 'sentCVS', l: 'Поданные резюме'}, {r: 'personal', l: 'Личные данные'}]"
         :localroutesX="{r: 'settings', l: 'Настройки'}"
       />
       <q-tab-panels
@@ -43,30 +43,12 @@
             :cvhitsHistory="cvhitsHistory"
           />
         </q-tab-panel>
-        <q-tab-panel name="starred">
-          <q-btn-toggle
-            v-if="likedJobs.length > 0"
-            v-model="lenses"
-            toggle-color="primary"
-            size="sm"
-            dense
-            :options="[ {value: 'short', icon: 'list'},
-                        {value: 'full', icon: 'code'},]"
-          />
-          <JobsList
-            :showLiked="role === 'subscriber'"
-            :likedJobs="likedJobs"
-            @favOne="favOne"
-            :lenses="lenses"
-            :jobslist="likedJobsList"
-          />
-        </q-tab-panel>
         <q-tab-panel class="subprofile__settings" name="personal">
-          <q-checkbox
+          <!-- <q-checkbox
             :label="userdata.insearch === true ? 'Я ищу работу' : 'Я не ищу работу'"
             
             v-model="userdata.insearch"
-          />
+          /> -->
           <!-- <p>Добавить контакты</p>
           <q-input dense class="subprofile__inp" outlined bottom-slots v-model="contacts1" label="Контакты" counter maxlength="30"/>
           <q-input dense v-show="contacts_count > 1" class="subprofile__inp" outlined bottom-slots v-model="contacts2" label="Контакты" counter maxlength="30"/>
@@ -128,8 +110,8 @@ export default {
   name: 'SubProfile',
   props: {
     ownCVs: {type: Array, default: ()=>[]},
-    likedJobs: {type: Array, default: ()=>[]},
-    likedJobsList: {type: Array, default: ()=>[]},
+    // likedJobs: {type: Array, default: ()=>[]},
+    // likedJobsList: {type: Array, default: ()=>[]},
     username: {type: String, default: ''},
     surname: {type: String, default: ''},
     insearch: {type: Boolean, default: false},
@@ -303,9 +285,6 @@ export default {
       
       this.tab = rou
     },
-    favOne(id) {
-      this.$emit('favOne', id)
-    }
   },
   mounted(){
     //console.log('cp11: ', this.insearch)

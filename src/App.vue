@@ -29,7 +29,7 @@
       </router-link>
       <div class="separator" style="width: 150px"></div>
       <div id="nav" shrink stretch>
-        <router-link @click.native="newJobInit" class="r-link" to="/addJob">
+        <router-link @click.native="newJobInit" v-if="role != 'subscriber'" class="r-link" to="/addJob">
           <!-- v-if="role === 'company'" -->
           <!-- <q-btn round icon="add_circle_outline"/> -->
           <q-icon round glossy name="add_circle_outline" size="40px"></q-icon>
@@ -64,7 +64,6 @@
             :label="$t('App.login')"
             to="/registration"/> -->
           <router-link
-            @click.native="getFavedFull"
             v-if="role && role === 'subscriber'"
             class="headerBtn"
             to="/subprofile"
@@ -141,10 +140,6 @@
           </q-menu>
         </button>
       </div>
-      <!-- <button @click="getOwnJobs">debug ownJobs</button>
-      <button @click="getLikedJobs">debug getLiked</button> -->
-      <!-- <button @click="refreshjobs">refresh jobs debug</button> -->
-      <!-- <q-btn :loading="ajaxLoading" dense size="sm" color="primary" @click="refreshjobs" icon="refresh">debug</q-btn> -->
       <q-ajax-bar
         position="bottom"
         color="red-10"
@@ -160,9 +155,7 @@
         @setSentState="setSentState" :sent="newJobSentState" @newJobInit="newJobInit" :jobEditedObj="jobEditedObj" :jobEditId="jobEditId" :newJobsPageType="newJobsPageType" @editJob="editJob"
         @scrollTo="scrollTo"
         @delJob="deleteJobById" @closeJob="closeJobById" @reopenJob="reopenJobById"
-        :likedJobsList="likedJobsList" :likedJobs="likedJobs"
         @logoutAndRetry="logoutAndRetry"
-        @favOne="favOne"
         @hitcv="hitcv"
         @getOwnJobs="getOwnJobs" :ownJobs="ownJobs"
         @authed="authIt" @regStateUpd="regStateUpd" :regState="regState"
@@ -219,8 +212,8 @@ export default {
     query: '',
     ajaxLoading: false,
     ownJobs: [],
-    likedJobs: [],
-    likedJobsList: [],
+    //likedJobs: [],
+    //likedJobsList: [],
     ownCVs: [],
     //step: 1, //для uploads
   }},
@@ -264,9 +257,9 @@ export default {
     if (localStorage.insearch) {
       this.insearch = Boolean(localStorage.insearch)
     }
-    if (localStorage.likedJobs) {
-      this.likedJobs = Array(localStorage.likedJobs)
-    }
+    // if (localStorage.likedJobs) {
+    //   this.likedJobs = Array(localStorage.likedJobs)
+    // }
     if (localStorage.ownCVs) {
       this.ownCVs = Array(localStorage.ownCVs)
     }
@@ -289,9 +282,9 @@ export default {
           this.company = ''
           this.isagency = false
           this.insearch = false
-          this.likedJobs = []
+          //this.likedJobs = []
           this.cvurl = ''
-          this.likedJobsList = []
+          //this.likedJobsList = []
           this.ownJobs = []
           this.ownCVs = []
         } else if (response.data && response.data[0] && response.data[1] && response.data[2]) {
@@ -301,7 +294,7 @@ export default {
       })
     //need to do these two only depending on the route
     this.refreshjobs('init')
-    this.getFavedFull()
+    // this.getFavedFull()
   },
   methods: {
     cvupd(e) {
@@ -332,9 +325,9 @@ export default {
       if (event.key === "insearch") {
         this.insearch = Boolean(event.newValue);
       } else
-      if (event.key === "likedJobs") {
-        this.likedJobs = Array(event.newValue);
-      } else
+      // if (event.key === "likedJobs") {
+      //   this.likedJobs = Array(event.newValue);
+      // } else
       if (event.key === "ownCVs") {
         this.ownCVs = Array(event.newValue);
       }
@@ -439,45 +432,42 @@ export default {
       const duration = 250
       setScrollPosition(target, offset, duration)
     },
-    getFavedFull() {
-      let url = config.jobsUrl + '/getFavedFull.json'
-      this.ajaxLoading = true
-      axios
-        .post(url, [], {withCredentials: true,})
-        .then(response => {
-          //console.log('getLikedJobs response cp72: ', response.data)
-          if (response.data) {
-            if (Array.isArray(response.data)) {
-              this.likedJobsList = response.data
-            } else {
-              this.likedJobsList = []
-            }
+    // getFavedFull() {
+    //   let url = config.jobsUrl + '/getFavedFull.json'
+    //   this.ajaxLoading = true
+    //   axios
+    //     .post(url, [], {withCredentials: true,})
+    //     .then(response => {
+    //       //console.log('getLikedJobs response cp72: ', response.data)
+    //       if (response.data) {
+    //         if (Array.isArray(response.data)) {
+    //           this.likedJobsList = response.data
+    //         } else {
+    //           this.likedJobsList = []
+    //         }
+    //       }
+    //       this.ajaxLoading = false
+    //     })
+    // },
+    // getLikedJobs() {
+    //   let jobsLikedUrl = config.jobsUrl + '/getFaved.json'
+    //   this.ajaxLoading = true
+    //   axios
+    //     .post(jobsLikedUrl, [], {withCredentials: true,})
+    //     .then(response => {
+    //       //console.log('getLikedJobs response cp72: ', response.data)
+    //       if (response.data) {
+    //         if (Array.isArray(response.data)) {
+    //           this.likedJobs = response.data
+    //         } else {
+    //           this.likedJobs = []
+    //         }
             
-            //console.log(this.likedJobsList)
-            //console.log(this.likedJobs)
-          }
-          this.ajaxLoading = false
-        })
-    },
-    getLikedJobs() {
-      let jobsLikedUrl = config.jobsUrl + '/getFaved.json'
-      this.ajaxLoading = true
-      axios
-        .post(jobsLikedUrl, [], {withCredentials: true,})
-        .then(response => {
-          //console.log('getLikedJobs response cp72: ', response.data)
-          if (response.data) {
-            if (Array.isArray(response.data)) {
-              this.likedJobs = response.data
-            } else {
-              this.likedJobs = []
-            }
-            
-            //console.log(this.likedJobs)
-          }
-          this.ajaxLoading = false
-        })
-    },
+    //         //console.log(this.likedJobs)
+    //       }
+    //       this.ajaxLoading = false
+    //     })
+    // },
     getOwnCVHits() {
       let owncvhitsUrl = config.jobsUrl + '/getallcvuser'
       this.ajaxLoading = true
@@ -513,28 +503,25 @@ export default {
           this.ajaxLoading = false
         })
     },
-    favOne(id) {
-      console.log('app favOne1', this.likedJobs)
-      let favOneUrl
-      if (!this.likedJobs.includes(id)) {
-        this.likedJobs.push(id)
-        console.log('app favOne2')
-        favOneUrl = config.jobsUrl + '/favOne.json?jid=' + id
-      } else {
-        let index = this.likedJobs.indexOf(id);
-        if (index !== -1) this.likedJobs.splice(index, 1);
-        favOneUrl = config.jobsUrl + '/delFavOne.json?jid=' + id
-        console.log('app favOne3')
-      }
-      this.ajaxLoading = true
-      axios
-        .post(favOneUrl, [], {withCredentials: true,})
-        .then(response => {
-          //console.log('getOwnJobs response cp61: ', response.status, response.data)
-          this.ajaxLoading = false
-        })
+    // favOne(id) {
+    //   let favOneUrl
+    //   if (!this.likedJobs.includes(id)) {
+    //     this.likedJobs.push(id)
+    //     favOneUrl = config.jobsUrl + '/favOne.json?jid=' + id
+    //   } else {
+    //     let index = this.likedJobs.indexOf(id);
+    //     if (index !== -1) this.likedJobs.splice(index, 1);
+    //     favOneUrl = config.jobsUrl + '/delFavOne.json?jid=' + id
+    //   }
+    //   this.ajaxLoading = true
+    //   axios
+    //     .post(favOneUrl, [], {withCredentials: true,})
+    //     .then(response => {
+    //       //console.log('getOwnJobs response cp61: ', response.status, response.data)
+    //       this.ajaxLoading = false
+    //     })
     
-    },
+    // },
     regStateUpd(val){
       //console.log('cpvalm ', val)
       this.regState = val
@@ -550,14 +537,14 @@ export default {
         this.username = token[3]
         this.surname = token[4]
         this.insearch = token[5]
-        this.likedJobs = token[6]
+        //this.likedJobs = token[6]
         this.cvurl = token[7]
         setTimeout(()=>{this.getOwnCVHits()}, 50)
       } else
       if (token[2] === 'company') {
         this.company = token[3]
         this.isagency = token[4]
-        this.likedJobs = []
+        //this.likedJobs = []
       }
       //console.log('cp111')
     },
@@ -581,9 +568,9 @@ export default {
       this.company = ''
       this.isagency = false
       this.insearch = false
-      this.likedJobs = []
+      //this.likedJobs = []
       this.cvurl = ''
-      this.likedJobsList = []
+      //this.likedJobsList = []
       this.ownJobs = []
       this.ownCVs = []
       //console.log(this.$route)
@@ -605,9 +592,9 @@ export default {
         this.company = ''
         this.isagency = false
         this.insearch = false
-        this.likedJobs = []
+        //this.likedJobs = []
         this.cvurl = ''
-        this.likedJobsList = []
+        //this.likedJobsList = []
         this.ownJobs = []
         this.ownCVs = []
         console.log('cplogout1: ', this.ownCVs)
@@ -721,9 +708,9 @@ export default {
     insearch(newName) {
       localStorage.insearch = newName
     },
-    likedJobs(newName) {
-      localStorage.likedJobs = Array(newName)
-    },
+    // likedJobs(newName) {
+    //   localStorage.likedJobs = Array(newName)
+    // },
     ownCVs(newName) {
       localStorage.ownCVs = Array(newName)
     },
@@ -738,10 +725,12 @@ export default {
   --main-borders-color #3A6E8F
   --btn-color #C00027
   //--logocolor #3A6E8F
-
 #app
   // font-family 'Avenir', Helvetica, Arial, sans-serif
   --maxW 1000px
+  min-height calc(100vh - 15px)
+  box-sizing border-box
+  position:relative
   font-family 'Varela Round', 'Nunito', sans-serif
   -webkit-font-smoothing antialiased
   -moz-osx-font-smoothing grayscale
@@ -751,7 +740,7 @@ export default {
   line-height 14px
   max-width var(--maxW)
   margin auto
-  //margin-bottom 12px//75px
+  padding-bottom 70px
   header
     display flex
     align-items center
@@ -812,6 +801,9 @@ export default {
     opacity 0.7
     z-index 3
   .main__footer
+    position absolute
+    bottom 0
+    width calc(var(--maxW) - 20px)
     display flex
     justify-content flex-end
     background-color var(--main-bg-color)

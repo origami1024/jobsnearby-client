@@ -1,5 +1,5 @@
 <template>
-  <div :class="{ jobscard: true, rowedCard: way=='row' }">
+  <div :class="{ jobscard: true }">
     <div class="line">
       <div class="colx">
         <h4 class="cardHeader">
@@ -58,7 +58,6 @@
         <!-- <q-btn class="mr-5px" v-else-if="role == 'subscriber'" round size="xs" icon="work"/> -->
         <a v-if="role == 'subscriber' && lenses == 'full'" class="cardLink" @click.prevent="isContactsShown = !isContactsShown" href="#">Контакты</a>
         <q-btn class="mr-5px" v-else-if="role == 'subscriber'" round size="xs" @click="isContactsShown = !isContactsShown" icon="people"/>
-        <q-btn v-if="showLiked" :text-color="liked ? 'primary' : 'grey'" round size="xs" icon="star" @click="$emit('favOne', job.job_id)"/>
       </div>
       <div v-if="isContactsShown" class="contactsPanel">
         <div>{{job.contact_mail}}</div>
@@ -90,11 +89,8 @@ export default {
     hitcvDateStart: String,
     hitcv: Object,
     hitcvDateEnd: String,
-    showLiked: Boolean,
-    liked: Boolean,
     cved: Boolean,
     role: String, 
-    way: String,
     job: Object,
     searchFilter: {type: String, default: ''},
     lenses: {type: String, default: 'full'},
@@ -177,7 +173,6 @@ export default {
   position relative
   border-left 2px solid var(--main-borders-color)
   padding-left 2px
-  //font-family 'Varela Round', sans-serif
   font-size 14px
   //margin-top 10px
   //max-width 300px
@@ -187,13 +182,6 @@ export default {
   box-sizing border-box
   transition-duration 0.3s
   box-shadow 0 0 2px 1px #dfdfdf
-  // &:nth-child(odd)
-  //   //border 1px solid black
-  //   background-color #efefef
-  //   box-shadow 0 0 3px 2px #dfdfdf
-  // &:nth-child(even)
-  //   background-color #fefefe
-  //   box-shadow 0 0 3px 2px #eee
   &:hover
     box-shadow 0 0 2px 1px #bbb
   a

@@ -39,6 +39,6 @@ export default {
 
 <style scoped lang="stylus">
 .my-menu-link
-  color white
+  color white !important
   background #248CEC
 </style>

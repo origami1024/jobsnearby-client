@@ -3,7 +3,18 @@
     <div class="jobs__main">
       <div style="padding-top: 10px">
         <div class="jobs__filterpart">
-          <JobsFilter :outerResetNeeded="outerResetNeeded" @resetFilters="resetFilters" @currUpd="currUpd" :currency="currency" @cityUpd="cityUpd" @jtypeUpd="jtypeUpd" @expUpd="expUpd" @salaryUpd="salaryUpd" :city="city" :salary="salary" :exp="exp" :jtype="jtype" :pending="pending" @refresh="$emit('refresh')" :langOptions="langOptions" @updLangs="updLangs" @slideEnd="slideEnd" :highest="maxSal" :lowest="minSal"></JobsFilter>
+          <JobsFilter
+            :outerResetNeeded="outerResetNeeded"
+            @resetFilters="resetFilters"
+            @currUpd="currUpd"
+            :currency="currency"
+            @cityUpd="cityUpd" @jtypeUpd="jtypeUpd" @expUpd="expUpd"
+            @salaryUpd="salaryUpd" :city="city" :salary="salary"
+            :exp="exp" :jtype="jtype"
+            :pending="pending"
+            @refresh="$emit('refresh')" :langOptions="langOptions"
+            @updLangs="updLangs" @slideEnd="slideEnd"
+            :highest="maxSal" :lowest="minSal"></JobsFilter>
         </div>
       </div>
       <div class="jobs__contents">
@@ -172,9 +183,7 @@
           </div>
           <JobsList
             :ownCVs="ownCVs"
-            :role="role" :showLiked="role === 'subscriber'"
-            :likedJobs="likedJobs" 
-            @favOne="favOne"
+            :role="role"
             @hitcv="hitcv"
             :lenses="lenses" :searchFilter="searchFilter" :jobslist="jobslist" msg="Полученные"/>
         </div>
@@ -207,9 +216,7 @@ export default {
   props: {
     role: String,
     jobslist: {type: Array, default: ()=>[]},
-    likedJobs: {type: Array, default: ()=>[]},
     ownCVs: {type: Array, default: ()=>[]},
-    likedJobsList: {type: Array, default: ()=>[]},
     pending: {type: Boolean, default: false},
     pages: {type: Number, default: 1},
     page_current: {type: Number, default: 1},
@@ -285,10 +292,6 @@ export default {
       this.outerResetNeeded = false
       this.$emit('updQue', this.query)
       this.$emit('refresh')
-    },
-    favOne(id) {
-      console.log('favOne from Jobs')
-      this.$emit('favOne', id)
     },
     hitcv(id) {
       this.$emit('hitcv', id)
