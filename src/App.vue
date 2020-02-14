@@ -29,7 +29,7 @@
       </router-link>
       <div class="separator" style="width: 150px"></div>
       <div id="nav" shrink stretch>
-        <router-link @click.native="newJobInit" v-if="role != 'subscriber'" class="r-link" to="/addJob">
+        <router-link @click.native="newJobInit" v-if="role != 'subscriber'" class="r-link hoverred" to="/addJob">
           <!-- v-if="role === 'company'" -->
           <!-- <q-btn round icon="add_circle_outline"/> -->
           <q-icon round glossy name="add_circle_outline" size="40px"></q-icon>
@@ -837,6 +837,9 @@ export default {
     padding-right 0px
     letter-spacing 2px
     font-weight 700
+    &:hover
+      color var(--btn-color)
+  .hoverred
     &:hover
       color var(--btn-color)
       //border 2px solid white
