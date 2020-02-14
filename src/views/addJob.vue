@@ -21,10 +21,12 @@
           <p class="star">*</p>
           <p class="startP" style="min-width: 140px; textAlign: left">{{$t('addJob.titleLabel')}}</p>
           <q-input
+            square
+            dense
             outlined
-            bg-color="white"
+            bg-color="teal-1"
             :style="{width: '100%'}"
-            dense :hint="null"
+            :hint="null"
             v-model="job.title"
             ref="title"
             :rules="[
@@ -43,9 +45,10 @@
           <q-input
             :disable="salaryOn"
             :style="{width: '110px', marginRight: '10px'}"
+            square
             dense
             outlined
-            bg-color="white"
+            bg-color="teal-1"
             v-model="job.salary_min"
             ref="salary_min"
             :placeholder="$t('addJob.salaryMinPH')" :hint="null"
@@ -55,9 +58,10 @@
           <q-input
             :disable="salaryOn"
             :style="{width: '110px', marginRight: '10px'}"
+            square
             dense
             outlined
-            bg-color="white"
+            bg-color="teal-1"
             v-model="job.salary_max"
             ref="salary_max"
             :placeholder="$t('addJob.salaryMaxPH')" :hint="null"
@@ -70,9 +74,10 @@
           <q-select
             :disable="salaryOn"
             style="width: 95px; lineHeight: 3.2"
+            square
             dense
             outlined
-            bg-color="white"
+            bg-color="teal-1"
             v-model="job.currency"
             :options="[
               {label: $t('addJob.manat'), value: 'm'},
@@ -82,6 +87,7 @@
           />
           <q-checkbox
             style="marginBottom: 12px; alignSelf: center"
+            color="red-10"
             v-model="salaryOn"
             @input="$refs.salary_min.resetValidation();
             $refs.salary_max.resetValidation();
@@ -96,9 +102,10 @@
           <p class="star">*</p>
           <p class="startP" style="width: 140px; textAlign: left">{{$t('addJob.contactsLabel')}}</p>
           <q-input
+            square
             dense
             outlined
-            bg-color="white"
+            bg-color="teal-1"
             v-model="job.contact_mail"
             :placeholder="$t('addJob.emailPH')"
             type="email"
@@ -114,9 +121,10 @@
             :lazy-rules="lazyRulesAll"
           />
           <q-input
+            square
             dense
             outlined
-            bg-color="white"
+            bg-color="teal-1"
             v-model="job.contact_tel"
             :placeholder="$t('addJob.telPH')"
             type="tel"
@@ -138,9 +146,10 @@
           <q-select
             :value="job.city"
             @input="cityUpd"
-            outlined
-            bg-color="white"
+            square
             dense
+            outlined
+            bg-color="teal-1"
             use-input
             input-debounce="0"
             fill-input
@@ -165,7 +174,7 @@
               @blur="descBlur"
               @input="descUpd"
               :editorToolbar="customToolbar"
-              style="backgroundColor: white;"
+              
             />
             <div class="hint" :style="{color: job.description.length > 2000 ? '#c10015' : 'inherit'}">{{job.description.length}} / 2000</div>
           </div>
@@ -182,8 +191,10 @@
             <q-select
               v-model="job.experience"
               style="width: 180px"
-              dense outlined
-              bg-color="white"
+              square
+              dense
+              outlined
+              bg-color="teal-1"
               :options="expOptions"
               :hint="null"
             />
@@ -193,8 +204,10 @@
             <p class="startP" style="width: 140px; textAlign: left">{{$t('addJob.jobTypeLabel')}}</p>
             <q-select
               v-model="job.jtype"
-              outlined bg-color="white"
-              dense 
+              square
+              dense
+              outlined
+              bg-color="teal-1"
               :options="jtypeOptions"
               :hint="null"
               style="width: 180px"
@@ -205,8 +218,10 @@
             <p class="startP" style="width: 140px; textAlign: left">{{$t('addJob.ageLabel')}}</p>
             <q-input
               :style="{width: '110px', marginRight: '10px'}"
-              dense outlined
-              bg-color="white"
+              square
+              dense
+              outlined
+              bg-color="teal-1"
               v-model="job.age1"
               ref="age1"
               :placeholder="$t('addJob.genericFrom')"
@@ -220,8 +235,10 @@
             />
             <q-input
               :style="{width: '110px', marginRight: '10px'}"
-              dense outlined
-              bg-color="white"
+              square
+              dense
+              outlined
+              bg-color="teal-1"
               v-model="job.age2"
               :placeholder="$t('addJob.genericTo')"
               :hint="null"
@@ -239,7 +256,10 @@
             <p class="startP" style="width: 140px; textAlign: left">{{$t('addJob.labelSchedule')}}</p>
             <q-input
               :style="{width: '110px', marginRight: '10px'}"
-              dense outlined bg-color="white"
+              square
+              dense
+              outlined
+              bg-color="teal-1"
               v-model="job.worktime1"
               ref="worktime1"
               :placeholder="$t('addJob.genericFrom')"
@@ -254,7 +274,11 @@
             />
             <q-input
               :style="{width: '110px', marginRight: '10px'}"
-              dense outlined bg-color="white" v-model="job.worktime2"
+              square
+              dense
+              outlined
+              bg-color="teal-1"
+              v-model="job.worktime2"
               :placeholder="$t('addJob.genericTo')"
               :hint="null"
               ref="worktime2"
@@ -269,10 +293,11 @@
             <q-select
               :value="job.schedule"
               @input="scheduleUpd"
-              outlined
-              bg-color="white"
-              style="max-width: 110px"
+              square
               dense
+              outlined
+              bg-color="teal-1"
+              style="max-width: 110px"
               use-input
               input-debounce="0"
               fill-input
@@ -294,9 +319,10 @@
             <p class="star"> </p>
             <p class="startP" style="width: 140px; textAlign: left">{{$t('addJob.eduLabel')}}</p>
             <q-input
+              square
               dense
               outlined
-              bg-color="white"
+              bg-color="teal-1"
               v-model="job.edu"
               style="marginRight: 10px"
               :hint="null"
@@ -319,9 +345,10 @@
             <q-select
               multiple
               use-chips
+              square
               dense
               outlined
-              bg-color="white"
+              bg-color="teal-1"
               :style="{width: '400px'}"
               max-values="3"
               v-model="job.langs"
@@ -331,21 +358,21 @@
           </div>
         </q-expansion-item>
         <q-btn
-          color="primary"
+          color="red-10"
           :label="newJobsPageType == 'new' ? $t('addJob.sendJobBtnLabelNew') : $t('addJob.sendJobBtnLabelUpdate')"
           @click="tryAdd"
         />
       </div>
       <div v-else-if="sent == 'good'" :key="2" class="jobpage__wrapper">
         <p>{{$t('addJob.sendJobSuccess1')}}<a :href="'/jobpage?id=' + returned.job_id" target="_blank">{{returned.title}}</a>{{$t('addJob.sendJobSuccess2')}}</p>
-        <q-btn color="primary" @click="$emit('setSentState', 'none'); resetFields(); $emit('newJobInit')" :label="$t('addJob.btnAddOneMore')"/>
+        <q-btn color="red-10" @click="$emit('setSentState', 'none'); resetFields(); $emit('newJobInit')" :label="$t('addJob.btnAddOneMore')"/>
         
       </div>
       <div v-else-if="sent == 'fail'" :key="3" class="jobpage__wrapper">
         <p>{{$t('addJob.sendJobError1')}}</p>
-        <q-btn color="primary" @click="$emit('setSentState', 'none'); resetFields(); $emit('newJobInit')" :label="$t('addJob.btnAddOneMore')"/>
+        <q-btn color="red-10" @click="$emit('setSentState', 'none'); resetFields(); $emit('newJobInit')" :label="$t('addJob.btnAddOneMore')"/>
       </div>
-      <div v-else-if="role == 'guestUnau'" :key="4" class="jobpage__wrapper">
+      <div v-else-if="role == 'guestUnau' | role == 'guest'" :key="4" class="jobpage__wrapper">
         {{$t('addJob.unauthorized')}}
       </div>
     </transition>
@@ -673,10 +700,10 @@ div.q-field__messages
     border 1px solid green !important
   .jobpage__wrapper
     margin-top 15px
-    background-color #eee
+    background-color var(--main-bg-color)//#eee
     padding 10px
     padding-top 10px
-    box-shadow 0 0 3px 2px #ddd
+    box-shadow 0 0 3px 1px var(--main-borders-color)
   .line
     display flex
     align-items flex-end
@@ -697,7 +724,6 @@ div.q-field__messages
   .withMargins
     margin 0 10px
     align-self center
-
   .bounce-enter-active {
     animation: bounce-in .35s;
   }
@@ -715,5 +741,4 @@ div.q-field__messages
       transform: scale(1);
     }
   }
-
 </style>

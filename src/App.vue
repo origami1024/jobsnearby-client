@@ -96,25 +96,25 @@
             </q-tooltip>
           </router-link>
 
-          <q-btn-group>
-            <!-- <q-btn flat @click="getFavedFull" :color="$route.path == '/subprofile' ? 'purple' : 'inherit'" :text-color="$route.path == '/subprofile' ? 'black' : 'black'" no-caps icon="person" v-if="role === 'subscriber'" to="/subprofile">
+          <!-- <q-btn-group>
+            <q-btn flat @click="getFavedFull" :color="$route.path == '/subprofile' ? 'purple' : 'inherit'" :text-color="$route.path == '/subprofile' ? 'black' : 'black'" no-caps icon="person" v-if="role === 'subscriber'" to="/subprofile">
               <q-tooltip>
                 <p style="font-size: 15px; margin: 0">{{user}}</p>
               </q-tooltip>
-            </q-btn> -->
+            </q-btn>
             <q-btn flat no-caps icon="person" @click.native="getOwnJobs"
             v-if="role === 'company'" to="/entprofile">
               <q-tooltip>
                 <p style="font-size: 15px; margin: 0">{{user}}</p>
               </q-tooltip>
             </q-btn>
-            <!-- <q-btn flat no-caps v-if="user_id != -1" @click="logout" icon="logout">
+            <q-btn flat no-caps v-if="user_id != -1" @click="logout" icon="logout">
               <q-tooltip>
                 <p style="font-size: 15px; margin: 0">{{$t('App.logoutHint')}}</p>
               </q-tooltip>
-            </q-btn> -->
-            <!-- @click.native="getOwnJobs" -->
-          </q-btn-group>
+            </q-btn>
+            @click.native="getOwnJobs"
+          </q-btn-group> -->
           
         </div>
       </div>
@@ -838,7 +838,7 @@ export default {
     letter-spacing 2px
     font-weight 700
     &:hover
-      color indigo
+      color var(--btn-color)
       //border 2px solid white
       //color white
   // .headerBtn.router-link-exact-active
@@ -851,4 +851,6 @@ export default {
 .q-manual-focusable--focused
   background-color var(--main-borders-color)
   color var(--main-bg-color) !important
+.ql-editor
+  background-color #E0F2F1
 </style>
