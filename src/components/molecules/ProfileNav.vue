@@ -5,7 +5,6 @@
         v-for="(lr, index) in localroutes"
         :key="index"
         clickable
-
         :active="localRoute === lr.r"
         @click="$emit('setLocalRoute', lr.r)"
         active-class="my-menu-link"
@@ -40,5 +39,5 @@ export default {
 <style scoped lang="stylus">
 .my-menu-link
   color white !important
-  background #248CEC
+  background var(--main-borders-color)//#248CEC
 </style>

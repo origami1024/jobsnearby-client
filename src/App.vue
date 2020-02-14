@@ -168,7 +168,7 @@
       />
     </keep-alive>
     <footer class="main__footer">
-      <q-btn push color="primary" label="Написать нам" to="/Feedback"/>
+      <q-btn push style="color:white;backgroundColor: var(--main-borders-color)" label="Написать нам" to="/Feedback"/>
     </footer>
     <!-- <LoginModal @authed="authIt" @loginclosed="modalShown = 'none'" :isShown="modalShown === 'login'"></LoginModal> -->
     <!-- <RegisterModal @regclosed="modalShown = 'none'" :isShown="modalShown === 'reg'"></RegisterModal> -->  

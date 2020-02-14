@@ -28,7 +28,7 @@
               style="line-height: 30px; font-size: 16px;text-align:left;"
             >
               <template v-slot:header>
-                <a :href="'/jobpage?id=' + item" target="_blank">
+                <a class="responseLinkLvl1" :href="'/jobpage?id=' + item" target="_blank">
                   {{resps.find(val=>val.cvjob_id == item).title}}
                   <!-- resps.find(val=>val.cvjob_id == item).cv_url -->
                 </a>
@@ -38,7 +38,7 @@
               <ul style="list-style-type:none">
                 <li v-for="hit in respsJreformat[item].cvhits" :key="hit">
                   <q-item clickable>
-                  <a @click="viewHit(hit)" :href="'https://docs.google.com/viewerng/viewer?url=' + resps.find(val=>val.cvhit_id == hit).cv_url" target="_blank">
+                  <a class="responseLinkLvl2" @click="viewHit(hit)" :href="'https://docs.google.com/viewerng/viewer?url=' + resps.find(val=>val.cvhit_id == hit).cv_url" target="_blank">
                     {{
                       resps.find(val=>val.cvhit_id == hit).name + ' ' + 
                       resps.find(val=>val.cvhit_id == hit).surname
@@ -451,6 +451,12 @@ export default {
     background-size 180px 80px
     background-color pink
     line-height 50px
+  .responseLinkLvl1
+    color var(--btn-color)
+    margin-right 5px
+  .responseLinkLvl2
+    color var(--main-borders-color)
+    margin-right 5px
   *
     margin 0
 </style>
