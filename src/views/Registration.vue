@@ -18,7 +18,7 @@
       </q-tabs>
       <q-tab-panels class="registration__inner" :value="regState" animated>
         <q-tab-panel name="login">
-          <form action="#" @submit.prevent="trylog" style="margin-top: 5px">
+          <form action="#" @submit.prevent="trylog" style="margin-top: 12px">
             <div style="display:flex; width: 100%; margin-bottom: 10px">
               <label style="alignSelf: center; width: 100px;margin-bottom: 15px" for="mailInput1">* Email</label>
               <q-input
@@ -33,6 +33,7 @@
                 :error="login.validation.mail != ''"
                 style="width: 100%;"
                 @blur="validateMail"
+                @input="login.validation.mail = ''"
               />
             </div>
             <div style="display:flex; width: 100%;">
@@ -49,6 +50,7 @@
                 :error="login.validation.pw != ''"
                 style="width: 100%;"
                 @blur="validatePW"
+                @input="login.validation.pw = ''"
               />
             </div>
             <!-- <div class="colx">
@@ -92,17 +94,39 @@
               <input type="radio" v-model="usertype" id="r2" name="usertype" value="company">
               <label class="twolined" for="r2">Компания (Работодатель)</label>
             </div> -->
-            <div class="colx" v-show="usertype === 'company'">
+            <div v-show="usertype === 'company'" style="display:flex; width: 100%;">
+              <label style="alignSelf: center; width: 100px;margin-bottom: 15px">* Компания</label>
+              <q-input
+                square
+                dense
+                outlined
+                bg-color="teal-1"
+                v-model="company"
+                hint=""
+                style="width: 100%;"
+                :error-message="validation.company"
+                :error="validation.company != ''"
+                @blur="valiRegCompany"
+                @input="validation.company = ''"
+              />
+            </div>
+            <div v-show="usertype === 'company'" style="display:flex; width: 100%; margin-bottom: 12px">
+              <q-checkbox
+                color="red-10" label="Кадровое агенство"
+                v-model="agency"
+                left-label
+              />
+            </div>
+            
+            <!-- <div v-show="usertype === 'company'">
               <div class="row">
                 <span v-show="showErrors" class="err_span">{{validation.company}}</span>
               </div>
-              <q-input dense filled v-model="company" label="* Компания" placeholder="Название компании" :hint="null"/>
-              <!-- <input v-model="company" id="company" placeholder="Название компании"> -->
               <div class="row">
                 <input v-model="agency" type="checkbox" id="agency">
                 <label for="agency">Кадровое агенство</label>
               </div>
-            </div>
+            </div> -->
             <!-- <div class="colx" v-show="usertype === 'subscriber'">
               <div class="row">
                 <span v-show="showErrors" class="err_span">{{validation.name}}</span>
@@ -133,8 +157,9 @@
                   :error-message="validation.name"
                   :error="validation.name != ''"
                   style="width: 100%;"
+                  @blur="valiRegName"
+                  @input="validation.name = ''"
                 />
-                <!-- @blur="validateMail" -->
               </div>
               <div style="display:flex; width: 100%; margin-bottom: 10px">
                 <label style="alignSelf: center; width: 100px;margin-bottom: 15px" for="surname2">* Фамилия</label>
@@ -149,8 +174,9 @@
                   :error-message="validation.surname"
                   :error="validation.surname != ''"
                   style="width: 100%;"
+                  @blur="valiRegSurname"
+                  @input="validation.surname = ''"
                 />
-                <!-- @blur="validateMail" -->
               </div>
             </div>
             <div style="display:flex; width: 100%; margin-bottom: 10px">
@@ -166,8 +192,9 @@
                 :error-message="validation.mail"
                 :error="validation.mail != ''"
                 style="width: 100%;"
+                @blur="valiRegMail"
+                @input="validation.mail = ''"
               />
-              <!-- @blur="validateMail" -->
             </div>
             <div style="display:flex; width: 100%; margin-bottom: 10px">
               <label style="alignSelf: center; width: 100px;margin-bottom: 15px" for="pw2">* Пароль</label>
@@ -182,8 +209,9 @@
                 :error-message="validation.pw"
                 :error="validation.pw != ''"
                 style="width: 100%;"
+                @blur="valiRegPW"
+                @input="validation.pw = ''"
               />
-              <!-- @blur="validateMail" -->
             </div>
             <div style="display:flex; width: 100%; margin-bottom: 10px">
               <label style="alignSelf: center; width: 100px;margin-bottom: 15px" for="pwc2">* Повтор пароля</label>
@@ -193,11 +221,13 @@
                 dense
                 outlined
                 bg-color="teal-1"
-                v-model="pw"
+                v-model="pwc"
                 hint=""
                 :error-message="validation.pwc"
                 :error="validation.pwc != ''"
                 style="width: 100%;"
+                @blur="valiRegPWC"
+                @input="validation.pwc = ''"
               />
               <!-- @blur="validateMail" -->
             </div>
@@ -213,11 +243,13 @@
             </div> -->
             
             <div style="display: flex; flex-direction:row; margin-bottom: 12px">
-              <q-checkbox color="red-10" id="rulescb1" v-model="rules" :error-message="validation.rules" :error="validation.rules != ''"/>
+              <q-checkbox
+                color="red-10" id="rulescb1" v-model="rules" :error-message="validation.rules" :error="validation.rules != ''"/>
               <label style="text-align: justify;" for="rulescb1">
-                * Я соглашаюсь с <a href="#">правилами использования сервиса</a>, а также с передачей и обработкой моих данных в TEST.com. Я подтверждаю своё совершеннолетие и ответственность за размещение объявления.
+                * Я соглашаюсь с <a style="color: var(--btn-color)" href="#">правилами использования сервиса</a>, а также с передачей и обработкой моих данных в TEST.com. Я подтверждаю своё совершеннолетие и ответственность за размещение объявления.
               </label>
-            </div>              
+            </div>
+            <span style="margin-bottom: 10px" v-show="showErrors && !rules" class="err_span">{{validation.rules}}</span>          
             <!-- <div class="colx">
               <div>
                 <input type="checkbox" id="rulescb" v-model="rules">
@@ -282,25 +314,23 @@ export default {
     status: '',
     showErrors: false,
     validation: {
-      mail: 'Введите email',
-      pw: 'Введите пароль',
-      pwc: 'Подтвердите пароль',
-      rules: 'Ознакомтесь с правилами',
-      company: 'Введите название',
-      name: 'Введите имя',
-      surname: 'Введите фамилию'
+      mail: '',
+      pw: '',
+      pwc: '',
+      rules: '',
+      company: '',
+      name: '',
+      surname: ''
     }
   }},
   methods: {
     tryreg() {
-      console.log('trying')
-      this.status = 'Проверка данных'
+      this.status = 'Данные не корректны'
       //client validation here
       if (this.validate()) {
         this.showErrors = false
-        this.status = 'Попытка регистрации'
+        //this.status = 'Попытка регистрации'
         this.submitting = true
-        console.log('cp10: ',this.agency)
         axios
           .post(config.jobsUrl + '/reg', [this.mail.toLowerCase(), this.pw, this.usertype, this.usertype === 'subscriber' ? this.name : this.company, this.usertype === 'subscriber' ? this.surname : this.agency], {headers: {'Content-Type' : 'application/json' }})
           .then(response => {
@@ -315,30 +345,97 @@ export default {
               this.surname = ''
               this.company = ''
               this.agency = ''
-              //this.$emit('regclosed')
               this.$emit('regStateUpd', 'login')
             }
             else if (response.data == 'step3') {
               this.status = 'Регистрация не удалась, ошибки на сервере'
-              this.$q.notify(this.status)
+              //this.$q.notify(this.status)
             }
             else if (response.data == 'step2') {
               this.status = 'Такой email уже существует в базе данных'
-              this.$q.notify(this.status)
+              //this.$q.notify(this.status)
             }
             else if (response.data == 'step1') {
               this.status = 'валидация на сервере не прошла хух'
-              this.$q.notify(this.status)
+              //this.$q.notify(this.status)
             }
             else console.dir('successful registering', response.data)
             this.submitting = false
+            this.$q.notify(this.status)
           })
-      } else this.showErrors = true
+      } else {this.showErrors = true; this.$q.notify(this.status)}
+    },
+    valiRegMail(){
+      let mailregex = /(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/
+      if (this.mail.length === 0)
+        this.validation.mail = ''
+      else if (!mailregex.test(this.mail.toLowerCase())) 
+        this.validation.mail = 'Неправильный формат адреса'
+      else this.validation.mail = ''
+      return this.validation.mail === ''
+    },
+    valiRegName(){
+      if (this.usertype === 'subscriber') {
+        if (this.name.length === 0)
+          this.validation.name = ''
+        else if (this.name.length < 3)
+          this.validation.name = 'Минимальная длина 3 символа'
+        else if (this.name.length > 35)
+          this.validation.name = 'Максимальная длина 35 символов'
+        else if (!this.wordRegex.test(this.name))
+          this.validation.name = 'Неправильный формат имени'
+        else this.validation.name = ''
+        return this.validation.name === ''
+      } else return true
+    },
+    valiRegSurname(){
+      if (this.usertype === 'subscriber') {
+        if (this.surname.length === 0)
+          this.validation.surname = ''
+        else if (this.surname.length < 3)
+          this.validation.surname = 'Минимальная длина 3 символа'
+        else if (this.surname.length > 35)
+          this.validation.surname = 'Максимальная длина 35 символов'
+        else if (!this.wordRegex.test(this.surname))
+          this.validation.surname = 'Неправильный формат фамилии'
+        else this.validation.surname = ''
+      } else return true
+    },
+    valiRegCompany(){
+      if (this.usertype === 'company') {
+        if (this.company.length === 0)
+          this.validation.company = ''
+        else if (this.company.length < 3)
+          this.validation.company = 'Минимальная длина 3 символа'
+        else if (this.company.length > 60)
+          this.validation.company = 'Максимальная длина 60 символов'
+        else if (!this.wordRegex.test(this.company))
+          this.validation.company = 'Неправильный формат названия'
+        else this.validation.company = ''
+      } else return true
+    },
+    valiRegPW(){
+      if (this.pw.length === 0)
+        this.validation.pw = ''
+      else if (this.pw.length < 6)
+        this.validation.pw = 'Минимум 6 символов'
+      else if (this.pw.length > 25)
+        this.validation.pw = 'Максимум 25 символов'
+      else if (!this.pwRegex.test(this.pw))
+        this.validation.pw = 'Минимум 1 английская буква'
+      else this.validation.pw = ''
+      return this.validation.pw === ''
+    },
+    valiRegPWC(){
+      if (this.pwc.length === 0)
+        this.validation.pwc = ''
+      else if (this.pwc !== this.pw)
+        this.validation.pwc = 'Не совпадает с паролем'
+      else this.validation.pwc = ''
+      return this.validation.pwc === ''
     },
     validate(){
-      //return true
       let mailregex = /(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/
-      //let nameregex = /^[\wа-яА-Я]+$/
       if (this.mail.length === 0)
         this.validation.mail = 'Введите email'
       else if (!mailregex.test(this.mail.toLowerCase())) 
@@ -346,8 +443,6 @@ export default {
       else this.validation.mail = ''
 
       if (this.usertype === 'subscriber') {
-        // this.validation.company = ''
-        
         if (this.name.length === 0)
           this.validation.name = 'Введите имя'
         else if (this.name.length < 3)
@@ -368,8 +463,6 @@ export default {
           this.validation.surname = 'Неправильный формат фамилии'
         else this.validation.surname = ''
       } else {
-        // this.validation.name =  ''
-        // this.validation.surname =  ''
 
         if (this.company.length === 0)
           this.validation.company = 'Введите название'
@@ -381,7 +474,6 @@ export default {
           this.validation.company = 'Неправильный формат названия'
         else this.validation.company = ''
       }
-
 
       if (this.pw.length === 0)
         this.validation.pw = 'Введите пароль'
@@ -460,7 +552,7 @@ export default {
     validateMail(){
       let mailregex = /(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/
       if (this.login.mail.length === 0) 
-        this.login.validation.mail = 'Введите email'
+        this.login.validation.mail = ''
       else if (!mailregex.test(this.login.mail.toLowerCase())) 
         this.login.validation.mail = 'Неправильный формат адреса'
       else this.login.validation.mail = ''
@@ -468,7 +560,7 @@ export default {
     },
     validatePW(){
       if (this.login.pw.length === 0)
-        this.login.validation.pw = 'Введите пароль'
+        this.login.validation.pw = ''
       else if (this.login.pw.length < 5 || this.login.pw.length > 25)
         this.login.validation.pw = 'Кол-во символов от 5 до 25'
       else this.login.validation.pw = ''
