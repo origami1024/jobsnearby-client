@@ -29,15 +29,19 @@
       </router-link>
       <div class="separator" style="width: 150px"></div>
       <div id="nav" shrink stretch>
-        <router-link @click.native="newJobInit" v-if="role != 'subscriber'" class="r-link hoverred" to="/addJob">
-          <!-- v-if="role === 'company'" -->
-          <!-- <q-btn round icon="add_circle_outline"/> -->
+        <router-link @click.native="newJobInit" v-if="role == 'company'" class="r-link hoverred" to="/addJob">
           <q-icon round glossy name="add_circle_outline" size="40px"></q-icon>
           <q-tooltip>
             <p style="font-size: 15px; margin: 0">{{$t('App.newJobHint')}}</p>
           </q-tooltip>
         </router-link>
-        <!-- <router-link to="/about">Контакты</router-link> | -->
+        <router-link @click.native="authPls" v-else-if="role != 'subscriber'" class="r-link hoverred" to="/registration">
+          <q-icon round glossy name="add_circle_outline" size="40px"></q-icon>
+          <q-tooltip>
+            <p style="font-size: 15px; margin: 0">{{$t('App.newJobHint')}}</p>
+          </q-tooltip>
+        </router-link>
+
         
       </div>
       <div class="separator" style="width: 150px"></div>
@@ -216,6 +220,7 @@ export default {
     //likedJobsList: [],
     ownCVs: [],
     //step: 1, //для uploads
+    dismiss: null
   }},
   computed: {
     pages_count() {
@@ -297,6 +302,10 @@ export default {
     // this.getFavedFull()
   },
   methods: {
+    authPls() {
+      if (this.dismiss != null) this.dismiss()
+      this.dismiss = this.$q.notify('Авторизируйтесь для возможности добавления вакансий')
+    },
     cvupd(e) {
       this.cvurl = e
     },
@@ -728,7 +737,7 @@ export default {
 #app
   // font-family 'Avenir', Helvetica, Arial, sans-serif
   --maxW 1000px
-  min-height calc(100vh - 15px)
+  //min-height calc(50vh - 15px)
   box-sizing border-box
   position:relative
   font-family 'Varela Round', 'Nunito', sans-serif
@@ -854,6 +863,6 @@ export default {
 .q-manual-focusable--focused
   background-color var(--main-borders-color)
   color var(--main-bg-color) !important
-.ql-editor
-  background-color #E0F2F1
+// .ql-editor
+//   background-color #E0F2F1
 </style>

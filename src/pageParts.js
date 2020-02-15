@@ -50,7 +50,7 @@ let sexdic = {
   'w': '<li>Женщина</li>',
   'm': '<li>Мужчина</li>',
 }
-exports.jobinfo = (job) => {
+exports.jobinfo1 = (job) => {
   
   let currency = currencydic[job.currency]
   let descArr
@@ -86,7 +86,7 @@ exports.jobinfo = (job) => {
     margin: 0;
     font-family: 'Varela Round', 'Nunito', sans-serif;
   }
-  .detailed__main{
+  .detailed__main1{
     width: 80%;
     max-width: 850px;
     background-color: white;

@@ -26,7 +26,7 @@
                 square
                 dense
                 outlined
-                bg-color="teal-1"
+                bg-color="teal-1" color="cyan-10"
                 v-model="login.mail"
                 hint=""
                 :error-message="login.validation.mail"
@@ -43,7 +43,7 @@
                 square
                 dense
                 outlined
-                bg-color="teal-1"
+                bg-color="teal-1" color="cyan-10"
                 v-model="login.pw"
                 hint=""
                 :error-message="login.validation.pw"
@@ -79,14 +79,14 @@
               class="submitBtn"
             />
             <!-- <input type="submit" value="Войти"> -->
-            <!-- <p>{{login.status}}</p> -->
+            <p v-if="login.status != ''" style="color: #c00; padding: 0; margin: 0; margin-top: 6px">{{login.status}}</p>
           </form>
         </q-tab-panel>
         <q-tab-panel name="reg">
           <form action="#" @submit.prevent="tryreg">
             <div style="display:flex; justify-content: space-around; width: 100%; margin-bottom: 10px">
-              <q-radio v-model="usertype" dense val="subscriber" label="Специалист" />
-              <q-radio v-model="usertype" dense val="company" label="Компания" />
+              <q-radio color="red-10" v-model="usertype" dense val="subscriber" label="Специалист" />
+              <q-radio color="red-10" v-model="usertype" dense val="company" label="Компания" />
             </div>
             <!-- <div class="line">
               <input type="radio" v-model="usertype" id="r1" name="usertype" value="subscriber">
@@ -100,7 +100,7 @@
                 square
                 dense
                 outlined
-                bg-color="teal-1"
+                bg-color="teal-1" color="cyan-10"
                 v-model="company"
                 hint=""
                 style="width: 100%;"
@@ -110,7 +110,10 @@
                 @input="validation.company = ''"
               />
             </div>
-            <div v-show="usertype === 'company'" style="display:flex; width: 100%; margin-bottom: 12px">
+            <div
+              v-show="usertype === 'company'"
+              style="display:flex; width: 100%; margin-top: -8px; margin-bottom: 14px"
+            >
               <q-checkbox
                 color="red-10" label="Кадровое агенство"
                 v-model="agency"
@@ -151,7 +154,7 @@
                   square
                   dense
                   outlined
-                  bg-color="teal-1"
+                  bg-color="teal-1" color="cyan-10"
                   v-model="name"
                   hint=""
                   :error-message="validation.name"
@@ -168,7 +171,7 @@
                   square
                   dense
                   outlined
-                  bg-color="teal-1"
+                  bg-color="teal-1" color="cyan-10"
                   v-model="surname"
                   hint=""
                   :error-message="validation.surname"
@@ -186,7 +189,7 @@
                 square
                 dense
                 outlined
-                bg-color="teal-1"
+                bg-color="teal-1" color="cyan-10"
                 v-model="mail"
                 hint=""
                 :error-message="validation.mail"
@@ -203,7 +206,7 @@
                 square
                 dense
                 outlined
-                bg-color="teal-1"
+                bg-color="teal-1" color="cyan-10"
                 v-model="pw"
                 hint=""
                 :error-message="validation.pw"
@@ -214,13 +217,13 @@
               />
             </div>
             <div style="display:flex; width: 100%; margin-bottom: 10px">
-              <label style="alignSelf: center; width: 100px;margin-bottom: 15px" for="pwc2">* Повтор пароля</label>
+              <label style="alignSelf: center; width: 100px;margin-bottom: 15px; display:flex" for="pwc2"><div style="margin-right: 4px">*</div>Повтор пароля</label>
               <q-input
                 id='pwc2'
                 square
                 dense
                 outlined
-                bg-color="teal-1"
+                bg-color="teal-1" color="cyan-10"
                 v-model="pwc"
                 hint=""
                 :error-message="validation.pwc"
@@ -244,12 +247,12 @@
             
             <div style="display: flex; flex-direction:row; margin-bottom: 12px">
               <q-checkbox
-                color="red-10" id="rulescb1" v-model="rules" :error-message="validation.rules" :error="validation.rules != ''"/>
+                style="align-self: flex-start;margin-top:-8px" color="red-10" id="rulescb1" v-model="rules" :error-message="validation.rules" :error="validation.rules != ''"/>
               <label style="text-align: justify;" for="rulescb1">
                 * Я соглашаюсь с <a style="color: var(--btn-color)" href="#">правилами использования сервиса</a>, а также с передачей и обработкой моих данных в TEST.com. Я подтверждаю своё совершеннолетие и ответственность за размещение объявления.
               </label>
             </div>
-            <span style="margin-bottom: 10px" v-show="showErrors && !rules" class="err_span">{{validation.rules}}</span>          
+            <span style="margin-bottom: 10px; font-size: 12px " v-show="showErrors && !rules" class="err_span">{{validation.rules}}</span>          
             <!-- <div class="colx">
               <div>
                 <input type="checkbox" id="rulescb" v-model="rules">
@@ -325,7 +328,7 @@ export default {
   }},
   methods: {
     tryreg() {
-      this.status = 'Данные не корректны'
+      this.status = 'Заполните все поля'
       //client validation here
       if (this.rules != true) this.rules = false
       if (this.agency != true) this.agency = false
@@ -348,6 +351,11 @@ export default {
               this.company = ''
               this.agency = ''
               this.$emit('regStateUpd', 'login')
+              this.login.mail = ''
+              this.login.pw = ''
+              this.login.status = ''
+              this.login.validation.mail = ''
+              this.login.validation.pw = ''
             }
             else if (response.data == 'step3') {
               this.status = 'Регистрация не удалась, ошибки на сервере'
@@ -358,7 +366,7 @@ export default {
               //this.$q.notify(this.status)
             }
             else if (response.data == 'step1') {
-              this.status = 'валидация на сервере не прошла хух'
+              this.status = 'Email или пароль не зарегестрированы'
               //this.$q.notify(this.status)
             }
             else console.dir('successful registering', response.data)
@@ -432,7 +440,7 @@ export default {
       if (this.pwc.length === 0)
         this.validation.pwc = ''
       else if (this.pwc !== this.pw)
-        this.validation.pwc = 'Не совпадает с паролем'
+        this.validation.pwc = 'Пароли не совпадают'
       else this.validation.pwc = ''
       return this.validation.pwc === ''
     },
@@ -490,7 +498,7 @@ export default {
       if (this.pwc.length === 0)
         this.validation.pwc = 'Подтвердите пароль'
       else if (this.pwc !== this.pw)
-        this.validation.pwc = 'Не совпадает с паролем'
+        this.validation.pwc = 'Пароли не совпадают'
       else this.validation.pwc = ''
 
       if (!this.rules) this.validation.rules = 'Ознакомтесь с правилами'
@@ -514,7 +522,7 @@ export default {
       this.$emit('regStateUpd', val)
     },
     trylog() {
-      this.login.status = 'Проверка данных'
+      //this.login.status = ''
       
       //client validation here
       if (this.validateLogin()) {
@@ -543,7 +551,7 @@ export default {
               //send this in both cases
             }
             else if (response.data == 'step1') {
-              this.login.status = 'Валидация на сервере не прошла хух'
+              this.login.status = 'Не существующий Email или не правильный пароль'
               this.$q.notify(this.login.status)
             }
             else console.dir('successful login', response.data, response.headers)
@@ -589,7 +597,19 @@ export default {
     }
   },
   components: {
-  }
+  },
+  // watch: {
+  //   $route (to, from){
+  //     if (to.name === 'registration') {
+  //       console.log('cp regi111')
+  //       this.login.mail = ''
+  //       this.login.pw = ''
+  //       this.login.status = ''
+  //       this.login.validation.mail = ''
+  //       this.login.validation.pw = ''
+  //     }
+  //   },
+  // }
 }
 </script>
 
@@ -601,7 +621,8 @@ export default {
   width 380px
   min-height calc(100vh - 148px)
   display flex
-  align-items center
+  align-items flex-start
+  padding-top 50px
   .registration__main
     //border 2px solid black
     width 380px
@@ -643,7 +664,8 @@ export default {
     .row
       display flex
     .err_span
-      color #f00
+      color #c00
+      margin-left 5px
     .spacebetw
       justify-content space-between
       margin-bottom 5px

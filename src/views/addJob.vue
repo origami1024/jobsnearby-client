@@ -3,7 +3,7 @@
     <transition name="bounce">
       <div v-if="role === 'company' && sent == 'none'" class="jobpage__wrapper" :key="1">
         <router-link class="r-link" v-if="role === 'company'" to="/uploads"
-          style="text-align: right; marginBottom: -15px"
+          style="text-align: right; marginBottom: -15px; color: green;"
         >
           <q-btn round icon="description">
             <q-tooltip>
@@ -24,7 +24,7 @@
             square
             dense
             outlined
-            bg-color="teal-1"
+            bg-color="white" color="cyan-10"
             :style="{width: '100%'}"
             :hint="null"
             v-model="job.title"
@@ -48,7 +48,7 @@
             square
             dense
             outlined
-            bg-color="teal-1"
+            bg-color="white" color="cyan-10"
             v-model="job.salary_min"
             ref="salary_min"
             :placeholder="$t('addJob.salaryMinPH')" :hint="null"
@@ -61,7 +61,7 @@
             square
             dense
             outlined
-            bg-color="teal-1"
+            bg-color="white" color="cyan-10"
             v-model="job.salary_max"
             ref="salary_max"
             :placeholder="$t('addJob.salaryMaxPH')" :hint="null"
@@ -77,7 +77,7 @@
             square
             dense
             outlined
-            bg-color="teal-1"
+            bg-color="white" color="cyan-10"
             v-model="job.currency"
             :options="[
               {label: $t('addJob.manat'), value: 'm'},
@@ -105,7 +105,7 @@
             square
             dense
             outlined
-            bg-color="teal-1"
+            bg-color="white" color="cyan-10"
             v-model="job.contact_mail"
             :placeholder="$t('addJob.emailPH')"
             type="email"
@@ -124,7 +124,7 @@
             square
             dense
             outlined
-            bg-color="teal-1"
+            bg-color="white" color="cyan-10"
             v-model="job.contact_tel"
             :placeholder="$t('addJob.telPH')"
             type="tel"
@@ -149,7 +149,7 @@
             square
             dense
             outlined
-            bg-color="teal-1"
+            bg-color="white" color="cyan-10"
             use-input
             input-debounce="0"
             fill-input
@@ -194,7 +194,7 @@
               square
               dense
               outlined
-              bg-color="teal-1"
+              bg-color="white" color="cyan-10"
               :options="expOptions"
               :hint="null"
             />
@@ -207,7 +207,7 @@
               square
               dense
               outlined
-              bg-color="teal-1"
+              bg-color="white" color="cyan-10"
               :options="jtypeOptions"
               :hint="null"
               style="width: 180px"
@@ -221,7 +221,7 @@
               square
               dense
               outlined
-              bg-color="teal-1"
+              bg-color="white" color="cyan-10"
               v-model="job.age1"
               ref="age1"
               :placeholder="$t('addJob.genericFrom')"
@@ -238,7 +238,7 @@
               square
               dense
               outlined
-              bg-color="teal-1"
+              bg-color="white" color="cyan-10"
               v-model="job.age2"
               :placeholder="$t('addJob.genericTo')"
               :hint="null"
@@ -259,7 +259,7 @@
               square
               dense
               outlined
-              bg-color="teal-1"
+              bg-color="white" color="cyan-10"
               v-model="job.worktime1"
               ref="worktime1"
               :placeholder="$t('addJob.genericFrom')"
@@ -277,7 +277,7 @@
               square
               dense
               outlined
-              bg-color="teal-1"
+              bg-color="white" color="cyan-10"
               v-model="job.worktime2"
               :placeholder="$t('addJob.genericTo')"
               :hint="null"
@@ -296,7 +296,7 @@
               square
               dense
               outlined
-              bg-color="teal-1"
+              bg-color="white" color="cyan-10"
               style="max-width: 110px"
               use-input
               input-debounce="0"
@@ -322,7 +322,7 @@
               square
               dense
               outlined
-              bg-color="teal-1"
+              bg-color="white" color="cyan-10"
               v-model="job.edu"
               style="marginRight: 10px"
               :hint="null"
@@ -348,7 +348,7 @@
               square
               dense
               outlined
-              bg-color="teal-1"
+              bg-color="white" color="cyan-10"
               :style="{width: '400px'}"
               max-values="3"
               v-model="job.langs"
@@ -363,10 +363,13 @@
           @click="tryAdd"
         />
       </div>
-      <div v-else-if="sent == 'good'" :key="2" class="jobpage__wrapper">
+      <div v-else-if="sent == 'goodNew'" :key="2" class="jobpage__wrapper">
         <p>{{$t('addJob.sendJobSuccess1')}}<a :href="'/jobpage?id=' + returned.job_id" target="_blank">{{returned.title}}</a>{{$t('addJob.sendJobSuccess2')}}</p>
         <q-btn color="red-10" @click="$emit('setSentState', 'none'); resetFields(); $emit('newJobInit')" :label="$t('addJob.btnAddOneMore')"/>
-        
+      </div>
+      <div v-else-if="sent == 'goodEdited'" :key="2" class="jobpage__wrapper">
+        <p>{{$t('addJob.sendJobSuccess1x')}}<a :href="'/jobpage?id=' + returned.job_id" target="_blank">{{returned.title}}</a>{{$t('addJob.sendJobSuccess2x')}}</p>
+        <q-btn color="red-10" @click="$emit('setSentState', 'none'); resetFields(); $emit('newJobInit')" :label="$t('addJob.btnAddOneMore')"/>
       </div>
       <div v-else-if="sent == 'fail'" :key="3" class="jobpage__wrapper">
         <p>{{$t('addJob.sendJobError1')}}</p>
@@ -454,7 +457,7 @@ export default {
       salaryValidated: true,
       descError: '',
       sexOptions: [{label: "Не имеет значения", value: ''}, {label: "Муж", value: 'm'}, {label: "Жен", value: 'w'},],
-      langOptions: ["Туркменский", "Русский", "Китайский", "Английский", "Немецкий", "Французкий"],
+      langOptions: ["Туркменский", "Русский", "Английский", "Китайский", "Немецкий", "Французкий"],
       cityOptions: stringOptions,
       scheduleOptions: scheduleOptions,
       jtypeOptions: [
@@ -600,7 +603,7 @@ export default {
             if (response.data && response.data.result == 'OK') {
               this.returned.title = response.data.title
               this.returned.job_id = response.data.job_id
-              this.$emit('setSentState', 'good')
+              this.$emit('setSentState', 'goodEdited')
               console.log('cp editJob: OK')
             } else {this.$emit('setSentState', 'fail'); console.log('trespasser')}
             
@@ -627,7 +630,7 @@ export default {
             if (response.data && response.data.result == 'OK') {
               this.returned.title = response.data.title
               this.returned.job_id = response.data.job_id
-              this.$emit('setSentState', 'good')
+              this.$emit('setSentState', 'goodNew')
               console.log('cp addOneJob: OK')
               
             } else {this.$emit('setSentState', 'fail'); console.log('trespasser')}

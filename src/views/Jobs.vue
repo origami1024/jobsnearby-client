@@ -27,6 +27,7 @@
               class="jobsfilter__search"
               @keyup.enter="refreshPlus"
               @input="txt != '' ? outerResetNeeded = true : null"
+              color="red-10"
             >
               <!-- :rules="[val => wordRegex.test(val) || $t('home.searchValSym')]" -->
               <template v-if="txt" v-slot:append>
