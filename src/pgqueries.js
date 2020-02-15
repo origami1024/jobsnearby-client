@@ -788,6 +788,7 @@ async function tryInsertEmail (mail) {
 async function registerFinish (id, hash, usertype, arg1, arg2) {
   let insert = ''
   console.log(usertype)
+  if (arg2 != true || arg2 != 'true') arg2 = false
   if (usertype === 'subscriber') insert = `, name = $4, surname = $5`
   else if (usertype === 'company') insert = `, company = $4, isagency = $5`
   let que = `UPDATE "users" SET pwhash = $1, role = $3${insert} where user_id = $2`

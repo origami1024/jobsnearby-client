@@ -9,7 +9,6 @@ const loc = {
       newJobHint: 'Создать новую вакансию'
     },
     home: {
-      searchPH: 'Поиск',
       searchHint: 'Поиск по полям название, автор, город, основной текст',
       searchValSym: 'некорректная строка поиска',
       searchBtn: 'Поиск',

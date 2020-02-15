@@ -23,9 +23,10 @@
             <q-input
               v-model="txt"
               dense
-              :label="$t('home.searchPH')"
+              
               class="jobsfilter__search"
               @keyup.enter="refreshPlus"
+              @input="txt != '' ? outerResetNeeded = true : null"
             >
               <!-- :rules="[val => wordRegex.test(val) || $t('home.searchValSym')]" -->
               <template v-if="txt" v-slot:append>
@@ -292,6 +293,7 @@ export default {
       setTimeout(()=>this.refreshPlus())
     },
     resetFilters() {
+      this.txt = ''
       this.city = ''
       this.jtype= {label: "", value: ''}
       this.salary= {label: "", value: 'idc'}
@@ -419,7 +421,7 @@ export default {
     border-radius 4px
     font-size 14px
     font-weight 700
-    color #06f
+    color var(--main-borders-color)
   .currentPage
     border 1px solid var(--main-borders-color)
     color #fff

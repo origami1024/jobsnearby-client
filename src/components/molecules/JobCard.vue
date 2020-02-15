@@ -56,8 +56,8 @@
           </q-tooltip>
         </q-btn>
         <!-- <q-btn class="mr-5px" v-else-if="role == 'subscriber'" round size="xs" icon="work"/> -->
-        <a v-if="role == 'subscriber' && lenses == 'full'" class="cardLink" @click.prevent="isContactsShown = !isContactsShown" href="#">Контакты</a>
-        <q-btn class="mr-5px" v-else-if="role == 'subscriber'" round size="xs" @click="isContactsShown = !isContactsShown" icon="people"/>
+        <a v-if="lenses == 'full'" class="cardLink" @click.prevent="isContactsShown = !isContactsShown" href="#">Контакты</a>
+        <q-btn class="mr-5px" v-else round size="xs" @click="isContactsShown = !isContactsShown" icon="people"/>
       </div>
       <div v-if="isContactsShown" class="contactsPanel">
         <div>{{job.contact_mail}}</div>
@@ -105,9 +105,9 @@ export default {
       let msInDay = 24 * 60 * 60 * 1000
       let diff = (today.getTime() - d.getTime())/msInDay | 0
       let result = d.getDate() + '.' + (d.getMonth() + 1) + '.' + d.getFullYear()
-      if (diff == 0) result = '<span style="color: lime">Сегодня</span>'
-      else if (diff == 1) result = '<span style="color: green">Вчера</span>'
-      else if (diff < 5) result = `<span class="red">${diff} дня назад</span>`
+      if (diff == 0) result = '<span style="color: orange">Сегодня</span>'
+      else if (diff == 1) result = '<span style="color: orange">Вчера</span>'
+      else if (diff < 5) result = `<span class="gray">${diff} дня назад</span>`
       return result
     },
     currency() {
@@ -157,8 +157,9 @@ export default {
       return d.getDate() + '.' + (d.getMonth() + 1) + '.' + d.getFullYear()
     },
     strip(html) {
-      var doc = new DOMParser().parseFromString(html, 'text/html');
-      return doc.body.textContent || "";
+      return html.replace(/<(?:.|\n)*?>/gm, ' ').replace('  ', ' ');
+      // var doc = new DOMParser().parseFromString(html, 'text/html');
+      // return doc.body.textContent || "";
     }
   }
 }
@@ -183,7 +184,7 @@ export default {
   transition-duration 0.3s
   box-shadow 0 0 2px 1px #dfdfdf
   &:hover
-    box-shadow 0 0 2px 1px #bbb
+    box-shadow 0 0 2px 1px var(--main-borders-color)//#bbb
   a
     text-decoration none
     color #06f

@@ -70,7 +70,7 @@
           >
             <q-icon name="person" size="36px"></q-icon>
             <q-tooltip>
-              <p style="font-size: 15px; margin: 0">{{user}}</p>
+              <p style="font-size: 15px; margin: 0">Мой кабинет</p>
             </q-tooltip>
           </router-link>
           <router-link
@@ -81,7 +81,7 @@
           >
             <q-icon name="person" size="36px"></q-icon>
             <q-tooltip>
-              <p style="font-size: 15px; margin: 0">{{user}}</p>
+              <p style="font-size: 15px; margin: 0">Мой кабинет</p>
             </q-tooltip>
           </router-link>
           <router-link
