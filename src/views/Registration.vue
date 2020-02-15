@@ -327,6 +327,8 @@ export default {
     tryreg() {
       this.status = 'Данные не корректны'
       //client validation here
+      if (this.rules != true) this.rules = false
+      if (this.agency != true) this.agency = false
       if (this.validate()) {
         this.showErrors = false
         //this.status = 'Попытка регистрации'
