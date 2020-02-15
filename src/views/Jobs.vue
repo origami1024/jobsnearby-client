@@ -73,7 +73,7 @@
             <q-select dense outlined
               :style="{minWidth: '170px'}"
               v-model="sort"
-              @input="sort.value != 'new' ? outerResetNeeded = true : null"
+              @input="sortFilterChangeRefresh"
               :options="[ {label: 'По дате', value: 'new'},
                           {label: 'По убыванию зп', value: 'saldesc'},
                           {label: 'По возрастанию зп', value: 'salasc'}]"
@@ -111,7 +111,7 @@
             <q-select dense outlined
               :style="{minWidth: '130px'}"
               v-model="timerange"
-              @input="timerange.value != 'mon' ? outerResetNeeded = true : null"
+              @input="timerangeFilterChangeRefresh"
               :options="[ {label: 'За месяц', value: 'mon'},
                           {label: 'За неделю', value: 'wee'},
                           {label: 'За сутки', value: 'day'}]"
@@ -149,7 +149,7 @@
             <q-select dense outlined
               :style="{minWidth: '120px'}"
               v-model="perpage"
-              @input="perpage.value != '25' ? outerResetNeeded = true : null"
+              @input="perpageFilterChangeRefresh"
               :options="[ {label: '25 на стр', value: '25'},
                           {label: '50 на стр', value: '50'},
                           {label: '100 на стр', value: '100'}]"
@@ -279,6 +279,18 @@ export default {
     
   },
   methods: {
+    sortFilterChangeRefresh() {
+      if (this.sort.value != 'new') this.outerResetNeeded = true
+      setTimeout(()=>this.refreshPlus())
+    },
+    timerangeFilterChangeRefresh() {
+      if (this.timerange.value != 'mon') this.outerResetNeeded = true
+      setTimeout(()=>this.refreshPlus())
+    },
+    perpageFilterChangeRefresh() {
+      if (this.perpage.value != '25') this.outerResetNeeded = true
+      setTimeout(()=>this.refreshPlus())
+    },
     resetFilters() {
       this.city = ''
       this.jtype= {label: "", value: ''}
