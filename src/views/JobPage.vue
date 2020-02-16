@@ -19,6 +19,13 @@
             >
               (Резюме уже подано)
             </div>
+            <q-btn
+              v-else-if="role != 'company'"
+              color="red-10"
+              style="margin-left: 20px; padding: 0 10px; font-weight: 700; letter-spacing: 1px"
+              dense label="Подать резюме"
+              @click.prevent="$emit('hitcv', -1)"
+            />
           </div>
           <p class="salary-deriv" style="font-size: 16px; color: #666">{{salary_deriv}}</p>
         </div>
@@ -260,7 +267,6 @@ export default {
     
   }
   .detailed__logo{
-    //box-shadow 0 0 4px 2px #ddd
     text-align center
     width 150px
     height 50px

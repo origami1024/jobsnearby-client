@@ -527,14 +527,15 @@ export default {
       //client validation here
       if (this.validateLogin()) {
         this.showErrors = false
-        this.login.status = 'Попытка входа'
+        //this.login.status = 'Попытка входа'
         this.submitting = true
         axios
           .post(config.jobsUrl + '/login', [this.login.mail.toLowerCase(), this.login.pw, this.login.rememberme], {headers: {'Content-Type' : 'application/json' }, withCredentials: true,})
           .then(response => {
             //fix: need to send auth data on login
             if (response.data && response.data[0] === 'OK' && response.data.length > 3) {
-              this.login.status = 'Вход осуществлен'
+              this.login.status = ''
+              this.$q.notify({type:'positive', message: 'Вход осуществлен'})
               console.log('cp123ss:', response.data.slice(1))
               this.$emit('authed', response.data.slice(1))
               this.$router.push({ name: 'home' })

@@ -24,7 +24,7 @@
             square
             dense
             outlined
-            bg-color="white" color="cyan-10"
+            bg-color="teal-1" color="cyan-10"
             :style="{width: '100%'}"
             :hint="null"
             v-model="job.title"
@@ -73,12 +73,12 @@
           />
           <q-select
             :disable="salaryOn"
-            style="width: 95px; lineHeight: 3.2"
             square
             dense
             outlined
             bg-color="white" color="cyan-10"
             v-model="job.currency"
+            style="width: 95px; lineHeight: 3.2;color: white !important"
             :options="[
               {label: $t('addJob.manat'), value: 'm'},
               {label: $t('addJob.dollars'), value: '$'},

@@ -40,7 +40,7 @@ import {
 
 Vue.use(Quasar, {
   config: {
-    notify: { timeout: 1000 }
+    notify: { timeout: 2000 }
   },
   components: {
     QRadio,

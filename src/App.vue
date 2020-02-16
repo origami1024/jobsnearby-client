@@ -492,11 +492,12 @@ export default {
         })
     },
     hitcv(id) {
-      console.log('app hitOne', id)
-      console.log(this.role)
-      console.log(this.ownCVs)
+      if (this.role == 'subscriber') {
+        console.log('app hitOne', id)
+        console.log(this.role)
+        console.log(this.ownCVs)
       if (!this.cvurl || this.cvurl.length < 5) {
-        this.$router.push("/registration")
+        this.$router.push("/subprofile")
         this.$q.notify('Сначала загрузите резюме!')
         return false
       }
@@ -511,6 +512,12 @@ export default {
           //console.log('getOwnJobs response cp61: ', response.newCV, response.data)
           this.ajaxLoading = false
         })
+      } else
+      if (this.role != 'company') {
+        this.$router.push("/registration")
+        this.$q.notify({html: true, message: 'Подавать резюме могут <span style="color: red">зарегистрированные</span> пользователи'})
+        return false
+      }
     },
     // favOne(id) {
     //   let favOneUrl
