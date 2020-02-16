@@ -129,7 +129,8 @@
       <section style="display: flex; justifyContent: space-between">
         <p>Дата публикации: {{published}}</p>
         <p>
-          <q-icon class="bdscolored" name="app:visibility" />
+          {{$q.iconSet}}
+          <q-icon class="bdscolored" :name="'visibility'" />
           <span>{{job.hits_all > 0 ? job.hits_all : 1}}</span>
         </p>
       </section>
