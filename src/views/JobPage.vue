@@ -29,7 +29,7 @@
           </div>
           <p class="salary-deriv" style="font-size: 16px; color: #666">{{salary_deriv}}</p>
         </div>
-        <div class="detailed__logo" :style="{'background-image': 'url(' + job.logo_url + ')'}" >{{job.logo_url == '' || !job.logo_url ? 'logo placeholder' : ''}}</div>
+        <div class="detailed__logo1" :style="{'background-image': 'url(' + job.logo_url + ')'}" >{{job.logo_url == '' || !job.logo_url ? 'logo placeholder' : ''}}</div>
       </section>
       <section>
         <p><a :href="'/companypage?id=' + job.author_id" target="_blank" class="detailed__author-link1">{{job.author}}</a></p>
@@ -266,17 +266,17 @@ export default {
     justify-content: space-between;
     
   }
-  .detailed__logo{
+  .detailed__logo1{
     text-align center
     width 150px
-    height 50px
-    background-size 150px 50px
+    height 65px
+    background-size 100% 100%
     background-color coral
     line-height 50px
   }
   .detailed__header1
     color var(--btn-color)
-    margin 10px 10px
+    margin 10px 0px
     margin-bottom 5px
     font-size 20px
   .padleft
@@ -293,7 +293,7 @@ export default {
   .salary-deriv::first-letter
     text-transform uppercase
   .subitem
-    padding-left 20px
+    //padding-left 20px
     padding-bottom 5px
     padding-top 5px
     font-size 14px

@@ -105,8 +105,8 @@ export default {
       let msInDay = 24 * 60 * 60 * 1000
       let diff = (today.getTime() - d.getTime())/msInDay | 0
       let result = d.getDate() + '.' + (d.getMonth() + 1) + '.' + d.getFullYear()
-      if (diff == 0) result = '<span style="color: var(--btn-color)">Сегодня</span>'
-      else if (diff == 1) result = '<span style="color: var(--btn-color)">Вчера</span>'
+      if (diff == 0) result = '<span style="color: var(--btn-color); letter-spacing: 1px;">Сегодня</span>'
+      else if (diff == 1) result = '<span style="color: var(--btn-color); letter-spacing: 1px;">Вчера</span>'
       else if (diff < 5) result = `<span class="gray">${diff} дня назад</span>`
       return result
     },
