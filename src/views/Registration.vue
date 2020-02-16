@@ -598,18 +598,6 @@ export default {
   },
   components: {
   },
-  // watch: {
-  //   $route (to, from){
-  //     if (to.name === 'registration') {
-  //       console.log('cp regi111')
-  //       this.login.mail = ''
-  //       this.login.pw = ''
-  //       this.login.status = ''
-  //       this.login.validation.mail = ''
-  //       this.login.validation.pw = ''
-  //     }
-  //   },
-  // }
 }
 </script>
 

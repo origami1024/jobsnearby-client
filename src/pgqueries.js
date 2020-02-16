@@ -1355,8 +1355,12 @@ async function feedback(req, res) {
 }
 
 
+async function tryGetAdminRow(admin) {
+  //need new table
+}
 
 module.exports = {
+  tryGetAdminRow,
   adminGetJobs,
   adminGetUsers,
   adminGetFB,

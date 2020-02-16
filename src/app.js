@@ -145,8 +145,21 @@ async function superAdmin(req, res) {
   let superPage = pageParts.head + body + pageParts.footer
   res.send(superPage)
 }
+async function cpAuth(req, res) {
+  let admin = req.body.admin.toLowerCase()
+  let pw = req.body.pw
+  let rememberme = req.body.remember
+  if (SupremeValidator.isValidEmail(admin) && SupremeValidator.isValidPW(pw) && typeof rememberme === "boolean") {
+    let adminData = await db.tryGetAdminRow(admin).catch(error => {
+      res.send('step2')
+      return undefined
+    })
+  } else {res.send('step1'); console.log('not valid mail or wrong pw')}
+  
+}
 async function adminPanel(req, res) {
   //auth check
+
   let body = `
     <div>
     <h2 style="text-align:center; margin: 0;">Башня управления</h2>
