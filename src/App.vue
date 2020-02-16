@@ -866,14 +866,18 @@ export default {
   //   color white
   //   &:visited
   //     border 2px solid white
-.q-item--active
-  color var(--main-borders-color) !important
-  color white !important
+ 
+
+.q-item__label
+  color var(--main-borders-color)
 .q-manual-focusable--focused
   background-color var(--main-borders-color)
+.q-manual-focusable--focused .q-item__label
   color var(--main-bg-color) !important
   &:hover
     color white !important
+.q-item--active
+  color white !important//var(--main-borders-color) !important
 // .ql-editor
 //   background-color #E0F2F1
 </style>
