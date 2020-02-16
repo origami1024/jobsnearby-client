@@ -7,7 +7,7 @@
         square
         dense
         outlined
-        bg-color="white" color="cyan-10" label="Тема"
+        bg-color="white" color="cyan-10" placeholder="Тема"
         counter
         maxlength="25"
       />
@@ -17,12 +17,12 @@
         dense
         counter
         maxlength="25"    
-        bg-color="white" color="cyan-10" v-model="fbData.name" outlined label="Ваше имя"/>
+        bg-color="white" color="cyan-10" v-model="fbData.name" outlined placeholder="Ваше имя"/>
       <br>
       <q-input
         square
         dense
-        bg-color="white" color="cyan-10" v-model="fbData.mail" outlined label="* Email"
+        bg-color="white" color="cyan-10" v-model="fbData.mail" outlined placeholder="* Email"
         counter
         maxlength="70"
         :rules="[
@@ -40,7 +40,7 @@
         bg-color="white" color="cyan-10"
         v-model="fbData.body"
         type="textarea"
-        label="Пожелания"
+        placeholder="Пожелания"
       />
       <q-btn color="red-10" label="Отправить" @click="sendFB" />
       <!-- unelevated -->

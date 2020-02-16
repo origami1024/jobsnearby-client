@@ -1,6 +1,6 @@
 <template>
-  <div class="q-pr-md" style="min-width: 270px">
-    <q-list bordered padding class="rounded-borders text-primary">
+  <div class="q-pr-md" style="min-width: 270px;">
+    <q-list bordered padding class="profilenav rounded-borders text-primary">
       <q-item
         v-for="(lr, index) in localroutes"
         :key="index"
@@ -9,7 +9,10 @@
         @click="$emit('setLocalRoute', lr.r)"
         active-class="my-menu-link"
       >
-        <q-item-section>{{lr.l}}</q-item-section>
+        <q-item-section>
+          {{lr.l}}
+          <q-badge v-if="lr.badges > 0" color="red-10" floating :label="lr.badges"/>
+        </q-item-section>
       </q-item>
       <q-separator spaced />
       <q-item
@@ -37,6 +40,8 @@ export default {
 </script>
 
 <style scoped lang="stylus">
+.profilenav
+  box-shadow 0 0 3px 0px var(--main-borders-color)
 .my-menu-link
   color white !important
   background var(--main-borders-color)//#248CEC

@@ -4,7 +4,7 @@
       <ProfileNav
         :localRoute="tab"
         @setLocalRoute="setLocalRoute"
-        :localroutes="[{r: 'published', l: $t('entProfile.navPublishedLabel')}, {r: 'responses', l: $t('entProfile.navResponsesLabel')}, {r: 'cabout', l: $t('entProfile.navAboutLabel')}]"
+        :localroutes="[{r: 'published', l: $t('entProfile.navPublishedLabel')}, {r: 'responses', l: $t('entProfile.navResponsesLabel'), badges: newcvhitscount}, {r: 'cabout', l: $t('entProfile.navAboutLabel')}]"
         :localroutesX="{r: 'settings', l: $t('entProfile.navSettingsLabel')}"
       />
       <q-tab-panels
@@ -24,7 +24,7 @@
             <q-expansion-item
               v-for="item in Object.keys(respsJreformat)"
               :key="item"
-              default-opened
+              
               style="line-height: 30px; font-size: 16px;text-align:left;"
             >
               <template v-slot:header>
@@ -35,9 +35,9 @@
                 ({{respsJreformat[item].cvhits.length}})
               </template>
               
-              <ul style="list-style-type:none">
+              <ul style="list-style-type:none; padding: 0 15px;">
                 <li v-for="hit in respsJreformat[item].cvhits" :key="hit">
-                  <q-item clickable>
+                  <!-- <q-item clickable> -->
                   <a class="responseLinkLvl2" @click="viewHit(hit)" :href="'https://docs.google.com/viewerng/viewer?url=' + resps.find(val=>val.cvhit_id == hit).cv_url" target="_blank">
                     {{
                       resps.find(val=>val.cvhit_id == hit).name + ' ' + 
@@ -59,12 +59,12 @@
                       style="margin-left: 5px"
                       v-if="resps.find(val=>val.cvhit_id == hit).date_checked == null"
                       round
-                      color="primary"
+                      color="red-10"
                       size="sm"
                       icon="visibility"
                       @click="viewHit(hit)"
                     />
-                    </q-item>
+                    <!-- </q-item> -->
                 </li>
               </ul>
               
@@ -72,56 +72,72 @@
           </div>
         </q-tab-panel>
         <q-tab-panel name="cabout" class="entprofile__mid">
-          <q-input class="entprofile__inp" dense outlined bottom-slots v-model="cabout.company" placeholder="Название компании" counter maxlength="80"/>
+          <div style="display: flex; justify-content: space-between">
+            <div>
+            <q-input
+              class="entprofile__inp"
+              square dense outlined bottom-slots
+              color="cyan-10"
+              v-model="cabout.company"
+              placeholder="Название компании" counter maxlength="80"
+            />
+            </div>
+            <div class="logo-placeholder" :style="{'background-image': 'url(' + cabout.logo_url + ')'}" >{{cabout.logo_url == '' || !cabout.logo_url ? 'logo placeholder' : ''}}</div>
+          </div>
           <div class="line" dense style="display: flex; width: 100%; justify-content: space-between;">
             <form action="" ref="uplForm">
-              <label
+              <!-- <label
                 for="fileinput1"
                 class="entprofile__inp"
                 style="display: block; marginBottom: 6px;"
                 :style="{color: logo_upload_error != null ? '#c10015' : 'inherit'}"
               >
                 {{logo_upload_error ? logo_upload_error : 'Путь к лого: ' + cabout.logo_url}}
-              </label>
-              <!-- white-space: nowrap; max-width: 300px; overflow: hidden; text-overflow: ellipsis; -->
+              </label> -->
+              <label for="fileinput1" style="margin-bottom: 5px; display: block">Загрузка логотипа компании</label>
+              
               <q-input
                 id="fileinput1"
                 @input="val => { logofile = val[0] }"
                 style="width: 300px"
                 outlined dense
+                square
+                color="cyan-10"
                 type="file"
                 hint=""
                 accept=".jpg, .png, .svg"
                 ref="logoUploader"
               />
             </form>
-            <q-btn @click="uploadLogo" style="marginBottom: 22px" dense color="primary" v-if="logofile != null">Загрузить</q-btn>
-            <div class="logo-placeholder" :style="{'background-image': 'url(' + cabout.logo_url + ')'}" >{{cabout.logo_url == '' || !cabout.logo_url ? 'logo placeholder' : ''}}</div>
+            <q-btn @click="uploadLogo" style="marginBottom: 22px" dense color="primary" v-if="logofile != null" label="Загрузить"/>
+            
             <!-- v-if="cabout.logo_url == ''" -->
             <!-- <img v-else :src="cabout.logo_url" alt="Лого"> -->
           </div>
+          <q-input square color="cyan-10" dense class="entprofile__inp" outlined v-model="cabout.website" placeholder="Сайт" counter maxlength="80"/>
           <q-select
-              multiple
-              use-chips
-              dense
-              outlined
-              placeholder="Сфера деятельности"
-              bg-color="white"
-              :style="{width: '100%'}"
-              max-values="3"
-              v-model="cabout.domains"
-              :options="domainsAll"
-              :hint="null"
-            />
-          <q-input dense class="entprofile__inp" outlined v-model="cabout.website" placeholder="Сайт" counter maxlength="80"/>
+            multiple
+            use-chips
+            dense
+            outlined
+            square
+            color="cyan-10"
+            placeholder="Сфера деятельности"
+            bg-color="white"
+            :style="{width: '100%'}"
+            max-values="3"
+            v-model="cabout.domains"
+            :options="domainsAll"
+            :hint="null"
+          />
           <q-input
             v-model="cabout.full_description"
-            outlined dense
+            outlined dense square color="cyan-10"
             placeholder="Описание"
             type="textarea"
             counter maxlength="2000"
           />
-          <q-btn @click="updateCompanyData" color="primary" style="margin-top: 10px">Отправить изменения</q-btn>
+          <q-btn color="red-10" @click="updateCompanyData" style="margin-top: 10px">Отправить изменения</q-btn>
         </q-tab-panel>
         <q-tab-panel class="entprofile__settings entprofile__mid" name="settings">
           <h3 style="width: 100%; marginBottom: 10px; text-align: center;">Компания <strong>{{company}}</strong></h3>
@@ -210,6 +226,16 @@ export default {
   deactivated() {
     //this is router hook right?
     this.$destroy()
+  },
+  computed: {
+    newcvhitscount() {
+      var count = 0
+      for(var i = 0; i < this.resps.length; ++i){
+          if(this.resps[i].date_checked == null)
+              count++;
+      }
+      return count
+    }
   },
   methods: {
     viewHit(hit) {
@@ -365,7 +391,8 @@ export default {
   mounted(){
     //this.newusername = this.username
     //this.newsurname = this.surname
-    setTimeout(()=>{this.$emit('getOwnJobs')},50)
+    setTimeout(()=>{this.$emit('getOwnJobs');},50)
+    setTimeout(()=>{this.getResps()},100)
   },
   watch: {
     username(newu) {
@@ -397,7 +424,8 @@ export default {
 .qtpans
   width 100%
   min-height 75vh
-  border 1px solid #eee
+  //border 1px solid #eee
+  box-shadow 0 0 4px 1px var(--main-borders-color)
   border-radius 4px
 .entprofile
   max-width 900px
@@ -410,7 +438,6 @@ export default {
     display flex
   &__mid
     width 100%
-    
   p
     margin-bottom 15px
   &__inp
@@ -454,8 +481,13 @@ export default {
   .responseLinkLvl1
     color var(--btn-color)
     margin-right 5px
+    text-decoration none
+    white-space nowrap
+    overflow hidden
+    text-overflow ellipsis
   .responseLinkLvl2
     color var(--main-borders-color)
+    text-decoration none
     margin-right 5px
   *
     margin 0

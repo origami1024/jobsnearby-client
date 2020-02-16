@@ -15,10 +15,14 @@
         transition-next="jump-up"
       >
         <q-tab-panel name="cv" class="subprofile__cv">
-          <div class="urlpanel" style="margin-bottom: 10px">
+          <!-- <div class="urlpanel" style="margin-bottom: 10px">
             Текущая ссылка на резюме <a :href="'https://docs.google.com/viewerng/viewer?url=' + cvurl" target="_blank">{{cvurl}}</a>
+          </div> -->
+          <div class="urlpanel" style="margin-bottom: 10px">
+            {{cvurl == '' ? 'Резюме не загружено' : 'Резюме загружено'}}
           </div>
           <form action="" ref="cvForm">
+            Загрузить резюме
             <q-input
               id="fileinput1"
               @input="cvinput"
@@ -30,6 +34,7 @@
               ref="cvUploader"
             />
           </form>
+          <q-btn color="red-10" label="Удалить резюме"/>
           <!-- <q-btn
             @click="updateCVLink"
             style="marginBottom: 22px" dense color="primary"
@@ -160,7 +165,7 @@ export default {
         .then(response => {
           if (response.data && response.data.rows) {
             this.cvhitsHistory = response.data.rows
-            console.log(response.data.rows)
+            //console.log(response.data.rows)
             //this.$q.notify('Данные изменены')
             //this.$emit('cvupd', this.cvurlnew)
           } else console.log('cp124 - ошибка cvhitsHistory')
@@ -176,7 +181,7 @@ export default {
         .then(response => {
           if (response.data && response.data.jobs) {
             this.sentCVJobsList = response.data.jobs
-            console.log(response.data.jobs)
+            //console.log(response.data.jobs)
             //this.$q.notify('Данные изменены')
             //this.$emit('cvupd', this.cvurlnew)
           } else console.log('cp123 - ошибка getsentcvjobs')
