@@ -213,7 +213,7 @@ export default {
 }
 </script>
 
-<style lang="stylus">
+<style lang="stylus" scoped>
 * {
     margin: 0;
     font-family: 'Varela Round', 'Nunito', sans-serif;

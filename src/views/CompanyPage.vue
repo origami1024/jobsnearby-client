@@ -122,7 +122,7 @@ export default {
 }
 </script>
 
-<style lang="stylus">
+<style lang="stylus" scoped>
 * {
     margin: 0;
     font-family: 'Varela Round', 'Nunito', sans-serif;
@@ -180,8 +180,8 @@ export default {
     //box-shadow 0 0 4px 2px #ddd
     text-align center
     width 150px
-    height 50px
-    background-size 150px 50px
+    height 65px
+    background-size 100% 100%
     background-color coral
     line-height 50px
   }
