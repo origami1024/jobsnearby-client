@@ -144,10 +144,11 @@ export default {
       if (this.searchFilter.length > 1 && this.job.description.toLowerCase().includes(this.searchFilter)) {
         let tmpdesc = this.job.description.split('<br>').slice(0,1).join('')
         //console.log(this.job.description)
+        tmpdesc = this.strip(tmpdesc)
         let i = tmpdesc.toLowerCase().indexOf(this.searchFilter)
         let res = tmpdesc.substr(0, i) + '<span class="searched">' + tmpdesc.substr(i, this.searchFilter.length) + '</span>' + tmpdesc.substr(i + this.searchFilter.length)
         //console.log(res)
-        return this.strip(res)
+        return res
       } else return this.strip(this.job.description.split('<br>').slice(0,1).join(''))
     },
   },

@@ -4,7 +4,7 @@
       :value="city"
       @input="cityUpd"
       use-input
-      
+      color="cyan-10"
       fill-input
       hide-selected
       dense
@@ -19,18 +19,19 @@
       <q-select
         :content-style="{ backgroundColor: 'red' }"
         style="width: 65%;"
+        color="cyan-10"
         @input="salaryUpd" dense
         :value="salary" :options="salOptions" :label="$t('home.sal')" />
-      <q-select style="width: 30%; text-align: center" dense @input="currUpd" :value="currency" :options="currOptions" :label="$t('home.curr')" />
+      <q-select color="cyan-10" style="width: 30%; text-align: center" dense @input="currUpd" :value="currency" :options="currOptions" :label="$t('home.curr')" />
     </div>
-    <q-select @input="expUpd" dense :value="exp" :options="expOptions" :label="$t('home.exp')" />
-    <q-select @input="jtypeUpd" dense :value="jtype" :options="jtypeOptions" :label="$t('home.jtyp')" />
+    <q-select color="cyan-10" @input="expUpd" dense :value="exp" :options="expOptions" :label="$t('home.exp')" />
+    <q-select color="cyan-10" @input="jtypeUpd" dense :value="jtype" :options="jtypeOptions" :label="$t('home.jtyp')" />
     <div class="w100" :style="{justifyContent: isResetShown ? 'space-between': 'flex-end'}">
       <q-btn
         v-if="isResetShown"
         icon="delete_forever"
-        round
-        color="red"
+        rounded
+        color="red-10"
         @click="$emit('resetFilters')"
       />
       <q-btn
@@ -48,6 +49,7 @@ let stringOptions = ["Не имеет значения", "Ашхабад", "Да
 export default {
   name: 'JobsFilter',
   props: {
+    isResetShown: Boolean,
     lowest: {type: Number, default: 0},
     highest: {type: Number, default: 99550},
     langOptions: {type: Array, default: ()=>[]},
@@ -61,7 +63,7 @@ export default {
     jtype: {type: Object},
     salary: {type: Object},
     currency: {type: Object},
-    outerResetNeeded: {type: Boolean}
+    //outerResetNeeded: {type: Boolean}
   },
   data: ()=>{return {
     cityOptions: stringOptions, //i18n.$t('home.cityOpts'),
@@ -94,16 +96,7 @@ export default {
     ],
   }},
   computed: {
-    isResetShown() {
-      let res = false
-      if (this.city != 'Не имеет значения' && this.city != '') res = true
-      else if (this.salary.value != 'idc') res = true
-      else if (this.currency.value != 'idc') res = true
-      else if (this.exp.value != 'idc') res = true
-      else if (this.jtype.value != '') res = true
-      else if (this.outerResetNeeded != false) res = true
-      return res
-    }
+    
   },
   methods: {
     cityUpd(new1) {

@@ -3,8 +3,10 @@
     <div class="jobs__main">
       <div style="padding-top: 10px">
         <div class="jobs__filterpart">
+          <!-- :outerResetNeeded="outerResetNeeded" -->
           <JobsFilter
-            :outerResetNeeded="outerResetNeeded"
+            
+            :isResetShown="isResetShown"
             @resetFilters="resetFilters"
             @currUpd="currUpd"
             :currency="currency"
@@ -26,9 +28,10 @@
               
               class="jobsfilter__search"
               @keyup.enter="refreshPlus"
-              @input="txt != '' ? outerResetNeeded = true : null"
+              
               color="red-10"
             >
+              <!-- @input="txt != '' ? outerResetNeeded = true : null" -->
               <!-- :rules="[val => wordRegex.test(val) || $t('home.searchValSym')]" -->
               <template v-if="txt" v-slot:append>
                 <q-icon name="cancel" @click.stop="txt = ''" class="cursor-pointer" />
@@ -225,7 +228,7 @@ export default {
     jobsFullcount: {type: Number, default: 0}
   },
   data: ()=>{return {
-    outerResetNeeded: false,
+    //outerResetNeeded: false,
     lenses: 'full',
     txt: '',
     wordRegex: /^[\wа-яА-ЯÇçÄä£ſÑñňÖö$¢Üü¥ÿýŽžŞş\s\\-]*$/,
@@ -249,6 +252,23 @@ export default {
     JobsList
   },
   computed: {
+    isResetShown() {
+      let res = false
+      if (this.city != 'Не имеет значения' && this.city != '') res = true
+      else if (this.salary.value != 'idc') res = true
+      else if (this.currency.value != 'idc') res = true
+      else if (this.exp.value != 'idc') res = true
+      else if (this.jtype.value != '') res = true
+      //else if (this.outerResetNeeded != false) res = true
+
+      else if (this.sort.value != 'new') res = true
+      else if (this.timerange.value != 'mon') res = true
+      else if (this.perpage.value != '25') res = true
+      
+      else if (this.txt != '') res = true
+
+      return res
+    },
     query() {
       let params = []
       if (this.txt !== '' && this.wordRegex.test(this.txt)) params.push('txt=' + this.txt)
@@ -282,15 +302,15 @@ export default {
   },
   methods: {
     sortFilterChangeRefresh() {
-      if (this.sort.value != 'new') this.outerResetNeeded = true
+      //if (this.sort.value != 'new') this.outerResetNeeded = true
       setTimeout(()=>this.refreshPlus())
     },
     timerangeFilterChangeRefresh() {
-      if (this.timerange.value != 'mon') this.outerResetNeeded = true
+      //if (this.timerange.value != 'mon') this.outerResetNeeded = true
       setTimeout(()=>this.refreshPlus())
     },
     perpageFilterChangeRefresh() {
-      if (this.perpage.value != '25') this.outerResetNeeded = true
+      //if (this.perpage.value != '25') this.outerResetNeeded = true
       setTimeout(()=>this.refreshPlus())
     },
     resetFilters() {
@@ -304,7 +324,7 @@ export default {
       this.sort = {label: 'По дате', value: 'new'}
       this.timerange = {label: 'За месяц', value: 'mon'}
       this.perpage = {label: '25 на стр', value: '25'}
-      this.outerResetNeeded = false
+      //this.outerResetNeeded = false
       this.$emit('updQue', this.query)
       this.$emit('refresh')
     },

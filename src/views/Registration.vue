@@ -26,6 +26,7 @@
                 square
                 dense
                 outlined
+                use-input
                 bg-color="teal-1" color="cyan-10"
                 v-model="login.mail"
                 hint=""
@@ -539,6 +540,7 @@ export default {
               console.log('cp123ss:', response.data.slice(1))
               this.$emit('authed', response.data.slice(1))
               this.$router.push({ name: 'home' })
+              this.$emit('refresh')
               this.login.mail = ''
               this.login.pw = ''
             }

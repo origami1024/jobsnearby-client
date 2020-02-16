@@ -7,9 +7,9 @@
           <div style="display: flex">
             <h1 class="titleHeader">{{job.title}}</h1>
             <q-btn
-              v-if="role == 'subscriber' && !ownCVs.find(val=>val.cvjob_id == job.job_id)"
+              v-if="role != 'company' && !ownCVs.find(val=>val.cvjob_id == job.job_id)"
               color="red-10"
-              style="margin-left: 20px; padding: 0 10px; font-weight: 700; letter-spacing: 1px"
+              style="alignSelf: center; white-space: nowrap; margin-top:4px; margin-left: 10px; padding: 0 10px; font-weight: 700;"
               dense label="Подать резюме"
               @click.prevent="$emit('hitcv', job.job_id)"
             />
@@ -19,15 +19,15 @@
             >
               (Резюме уже подано)
             </div>
-            <q-btn
+            <!-- <q-btn
               v-else-if="role != 'company'"
               color="red-10"
-              style="margin-left: 20px; padding: 0 10px; font-weight: 700; letter-spacing: 1px"
+              style="alignSelf: center; white-space: nowrap; margin-top:4px; margin-left: 20px; padding: 0 10px; font-weight: 700;"
               dense label="Подать резюме"
               @click.prevent="$emit('hitcv', -1)"
-            />
+            /> -->
           </div>
-          <p class="salary-deriv" style="font-size: 16px; font-weight: 700; color: #666">{{salary_deriv}}</p>
+          <p class="salary-deriv" style="font-size: 16px; font-weight: 700; color: #000">{{salary_deriv}}</p>
         </div>
         <div class="detailed__logo1" :style="{'background-image': 'url(' + job.logo_url + ')'}" >{{job.logo_url == '' || !job.logo_url ? 'logo placeholder' : ''}}</div>
       </section>
@@ -128,7 +128,7 @@
       </section> -->
       <section style="display: flex; justifyContent: space-between">
         <p>Дата публикации: {{published}}</p>
-        <p>
+        <p style="font-size: 17px">
           <q-icon class="bdscolored" :name="'visibility'" />
           <span>{{job.hits_all > 0 ? job.hits_all : 1}}</span>
         </p>
@@ -275,10 +275,12 @@ export default {
   .detailed__logo1{
     text-align center
     width var(--logoWidth)
+    min-width var(--logoWidth)
     height 65px
     background-size 100% 100%
     background-color coral
     line-height 50px
+    margin-left 5px
   }
   .detailed__header1
     color var(--btn-color)
@@ -305,4 +307,6 @@ export default {
     font-size 14px
   .bdscolored
     color var(--main-borders-color)
+    margin-top -2px
+    margin-right 3px
 </style>

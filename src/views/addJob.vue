@@ -24,7 +24,7 @@
             square
             dense
             outlined
-            bg-color="teal-1" color="cyan-10"
+            bg-color="white" color="cyan-10"
             :style="{width: '100%'}"
             :hint="null"
             v-model="job.title"

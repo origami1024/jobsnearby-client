@@ -146,7 +146,7 @@
       </div>
       <q-ajax-bar
         position="bottom"
-        color="red-10"
+        color="red"
         size="10px"
       />
       <!-- color="accent" -->
@@ -592,6 +592,7 @@ export default {
       //console.log(this.$route)
       
       if (this.$route.name != 'home') this.$router.push("/")
+      //this.refreshjobs()
       //this.$destroy() try this to flush data on logout
     },
     logout: function() {
@@ -620,6 +621,7 @@ export default {
             this.status = 'Вход не выполнен'
             //console.log(this.$route)
             if (this.$route.name != 'home') this.$router.push("/")
+            this.refreshjobs()
           })
       }
     },
@@ -866,9 +868,12 @@ export default {
   //     border 2px solid white
 .q-item--active
   color var(--main-borders-color) !important
+  color white !important
 .q-manual-focusable--focused
   background-color var(--main-borders-color)
   color var(--main-bg-color) !important
+  &:hover
+    color white !important
 // .ql-editor
 //   background-color #E0F2F1
 </style>
