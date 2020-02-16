@@ -129,7 +129,6 @@
       <section style="display: flex; justifyContent: space-between">
         <p>Дата публикации: {{published}}</p>
         <p>
-          {{$q.iconSet}}
           <q-icon class="bdscolored" :name="'visibility'" />
           <span>{{job.hits_all > 0 ? job.hits_all : 1}}</span>
         </p>
@@ -217,7 +216,7 @@ export default {
 }
 </script>
 
-<style lang="stylus" scoped>
+<style lang="stylus">
 * {
     margin: 0;
     font-family: 'Varela Round', 'Nunito', sans-serif;
