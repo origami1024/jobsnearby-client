@@ -129,7 +129,7 @@
       <section style="display: flex; justifyContent: space-between">
         <p>Дата публикации: {{published}}</p>
         <p>
-          <q-icon style="color: var(--main-borders-color)" name="visibility" />
+          <q-icon class="bdscolored" name="visibility" />
           {{job.hits_all > 0 ? job.hits_all : 1}}
         </p>
       </section>
@@ -303,4 +303,6 @@ export default {
     padding-bottom 5px
     padding-top 5px
     font-size 14px
+  .bdscolored
+    color var(--main-borders-color)
 </style>
