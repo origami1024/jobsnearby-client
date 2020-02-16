@@ -847,11 +847,11 @@ async function checkAuthGetProfile(token) {
 async function updateUserData(user_id, udata) {
   //its prechecked for validity and existence
   let que = `
-    UPDATE "users" SET ("name", "surname", "insearch") =
-    ($1, $2, $3)
-    WHERE user_id = $4
+    UPDATE "users" SET ("name", "surname") =
+    ($1, $2)
+    WHERE user_id = $3
   `
-  let params = [udata.name, udata.surname, udata.insearch, user_id]
+  let params = [udata.name, udata.surname, user_id]
   let result = await pool.query(que, params).catch(error => {
     console.log('cp updDiapers err: ', error)
     return false

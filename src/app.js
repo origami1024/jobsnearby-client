@@ -484,14 +484,14 @@ async function changeuserstuff(req, res) {
     res.send('error surname')
     return false
   }
-  console.log(req.body.insearch)
-  if (req.body.insearch != undefined && (req.body.insearch === true || req.body.insearch === false || req.body.insearch == 'true' || req.body.insearch == 'false')) {
+  // console.log(req.body.insearch)
+  // if (req.body.insearch != undefined && (req.body.insearch === true || req.body.insearch === false || req.body.insearch == 'true' || req.body.insearch == 'false')) {
     
-    udata.insearch = Boolean(req.body.insearch)
-  } else {
-    res.send('error insearch')
-    return false
-  }
+  //   udata.insearch = Boolean(req.body.insearch)
+  // } else {
+  //   res.send('error insearch')
+  //   return false
+  // }
   if (req.cookies.session && req.cookies.session.length > 50) {
     let user_id = await db.authedForUserData(req.cookies.session, 'subscriber').catch(error => {
       res.send('step2')
@@ -630,21 +630,21 @@ async function reg(req, res) {
     res.send('step3')
     return -1
   }
-  console.log('ok1')
+  //console.log('cp10: ')
   //check arg1
   //add /s but not from beginning or end
-  let nameregex = /^[\wа-яА-ЯÇçÄä£ſÑñňÖö$¢Üü¥ÿýŽžŞş\s\\-]*$/
-  if (arg1 < 3 ||
-     (arg1 > 60 && usertype === 'subscriber') ||
-     (arg1 > 80 && usertype === 'company') ||
+  let nameregex = /^[\w1234567890а-яА-ЯÇçÄä£ſÑñňÖö$¢Üü¥ÿýŽžŞş\s\-]*$/
+  if (arg1.length < 3 ||
+     (arg1.length > 60 && usertype === 'subscriber') ||
+     (arg1.length > 80 && usertype === 'company') ||
       !nameregex.test(arg1)
     ) {
     res.send('step3')
     return -1
   }
   //check arg2
-  if ((arg2 < 3 && usertype === 'subscriber') ||
-      (arg2 > 60 && usertype === 'subscriber') ||
+  if ((arg2.length < 3 && usertype === 'subscriber') ||
+      (arg2.length > 60 && usertype === 'subscriber') ||
       (!nameregex.test(arg2) && usertype === 'subscriber') ||
       ((arg2 != true && arg2 != false && arg2 != 'true' && arg2 != 'false') && usertype === 'company')
     ) {
