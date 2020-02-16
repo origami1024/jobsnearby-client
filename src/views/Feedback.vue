@@ -2,21 +2,33 @@
   <div class="feedback">
     <div v-if="state == 'ready'" class="fb_inner">
       <br>
-      <q-input v-model="fbData.topic" outlined label="Тема"/>
+      <q-input v-model="fbData.topic" square
+            dense
+            outlined
+            bg-color="white" color="cyan-10" label="Тема"/>
       <br>
-      <q-input v-model="fbData.name" outlined label="Ваше имя"/>
+      <q-input square
+            dense
+            
+            bg-color="white" color="cyan-10" v-model="fbData.name" outlined label="Ваше имя"/>
       <br>
-      <q-input v-model="fbData.mail" outlined label="Ваш Email"/>
+      <q-input square
+            dense
+            bg-color="white" color="cyan-10" v-model="fbData.mail" outlined label="Email"/>
       <br>
       <q-input 
         maxlength="500"
         counter
-        outlined
+        square
+            dense
+            outlined
+            bg-color="white" color="cyan-10"
         v-model="fbData.body"
         type="textarea"
-        label="Текст"
+        label="Пожелания"
       />
-      <q-btn color="primary" label="Отправить" @click="sendFB" />
+      <q-btn color="red-10" label="Отправить" @click="sendFB" />
+      <!-- unelevated -->
     </div>
     <div v-else class="fb_inner">
       <p>{{
@@ -24,8 +36,8 @@
           ? 'Успешно отправлено'
           : 'Ошибка на сервере'}}</p>
       <div style="width: 100%;">
-        <q-btn style="margin-right: 10px" color="primary" label="Отправить еще" @click="state='ready'" />
-        <q-btn color="primary" label="На главную" @click="fbDataFlush(); state='ready'; $router.push('/')" />
+        <q-btn style="margin-right: 10px" color="red-10" label="Отправить еще" @click="state='ready'" />
+        <q-btn color="red-10" label="На главную" @click="fbDataFlush(); state='ready'; $router.push('/')" />
       </div>
     </div>
   </div>
@@ -83,9 +95,8 @@ export default {
   width 620px
   .fb_inner
     min-height 70vh
-    border-radius 5px
-    box-shadow 0 0 3px 2px #a0a4
+    box-shadow 0 0 3px 1px var(--main-borders-color)
     margin-top 15px
-    background-color #eee
+    
     padding 10px
 </style>

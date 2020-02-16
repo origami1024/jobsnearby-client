@@ -42,6 +42,9 @@ Vue.use(Quasar, {
   config: {
     notify: { timeout: 2000 }
   },
+  extras: [
+    'material-icons'
+  ],
   components: {
     QRadio,
     QToolbar,

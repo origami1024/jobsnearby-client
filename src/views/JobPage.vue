@@ -27,13 +27,13 @@
               @click.prevent="$emit('hitcv', -1)"
             />
           </div>
-          <p class="salary-deriv" style="font-size: 16px; color: #666">{{salary_deriv}}</p>
+          <p class="salary-deriv" style="font-size: 16px; font-weight: 700; color: #666">{{salary_deriv}}</p>
         </div>
         <div class="detailed__logo1" :style="{'background-image': 'url(' + job.logo_url + ')'}" >{{job.logo_url == '' || !job.logo_url ? 'logo placeholder' : ''}}</div>
       </section>
-      <section>
-        <p><a :href="'/companypage?id=' + job.author_id" target="_blank" class="detailed__author-link1">{{job.author}}</a></p>
+      <section style="display: flex; justify-content: space-between">
         <p>{{job.city}}</p>
+        <p class="author-link-wrapper"><a :href="'/companypage?id=' + job.author_id" target="_blank" class="detailed__author-link1">{{job.author}}</a></p>
       </section>
       <section>
         <!--  v-if="job.experience >=0 || job.age1>0 || job.age2 > 0 || job.edu || (job.langs && job.langs.length > 0)" -->
@@ -128,7 +128,10 @@
       </section> -->
       <section style="display: flex; justifyContent: space-between">
         <p>Дата публикации: {{published}}</p>
-        <p><q-icon style="color: var(--main-borders-color)" name="visibility" /> {{job.hits_all > 0 ? job.hits_all : 1}}</p>
+        <p>
+          <q-icon style="color: var(--main-borders-color)" name="visibility" />
+          {{job.hits_all > 0 ? job.hits_all : 1}}
+        </p>
       </section>
     </main>
   </div>
@@ -225,7 +228,7 @@ export default {
     padding: 0 10px;
     padding-top: 10px;
     
-    box-sizing: border-box;
+    box-sizing border-box
     box-shadow 0 0 3px 2px var(--main-borders-color)
     display flex
     flex-direction column
@@ -256,6 +259,9 @@ export default {
   }
   .detailed__author-link1
     color var(--main-borders-color)
+  .author-link-wrapper
+    min-width var(--logoWidth)
+    
   .detailed__line {
     display: flex;
     justify-content: space-between;
@@ -268,7 +274,7 @@ export default {
   }
   .detailed__logo1{
     text-align center
-    width 150px
+    width var(--logoWidth)
     height 65px
     background-size 100% 100%
     background-color coral

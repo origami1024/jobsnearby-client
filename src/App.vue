@@ -740,9 +740,8 @@ export default {
   --main-bg-color #fff//#f7f7f7//#8080f1//
   --main-borders-color #3A6E8F
   --btn-color #C00027
-  //--logocolor #3A6E8F
+  --logoWidth 160px
 #app
-  // font-family 'Avenir', Helvetica, Arial, sans-serif
   --maxW 1000px
   //min-height calc(50vh - 15px)
   box-sizing border-box

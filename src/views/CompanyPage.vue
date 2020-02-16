@@ -12,38 +12,28 @@
         </div>
         <div class="detailed__logo" :style="{'background-image': 'url(' + cdata.logo_url + ')'}" >{{cdata.logo_url == '' || !cdata.logo_url ? 'logo placeholder' : ''}}</div>
       </section>
-      <section>
-        <q-list dense bordered padding class="rounded-borders" v-if="cdata.domains.length > 0">
-          <h4 class="detailed__header">{{$t('companyPage.categoriesHeader')}}</h4>
-          <q-item clickable  v-if="cdata.domains[0]">
-            <q-item-section class="padleft">
-              {{cdata.domains[0]}}
-            </q-item-section>
-          </q-item>
-          <q-item clickable  v-if="cdata.domains[1]">
-            <q-item-section class="padleft">
-              {{cdata.domains[1]}}
-            </q-item-section>
-          </q-item>
-          <q-item clickable  v-if="cdata.domains[2]">
-            <q-item-section class="padleft">
-              {{cdata.domains[2]}}
-            </q-item-section>
-          </q-item>
-        </q-list>
+      <section v-if="cdata.domains.length > 0">
+        <h4 class="detailed__header">{{$t('companyPage.categoriesHeader')}}</h4>
+        <div class="subitem"  v-if="cdata.domains[0]">
+          
+            {{cdata.domains[0]}}
+          
+        </div>
+        <div class="subitem"  v-if="cdata.domains[1]">
+          
+            {{cdata.domains[1]}}
+          
+        </div>
+        <div class="subitem"  v-if="cdata.domains[2]">
+          {{cdata.domains[2]}}
+        </div>
       </section>
-      <section>
-        <div>
-          <q-list dense bordered padding class="rounded-borders" v-if="cdata.full_description.length > 0">
-            <h4 class="detailed__header">{{$t('companyPage.descHeader')}}</h4>
-            <q-item clickable >
-              <q-item-section class="padleft">
-              <div class="descriptionHTML">
-                {{cdata.full_description}}
-              </div>
-            </q-item-section>
-            </q-item>
-          </q-list>
+      <section v-if="cdata.full_description.length > 0">
+        <h4 class="detailed__header">{{$t('companyPage.descHeader')}}</h4>
+        <div class="subitem" >
+          <div class="descriptionHTML">
+            {{cdata.full_description}}
+          </div>
         </div>
       </section>
       <section style="display: flex; justifyContent: space-between">
@@ -103,8 +93,6 @@ export default {
     },
     setVariables() {
       this.currency = currencydic[this.job.currency]
-      //this.salary_subtitle = this.job.salary_max ? `<p style="font-size: 20px">${this.job.salary_max} ${this.currency}</p>` : ''
-      
       if (this.job.salary_min < 1) {
         if (this.job.salary_max < 1) {
           this.salary_deriv = 'по итогам собеседования'
@@ -133,9 +121,8 @@ export default {
     background-color: white;
     padding: 0 10px;
     padding-top: 10px;
-    
-    box-sizing: border-box;
-    box-shadow: 0 0 2px 3px #eee;
+    box-sizing border-box
+    box-shadow 0 0 3px 2px var(--main-borders-color)
     display flex
     flex-direction column
     
@@ -186,10 +173,15 @@ export default {
     line-height 50px
   }
   .detailed__header
-    color #2242B4
-    margin 10px 10px
+    color var(--btn-color)
+    margin 10px 0px
     margin-bottom 5px
     font-size 20px
+  .subitem
+    //padding-left 20px
+    padding-bottom 5px
+    padding-top 5px
+    font-size 14px
   .padleft
     padding-left 10px
   .descriptionHTML
