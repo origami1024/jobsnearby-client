@@ -128,7 +128,7 @@
       </section> -->
       <section style="display: flex; justifyContent: space-between">
         <p>Дата публикации: {{published}}</p>
-        <p><q-icon style="color: var(--main-borders-color)" name="remove_red_eye" /> {{job.hits_all > 0 ? job.hits_all : 1}}</p>
+        <p><q-icon style="color: var(--main-borders-color)" name="visibility" /> {{job.hits_all > 0 ? job.hits_all : 1}}</p>
       </section>
     </main>
   </div>
