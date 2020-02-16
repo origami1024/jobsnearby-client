@@ -4,21 +4,9 @@
       <div v-if="job.is_closed" style="color: red; font-size: 18px">Вакансия уже закрыта</div>
       <section class="detailed__line" style="marginBottom: 5px">
         <div class="detailed__col">
-          <div style="display: flex">
+          <!-- <div style="display: flex"> -->
             <h1 class="titleHeader">{{job.title}}</h1>
-            <q-btn
-              v-if="role != 'company' && !ownCVs.find(val=>val.cvjob_id == job.job_id)"
-              color="red-10"
-              style="alignSelf: center; white-space: nowrap; margin-top:4px; margin-left: 10px; padding: 0 10px; font-weight: 700;"
-              dense label="Подать резюме"
-              @click.prevent="$emit('hitcv', job.job_id)"
-            />
-            <div 
-              style="margin-left: 20px; alignSelf: flex-end; color: gray"
-             v-else-if="role == 'subscriber'"
-            >
-              (Резюме уже подано)
-            </div>
+            
             <!-- <q-btn
               v-else-if="role != 'company'"
               color="red-10"
@@ -26,7 +14,7 @@
               dense label="Подать резюме"
               @click.prevent="$emit('hitcv', -1)"
             /> -->
-          </div>
+          <!-- </div> -->
           <p class="salary-deriv" style="font-size: 16px; font-weight: 700; color: #000">{{salary_deriv}}</p>
         </div>
         <div class="detailed__logo1" :style="{'background-image': 'url(' + job.logo_url + ')'}" >{{job.logo_url == '' || !job.logo_url ? 'logo placeholder' : ''}}</div>
@@ -34,6 +22,21 @@
       <section style="display: flex; justify-content: space-between">
         <p>{{job.city}}</p>
         <p class="author-link-wrapper"><a :href="'/companypage?id=' + job.author_id" target="_blank" class="detailed__author-link1">{{job.author}}</a></p>
+      </section>
+      <section>
+        <q-btn
+        v-if="role != 'company' && !ownCVs.find(val=>val.cvjob_id == job.job_id)"
+        color="red-10"
+        style="alignSelf: center; white-space: nowrap; margin-top:4px; margin-left: 10px; padding: 0 10px; font-weight: 700;"
+        dense label="Подать резюме"
+        @click.prevent="$emit('hitcv', job.job_id)"
+      />
+      <div 
+        style="margin-left: 20px; alignSelf: flex-end; color: gray"
+        v-else-if="role == 'subscriber'"
+      >
+        (Резюме уже подано)
+      </div>
       </section>
       <section>
         <!--  v-if="job.experience >=0 || job.age1>0 || job.age2 > 0 || job.edu || (job.langs && job.langs.length > 0)" -->

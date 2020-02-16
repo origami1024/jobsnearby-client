@@ -85,20 +85,29 @@ export default {
     },
     sendFB() {
       console.log(this.fbData)
-      let url = config.jobsUrl + '/fb'
-      axios
-        .post(url, this.fbData, {headers: {'Content-Type' : 'application/json' }, withCredentials: true,})
-        .then(response => {
-          //console.log('viewHit', response.data)
-          if (response.data == 'OK') {
-            this.$q.notify('Фидбэк отправлен')
-            this.state = 'OK'
-            this.fbDataFlush()
-          } else {
-            this.$q.notify('Ошибка на сервере')
-            this.state = 'BAD'
-          }
-      })
+      if (
+        this.fbData.mail.length > 3 &&
+        this.fbData.mail.length < 71 &&
+        this.mailregex.test(this.fbData.mail)
+      ) {
+        let url = config.jobsUrl + '/fb'
+        axios
+          .post(url, this.fbData, {headers: {'Content-Type' : 'application/json' }, withCredentials: true,})
+          .then(response => {
+            //console.log('viewHit', response.data)
+            if (response.data == 'OK') {
+              this.$q.notify('Фидбэк отправлен')
+              this.state = 'OK'
+              this.fbDataFlush()
+            } else {
+              this.$q.notify('Ошибка на сервере')
+              this.state = 'BAD'
+            }
+        })
+      } else {
+        this.$q.notify({type:'negative', message:'Поле email обязательное'})
+      }
+      
     }
   }
 }
