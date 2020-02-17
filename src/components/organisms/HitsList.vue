@@ -74,20 +74,20 @@ export default {
 <style scoped lang="stylus">
 *
   margin 0
-.jobsstats
+.hitslist
   box-sizing border-box
   width 100%
   min-width 300px
   table
     border-spacing 0
-  thead td
-    border-bottom 15px solid transparent
-    font-size 16px
-  td
-    padding 3px
-    font-size 12px
-    max-width 85px
-    font-size 16px
+    thead
+      td
+        border-bottom 3px solid transparent
+        
+        font-weight 700
+    td
+      padding 3px
+      max-width 85px
   .line
     display flex
     align-items center
@@ -101,12 +101,12 @@ export default {
   .jobstat
     &:hover
       transition-duration 0.3s
-      background-color #359DFD
+      background-color var(--main-borders-color)//#359DFD
       color white
       .link1
         color white
   .link1
     text-decoration none
-    color #248CEC
-    transition-duration 0.6s
+    color var(--main-borders-color)//#248CEC
+    transition-duration 0.3s
 </style>

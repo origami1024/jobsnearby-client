@@ -20,6 +20,10 @@
           </div> -->
           <div class="urlpanel" style="margin-bottom: 10px">
             {{cvurl == '' ? 'Резюме не загружено' : 'Резюме загружено'}}
+            <a v-if="cvurl != ''" :href="'https://docs.google.com/viewerng/viewer?url=' + cvurl" target="_blank">
+              <q-icon color="blue-10" size="30px" name="assignment">
+              </q-icon>
+            </a>
           </div>
           <form action="" ref="cvForm">
             Загрузить резюме
@@ -28,13 +32,15 @@
               @input="cvinput"
               style="width: 300px"
               outlined dense
+              square
+              color="cyan-10"
               type="file"
               hint=""
               accept=".doc, .docx, .pdf, .rtf"
               ref="cvUploader"
             />
           </form>
-          <q-btn color="red-10" label="Удалить резюме"/>
+          <q-btn color="red-10" label="Удалить резюме" @click="cvdel" />
           <!-- <q-btn
             @click="updateCVLink"
             style="marginBottom: 22px" dense color="primary"
@@ -62,20 +68,30 @@
           
           <q-input
             class="subprofile__inp"
-            outlined bottom-slots 
+            color="cyan-10"
+            square outlined bottom-slots 
             v-model="userdata.username" label="Имя"
             counter maxlength="35"  />
-          <q-input class="subprofile__inp" outlined bottom-slots
+          <q-input
+            class="subprofile__inp"
+            color="cyan-10"
+            square outlined bottom-slots
             v-model="userdata.surname" label="Фамилия"
             counter maxlength="35"  />
-          <q-btn color="primary" @click="tryChangeUData" label="Изменить"/>
+          <q-btn color="red-10" @click="tryChangeUData" label="Изменить"/>
         </q-tab-panel>
 
 
         <q-tab-panel class="subprofile__settings" name="settings">
-          <q-input type="email" class="subprofile__inp" 
-            outlined bottom-slots :value="user" label="Email" counter maxlength="50"  />
-          <q-input :type="isPwd ? 'password' : 'text'" class="subprofile__inp" outlined bottom-slots v-model="mailpw.oldpw" label="Старый пароль" counter maxlength="25" >
+          <q-input
+            type="email" class="subprofile__inp" 
+            square outlined bottom-slots
+            color="cyan-10"
+            :value="user"
+            label="Email"
+            counter maxlength="50"
+          />
+          <q-input square color="cyan-10" :type="isPwd ? 'password' : 'text'" class="subprofile__inp" outlined bottom-slots v-model="mailpw.oldpw" label="Старый пароль" counter maxlength="25" >
             <template v-slot:append>
               <q-icon
                 :name="isPwd ? 'visibility_off' : 'visibility'"
@@ -85,18 +101,12 @@
             </template>
           </q-input>
           <q-input 
+            square color="cyan-10" 
             :type="isPwd ? 'password' : 'text'" 
             class="subprofile__inp" outlined bottom-slots 
             v-model="mailpw.newpw" label="Новый пароль" counter maxlength="25" >
-            <template v-slot:append>
-              <q-icon
-                :name="isPwd ? 'visibility_off' : 'visibility'"
-                class="cursor-pointer"
-                @click="isPwd = !isPwd"
-              />
-            </template>
           </q-input>
-          <q-btn color="primary" @click="tryChangePw" label="Изменить"/>
+          <q-btn color="red-10" @click="tryChangePw" label="Изменить"/>
         </q-tab-panel>
       </q-tab-panels>
     </div>
@@ -197,6 +207,19 @@ export default {
           if (response.data == 'OK') {
             this.$q.notify('Данные изменены')
             this.$emit('cvupd', this.cvurlnew)
+          } else this.$q.notify('Ошибка')
+          this.cvurlnew = ''
+          //if error, show like popup or status update
+      })
+    },
+    cvdel() {
+      let url = config.jobsUrl + '/cvdelete.json'
+      axios
+        .post(url, null, {headers: {'Content-Type' : 'application/json' }, withCredentials: true,})
+        .then(response => {
+          if (response.data == 'OK') {
+            this.$q.notify('Резюме удалено')
+            this.$emit('cvupd', '')
           } else this.$q.notify('Ошибка')
           this.cvurlnew = ''
           //if error, show like popup or status update
@@ -319,7 +342,7 @@ export default {
 .qtpans
   width 100%
   min-height 75vh
-  border 1px solid #eee
+  box-shadow 0 0 4px 1px var(--main-borders-color)
   border-radius 4px
 .subprofile
   max-width 900px

@@ -51,6 +51,7 @@ app.post('/out', out)
 app.post('/changepw', changepw)
 app.post('/changeuserstuff', changeuserstuff)
 app.post('/cvupdate.json', db.cvurlupdate)
+app.post('/cvdelete.json', db.cvurldelete)
 
 
 app.post('/entrance', db.addJobs)

@@ -23,9 +23,9 @@
         <p>{{job.city}}</p>
         <p class="author-link-wrapper"><a :href="'/companypage?id=' + job.author_id" target="_blank" class="detailed__author-link1">{{job.author}}</a></p>
       </section>
-      <section>
+      <section v-if="role != 'company'">
         <q-btn
-        v-if="role != 'company' && !ownCVs.find(val=>val.cvjob_id == job.job_id)"
+        v-if="!ownCVs.find(val=>val.cvjob_id == job.job_id)"
         color="red-10"
         style="alignSelf: center; white-space: nowrap; margin-top:4px; margin-left: 10px; padding: 0 10px; font-weight: 700;"
         dense label="Подать резюме"

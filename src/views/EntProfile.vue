@@ -36,20 +36,23 @@
               </template>
               
               <ul style="list-style-type:none; padding: 0 15px;">
-                <li v-for="hit in respsJreformat[item].cvhits" :key="hit">
+                <li style="display: flex" v-for="hit in respsJreformat[item].cvhits" :key="hit">
                   <!-- <q-item clickable> -->
-                  <a class="responseLinkLvl2" @click="viewHit(hit)" :href="'https://docs.google.com/viewerng/viewer?url=' + resps.find(val=>val.cvhit_id == hit).cv_url" target="_blank">
+                  <a style="width: 35%" class="responseLinkLvl2" @click="viewHit(hit)" :href="'https://docs.google.com/viewerng/viewer?url=' + resps.find(val=>val.cvhit_id == hit).cv_url" target="_blank">
                     {{
                       resps.find(val=>val.cvhit_id == hit).name + ' ' + 
                       resps.find(val=>val.cvhit_id == hit).surname
                     }}
                     <!-- :href="resps.find(val=>val.cvhit_id == hit).cv_url" -->
                   </a>
+                  <div style="width: 30%">
                     {{
                       'Подано: ' +
                       formatDate(resps.find(val=>val.cvhit_id == hit).date_created)
                       + '.'
                     }}
+                  </div>
+                  <div style="width: 35%">
                     {{
                       resps.find(val=>val.cvhit_id == hit).date_checked != null
                         ? 'Просмотрено: ' + formatDate(resps.find(val=>val.cvhit_id == hit).date_checked)
@@ -64,6 +67,7 @@
                       icon="visibility"
                       @click="viewHit(hit)"
                     />
+                  </div>
                     <!-- </q-item> -->
                 </li>
               </ul>
@@ -148,8 +152,8 @@
           <q-input dense v-show="contacts_count > 2" class="entprofile__inp" outlined bottom-slots v-model="contacts3" label="Контакты" counter maxlength="30"/>
           <q-btn round color="primary" @click="contacts_count < 4 ? contacts_count += 1 : ''" size="sm" icon="add" :disable="contacts_count > 2"/> -->
           <!-- <q-toggle v-model="editable" label="Изменить личные данные"/> -->
-          <q-input type="email" class="entprofile__inp" outlined bottom-slots :value="user" label="Email" counter maxlength="50" />
-          <q-input :type="isPwd ? 'password' : 'text'" class="entprofile__inp" outlined bottom-slots v-model="oldpw" label="Старый пароль" counter maxlength="25">
+          <q-input square color="cyan-10" type="email" class="entprofile__inp" outlined bottom-slots :value="user" label="Email" counter maxlength="50" />
+          <q-input square color="cyan-10" :type="isPwd ? 'password' : 'text'" class="entprofile__inp" outlined bottom-slots v-model="oldpw" label="Старый пароль" counter maxlength="25">
             <template v-slot:append>
               <q-icon
                 :name="isPwd ? 'visibility_off' : 'visibility'"
@@ -158,16 +162,10 @@
               />
             </template>
           </q-input>
-          <q-input :type="isPwd ? 'password' : 'text'" class="entprofile__inp" outlined bottom-slots v-model="newpw" label="Новый пароль" counter maxlength="25">
-            <template v-slot:append>
-              <q-icon
-                :name="isPwd ? 'visibility_off' : 'visibility'"
-                class="cursor-pointer"
-                @click="isPwd = !isPwd"
-              />
-            </template>
+          <q-input square color="cyan-10" :type="isPwd ? 'password' : 'text'" class="entprofile__inp" outlined bottom-slots v-model="newpw" label="Новый пароль" counter maxlength="25">
+            
           </q-input>
-          <q-btn color="primary" @click="tryChangePw" label="Изменить"/>
+          <q-btn color="red-10" @click="tryChangePw" label="Изменить"/>
         </q-tab-panel>
       </q-tab-panels>
     </div>
