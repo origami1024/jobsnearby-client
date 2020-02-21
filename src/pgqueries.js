@@ -1317,6 +1317,30 @@ async function viewHit(req, res) {
   }
 }
 
+async function u2fbread(id) {
+  let que2 = `
+    UPDATE feedbacks SET "new" = false
+    WHERE fb_id = $1
+  `
+  let params2 = [id]
+  let result2 = await pool.query(que2, params2).catch(error => {
+    console.log('cp u2fbread err2: ', error)
+    return false
+  })
+  return Boolean(result2)
+}
+async function u2fbdel(id) {
+  let que2 = `
+    DELETE FROM feedbacks
+    WHERE fb_id = $1
+  `
+  let params2 = [id]
+  let result2 = await pool.query(que2, params2).catch(error => {
+    console.log('cp u2fbdel err2: ', error)
+    return false
+  })
+  return Boolean(result2)
+}
 async function adminGetJobs() {
   //check auth?
   let que = `
@@ -1357,6 +1381,7 @@ async function adminGetUsers2() {
   let que = `
     SELECT u2id, u2mail, category_rights, u2last_logged_in, supernote
     FROM "users2"
+    WHERE category_rights != '777'
   `
   let result = await pool.query(que, null).catch(error => {
     console.log('cp adminGetUsers2 err1: ', error)
@@ -1427,14 +1452,14 @@ async function feedback(req, res) {
 
 async function getAdminHash(admin) {
   //need new table
-  console.log(admin)
+  //console.log(admin)
   let que = `SELECT u2hash FROM "users2" WHERE u2mail = $1`
   let params = [admin]
   let result = await pool.query(que, params).catch(error => {
     console.log(error)  
     throw new Error('check admin for login error')
   })
-  console.log('asw ', result.rows.length)
+  //console.log('asw ', result.rows.length)
   if (result && result.rows && result.rows.length === 1) return result.rows[0].u2hash
   else return undefined
 }
@@ -1468,6 +1493,8 @@ async function adminAuth(mail, u2coo) {
 }
 
 module.exports = {
+  u2fbread,
+  u2fbdel,
   adminAuth,
   tryInsertAdminCoo,
   registerFinishAdmin,

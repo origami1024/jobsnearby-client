@@ -99,6 +99,10 @@ app.get('/cpsuper.json', superAdmin)
 app.get('/u2out.json', u2out)
 app.post('/newu2.json', adminNew) //?check who is adding the new user!!!
 
+
+app.post('/fbaction.json', fbaction)
+//2 types of action, then redirect to allfb.json
+
 function params1(request, response) {
   //get query like ?id=23123
   console.log('cp555: ', request.query)
@@ -110,6 +114,45 @@ function params1(request, response) {
 //   console.log('cp reached', path.join(__dirname, './../dist'))
 //   serveStatic(path.join(__dirname, './../dist'))
 // })
+
+async function fbaction(req, res) {
+  //2 types of action, then redirect to allfb.json
+  let cmd //read or del
+  if (req.body.action == 'read') cmd = 'read'
+  else if (req.body.action == 'del') cmd = 'del'
+  else {
+    res.send('wrong cmd')
+    return false
+  }
+  let fbid = parseInt(req.body.fbid)
+  if (isNaN(fbid) || fbid < 0 || String(fbid).length > 10) {
+    console.log('Error: wrong fb id')
+    res.status(400).send('Неправильный id компании.')
+    return false
+  }
+  if (req.cookies && req.cookies.sessioa && req.cookies.sessioa.length > 50 && req.cookies.user2) {
+    let auth = await db.adminAuth(req.cookies.user2, req.cookies.sessioa).catch(error => {
+      //res.send('step2')
+      return undefined
+    })
+    if (auth) {
+      if (cmd == 'read') {
+        let succ = await db.u2fbread(fbid).catch(error => {
+          //res.send('step2')
+          return undefined
+        })
+        res.send({cmd: 'read', fbid: fbid})
+      } else
+      if (cmd == 'del') {
+        let succ = await db.u2fbdel(fbid).catch(error => {
+          //res.send('step2')
+          return undefined
+        })
+        res.send({cmd: 'del', fbid: fbid})
+      }
+    } else res.send('error2; wrong mail or pw format')
+  } else res.send('error1; wrong mail or pw format')
+}
 
 
 
@@ -131,7 +174,7 @@ async function superAdmin(req, res) {
       return undefined
     })
     console.log(auth) //depending on rights, give different pages later
-    if (auth) {
+    if (auth && auth.category_rights === '777') {
       /*
         list of admins;
         -disable/enable
@@ -185,15 +228,15 @@ async function superAdmin(req, res) {
             <h4 style="margin:0; margin-top:10px;">Добавление нового модера</h4>
             <table borders="1">
               <tr>
-                <td style="width:100px">mail</td>
-                <td style="width:100px">pw</td>
+                <td style="width:130px">mail</td>
+                <td style="width:130px">pw</td>
               </tr>
               <tr>
                 <td style="border: 1px solid black" id="newmail" contenteditable="true"></td>
                 <td style="border: 1px solid black" id="newpw" contenteditable="true"></td>
               </r>
             </table>
-            <button onclick="addNew()">Add New Admin</button>
+            <button onclick="addNew()">Добавить модера</button>
             <div id="viewer"></div>
             <script>
               function addNew() {
@@ -231,26 +274,31 @@ async function adminNew(req, res) {
   let mail = req.body.newmail
   let pw = req.body.newpw
   if (SupremeValidator.isValidEmail(mail) && SupremeValidator.isValidPW(pw)) {
-    let user2Id = await db.tryInsertEmailAdmin(mail).catch(error => {
-      //console.log('cp3: ', error)
-      res.send('error4, not uniq mail')
+    let auth = await db.adminAuth(req.cookies.user2, req.cookies.sessioa).catch(error => {
+      //res.send('step2')
       return undefined
     })
-    if (user2Id === undefined) {
-      return false
-    }
-    //if id is back mail is uniq else ret
-    let hash = bcrypt.hashSync(pw, bcrypt.genSaltSync(9))
-    //store rest of the new user
-    let isDone = await db.registerFinishAdmin(user2Id, mail, hash).catch(error => {
-      console.log('STEP5', error)
-      res.send('step5')
-      return false
-    })
-    if (isDone === false) return false
-    console.log('admin reg ok!')
-    res.send('OK')
-   
+    if (auth && auth.category_rights === '777') {
+      let user2Id = await db.tryInsertEmailAdmin(mail).catch(error => {
+        //console.log('cp3: ', error)
+        res.send('error4, not uniq mail')
+        return undefined
+      })
+      if (user2Id === undefined) {
+        return false
+      }
+      //if id is back mail is uniq else ret
+      let hash = bcrypt.hashSync(pw, bcrypt.genSaltSync(9))
+      //store rest of the new user
+      let isDone = await db.registerFinishAdmin(user2Id, mail, hash).catch(error => {
+        console.log('STEP5', error)
+        res.send('step5')
+        return false
+      })
+      if (isDone === false) return false
+      console.log('admin reg ok!')
+      res.send('OK')
+    } else res.send('error5; wrong mail or pw format')
   } else res.send('error3; wrong mail or pw format')
 }
 
@@ -340,8 +388,22 @@ async function adminPanel(req, res) {
       
       let body = `
         <div>
-        <h2 style="text-align:center; margin: 0;">Башня управления. ${mail}</h2>
-          <ul>
+        <style>
+          .cpul1 li{
+            margin: 10px 0;
+          }
+          .cpul1 li a {
+            font-size: 18px;
+            text-decoration: none;
+            color: navy;
+            font-family: sans-serif;
+          }
+          .cpul1 li a:hover {
+            color: blue;
+          }
+        </style>
+        <h2 style="text-align:center; margin: 0;">Башня управления. ${mail} ${auth.category_rights === '777' ? 'супер-дупер' : ''}</h2>
+          <ul class="cpul1" style="list-style-type: none; width: 35%">
             <li>
               <a href="/allfb.json">Фидбек пользователей</a>
             </li>
@@ -351,9 +413,12 @@ async function adminPanel(req, res) {
             <li>
               <a href="/adminjobs.json">Вакансии</a>
             </li>
-            <li>
-              <a href="/cpsuper.json">Суперадмин</a>
-            </li>
+            ${auth.category_rights === '777'
+              ? `<li>
+                <a href="/cpsuper.json">Суперадмин</a>
+              </li>`
+              : ''}
+            <hr>
             <li>
               <a href="/u2out.json">Выйти</a>
             </li>
@@ -401,7 +466,6 @@ async function adminJobs(req, res) {
         console.log('cp adminGetJobs err1: ', error)
         return []
       })
-      console.log('cp33: ', data)
       data.forEach(val=>{
         let d = new Date(val.time_updated).toString().split(' GMT')[0].substring(3)
         let tmp = `
@@ -510,7 +574,7 @@ async function getAllFB(req, res) {
     })
     if (auth) {
       let body = `
-        <a href="/cp.json">Админка</a>
+        ${pageParts.cplink()}
         <table style="width: 100%">
           <thead style="background-color: blue; color: white;">
             <tr style="padding: 5px">
@@ -534,22 +598,51 @@ async function getAllFB(req, res) {
       data.forEach(val=>{
         let d = new Date(val.date_created).toString().split(' GMT')[0].substring(3)
         let tmp = `
-          <tr>
+          <tr id="tr_${val.fb_id}" ${val.new == true ? 'style="background-color: #eef"' : ''}>
             <td>${val.topic}</td>
             <td>${val.name}</td>
             <td>${val.mail}</td>
             <td>${val.desc}</td>
-            <td>${val.new}</td>
+            <td id="new_${val.fb_id}">${val.new}</td>
             <td>${d}</td>
             <td>
-              <button>Прочитано</button>
-              <button>Удалить</button>
+              ${val.new == true ? `<button id="btn_${val.fb_id} onclick="cmd('read', ${val.fb_id})">Прочитано</button>` : ''}
+              <button "onclick="cmd('del', ${val.fb_id})">Удалить</button>
             </td>
           </tr>
         `
         body += tmp
       })
       body += '</tbody></table>'
+      body += `
+        
+        <script>
+          function cmd(action, fbid) {
+            let d = {action, fbid}
+            
+            var http = new XMLHttpRequest()
+            var url = '/fbaction.json'
+            http.open('POST', url, true)
+            http.setRequestHeader('Content-type', 'application/json')
+            //
+            http.onreadystatechange = ()=>{
+              if(http.readyState == 4) {
+                let res = JSON.parse(http.responseText)
+                //document.getElementById("viewer").textContent += http.responseText
+                if (res.cmd === 'del') {
+                  document.getElementById('tr_' + res.fbid).remove()
+                }
+                else if (res.cmd === 'read') {
+                  document.getElementById('new_' + res.fbid).textContent = 'false'
+                  document.getElementById('tr_' + res.fbid).style.backgroundColor = "white"
+                  document.getElementById('btn_' + res.fbid).remove()
+                }
+              }
+            }
+            http.send(JSON.stringify(d))
+          }
+        </script>
+      `
       let allFBPage = pageParts.head + body + pageParts.footer
       
       res.send(allFBPage)
