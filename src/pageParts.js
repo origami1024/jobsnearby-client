@@ -17,6 +17,11 @@ exports.headbody = `<head><style>
   }
 </style></head><body>`
 
+
+exports.noau = exports.headbody + `<div>
+    Ошибка 505001, страницы не существует, бубубу
+  </div>
+` + exports.end
 exports.cplink = () => {
   return (
     `<a href="/cp.json">&lt;Админка</a>`

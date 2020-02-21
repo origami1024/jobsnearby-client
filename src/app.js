@@ -14,7 +14,7 @@ const path = require('path')
 
 var cors = require('cors');
 app.use(cors({
-  origin: process.argv.includes('-development') ? 'http://127.0.0.1:8080' : 'https://herokuapp.com',
+  origin: process.argv.includes('-dev') ? 'http://127.0.0.1:8080' : 'https://herokuapp.com',
   credentials: true,
   exposedHeaders: ['session','user']
 }))
@@ -33,7 +33,7 @@ app.use(serveStatic(path.join(__dirname, './../dist')));
 
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))
-if (process.argv.includes('-development')) console.log('development mode on')
+if (process.argv.includes('-dev')) console.log('development mode on')
 
 
 
@@ -94,8 +94,10 @@ app.get('/adminusers.json', adminUsers)
 app.get('/adminjobs.json', adminJobs)
 app.get('/cp.json', adminPanel)
 app.get('/cplogin.json', adminLogin)
+app.post('/cploginep.json', cpLoginEndpoint)
 app.get('/cpsuper.json', superAdmin)
-
+app.get('/u2out.json', u2out)
+app.post('/newu2.json', adminNew) //?check who is adding the new user!!!
 
 function params1(request, response) {
   //get query like ?id=23123
@@ -109,9 +111,153 @@ function params1(request, response) {
 //   serveStatic(path.join(__dirname, './../dist'))
 // })
 
+
+
+async function u2out(req, res) {
+  //maybe delete stuff in db and write some statistics down
+  //for now just reset cookies and send back OK
+  res.cookie('sessioa', '', {expires: new Date(Date.now())})
+  res.cookie('user2', '', {expires: new Date(Date.now())})
+  // res.send('OK. u2out')
+  res.send(`<html><script>window.location.href = "/cplogin.json"</script></html>`)
+}
+
+async function superAdmin(req, res) {
+  //cookie verify structure
+  if (req.cookies && req.cookies.sessioa && req.cookies.sessioa.length > 50 && req.cookies.user2) {
+    //auth check
+    let auth = await db.adminAuth(req.cookies.user2, req.cookies.sessioa).catch(error => {
+      //res.send('step2')
+      return undefined
+    })
+    console.log(auth) //depending on rights, give different pages later
+    if (auth) {
+      /*
+        list of admins;
+        -disable/enable
+        -add new user
+        -delete user
+        -edit rights:
+        ---deleting, changing jobs, closing, opening jobs
+        ---deleting, changing, disabling/enabling users
+        ---reading feedback
+        ---entering pages: fb, jobs, users
+      */
+      let u2list = await db.adminGetUsers2().catch(error => {
+        console.log('cp adminGetUsers2 err1: ', error)
+        return []
+      })
+      
+      let list_p1 = `
+      <table style="width: 100%; font-size:14px">
+        <thead style="background-color: purple; color: white;">
+          <tr style="padding: 5px">
+            <td>Логин</td>
+            <td>category_rights</td>
+            <td>u2last_logged_in</td>
+            <td>supernote</td>
+            <td>управление</td>
+          </tr>
+        </thead>
+      <tbody>`
+      u2list.forEach(val=>{
+        let d = new Date(val.u2last_logged_in).toString().split(' GMT')[0].substring(3)
+        let tmp = `
+          <tr id=${val.u2id}>
+            <td>${val.u2mail}</td>
+            <td>${val.category_rights}</td>
+            <td>${d}</td>
+            <td>${val.supernote}</td>
+            <td>
+              <button>Выключить акк</button>
+              <button>Изменить права</button>
+              <button>Добавить заметку</button>
+            </td>
+          </tr>
+        `
+        list_p1 += tmp
+      })
+      list_p1 += '</tbody></table>'
+      let body = `
+        <main>
+          ${pageParts.cplink()}
+          <section>
+            <h4 style="margin:0; margin-top:10px;">Добавление нового модера</h4>
+            <table borders="1">
+              <tr>
+                <td style="width:100px">mail</td>
+                <td style="width:100px">pw</td>
+              </tr>
+              <tr>
+                <td style="border: 1px solid black" id="newmail" contenteditable="true"></td>
+                <td style="border: 1px solid black" id="newpw" contenteditable="true"></td>
+              </r>
+            </table>
+            <button onclick="addNew()">Add New Admin</button>
+            <div id="viewer"></div>
+            <script>
+              function addNew() {
+                let newmail = document.getElementById("newmail").textContent
+                let newpw = document.getElementById("newpw").textContent
+                let d = {newmail, newpw}
+                console.log(d)
+                var http = new XMLHttpRequest()
+                var url = '/newu2.json'
+                http.open('POST', url, true)
+                http.setRequestHeader('Content-type', 'application/json')
+                //
+                http.onreadystatechange = function() {
+                  if(http.readyState == 4 && http.status == 200) {
+                    document.getElementById("viewer").textContent += http.responseText
+                  }
+                }
+                http.send(JSON.stringify(d))
+              }
+            </script>
+          </section>
+          <section>
+            <h4 style="margin:0; margin-top:10px;">Список модеров</h4>
+            ${list_p1}
+          </section>
+        </main>
+      `
+      let superPage = pageParts.head + body + pageParts.footer
+      res.send(superPage)
+    } else res.send(pageParts.noau)
+  } else res.send(pageParts.noau)
+}
+
+async function adminNew(req, res) {
+  let mail = req.body.newmail
+  let pw = req.body.newpw
+  if (SupremeValidator.isValidEmail(mail) && SupremeValidator.isValidPW(pw)) {
+    let user2Id = await db.tryInsertEmailAdmin(mail).catch(error => {
+      //console.log('cp3: ', error)
+      res.send('error4, not uniq mail')
+      return undefined
+    })
+    if (user2Id === undefined) {
+      return false
+    }
+    //if id is back mail is uniq else ret
+    let hash = bcrypt.hashSync(pw, bcrypt.genSaltSync(9))
+    //store rest of the new user
+    let isDone = await db.registerFinishAdmin(user2Id, mail, hash).catch(error => {
+      console.log('STEP5', error)
+      res.send('step5')
+      return false
+    })
+    if (isDone === false) return false
+    console.log('admin reg ok!')
+    res.send('OK')
+   
+  } else res.send('error3; wrong mail or pw format')
+}
+
 async function adminLogin(req, res) {
+  console.log('cp rr1: ', req.query.e)
   let body = `
-    <form action="#" method="post" style="width: 220px; margin: 0 auto; margin-top:25vh">
+    <form action="/cploginep.json" method="post" style="width: 220px; margin: 0 auto; margin-top:25vh">
       <div class="container" style="display: flex; flex-direction: column;">
         <label for="uname"><b>Username</b></label>
         <input type="text" placeholder="Enter Username" name="uname" required>
@@ -124,228 +270,291 @@ async function adminLogin(req, res) {
           <input type="checkbox" checked="checked" name="remember"> Remember me
         </label>
       </div>
-
+      ${req.query.e == 'err1' ? '<div style="color:red">Ошибка авторизации</div>' : ''}
     </form>
+    
 
   `
   let loginPage = pageParts.head + body + pageParts.footer
   res.send(loginPage)
 }
-async function superAdmin(req, res) {
-  let body = `
-    list of admins;
-    -disable/enable
-    -add new user
-    -delete user
-    -edit rights:
-    ---deleting, changing jobs, closing, opening jobs
-    ---deleting, changing, disabling/enabling users
-    ---reading feedback
-    ---entering pages: fb, jobs, users
-  `
-  let superPage = pageParts.head + body + pageParts.footer
-  res.send(superPage)
-}
-async function cpAuth(req, res) {
-  let admin = req.body.admin.toLowerCase()
-  let pw = req.body.pw
+
+async function cpLoginEndpoint(req, res) {
+  
+  let mail = req.body.uname.toLowerCase()
+  let pw = req.body.psw
   let rememberme = req.body.remember
-  if (SupremeValidator.isValidEmail(admin) && SupremeValidator.isValidPW(pw) && typeof rememberme === "boolean") {
-    let adminData = await db.tryGetAdminRow(admin).catch(error => {
+  if (rememberme === 'on' || rememberme == 'true') rememberme = true
+  if (rememberme != true) rememberme = false
+  if (SupremeValidator.isValidEmail(mail) && SupremeValidator.isValidPW(pw)) {
+    
+    let adminData = await db.getAdminHash(mail).catch(error => {
       res.send('step2')
       return undefined
     })
-  } else {res.send('step1'); console.log('not valid mail or wrong pw')}
+    if (!adminData) {
+      res.send('<html><script>window.location.href = "/cplogin.json?e=err1"</script></html>')
+      return false
+    }
+    console.log('23')
+    let authed = bcrypt.compareSync(pw, adminData)
+    console.log('cp54: ', authed)
+
+    if (authed) {
+      let jwtoken = SupremeValidator.generateJSONWebToken(mail)
+      let laststage = await db.tryInsertAdminCoo(mail, jwtoken).catch(error => {
+        res.send('step5')
+        return undefined
+      })
+      //after this not checked
+      if (laststage === undefined) return false
+      console.log('success, sending')
+
+      if (rememberme) {
+        res.cookie('sessioa', jwtoken, {expires: new Date(Date.now() + 590013000)})
+        res.cookie('user2', mail, {expires: new Date(Date.now() + 590013000)})
+      } else {
+        res.cookie('sessioa', jwtoken)
+        res.cookie('user2', mail)
+      }
+      //res.send(JSON.stringify({'coo': jwtoken}))
+      res.send(`<html><script>window.location.href = "/cp.json"</script></html>`)
+    } else {res.send(`<html><script>window.location.href = "/cplogin.json?e=err1"</script></html>`)}
+    //finish this!!!
+  } else {res.send(`<html><script>window.location.href = "/cplogin.json?e=err1"</script></html>`)}
   
 }
 async function adminPanel(req, res) {
-  //auth check
-
-  let body = `
-    <div>
-    <h2 style="text-align:center; margin: 0;">Башня управления</h2>
-      <ul>
-        <li>
-          <a href="/allfb.json">Фидбек пользователей</a>
-        </li>
-        <li>
-          <a href="/adminusers.json">Пользователи</a>
-        </li>
-        <li>
-          <a href="/adminjobs.json">Вакансии</a>
-        </li>
-        <li>
-          <a href="#">Выйти</a>
-        </li>
-      </ul>
-    </div>
-  `
-  let cpPage = pageParts.head + body + pageParts.footer
-  
-  res.send(cpPage)
+  //cookie verify structure
+  if (req.cookies && req.cookies.sessioa && req.cookies.sessioa.length > 50 && req.cookies.user2) {
+    //auth check
+    let auth = await db.adminAuth(req.cookies.user2, req.cookies.sessioa).catch(error => {
+      //res.send('step2')
+      return undefined
+    })
+    console.log(auth) //depending on rights, give different pages later
+    if (auth) {
+      
+      let mail = req.cookies.user2
+      let coo = req.cookies.sessioa
+      
+      let body = `
+        <div>
+        <h2 style="text-align:center; margin: 0;">Башня управления. ${mail}</h2>
+          <ul>
+            <li>
+              <a href="/allfb.json">Фидбек пользователей</a>
+            </li>
+            <li>
+              <a href="/adminusers.json">Пользователи</a>
+            </li>
+            <li>
+              <a href="/adminjobs.json">Вакансии</a>
+            </li>
+            <li>
+              <a href="/cpsuper.json">Суперадмин</a>
+            </li>
+            <li>
+              <a href="/u2out.json">Выйти</a>
+            </li>
+          </ul>
+        </div>
+      `
+      let cpPage = pageParts.head + body + pageParts.footer
+      
+      res.send(cpPage)
+    } else res.send(pageParts.noau)
+  } else res.send(pageParts.noau)
 }
 async function adminJobs(req, res) {
   //auth check
-  let body = `
-    <h2 style="text-align:center; margin: 0;">Вакансии</h2>
-    ${pageParts.cplink()}
-    <table style="width: 100%; font-size:14px">
-      <thead style="background-color: purple; color: white;">
-        <tr style="padding: 5px">
-          <td>jid</td>
-          <td>title</td>
-          <td>aid</td>
-          <td>time_updated</td>
-          <td>salary_min</td>
-          <td>salary_max</td>
-          <td>currency</td>
-          <td>contact_mail</td>
-          <td>contact_tel</td>
-          <td>is_closed</td>
-          <td>Управление</td>
-        </tr>
-      </thead>
-      <tbody>
-    
-  `
-  let data = await db.adminGetJobs().catch(error => {
-    console.log('cp adminGetJobs err1: ', error)
-    return []
-  })
-  console.log('cp33: ', data)
-  data.forEach(val=>{
-    let d = new Date(val.time_updated).toString().split(' GMT')[0].substring(3)
-    let tmp = `
-      <tr id=${val.job_id}>
-        <td>${val.job_id}</td>
-        <td>${val.title}</td>
-        <td>${val.author_id}</td>
-        <td>${d}</td>
-        <td>${val.salary_min}</td>
-        <td>${val.salary_max}</td>
-        <td>${val.currency}</td>
-        <td>${val.contact_mail}</td>
-        <td>${val.contact_tel}</td>
-        <td>${val.is_closed}</td>
-        <td>
-          <button>Закрыть</button>
-          <button>Открыть</button>
-          <button>Удалить</button>
-        </td>
-      </tr>
-    `
-    body += tmp
-  })
-  body += '</tbody></table>'
-  let allJobsPage = pageParts.head + body + pageParts.footer
-  
-  res.send(allJobsPage)
+  if (req.cookies && req.cookies.sessioa && req.cookies.sessioa.length > 50 && req.cookies.user2) {
+    //auth check
+    let auth = await db.adminAuth(req.cookies.user2, req.cookies.sessioa).catch(error => {
+      //res.send('step2')
+      return undefined
+    })
+    if (auth) {
+      let body = `
+        <h2 style="text-align:center; margin: 0;">Вакансии</h2>
+        ${pageParts.cplink()}
+        <table style="width: 100%; font-size:14px">
+          <thead style="background-color: purple; color: white;">
+            <tr style="padding: 5px">
+              <td>jid</td>
+              <td>title</td>
+              <td>aid</td>
+              <td>time_updated</td>
+              <td>salary_min</td>
+              <td>salary_max</td>
+              <td>currency</td>
+              <td>contact_mail</td>
+              <td>contact_tel</td>
+              <td>is_closed</td>
+              <td>Управление</td>
+            </tr>
+          </thead>
+          <tbody>
+        
+      `
+      let data = await db.adminGetJobs().catch(error => {
+        console.log('cp adminGetJobs err1: ', error)
+        return []
+      })
+      console.log('cp33: ', data)
+      data.forEach(val=>{
+        let d = new Date(val.time_updated).toString().split(' GMT')[0].substring(3)
+        let tmp = `
+          <tr id=${val.job_id}>
+            <td>${val.job_id}</td>
+            <td>${val.title}</td>
+            <td>${val.author_id}</td>
+            <td>${d}</td>
+            <td>${val.salary_min}</td>
+            <td>${val.salary_max}</td>
+            <td>${val.currency}</td>
+            <td>${val.contact_mail}</td>
+            <td>${val.contact_tel}</td>
+            <td>${val.is_closed}</td>
+            <td>
+              <button>Закрыть</button>
+              <button>Открыть</button>
+              <button>Удалить</button>
+            </td>
+          </tr>
+        `
+        body += tmp
+      })
+      body += '</tbody></table>'
+      let allJobsPage = pageParts.head + body + pageParts.footer
+      
+      res.send(allJobsPage)
+    } else res.send(pageParts.noau)
+  } else res.send(pageParts.noau)
 }
 
 async function adminUsers(req, res) {
   //auth check
-  let body = `
-    <h2 style="text-align:center; margin: 0;">Пользователи</h2>
-    ${pageParts.cplink()}
-    <table style="width: 100%; font-size:14px">
-      <thead style="background-color: green; color: white;">
-        <tr style="padding: 5px">
-          <td>uid</td>
-          <td>email</td>
-          <td>role</td>
-          <td>time_created</td>
-          <td>name</td>
-          <td>surname</td>
-          <td>company</td>
-          <td>isagency</td>
-          <td>logo_url</td>
-          <td>cvurl</td>
-          <td>Управление</td>
-        </tr>
-      </thead>
-      <tbody>
-    
-  `
-  let data = await db.adminGetUsers().catch(error => {
-    console.log('cp adminGetUsers err1: ', error)
-    return []
-  })
-  //console.log('cp32: ', data)
-  data.forEach(val=>{
-    let d = new Date(val.time_created).toString().split(' GMT')[0].substring(3)
-    let tmp = `
-      <tr>
-        <td>${val.user_id}</td>
-        <td>${val.email}</td>
-        <td>${val.role}</td>
-        <td>${d}</td>
-        <td>${val.name}</td>
-        <td>${val.surname}</td>
-        <td>${val.company}</td>
-        <td>${val.isagency}</td>
-        <td style="max-width:100px">${val.logo_url}</td>
-        <td style="max-width:100px">${val.cvurl}</td>
-        <td>
-          <button>Редактировать</button>
-          <button>Применить</button>
-          <button>Удалить</button>
-        </td>
-      </tr>
-    `
-    body += tmp
-  })
-  body += '</tbody></table>'
-  let allUsersPage = pageParts.head + body + pageParts.footer
-  
-  res.send(allUsersPage)
+  if (req.cookies && req.cookies.sessioa && req.cookies.sessioa.length > 50 && req.cookies.user2) {
+    //auth check
+    let auth = await db.adminAuth(req.cookies.user2, req.cookies.sessioa).catch(error => {
+      //res.send('step2')
+      return undefined
+    })
+    if (auth) {
+      let body = `
+        <h2 style="text-align:center; margin: 0;">Пользователи</h2>
+        ${pageParts.cplink()}
+        <table style="width: 100%; font-size:14px">
+          <thead style="background-color: green; color: white;">
+            <tr style="padding: 5px">
+              <td>uid</td>
+              <td>email</td>
+              <td>role</td>
+              <td>time_created</td>
+              <td>name</td>
+              <td>surname</td>
+              <td>company</td>
+              <td>isagency</td>
+              <td>logo_url</td>
+              <td>cvurl</td>
+              <td>Управление</td>
+            </tr>
+          </thead>
+          <tbody>
+        
+      `
+      let data = await db.adminGetUsers().catch(error => {
+        console.log('cp adminGetUsers err1: ', error)
+        return []
+      })
+      //console.log('cp32: ', data)
+      data.forEach(val=>{
+        let d = new Date(val.time_created).toString().split(' GMT')[0].substring(3)
+        let tmp = `
+          <tr>
+            <td>${val.user_id}</td>
+            <td>${val.email}</td>
+            <td>${val.role}</td>
+            <td>${d}</td>
+            <td>${val.name}</td>
+            <td>${val.surname}</td>
+            <td>${val.company}</td>
+            <td>${val.isagency}</td>
+            <td style="max-width:100px">${val.logo_url}</td>
+            <td style="max-width:100px">${val.cvurl}</td>
+            <td>
+              <button>Редактировать</button>
+              <button>Применить</button>
+              <button>Удалить</button>
+            </td>
+          </tr>
+        `
+        body += tmp
+      })
+      body += '</tbody></table>'
+      let allUsersPage = pageParts.head + body + pageParts.footer
+      
+      res.send(allUsersPage)
+    } else res.send(pageParts.noau)
+  } else res.send(pageParts.noau)
 }
 
 async function getAllFB(req, res) {
   //auth check
-  let body = `
-    <a href="/cp.json">Админка</a>
-    <table style="width: 100%">
-      <thead style="background-color: blue; color: white;">
-        <tr style="padding: 5px">
-        <td>Тема</td>
-        <td>Имя</td>
-        <td>Мэйл</td>
-        <td>Текст</td>
-        <td>Новая?</td>
-        <td>Дата написания</td>
-        <td>Управление</td>
-        </tr>
-      </thead>
-      <tbody>
-    
-  `
-  let data = await db.adminGetFB().catch(error => {
-    console.log('cp getAllFB err1: ', error)
-    return []
-  })
-  //console.log('cp31: ', data)
-  data.forEach(val=>{
-    let d = new Date(val.date_created).toString().split(' GMT')[0].substring(3)
-    let tmp = `
-      <tr>
-        <td>${val.topic}</td>
-        <td>${val.name}</td>
-        <td>${val.mail}</td>
-        <td>${val.desc}</td>
-        <td>${val.new}</td>
-        <td>${d}</td>
-        <td>
-          <button>Прочитано</button>
-          <button>Удалить</button>
-        </td>
-      </tr>
-    `
-    body += tmp
-  })
-  body += '</tbody></table>'
-  let allFBPage = pageParts.head + body + pageParts.footer
-  
-  res.send(allFBPage)
+  if (req.cookies && req.cookies.sessioa && req.cookies.sessioa.length > 50 && req.cookies.user2) {
+    //auth check
+    let auth = await db.adminAuth(req.cookies.user2, req.cookies.sessioa).catch(error => {
+      //res.send('step2')
+      return undefined
+    })
+    if (auth) {
+      let body = `
+        <a href="/cp.json">Админка</a>
+        <table style="width: 100%">
+          <thead style="background-color: blue; color: white;">
+            <tr style="padding: 5px">
+            <td>Тема</td>
+            <td>Имя</td>
+            <td>Мэйл</td>
+            <td>Текст</td>
+            <td>Новая?</td>
+            <td>Дата написания</td>
+            <td>Управление</td>
+            </tr>
+          </thead>
+          <tbody>
+        
+      `
+      let data = await db.adminGetFB().catch(error => {
+        console.log('cp getAllFB err1: ', error)
+        return []
+      })
+      //console.log('cp31: ', data)
+      data.forEach(val=>{
+        let d = new Date(val.date_created).toString().split(' GMT')[0].substring(3)
+        let tmp = `
+          <tr>
+            <td>${val.topic}</td>
+            <td>${val.name}</td>
+            <td>${val.mail}</td>
+            <td>${val.desc}</td>
+            <td>${val.new}</td>
+            <td>${d}</td>
+            <td>
+              <button>Прочитано</button>
+              <button>Удалить</button>
+            </td>
+          </tr>
+        `
+        body += tmp
+      })
+      body += '</tbody></table>'
+      let allFBPage = pageParts.head + body + pageParts.footer
+      
+      res.send(allFBPage)
+    } else res.send(pageParts.noau)
+  } else res.send(pageParts.noau)
 }
 
 async function getOwnCompanyJSON(req, res) {
@@ -539,7 +748,7 @@ async function changepw(req, res) {
           return undefined
         })
         if (userData) {
-          let authed = bcrypt.compareSync(oldpw, userData.pwhash) 
+          let authed = bcrypt.compareSync(oldpw, userData.pwhash)
           //console.log('cp219: ', userData, ' and ', authed)
           if (authed) {
             let newhash = bcrypt.hashSync(newpw, bcrypt.genSaltSync(9))
@@ -659,7 +868,7 @@ async function reg(req, res) {
       res.send('step2')
       return -1
     })
-    if (userId === -1) return false
+    if (userId === -1 || userId === undefined) return false
     console.log('step2 passed, email inserted:', userId)
     //if all before is successful, id of new user in emailIn
     //go on
@@ -699,7 +908,7 @@ const SupremeValidator = {
   },
   isValidPW(pw) {
     let pwRegex = /[a-zA-Z]/
-    return (pw.length > 5 && pw.length < 26 && pwRegex.test(pw))
+    return (pw && pw.length > 5 && pw.length < 26 && pwRegex.test(pw))
   },
   generateJSONWebToken(mail){
     const signature = 'YoiRG3rots' + Math.random()

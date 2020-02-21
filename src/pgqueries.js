@@ -773,6 +773,33 @@ async function tryGetLoginData (mail) {
   //return {'pwHash': result.rows[0].pwhash, 'userId': result.rows[0].user_id, 'role': result.rows[0].role}
 }
 
+async function tryInsertEmailAdmin (mail) {
+  let que = `INSERT INTO "users2" ("u2mail") VALUES ($1) RETURNING u2id`
+  let params = [mail]
+  let result
+  try {
+    result = await pool.query(que, params)
+  } catch(e) {
+    throw new Error('email2 exists already')
+  }
+  //console.log('tryingInsert in the end: ', result.rows[0])
+  return result.rows[0].u2id
+}
+async function registerFinishAdmin (id, mail, hash) {
+  
+  let que = `
+    UPDATE "users2"
+    SET u2hash = $1
+    WHERE u2id = $2 AND u2mail = $3
+  `
+  let params = [hash, id, mail]
+  let result = await pool.query(que, params).catch(error => {
+    console.log('cp iii: ', error)
+    throw new Error('user update fail')
+  })
+  return true
+}
+
 async function tryInsertEmail (mail) {
   let que = `INSERT INTO "users" ("email") VALUES ($1) RETURNING user_id`
   let params = [mail]
@@ -1325,6 +1352,24 @@ async function adminGetUsers() {
   } else resu = []
   return resu
 }
+async function adminGetUsers2() {
+  //check auth?
+  let que = `
+    SELECT u2id, u2mail, category_rights, u2last_logged_in, supernote
+    FROM "users2"
+  `
+  let result = await pool.query(que, null).catch(error => {
+    console.log('cp adminGetUsers2 err1: ', error)
+    return false
+  })
+  let resu
+  if (result && result.rows && result.rows.length > 0) {
+    resu = result.rows
+    resu.forEach(function(v){ delete v.pwhash; delete v.auth_cookie });
+
+  } else resu = []
+  return resu
+}
 async function adminGetFB() {
   //check auth?
   let que = `
@@ -1380,14 +1425,57 @@ async function feedback(req, res) {
 }
 
 
-async function tryGetAdminRow(admin) {
+async function getAdminHash(admin) {
   //need new table
+  console.log(admin)
+  let que = `SELECT u2hash FROM "users2" WHERE u2mail = $1`
+  let params = [admin]
+  let result = await pool.query(que, params).catch(error => {
+    console.log(error)  
+    throw new Error('check admin for login error')
+  })
+  console.log('asw ', result.rows.length)
+  if (result && result.rows && result.rows.length === 1) return result.rows[0].u2hash
+  else return undefined
+}
+
+async function tryInsertAdminCoo(mail, token) {
+  let que = `UPDATE "users2" SET u2coo = $1, u2last_logged_in = NOW() where u2mail = $2`
+  let params = [token, mail]
+  let result = await pool.query(que, params).catch(error => {
+    console.log(error)
+    throw new Error('auth2 insertion failed')
+  })
+  console.log('cp457', result.rows[0])
+  if (result && result.rows) {
+    return true
+  } return undefined
+  
+}
+async function adminAuth(mail, u2coo) {
+  //here we get cookie
+  //check it and bring back mail, rights, smth else
+  let que1st = `SELECT u2id, category_rights FROM "users2" WHERE u2mail = $1 AND u2coo = $2`
+  let params1st = [mail, u2coo]
+  let result1 = await pool.query(que1st, params1st).catch(error => {
+    console.log('cp adminAuth err: ', error)
+    //throw new Error('job by id error')
+    return undefined
+  })
+  //console.log('cpc p2: ', result1)
+  if (result1.rows && result1.rows.length == 1) return result1.rows[0]
+  else return undefined
 }
 
 module.exports = {
-  tryGetAdminRow,
+  adminAuth,
+  tryInsertAdminCoo,
+  registerFinishAdmin,
+  tryInsertEmailAdmin,
+  getAdminHash,
   adminGetJobs,
   adminGetUsers,
+  adminGetUsers2,
   adminGetFB,
   feedback,
   getCVHitsHistory,
