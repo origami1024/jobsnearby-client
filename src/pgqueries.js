@@ -1491,8 +1491,42 @@ async function adminAuth(mail, u2coo) {
   if (result1.rows && result1.rows.length == 1) return result1.rows[0]
   else return undefined
 }
+async function adminStats() {
+  
+  let que = `
+    SELECT  (
+      SELECT COUNT(*)
+      FROM users
+      WHERE role = 'subscriber'
+      ) AS uscount,
+      (
+      SELECT COUNT(*)
+      FROM users
+      WHERE role = 'company'
+      ) AS uccount,
+      (
+      SELECT COUNT(*)
+      FROM jobs
+      ) AS jcount,
+      (
+      SELECT COUNT(*)
+      FROM cvhits
+      ) AS hcount
+  `
+  let result1 = await pool.query(que, null).catch(error => {
+    console.log('cp adminAuth err: ', error)
+    //throw new Error('job by id error')
+    return undefined
+  })
+  //console.log('cpc p2: ', result1)
+  if (result1.rows && result1.rows.length == 1) return result1.rows[0]
+  else return undefined
+}
+
 
 module.exports = {
+  adminStats,
+
   u2fbread,
   u2fbdel,
   adminAuth,

@@ -384,46 +384,73 @@ async function adminPanel(req, res) {
     if (auth) {
       
       let mail = req.cookies.user2
-      let coo = req.cookies.sessioa
       
+      
+      let stts = await db.adminStats().catch(error => {
+        //res.send('step2')
+        return undefined
+      })
+      let sttsbody = ''
+      if (stts) {
+        sttsbody = `
+          <div>
+            <h2>Основная статистика</h2>
+            <p>Кол-во вакансий: <b>${stts.jcount}</b></p>
+            <p>Кол-во пользователей: <b>${stts.uscount + stts.uccount}</b></p>
+            <p>Из них соискателей: <b>${stts.uscount}</b></p>
+            <p>Из них компаний: <b>${stts.uccount}</b></p>
+            <p>Кол-во подач резюме: <b>${stts.hcount}</b></p>
+          <div>
+        `
+      }
       let body = `
-        <div>
-        <style>
-          .cpul1 li{
-            margin: 10px 0;
-          }
-          .cpul1 li a {
-            font-size: 18px;
-            text-decoration: none;
-            color: navy;
-            font-family: sans-serif;
-          }
-          .cpul1 li a:hover {
-            color: blue;
-          }
-        </style>
         <h2 style="text-align:center; margin: 0;">Башня управления. ${mail} ${auth.category_rights === '777' ? 'супер-дупер' : ''}</h2>
-          <ul class="cpul1" style="list-style-type: none; width: 35%">
-            <li>
-              <a href="/allfb.json">Фидбек пользователей</a>
-            </li>
-            <li>
-              <a href="/adminusers.json">Пользователи</a>
-            </li>
-            <li>
-              <a href="/adminjobs.json">Вакансии</a>
-            </li>
-            ${auth.category_rights === '777'
-              ? `<li>
-                <a href="/cpsuper.json">Суперадмин</a>
-              </li>`
-              : ''}
-            <hr>
-            <li>
-              <a href="/u2out.json">Выйти</a>
-            </li>
-          </ul>
-        </div>
+        <hr>
+        <main style="display:flex; justify-content: space-around;">
+          <section>
+          <style>
+            * {
+              font-family: sans-serif;
+            }
+            h3{margin: 10px; margin-bottom: 5px; font-size: 16px}
+            .cpul1 li{
+              margin: 10px 0;
+            }
+            .cpul1 li a {
+              font-size: 18px;
+              text-decoration: none;
+              color: navy;
+              
+            }
+            .cpul1 li a:hover {
+              color: blue;
+            }
+          </style>
+            <ul class="cpul1" style="list-style-type: none; width: 65%">
+              <li>
+                <a href="/allfb.json">Фидбек пользователей</a>
+              </li>
+              <li>
+                <a href="/adminusers.json">Пользователи</a>
+              </li>
+              <li>
+                <a href="/adminjobs.json">Вакансии</a>
+              </li>
+              ${auth.category_rights === '777'
+                ? `<li>
+                  <a href="/cpsuper.json">Суперадмин</a>
+                </li>`
+                : ''}
+              <hr>
+              <li>
+                <a href="/u2out.json">Выйти</a>
+              </li>
+            </ul>
+          </section>
+          <section>
+            ${sttsbody}
+          </section>
+        </main>
       `
       let cpPage = pageParts.head + body + pageParts.footer
       
