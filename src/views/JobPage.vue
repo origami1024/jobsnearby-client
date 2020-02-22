@@ -1,7 +1,7 @@
 <template>
   <div class="jobpage">
     <main class="detailed__main1">
-      <div v-if="job.is_closed" style="color: red; font-size: 18px">Вакансия уже закрыта</div>
+      <div v-if="job.is_closed" style="color: red; font-size: 16px">Вакансия закрыта{{job.closed_why != '' ? ', причина: ' + job.closed_why : ''}}</div>
       <section class="detailed__line" style="marginBottom: 5px">
         <div class="detailed__col">
           <!-- <div style="display: flex"> -->

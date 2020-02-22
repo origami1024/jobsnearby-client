@@ -179,6 +179,104 @@ async function reopenJobById(req, res) {
   } else {res.send('wrong userinfo(reopenJobById)')}
 }
 
+
+async function closeJobByIdAdmin(req, res) {
+  const closed_why = req.body.closed_why
+  const jid = parseInt(req.body.jid)
+  console.log(closed_why, jid)
+  if (isNaN(jid) || jid < 0 || String(jid).length > 10) {
+    console.log('Error: wrong id')
+    res.status(400).send('Неправильный id вакансии.')
+    return false
+  }
+  if (closed_why.length > 500) closed_why = closed_why.substring(0,499)
+  if (req.cookies.sessioa && req.cookies.sessioa.length > 50 && req.cookies.user2) {
+    //console.log('cpsrv', jid)
+    let que1st = `SELECT u2id FROM "users2" WHERE "u2coo" = $1 AND u2mail = $2`
+    let params1st = [req.cookies.sessioa, req.cookies.user2]
+    pool.query(que1st, params1st, (error, results) => {
+      if (error) {
+        console.log(error)
+        //res.send('step2')
+        //throw error
+        return false
+      }
+      if (Boolean(results) == false || results.rows.length < 1) {
+        console.log('no cookie found')
+        //Если юзера с таким куки не найдено, то выходим из функции прост
+        res.send('step3')
+        return false
+      }
+      console.log('closejob2 cp1')
+      //по айди
+      //если есть в базе и автор сам удаляющий
+      //удалить
+      let que2nd = `UPDATE jobs SET (is_closed, time_updated, closed_why) = (TRUE, NOW(), $1) WHERE job_id = $2`
+      //console.log(que2nd)
+      let params2nd = [closed_why, jid]
+      pool.query(que2nd, params2nd, (error2, results2) => {
+        if (error2) {
+          console.log('closeJobById2 Error2: ', error2)
+          res.status(400).send('error22')
+          return false
+        }
+        res.status(200).send('OK')
+        //Добавление логов
+        addLog('Вакансия закрыта(A)', 'Id вакансии: ' + jid, results.rows[0].u2id, '(Модератор) ' + req.cookies.user2)
+        //res.send(results2.rows)
+      })
+
+    })
+  } else {res.send('wrong userinfo(closeJBIA)')}
+}
+async function deleteJobByIdAdmin(req, res) {
+  const jid = parseInt(req.body.jid)
+  //проверить жоб айди формально
+  
+  if (isNaN(jid) || jid < 0 || String(jid).length > 10) {
+    console.log('Error: wrong id')
+    res.status(400).send('Неправильный id вакансии.')
+    return false
+  }
+
+  if (req.cookies.sessioa && req.cookies.sessioa.length > 50 && req.cookies.user2) {
+    //console.log('cpsrv', jid)
+    let que1st = `SELECT u2id FROM "users2" WHERE "u2coo" = $1 AND "u2mail" = $2`
+    let params1st = [req.cookies.sessioa, req.cookies.user2]
+    pool.query(que1st, params1st, (error, results) => {
+      if (error) {
+        console.log(error)
+        res.send('step2')
+        //throw error
+        return false
+      }
+      if (results.rows.length < 1) {
+        console.log('no cookie found')
+        //Если юзера с таким куки не найдено, то выходим из функции прост
+        res.send('step3')
+        return false
+      }
+      
+      //по айди
+      //если есть в базе и автор сам удаляющий
+      //удалить
+      
+      let que2nd = `DELETE FROM jobs WHERE job_id = $1`
+      let params2nd = [jid]
+      pool.query(que2nd, params2nd, (error2, results2) => {
+        if (error2) {
+          console.log('deleteJobByIdAdmin Error2: ', error2)
+          res.status(400).send('error222')
+          return false
+        }
+        res.status(200).send('OK')
+        addLog('Вакансия удалена(A)', 'Id вакансии: ' + jid, results.rows[0].u2id, '(Модератор) ' + req.cookies.user2)
+      })
+
+    })
+  } else {res.send('wrong userinfo(deleteJBIA)')}
+}
+
 async function closeJobById(req, res) {
   const jid = parseInt(req.query.jid)
   if (isNaN(jid) || jid < 0 || String(jid).length > 10) {
@@ -285,7 +383,7 @@ async function getJobById (id) {
   //'SELECT * FROM jobs WHERE job_id = $1'
 
   
-  let que = `SELECT * FROM (SELECT jobs.author_id, users.company as author, users.logo_url, jobs.job_id, jobs.city, jobs.experience, jobs.jobtype, jobs.title, jobs.edu, jobs.currency, jobs.sex, jobs.salary_min, jobs.salary_max, jobs.description, jobs.worktime1, jobs.worktime2, jobs.schedule, jobs.age1, jobs.age2, jobs.langs, jobs.time_published as published, jobs.time_updated as updated, contact_mail, contact_tel, cardinality(jobs.hits_log) as hits_all, jobs.is_closed
+  let que = `SELECT * FROM (SELECT jobs.author_id, users.company as author, users.logo_url, jobs.job_id, jobs.city, jobs.experience, jobs.jobtype, jobs.title, jobs.edu, jobs.currency, jobs.sex, jobs.salary_min, jobs.salary_max, jobs.description, jobs.worktime1, jobs.worktime2, jobs.schedule, jobs.age1, jobs.age2, jobs.langs, jobs.time_published as published, jobs.time_updated as updated, contact_mail, contact_tel, cardinality(jobs.hits_log) as hits_all, jobs.is_closed, jobs.closed_why
             FROM jobs, users
             WHERE jobs.author_id = users.user_id AND jobs.job_id = $1) a,
             (select count(distinct hits_log1) as hits_uniq
@@ -811,7 +909,7 @@ async function registerFinishAdmin (id, mail, hash) {
   
   let que = `
     UPDATE "users2"
-    SET u2hash = $1
+    SET (u2hash = $1, category_rights = '111')
     WHERE u2id = $2 AND u2mail = $3
   `
   let params = [hash, id, mail]
@@ -1405,7 +1503,7 @@ async function adminGetUsers2() {
   let que = `
     SELECT u2id, u2mail, category_rights, u2last_logged_in, supernote
     FROM "users2"
-    WHERE category_rights != '777'
+    WHERE category_rights IS DISTINCT FROM '777'
   `
   let result = await pool.query(que, null).catch(error => {
     console.log('cp adminGetUsers2 err1: ', error)
@@ -1414,9 +1512,9 @@ async function adminGetUsers2() {
   let resu
   if (result && result.rows && result.rows.length > 0) {
     resu = result.rows
-    resu.forEach(function(v){ delete v.pwhash; delete v.auth_cookie });
 
   } else resu = []
+  
   return resu
 }
 async function adminGetFB() {
@@ -1572,6 +1670,9 @@ async function adminLogs() {
 module.exports = {
   adminStats,
   adminLogs,
+
+  closeJobByIdAdmin,
+  deleteJobByIdAdmin,
 
   u2fbread,
   u2fbdel,

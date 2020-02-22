@@ -101,6 +101,8 @@ app.post('/newu2.json', adminNew) //?check who is adding the new user!!!
 
 
 app.post('/fbaction.json', fbaction)
+app.post('/admnjobclo.json', db.closeJobByIdAdmin)
+app.post('/admnjobdel.json', db.deleteJobByIdAdmin)
 //2 types of action, then redirect to allfb.json
 
 function params1(request, response) {
@@ -115,6 +117,8 @@ function params1(request, response) {
 //   serveStatic(path.join(__dirname, './../dist'))
 // })
 
+
+
 async function fbaction(req, res) {
   //2 types of action, then redirect to allfb.json
   let cmd //read or del
@@ -127,7 +131,7 @@ async function fbaction(req, res) {
   let fbid = parseInt(req.body.fbid)
   if (isNaN(fbid) || fbid < 0 || String(fbid).length > 10) {
     console.log('Error: wrong fb id')
-    res.status(400).send('Неправильный id компании.')
+    res.status(400).send('Неправильный id')
     return false
   }
   if (req.cookies && req.cookies.sessioa && req.cookies.sessioa.length > 50 && req.cookies.user2) {
@@ -515,6 +519,11 @@ async function adminJobs(req, res) {
     })
     if (auth) {
       let body = `
+        <style>
+        .hidden {
+          display: none;
+        }
+        </style>
         <h2 style="text-align:center; margin: 0;">Вакансии</h2>
         ${pageParts.cplink()}
         <table style="width: 100%; font-size:14px">
@@ -529,7 +538,8 @@ async function adminJobs(req, res) {
               <td>currency</td>
               <td>contact_mail</td>
               <td>contact_tel</td>
-              <td>is_closed</td>
+              <td>Закрыта?</td>
+              <td>closed_why</td>
               <td>Управление</td>
             </tr>
           </thead>
@@ -540,10 +550,11 @@ async function adminJobs(req, res) {
         console.log('cp adminGetJobs err1: ', error)
         return []
       })
+      
       data.forEach(val=>{
         let d = new Date(val.time_updated).toString().split(' GMT')[0].substring(3)
         let tmp = `
-          <tr id=${val.job_id}>
+          <tr id="jtr_${val.job_id}">
             <td>${val.job_id}</td>
             <td>${val.title}</td>
             <td>${val.author_id}</td>
@@ -553,17 +564,73 @@ async function adminJobs(req, res) {
             <td>${val.currency}</td>
             <td>${val.contact_mail}</td>
             <td>${val.contact_tel}</td>
-            <td>${val.is_closed}</td>
+            <td id="td_ic_${val.job_id}">${val.is_closed}</td>
+            <td id="td_cw_${val.job_id}">${val.closed_why}</td>
             <td>
-              <button>Закрыть</button>
-              <button>Открыть</button>
-              <button>Удалить</button>
+              ${val.is_closed == false
+                ? `
+                  <div id="cl_ctr_${val.job_id}">
+                    <button onclick="popup(${val.job_id})">Закрытие</button>
+                    <div id="close_${val.job_id}" class="hidden">
+                      <textarea id="ta_${val.job_id}" style="color: black" placeholder="укажите причину"></textarea>
+                      <button onclick="sendclosejob(${val.job_id})">Закрыть</button>
+                    </div>
+                  </div>
+                `
+                : ''
+              }
+              <button onclick="senddeljob(${val.job_id})">Удалить</button>
             </td>
           </tr>
         `
         body += tmp
       })
       body += '</tbody></table>'
+      body += `
+        <script>
+          function popup(jid) {
+            document.getElementById("close_" + jid).classList.toggle("hidden")
+          }
+          function sendclosejob(jid) {
+            let closed_why = document.getElementById("ta_" + jid).value
+            let d = {closed_why, jid}
+            //console.log(d)
+            var http = new XMLHttpRequest()
+            var url = '/admnjobclo.json'
+            http.open('POST', url, true)
+            http.setRequestHeader('Content-type', 'application/json')
+            //
+            document.getElementById("td_ic_" + jid).textContent = 'true'
+            document.getElementById("td_cw_" + jid).textContent = closed_why
+            document.getElementById("cl_ctr_" + jid).remove()
+            http.onreadystatechange = function() {
+              if(http.readyState == 4 && http.status == 200) {
+                console.log('cpo1: ', http.responseText)
+
+              }
+            }
+            http.send(JSON.stringify(d))
+          }
+
+          function senddeljob(jid) {
+            let d = {jid}
+            //console.log(d)
+            var http = new XMLHttpRequest()
+            var url = '/admnjobdel.json'
+            http.open('POST', url, true)
+            http.setRequestHeader('Content-type', 'application/json')
+            //
+            document.getElementById("jtr_" + jid).remove()
+            http.onreadystatechange = function() {
+              if(http.readyState == 4 && http.status == 200) {
+                console.log('cpo2: ', http.responseText)
+
+              }
+            }
+            http.send(JSON.stringify(d))
+          }
+        </script>
+      `
       let allJobsPage = pageParts.head + body + pageParts.footer
       
       res.send(allJobsPage)
