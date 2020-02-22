@@ -396,7 +396,7 @@ async function adminPanel(req, res) {
           <div>
             <h2>Основная статистика</h2>
             <p>Кол-во вакансий: <b>${stts.jcount}</b></p>
-            <p>Кол-во пользователей: <b>${stts.uscount + stts.uccount}</b></p>
+            <p>Кол-во пользователей: <b>${Number(stts.uscount) + Number(stts.uccount)}</b></p>
             <p>Из них соискателей: <b>${stts.uscount}</b></p>
             <p>Из них компаний: <b>${stts.uccount}</b></p>
             <p>Кол-во подач резюме: <b>${stts.hcount}</b></p>
@@ -412,6 +412,38 @@ async function adminPanel(req, res) {
         //за неделю
         //за месяц
       }
+
+      let lgs = await db.adminLogs().catch(error => {
+        console.log('err appcp1')
+        return []
+      })
+      let logs = `
+      <table style="width: 100%; font-size:14px">
+        <thead style="background-color: orange; color: black;">
+          <tr style="padding: 5px">
+            <td>Время</td>
+            <td>Действие</td>
+            <td>Примечания</td>
+            <td>Id автора</td>
+            <td>Email автора</td>
+          </tr>
+        </thead>
+      <tbody>`
+      lgs.forEach(val=>{
+        let d = new Date(val.time).toString().split(' GMT')[0].substring(3)
+        let tmp = `
+          <tr>
+            <td>${d}</td>
+            <td>${val.action}</td>
+            <td>${val.body}</td>
+            <td>${val.author_id}</td>
+            <td>${val.author_mail}</td>
+          </tr>
+        `
+        logs += tmp
+      })
+      logs += '</tbody></table>'
+
       let body = `
         <h2 style="text-align:center; margin: 0;">Башня управления. ${mail} ${auth.category_rights === '777' ? 'супер-дупер' : ''}</h2>
         <hr>
@@ -459,7 +491,13 @@ async function adminPanel(req, res) {
           <section>
             ${sttsbody}
           </section>
+          
         </main>
+        <hr>
+        <article class="cp_logs">
+          <h3>Последние логи</h3>
+          ${logs}
+        </article>
       `
       let cpPage = pageParts.head + body + pageParts.footer
       
@@ -963,7 +1001,7 @@ async function reg(req, res) {
   let usertype = req.body[2]
   let arg1 = req.body[3]
   let arg2 = req.body[4]
-  console.log('cp9: ', arg2)
+  
   //check type
   if (usertype !== 'subscriber' && usertype !== 'company') {
     res.send('step3')
@@ -990,6 +1028,7 @@ async function reg(req, res) {
     res.send('step3')
     return -1
   }
+  
   console.log('tops validated')
   if (SupremeValidator.isValidEmail(mail) && SupremeValidator.isValidPW(pw)) {
     //try to insert the email//if fails then error
@@ -1004,6 +1043,7 @@ async function reg(req, res) {
     //hash the pw with pw and salt
     let hash = bcrypt.hashSync(pw, bcrypt.genSaltSync(9))
     //store rest of the new user
+    //console.log('cp9: ', arg2)
     let isDone = await db.registerFinish(userId, hash, usertype, arg1, arg2).catch(error => {
       console.log('STEP3', error)
       res.send('step3')

@@ -146,7 +146,7 @@ async function reopenJobById(req, res) {
   }
   if (req.cookies.session && req.cookies.session.length > 50) {
     //console.log('cpsrv', jid)
-    let que1st = `SELECT user_id FROM "users" WHERE "auth_cookie" = $1 and role = 'company'`
+    let que1st = `SELECT user_id, email FROM "users" WHERE "auth_cookie" = $1 and role = 'company'`
     let params1st = [req.cookies.session]
     pool.query(que1st, params1st, (error, results) => {
       if (error) {
@@ -171,7 +171,8 @@ async function reopenJobById(req, res) {
           return false
         }
         res.status(200).send('OK')
-        //res.send(results2.rows)
+        //Добавление логов
+        addLog('Вакансия открыта', 'Айди вакансии: ' + jid, results.rows[0].user_id, results.rows[0].email)
       })
 
     })
@@ -187,7 +188,7 @@ async function closeJobById(req, res) {
   }
   if (req.cookies.session && req.cookies.session.length > 50) {
     //console.log('cpsrv', jid)
-    let que1st = `SELECT user_id FROM "users" WHERE "auth_cookie" = $1 and role = 'company'`
+    let que1st = `SELECT user_id, email FROM "users" WHERE "auth_cookie" = $1 and role = 'company'`
     let params1st = [req.cookies.session]
     pool.query(que1st, params1st, (error, results) => {
       if (error) {
@@ -216,6 +217,8 @@ async function closeJobById(req, res) {
           return false
         }
         res.status(200).send('OK')
+        //Добавление логов
+        addLog('Вакансия закрыта', 'Айди вакансии: ' + jid, results.rows[0].user_id, results.rows[0].email)
         //res.send(results2.rows)
       })
 
@@ -235,7 +238,7 @@ async function deleteJobById(req, res) {
 
   if (req.cookies.session && req.cookies.session.length > 50) {
     //console.log('cpsrv', jid)
-    let que1st = `SELECT user_id FROM "users" WHERE "auth_cookie" = $1`
+    let que1st = `SELECT user_id, email FROM "users" WHERE "auth_cookie" = $1`
     let params1st = [req.cookies.session]
     pool.query(que1st, params1st, (error, results) => {
       if (error) {
@@ -265,7 +268,7 @@ async function deleteJobById(req, res) {
           return false
         }
         res.status(200).send('OK')
-        //res.send(results2.rows)
+        addLog('Вакансия удалена', 'Айди вакансии: ' + jid, results.rows[0].user_id, results.rows[0].email)
       })
 
     })
@@ -490,7 +493,7 @@ async function favOne (req, res) {
 
 async function updateJob (req, res) {
   if (req.cookies.session && req.cookies.session.length > 50) {
-    let que1st = `SELECT user_id FROM "users" WHERE "auth_cookie" = ($1)`
+    let que1st = `SELECT user_id, email FROM "users" WHERE "auth_cookie" = ($1)`
     let params1st = [req.cookies.session]
     pool.query(que1st, params1st, (error, results) => {
       if (error) {
@@ -527,7 +530,8 @@ async function updateJob (req, res) {
           return false
         }
         if (results2.rows.length > 0) {
-          //console.log('cp ll:', {...results2.rows[0], 'result': 'OK'})
+          //Добавление логов
+          addLog('Вакансия изменена', parsedData.title, results.rows[0].user_id, results.rows[0].email)
           res.send({...results2.rows[0], 'result': 'OK'})
         } else res.send('error unkn')
       })
@@ -535,17 +539,32 @@ async function updateJob (req, res) {
   } else {res.send('auth fail edit')}
 }
 
+//Добавить лог
+async function addLog (action, body, author_id, author_mail) {
+  //time, action, body, author_id, author_name
+  let que = `
+    INSERT INTO "logs" (time, action, body, author_id, author_mail) VALUES
+    (NOW(), $1, $2, $3, $4)`
+  let params = [action, body, author_id, author_mail]
+  let result1 = await pool.query(que, params).catch(error => {
+    console.log('cp addLog err: ', error)
+    //throw new Error('job by id error')
+    return undefined
+  })
+  //console.log('cpc p2: ', result1)
+  return Boolean(result1)
+}
 
 async function addOneJob (req, res) {
   //
   if (req.cookies.session && req.cookies.session.length > 50) {
     //console.log(req.body)
-    let que1st = `SELECT user_id FROM "users" WHERE "auth_cookie" = ($1)`
+    let que1st = `SELECT user_id, email FROM "users" WHERE "auth_cookie" = ($1)`
     let params1st = [req.cookies.session]
     pool.query(que1st, params1st, (error, results) => {
       if (error) {
         res.send('step2')
-        console.log('addJobs Error: ', error)
+        console.log('addJob Error: ', error)
       }
       if (results.rows.length < 1) {
         //Если юзера с таким куки не найдено, то выходим из функции прост
@@ -572,7 +591,8 @@ async function addOneJob (req, res) {
           return false
         }
         if (results2.rows.length > 0) {
-          //console.log('cp ll:', {...results2.rows[0], 'result': 'OK'})
+          //Добавление логов
+          addLog('Вакансия добавлена', parsedData.title, parsedData.author_id, results.rows[0].email)
           res.send({...results2.rows[0], 'result': 'OK'})
         } else res.send('error unkn')
         
@@ -693,7 +713,7 @@ async function addJobs (req, res) {
   //console.log(req.cookies)
   if (req.cookies.session && req.cookies.session.length > 50) {
     //console.log(req.body)
-    let que1st = `SELECT user_id FROM "users" WHERE "auth_cookie" = ($1)`
+    let que1st = `SELECT user_id, email FROM "users" WHERE "auth_cookie" = ($1)`
     let params1st = [req.cookies.session]
     pool.query(que1st, params1st, (error, results) => {
       if (error) {
@@ -713,8 +733,8 @@ async function addJobs (req, res) {
       let params2nd = []
       let n = 18
       let iSkipped = 0
-
-      for (let i = 0; i < Math.min(req.body.length, 15); i++) {//Math.min - максимум 15
+      let processedlength = Math.min(req.body.length, 15)
+      for (let i = 0; i < processedlength; i++) {//Math.min - максимум 15
         let parsedData = validateOneJob(req.body[i])
         if (parsedData == false) { iSkipped += 1; continue}
         //author_id - проверка не нужна
@@ -734,6 +754,8 @@ async function addJobs (req, res) {
           console.log('addJobs err2', error2)
         }
         res.send('OK')
+        //Добавление логов
+        addLog('Вакансии добавлены(n)', 'Добавлено ' + processedlength, results.rows[0].user_id, results.rows[0].email)
       })
     })
     
@@ -814,17 +836,19 @@ async function tryInsertEmail (mail) {
 }
 async function registerFinish (id, hash, usertype, arg1, arg2) {
   let insert = ''
-  console.log(usertype)
-  if (arg2 != true || arg2 != 'true') arg2 = false
+  //console.log(usertype)
+  if (usertype === 'company' && (arg2 != true || arg2 != 'true')) arg2 = false
   if (usertype === 'subscriber') insert = `, name = $4, surname = $5`
   else if (usertype === 'company') insert = `, company = $4, isagency = $5`
   let que = `UPDATE "users" SET pwhash = $1, role = $3${insert} where user_id = $2`
-  console.log(que)
+  //console.log(que)
   let params = [hash, id, usertype, arg1, arg2]
   let result = await pool.query(que, params).catch(error => {
     console.log(error)
     throw new Error('user update fail')
   })
+  //Добавление логов
+  addLog('Регистрация пользователя', usertype === 'company' ? 'Компания ' + arg1 : 'Соискатель ' + arg1 + ' ' + arg2, id)
   return true
 }
 async function tryInsertAuthToken(id,token) {
@@ -1492,7 +1516,6 @@ async function adminAuth(mail, u2coo) {
   else return undefined
 }
 async function adminStats() {
-  
   let que = `
     SELECT  (
       SELECT COUNT(*)
@@ -1524,7 +1547,7 @@ async function adminStats() {
       ) AS opened_this_week_count
   `
   let result1 = await pool.query(que, null).catch(error => {
-    console.log('cp adminAuth err: ', error)
+    console.log('cp adminStats err: ', error)
     //throw new Error('job by id error')
     return undefined
   })
@@ -1532,10 +1555,23 @@ async function adminStats() {
   if (result1.rows && result1.rows.length == 1) return result1.rows[0]
   else return undefined
 }
-
+async function adminLogs() {
+  let que = `
+    SELECT * FROM "logs" ORDER BY time DESC
+  `
+  let result1 = await pool.query(que, null).catch(error => {
+    console.log('cp adminLogs err: ', error)
+    //throw new Error('job by id error')
+    return undefined
+  })
+  //console.log('cpc p2: ', result1)
+  if (result1) return result1.rows
+  else return []
+}
 
 module.exports = {
   adminStats,
+  adminLogs,
 
   u2fbread,
   u2fbdel,

@@ -337,6 +337,7 @@ export default {
         this.showErrors = false
         //this.status = 'Попытка регистрации'
         this.submitting = true
+        //console.log('cp123f, ', this.surname)
         axios
           .post(config.jobsUrl + '/reg', [this.mail.toLowerCase(), this.pw, this.usertype, this.usertype === 'subscriber' ? this.name : this.company, this.usertype === 'subscriber' ? this.surname : this.agency], {headers: {'Content-Type' : 'application/json' }})
           .then(response => {
@@ -346,11 +347,11 @@ export default {
               this.mail = ''
               this.pw = ''
               this.pwc = ''
-              this.rules = ''
+              this.rules = false
               this.name = ''
               this.surname = ''
               this.company = ''
-              this.agency = ''
+              this.agency = false
               this.$emit('regStateUpd', 'login')
               this.login.mail = ''
               this.login.pw = ''
