@@ -840,7 +840,7 @@ async function registerFinish (id, hash, usertype, arg1, arg2) {
   if (usertype === 'company' && (arg2 != true || arg2 != 'true')) arg2 = false
   if (usertype === 'subscriber') insert = `, name = $4, surname = $5`
   else if (usertype === 'company') insert = `, company = $4, isagency = $5`
-  let que = `UPDATE "users" SET pwhash = $1, role = $3${insert} where user_id = $2`
+  let que = `UPDATE "users" SET pwhash = $1, role = $3${insert} where user_id = $2 RETURNING email`
   //console.log(que)
   let params = [hash, id, usertype, arg1, arg2]
   let result = await pool.query(que, params).catch(error => {
@@ -848,7 +848,7 @@ async function registerFinish (id, hash, usertype, arg1, arg2) {
     throw new Error('user update fail')
   })
   //Добавление логов
-  addLog('Регистрация пользователя', usertype === 'company' ? 'Компания ' + arg1 : 'Соискатель ' + arg1 + ' ' + arg2, id)
+  addLog('Регистрация пользователя', usertype === 'company' ? 'Компания ' + arg1 : 'Соискатель ' + arg1 + ' ' + arg2, id, result.rows[0].email)
   return true
 }
 async function tryInsertAuthToken(id,token) {
