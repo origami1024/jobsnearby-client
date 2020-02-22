@@ -1511,7 +1511,17 @@ async function adminStats() {
       (
       SELECT COUNT(*)
       FROM cvhits
-      ) AS hcount
+      ) AS hcount,
+      (
+      SELECT COUNT(*)
+      FROM jobs
+      WHERE time_created > now() - interval '1 day'
+      ) AS opened_today_count,
+      (
+      SELECT COUNT(*)
+      FROM jobs
+      WHERE time_created > now() - interval '7 day'
+      ) AS opened_this_week_count
   `
   let result1 = await pool.query(que, null).catch(error => {
     console.log('cp adminAuth err: ', error)

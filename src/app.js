@@ -400,8 +400,17 @@ async function adminPanel(req, res) {
             <p>Из них соискателей: <b>${stts.uscount}</b></p>
             <p>Из них компаний: <b>${stts.uccount}</b></p>
             <p>Кол-во подач резюме: <b>${stts.hcount}</b></p>
+            <p>Новые вакансии сегодня: <b>${stts.opened_today_count}</b></p>
+            <p>Новые вакансии за неделю: <b>${stts.opened_this_week_count}</b></p>
           <div>
         `
+        //уник посетителей
+        //вакансии по фильтрам
+        //юзеры по фильтрам
+        //открытых вакансий за сегодня
+        //открытых вакансий за вчера
+        //за неделю
+        //за месяц
       }
       let body = `
         <h2 style="text-align:center; margin: 0;">Башня управления. ${mail} ${auth.category_rights === '777' ? 'супер-дупер' : ''}</h2>
@@ -412,7 +421,7 @@ async function adminPanel(req, res) {
             * {
               font-family: sans-serif;
             }
-            h3{margin: 10px; margin-bottom: 5px; font-size: 16px}
+            p{margin: 0px; margin-bottom: 5px;}
             .cpul1 li{
               margin: 10px 0;
             }
