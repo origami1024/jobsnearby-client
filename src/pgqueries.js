@@ -965,14 +965,15 @@ async function tryInsertAuthToken(id,token) {
   return true
 }
 async function checkAuthGetProfile(token) {
-  let que = `SELECT email, user_id, role, name, surname, insearch, company, isagency, cvurl FROM "users" WHERE "auth_cookie" = ($1)`
+  let que = `SELECT email, user_id, role, name, surname, insearch, company, isagency, cvurl, is_active FROM "users" WHERE "auth_cookie" = ($1)`
   let params = [token]
   let result = await pool.query(que, params).catch(error => {
     console.log(error)
     throw new Error('auth check failed')
   })
-  console.log('cp10: ', result.rows[0])
+  //console.log('cp10: ', result.rows[0])
   if (result.rowCount !== 1) return false
+  if (result.rows[0].is_active == false) return false
   else {
     let res = {
       'email': result.rows[0].email,
