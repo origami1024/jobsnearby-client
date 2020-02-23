@@ -1442,7 +1442,7 @@ async function viewHit(req, res) {
   }
 }
 
-async function u2aublock(id, block_reason, active_state) {
+async function u2aublock(id, block_reason, active_state, u2id, user2) {
   if (active_state != true) active_state = false
   let que2 = `
     UPDATE users SET ("is_active", "block_reason") = ($1, $2)
@@ -1453,9 +1453,13 @@ async function u2aublock(id, block_reason, active_state) {
     console.log('cp u2aublock err2: ', error)
     return false
   })
+  //Добавление логов
+  let logcmd = active_state ? 'Разблок пользователя(A)' : 'Блок пользователя(A)'
+  let logbody = active_state ? 'Id пользователя: ' + id : 'Id пользователя: ' + id + ', причина: ' + block_reason
+  addLog(logcmd, logbody, u2id, '(Модератор) ' + user2)
   return Boolean(result2)
 }
-async function u2audelete(id) {
+async function u2audelete(id, u2id, user2) {
   let que = `
     DELETE FROM users
     WHERE user_id = $1
@@ -1465,6 +1469,8 @@ async function u2audelete(id) {
     console.log('cp u2aublock err2: ', error)
     return false
   })
+  //Добавление логов
+  addLog('Удаление пользователя(A)', 'Id пользователя: ' + id, u2id, '(Модератор) ' + user2)
   return Boolean(result)
 }
 
@@ -1642,6 +1648,33 @@ async function adminAuth(mail, u2coo) {
   if (result1.rows && result1.rows.length == 1) return result1.rows[0]
   else return undefined
 }
+async function adminDayStats() {
+  // let queOld = `
+  //   SELECT date_trunc('day', jobs.time_created) "day", count(*) AS "jobs"
+  //   FROM jobs
+  //   WHERE jobs.time_created >= now() - interval '2 months'
+  //   group by 1
+  //   ORDER BY 1
+  // `
+  let que = `
+    SELECT d.day, count(jobs.job_id) AS jobs
+    FROM (SELECT to_char(date_trunc('day', (current_date - offs)), 'YYYY-MM-DD') AS day 
+          FROM generate_series(0, 60, 1) AS offs
+        ) d LEFT OUTER JOIN
+        jobs 
+        ON d.day = to_char(date_trunc('day', jobs.time_created), 'YYYY-MM-DD')  
+    GROUP BY d.day
+    ORDER BY d.day
+  `
+  let result1 = await pool.query(que, null).catch(error => {
+    console.log('cp adminDayStats err: ', error)
+    //throw new Error('job by id error')
+    return undefined
+  })
+  //console.log('cpc p2: ', result1)
+  if (result1 && result1.rows) return result1.rows
+  else return []
+}
 async function adminStats() {
   let que = `
     SELECT  (
@@ -1698,6 +1731,7 @@ async function adminLogs() {
 
 module.exports = {
   adminStats,
+  adminDayStats,
   adminLogs,
 
   closeJobByIdAdmin,

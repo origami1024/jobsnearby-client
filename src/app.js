@@ -140,21 +140,21 @@ async function auaction(req, res) {
     })
     if (auth) {
       if (cmd == 'block') {
-        let succ = await db.u2aublock(uid, req.body.block_reason, false).catch(error => {
+        let succ = await db.u2aublock(uid, req.body.block_reason, false, auth.u2id, req.cookies.user2).catch(error => {
           //res.send('step2')
           return undefined
         })
         res.send({cmd: 'block', id: uid})
       } else
       if (cmd == 'unblock') {
-        let succ = await db.u2aublock(uid, '', true).catch(error => {
+        let succ = await db.u2aublock(uid, '', true, auth.u2id, req.cookies.user2).catch(error => {
           //res.send('step2')
           return undefined
         })
         res.send({cmd: 'unblock', id: uid})
       } else
       if (cmd == 'del') {
-        let succ = await db.u2audelete(uid).catch(error => {
+        let succ = await db.u2audelete(uid, auth.u2id, req.cookies.user2).catch(error => {
           //res.send('step2')
           return undefined
         })
@@ -461,7 +461,96 @@ async function adminPanel(req, res) {
         //за неделю
         //за месяц
       }
+      let sttsDay = await db.adminDayStats().catch(error => {
+        //res.send('step2')
+        return undefined
+      })
+      if (sttsDay) {
+        sttsDaybody = `
+          <div class="charts">
+            <h2>Вакансии по дням</h2>
+            <svg id="jobs_per_day_chart" width="600" height="300"></svg>
+          </div>
+          <style>
+            .bar {
+              fill: steelblue;
+            },
+          </style>
+          <script src="https://d3js.org/d3.v5.min.js"></script> 
+          <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.25.0/babel.min.js"></script>
+          <script>
+            var data = ${JSON.stringify(sttsDay.map(val=>{val.day = val.day.substring(5);return val}))}//.map(val=>{val.day = String(val.day).split(' 2020')[0].split(' ').slice(1).join(' ');return val})
+            //console.log(JSON.stringify(data))
+            
+            const svg = d3.select("svg"), 
+            margin = {top: 5, right: 5, bottom: 40, left: 15}, 
+            width = +svg.attr("width") - margin.left - margin.right, 
+            height = +svg.attr("height") - margin.top - margin.bottom, 
+            x = d3.scaleBand().rangeRound([0, width]).padding(0.0), 
+            y = d3.scaleLinear().rangeRound([height, 0]), 
+            g = svg.append("g") 
+            .attr("transform", \`translate(\${margin.left},\${margin.top})\`); 
 
+            
+            x.domain(data.map(d => d.day)); 
+            y.domain([0, d3.max(data, d => d.jobs)]); 
+             
+            g.append("g")
+            .attr("class", "axis axis-x") 
+            .attr("transform", \`translate(0,\${height})\`)
+            .call(d3.axisBottom(x))
+            .selectAll("text")	
+            .style("text-anchor", "end")
+            .attr("dx", "-9px")
+            .attr("dy", "-8px")
+            .attr("font-size", "9px")
+            .attr("transform", "rotate(-90)");
+             
+            g.append("g") 
+            .attr("class", "axis axis-y") 
+            .call(d3.axisLeft(y).ticks(10)); 
+            
+            
+
+            g.selectAll(".NOTHING")
+            .data(data)
+            .enter().append("rect") 
+            .attr("class", "bar")
+            .attr("x", d => x(d.day)) 
+            .attr("y", d => y(d.jobs)) 
+            .attr("width", x.bandwidth()) 
+            .attr("height", d => height - y(d.jobs))
+            .append("text")
+            .attr("class", "label")
+            .text("CLOWNS")
+            g.selectAll(".NOTHING")
+            .data(data)
+            .enter().append("text") 
+            .attr("class", "label")
+            .text(d=>d.jobs > 0 ? d.jobs : '')
+            .attr("x", d => x(d.day)) 
+            .attr("y", d => y(d.jobs) + 15) 
+            .attr("width", x.bandwidth()) 
+            .attr("height", d => height - y(d.jobs))
+            
+            
+
+            // .enter().append("text")
+            // .attr("class", "bartext")
+            // .attr("text-anchor", "middle")
+            // .attr("fill", "white")
+            // .attr("x", function(d,i) {
+            //     return x(i);
+            // })
+            // .attr("y", d => 5)
+            // .text(function(d){
+            //     return 'asd' + d;
+            // });
+
+            
+          </script>
+        `
+      }
       let lgs = await db.adminLogs().catch(error => {
         console.log('err appcp1')
         return []
@@ -540,7 +629,9 @@ async function adminPanel(req, res) {
           <section>
             ${sttsbody}
           </section>
-          
+          <section>
+            ${sttsDaybody}
+          </section>
         </main>
         <hr>
         <article class="cp_logs">
