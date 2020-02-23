@@ -1439,6 +1439,19 @@ async function viewHit(req, res) {
   }
 }
 
+async function u2aublock(id, block_reason) {
+  let que2 = `
+    UPDATE users SET ("is_active", "block_reason") = (false, $1)
+    WHERE user_id = $2
+  `
+  let params2 = [block_reason, id]
+  let result2 = await pool.query(que2, params2).catch(error => {
+    console.log('cp u2aublock err2: ', error)
+    return false
+  })
+  return Boolean(result2)
+}
+
 async function u2fbread(id) {
   let que2 = `
     UPDATE feedbacks SET "new" = false
@@ -1676,6 +1689,9 @@ module.exports = {
 
   u2fbread,
   u2fbdel,
+  
+  u2aublock,
+
   adminAuth,
   tryInsertAdminCoo,
   registerFinishAdmin,

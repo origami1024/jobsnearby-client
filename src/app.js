@@ -103,7 +103,7 @@ app.post('/newu2.json', adminNew) //?check who is adding the new user!!!
 app.post('/fbaction.json', fbaction)
 app.post('/admnjobclo.json', db.closeJobByIdAdmin)
 app.post('/admnjobdel.json', db.deleteJobByIdAdmin)
-//2 types of action, then redirect to allfb.json
+app.post('/auaction.json', auaction)
 
 function params1(request, response) {
   //get query like ?id=23123
@@ -117,7 +117,38 @@ function params1(request, response) {
 //   serveStatic(path.join(__dirname, './../dist'))
 // })
 
-
+async function auaction(req, res) {
+  let cmd //read or del
+  if (req.body.action == 'block') cmd = 'block'
+  else if (req.body.action == 'unblock') cmd = 'unblock'
+  else if (req.body.action == 'del') cmd = 'del'
+  else {
+    res.send('wrong cmd')
+    return false
+  }
+  let uid = parseInt(req.body.uid)
+  if (isNaN(uid) || uid < 0 || String(uid).length > 10) {
+    console.log('Error: wrong id')
+    res.status(400).send('Неправильный id')
+    return false
+  }
+  if (req.body.block_reason.length > 500) req.body.block_reason = req.body.block_reason.substring(0,499)
+  if (req.cookies && req.cookies.sessioa && req.cookies.sessioa.length > 50 && req.cookies.user2) {
+    let auth = await db.adminAuth(req.cookies.user2, req.cookies.sessioa).catch(error => {
+      //res.send('step2')
+      return undefined
+    })
+    if (auth) {
+      if (cmd == 'block') {
+        let succ = await db.u2aublock(uid, req.body.block_reason).catch(error => {
+          //res.send('step2')
+          return undefined
+        })
+        res.send({cmd: 'block', id: uid})
+      }
+    } else res.send('error2; wrong mail or pw format')
+  } else res.send('error1; wrong mail or pw format')
+}
 
 async function fbaction(req, res) {
   //2 types of action, then redirect to allfb.json
@@ -648,6 +679,11 @@ async function adminUsers(req, res) {
     })
     if (auth) {
       let body = `
+        <style>
+          .hidden {
+            display: none;
+          }
+        </style>
         <h2 style="text-align:center; margin: 0;">Пользователи</h2>
         ${pageParts.cplink()}
         <table style="width: 100%; font-size:14px">
@@ -660,9 +696,8 @@ async function adminUsers(req, res) {
               <td>name</td>
               <td>surname</td>
               <td>company</td>
-              <td>isagency</td>
-              <td>logo_url</td>
-              <td>cvurl</td>
+              <td>Рабочий?</td>
+              <td>Причина блока</td>
               <td>Управление</td>
             </tr>
           </thead>
@@ -677,7 +712,7 @@ async function adminUsers(req, res) {
       data.forEach(val=>{
         let d = new Date(val.time_created).toString().split(' GMT')[0].substring(3)
         let tmp = `
-          <tr>
+          <tr id="tr_${val.user_id}">
             <td>${val.user_id}</td>
             <td>${val.email}</td>
             <td>${val.role}</td>
@@ -685,12 +720,22 @@ async function adminUsers(req, res) {
             <td>${val.name}</td>
             <td>${val.surname}</td>
             <td>${val.company}</td>
-            <td>${val.isagency}</td>
-            <td style="max-width:100px">${val.logo_url}</td>
-            <td style="max-width:100px">${val.cvurl}</td>
+            <td id="ia_${val.user_id}">${val.is_active}</td>
+            <td id="br_${val.user_id}" style="max-width: 110px;">${val.block_reason}</td>
             <td>
-              <button>Редактировать</button>
-              <button>Применить</button>
+              ${val.is_active == true
+                ? `
+                  <div id="block_ctr_${val.user_id}">
+                    <button onclick="popup(${val.user_id})">Блокирование</button>
+                    <div id="block_sub_${val.user_id}" class="hidden">
+                      <textarea id="ta_${val.user_id}" style="color: black" placeholder="укажите причину"></textarea>
+                      <button onclick="block_u(${val.user_id})">Блокировать</button>
+                    </div>
+                  </div>
+                `
+                : ''
+              }
+              <button>Разблокировать</button>
               <button>Удалить</button>
             </td>
           </tr>
@@ -698,6 +743,34 @@ async function adminUsers(req, res) {
         body += tmp
       })
       body += '</tbody></table>'
+      body += `
+        <script>
+          function popup(uid) {
+            document.getElementById("block_sub_" + uid).classList.toggle("hidden")
+          }
+          function block_u(uid) {
+            let block_reason = document.getElementById("ta_" + uid).value
+            let d = {action: 'block', uid, block_reason}
+            //console.log(d)
+            var http = new XMLHttpRequest()
+            var url = '/auaction.json'
+            http.open('POST', url, true)
+            http.setRequestHeader('Content-type', 'application/json')
+            //
+            document.getElementById("block_ctr_" + uid).classList.toggle("hidden")
+            document.getElementById("ia_" + uid).textContent = 'false'
+            document.getElementById("br_" + uid).textContent = block_reason
+            http.onreadystatechange = function() {
+              if(http.readyState == 4 && http.status == 200) {
+                console.log('cpo2: ', http.responseText)
+
+              }
+            }
+            http.send(JSON.stringify(d))
+          }
+          
+        </script>
+      `
       let allUsersPage = pageParts.head + body + pageParts.footer
       
       res.send(allUsersPage)
