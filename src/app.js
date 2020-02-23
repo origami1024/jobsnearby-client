@@ -443,7 +443,7 @@ async function adminPanel(req, res) {
       if (stts) {
         sttsbody = `
           <div>
-            <h2>Основная статистика</h2>
+            <h3 style="margin: 0; margin-bottom: 10px">Основная статистика</h3>
             <p>Кол-во вакансий: <b>${stts.jcount}</b></p>
             <p>Кол-во пользователей: <b>${Number(stts.uscount) + Number(stts.uccount)}</b></p>
             <p>Из них соискателей: <b>${stts.uscount}</b></p>
@@ -468,7 +468,7 @@ async function adminPanel(req, res) {
       if (sttsDay) {
         sttsDaybody = `
           <div class="charts">
-            <h2>Вакансии по дням</h2>
+            <h3 style="margin: 0; margin-bottom: 10px">Вакансии по дням за последние два месяца</h3>
             <svg id="jobs_per_day_chart" width="600" height="300"></svg>
           </div>
           <style>
