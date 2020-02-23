@@ -483,7 +483,7 @@ async function adminPanel(req, res) {
             //console.log(JSON.stringify(data))
             
             const svg = d3.select("svg"), 
-            margin = {top: 5, right: 5, bottom: 40, left: 15}, 
+            margin = {top: 15, right: 5, bottom: 40, left: 15}, 
             width = +svg.attr("width") - margin.left - margin.right, 
             height = +svg.attr("height") - margin.top - margin.bottom, 
             x = d3.scaleBand().rangeRound([0, width]).padding(0.0), 
@@ -525,7 +525,7 @@ async function adminPanel(req, res) {
             .attr("class", "label")
             .text(d=>d.jobs > 0 ? d.jobs : '')
             .attr("x", d => x(d.day)) 
-            .attr("y", d => y(d.jobs) + 15) 
+            .attr("y", d => y(d.jobs)) 
             .attr("width", x.bandwidth()) 
             .attr("height", d => height - y(d.jobs))
 
