@@ -468,7 +468,7 @@ async function adminPanel(req, res) {
       if (sttsDay) {
         sttsDaybody = `
           <div class="charts">
-            <h3 style="margin: 0; margin-bottom: 10px">Вакансии по дням за последние два месяца</h3>
+            <h3 style="margin: 0; margin-bottom: 10px">Новые вакансии по дням за последние два месяца</h3>
             <svg id="jobs_per_day_chart" width="600" height="300"></svg>
           </div>
           <style>
@@ -477,10 +477,10 @@ async function adminPanel(req, res) {
             },
           </style>
           <script src="https://d3js.org/d3.v5.min.js"></script> 
-          <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.25.0/babel.min.js"></script>
+          
           <script>
             var data = ${JSON.stringify(sttsDay.map(val=>{val.day = val.day.substring(5);return val}))}//.map(val=>{val.day = String(val.day).split(' 2020')[0].split(' ').slice(1).join(' ');return val})
-            console.log(JSON.stringify(data))
+            //console.log(JSON.stringify(data))
             
             const svg = d3.select("svg"), 
             margin = {top: 5, right: 5, bottom: 40, left: 15}, 
@@ -490,10 +490,10 @@ async function adminPanel(req, res) {
             y = d3.scaleLinear().rangeRound([height, 0]), 
             g = svg.append("g") 
             .attr("transform", \`translate(\${margin.left},\${margin.top})\`); 
-
             
+            //console.log(Math.max(...data.map(d => d.jobs)))
             x.domain(data.map(d => d.day)); 
-            y.domain([0, d3.max(data, d => d.jobs)]); 
+            y.domain([0, Math.max(...data.map(d => d.jobs))]); //d3.max(data, d => d.jobs)
              
             g.append("g")
             .attr("class", "axis axis-x") 
@@ -505,13 +505,11 @@ async function adminPanel(req, res) {
             .attr("dy", "-8px")
             .attr("font-size", "9px")
             .attr("transform", "rotate(-90)");
-             
-            g.append("g") 
-            .attr("class", "axis axis-y") 
-            .call(d3.axisLeft(y)); 
             
+            // g.append("g")
+            // .attr("class", "axis axis-y") 
+            // .call(d3.axisLeft(y)); 
             
-
             g.selectAll(".NOTHING")
             .data(data)
             .enter().append("rect") 
@@ -591,7 +589,7 @@ async function adminPanel(req, res) {
           </style>
             <ul class="cpul1" style="list-style-type: none; width: 65%">
               <li>
-                <a href="/allfb.json">Фидбек пользователей</a>
+                <a href="/allfb.json">Фидбек пользователей<sup style="background-color:red;color:white;padding:2px">${stts.unread_fb}</sup></a>
               </li>
               <li>
                 <a href="/adminusers.json">Пользователи</a>

@@ -1678,6 +1678,7 @@ async function adminDayStats() {
 async function adminStats() {
   let que = `
     SELECT  (
+      
       SELECT COUNT(*)
       FROM users
       WHERE role = 'subscriber'
@@ -1704,7 +1705,12 @@ async function adminStats() {
       SELECT COUNT(*)
       FROM jobs
       WHERE time_created > now() - interval '7 day'
-      ) AS opened_this_week_count
+      ) AS opened_this_week_count,
+      (
+      SELECT COUNT(*)
+      FROM feedbacks
+      WHERE "new" = True
+      ) AS unread_fb
   `
   let result1 = await pool.query(que, null).catch(error => {
     console.log('cp adminStats err: ', error)
