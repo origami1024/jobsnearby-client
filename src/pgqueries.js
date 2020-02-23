@@ -861,7 +861,7 @@ async function addJobs (req, res) {
 }
 
 async function tryGetLoginData (mail) {
-  let que = `SELECT pwhash, user_id, role, name, surname, insearch, company, isagency, cvurl FROM "users" WHERE "email" = ($1)`
+  let que = `SELECT pwhash, user_id, role, name, surname, insearch, company, isagency, cvurl, is_active, block_reason FROM "users" WHERE "email" = ($1)`
   let params = [mail]
   let result = await pool.query(que, params).catch(error => {
     console.log(error)  
@@ -887,6 +887,8 @@ async function tryGetLoginData (mail) {
       res['cname'] = result.rows[0].company
       res['isagency'] = result.rows[0].isagency
     }
+    res['is_active'] = result.rows[0].is_active
+    res['block_reason'] = result.rows[0].block_reason
     //console.log('cp31rr3: ', res)
     return res
   }
@@ -959,7 +961,7 @@ async function tryInsertAuthToken(id,token) {
     console.log(error)
     throw new Error('auth insertion failed')
   })
-  console.log(result)
+  //console.log(result)
   return true
 }
 async function checkAuthGetProfile(token) {
@@ -1439,17 +1441,30 @@ async function viewHit(req, res) {
   }
 }
 
-async function u2aublock(id, block_reason) {
+async function u2aublock(id, block_reason, active_state) {
+  if (active_state != true) active_state = false
   let que2 = `
-    UPDATE users SET ("is_active", "block_reason") = (false, $1)
-    WHERE user_id = $2
+    UPDATE users SET ("is_active", "block_reason") = ($1, $2)
+    WHERE user_id = $3
   `
-  let params2 = [block_reason, id]
+  let params2 = [active_state, block_reason, id]
   let result2 = await pool.query(que2, params2).catch(error => {
     console.log('cp u2aublock err2: ', error)
     return false
   })
   return Boolean(result2)
+}
+async function u2audelete(id) {
+  let que = `
+    DELETE FROM users
+    WHERE user_id = $1
+  `
+  let params = [id]
+  let result = await pool.query(que, params).catch(error => {
+    console.log('cp u2aublock err2: ', error)
+    return false
+  })
+  return Boolean(result)
 }
 
 async function u2fbread(id) {
@@ -1691,6 +1706,7 @@ module.exports = {
   u2fbdel,
   
   u2aublock,
+  u2audelete,
 
   adminAuth,
   tryInsertAdminCoo,

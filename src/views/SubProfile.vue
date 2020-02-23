@@ -40,7 +40,7 @@
               ref="cvUploader"
             />
           </form>
-          <q-btn color="red-10" label="Удалить резюме" @click="cvdel" />
+          <q-btn v-if="cvurl != ''" color="red-10" label="Удалить резюме" @click="cvdel" />
           <!-- <q-btn
             @click="updateCVLink"
             style="marginBottom: 22px" dense color="primary"
@@ -131,7 +131,7 @@ export default {
     surname: {type: String, default: ''},
     insearch: {type: Boolean, default: false},
     role: String,
-    cvurl: String,
+    cvurl: {type: String, default: ''},
     user: String,
   },
   data: ()=>{return {

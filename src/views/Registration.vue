@@ -558,6 +558,10 @@ export default {
               this.login.status = 'Не существующий Email или не правильный пароль'
               this.$q.notify(this.login.status)
             }
+            else if (response.status == 209) {
+              this.$q.notify({type: 'negative', message: response.data})
+              
+            }
             else console.dir('successful login', response.data, response.headers)
             this.submitting = false
           })

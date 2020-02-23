@@ -132,7 +132,7 @@ async function auaction(req, res) {
     res.status(400).send('Неправильный id')
     return false
   }
-  if (req.body.block_reason.length > 500) req.body.block_reason = req.body.block_reason.substring(0,499)
+  if (req.body.block_reason && req.body.block_reason.length > 500) req.body.block_reason = req.body.block_reason.substring(0,499)
   if (req.cookies && req.cookies.sessioa && req.cookies.sessioa.length > 50 && req.cookies.user2) {
     let auth = await db.adminAuth(req.cookies.user2, req.cookies.sessioa).catch(error => {
       //res.send('step2')
@@ -140,11 +140,25 @@ async function auaction(req, res) {
     })
     if (auth) {
       if (cmd == 'block') {
-        let succ = await db.u2aublock(uid, req.body.block_reason).catch(error => {
+        let succ = await db.u2aublock(uid, req.body.block_reason, false).catch(error => {
           //res.send('step2')
           return undefined
         })
         res.send({cmd: 'block', id: uid})
+      } else
+      if (cmd == 'unblock') {
+        let succ = await db.u2aublock(uid, '', true).catch(error => {
+          //res.send('step2')
+          return undefined
+        })
+        res.send({cmd: 'unblock', id: uid})
+      } else
+      if (cmd == 'del') {
+        let succ = await db.u2audelete(uid).catch(error => {
+          //res.send('step2')
+          return undefined
+        })
+        res.send({cmd: 'del', id: uid})
       }
     } else res.send('error2; wrong mail or pw format')
   } else res.send('error1; wrong mail or pw format')
@@ -723,20 +737,15 @@ async function adminUsers(req, res) {
             <td id="ia_${val.user_id}">${val.is_active}</td>
             <td id="br_${val.user_id}" style="max-width: 110px;">${val.block_reason}</td>
             <td>
-              ${val.is_active == true
-                ? `
-                  <div id="block_ctr_${val.user_id}">
-                    <button onclick="popup(${val.user_id})">Блокирование</button>
-                    <div id="block_sub_${val.user_id}" class="hidden">
-                      <textarea id="ta_${val.user_id}" style="color: black" placeholder="укажите причину"></textarea>
-                      <button onclick="block_u(${val.user_id})">Блокировать</button>
-                    </div>
-                  </div>
-                `
-                : ''
-              }
-              <button>Разблокировать</button>
-              <button>Удалить</button>
+              <div id="block_ctr_${val.user_id}" ${val.is_active == false ? 'class="hidden"' : ''}>
+                <button onclick="popup(${val.user_id})">Блок</button>
+                <div id="block_sub_${val.user_id}" class="hidden">
+                  <textarea id="ta_${val.user_id}" style="color: black" placeholder="укажите причину"></textarea>
+                  <button onclick="block_u(${val.user_id}, false)">Блокировать</button>
+                </div>
+              </div>
+              <button id="unblock_${val.user_id}" ${val.is_active == true ? 'class="hidden"' : ''} onclick="block_u(${val.user_id}, true)">Разблок</button>
+              <button onclick="if (confirm('Удалится пользователь, все его вакансии и поданные резюме, удалить?')) delete_u(${val.user_id})">Удалить</button>
             </td>
           </tr>
         `
@@ -748,27 +757,43 @@ async function adminUsers(req, res) {
           function popup(uid) {
             document.getElementById("block_sub_" + uid).classList.toggle("hidden")
           }
-          function block_u(uid) {
-            let block_reason = document.getElementById("ta_" + uid).value
-            let d = {action: 'block', uid, block_reason}
+          function block_u(uid, set_active_to) {
+            let block_reason = Boolean(set_active_to) ? '' : document.getElementById("ta_" + uid).value
+            let action = Boolean(set_active_to) ? 'unblock' : 'block'
+            let d = {action, uid, block_reason}
             //console.log(d)
             var http = new XMLHttpRequest()
             var url = '/auaction.json'
             http.open('POST', url, true)
             http.setRequestHeader('Content-type', 'application/json')
             //
+            document.getElementById("block_sub_" + uid).classList.add("hidden")
             document.getElementById("block_ctr_" + uid).classList.toggle("hidden")
-            document.getElementById("ia_" + uid).textContent = 'false'
+            document.getElementById("ia_" + uid).textContent = set_active_to
             document.getElementById("br_" + uid).textContent = block_reason
+            document.getElementById("ta_" + uid).value = ''
+            document.getElementById("unblock_" + uid).classList.toggle("hidden")
             http.onreadystatechange = function() {
               if(http.readyState == 4 && http.status == 200) {
                 console.log('cpo2: ', http.responseText)
-
               }
             }
             http.send(JSON.stringify(d))
           }
-          
+          function delete_u(uid) {
+            let d = {action: 'del', uid}
+            var http = new XMLHttpRequest()
+            var url = '/auaction.json'
+            http.open('POST', url, true)
+            http.setRequestHeader('Content-type', 'application/json')
+            document.getElementById("tr_" + uid).remove()
+            http.onreadystatechange = function() {
+              if(http.readyState == 4 && http.status == 200) {
+                console.log('cpo2: ', http.responseText)
+              }
+            }
+            http.send(JSON.stringify(d))
+          }
         </script>
       `
       let allUsersPage = pageParts.head + body + pageParts.footer
@@ -1088,6 +1113,12 @@ async function login(req, res) {
     })
     //console.log('cp77', userData)
     if (userData) {
+      //check if blockd
+      if (userData.is_active == false) {
+        res.status(209).send('Пользователь заблокирован модератором, причина: ' + userData.block_reason)
+        return false
+      }
+      
       //is the pw right?
       let authed = bcrypt.compareSync(pw, userData.pwHash)
       console.log('authed cp: ', authed)
