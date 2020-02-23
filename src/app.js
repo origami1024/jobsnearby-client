@@ -820,8 +820,8 @@ async function getAllFB(req, res) {
             <td id="new_${val.fb_id}">${val.new}</td>
             <td>${d}</td>
             <td>
-              ${val.new == true ? `<button id="btn_${val.fb_id} onclick="cmd('read', ${val.fb_id})">Прочитано</button>` : ''}
-              <button "onclick="cmd('del', ${val.fb_id})">Удалить</button>
+              ${val.new == true ? `<button id="btn_${val.fb_id}" onclick="cmd('read', ${val.fb_id})">Прочитано</button>` : ''}
+              <button onclick="cmd('del', ${val.fb_id})">Удалить</button>
             </td>
           </tr>
         `
