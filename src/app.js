@@ -589,7 +589,9 @@ async function adminPanel(req, res) {
           </style>
             <ul class="cpul1" style="list-style-type: none; width: 65%">
               <li>
-                <a href="/allfb.json">Фидбек пользователей<sup style="background-color:red;color:white;padding:2px">${stts.unread_fb}</sup></a>
+                <a href="/allfb.json">Фидбек пользователей
+                ${stts.unread_fb > 0 ? `<sup style="background-color:red;color:white;padding:2px">${stts.unread_fb}</sup>` : ''}
+                </a>
               </li>
               <li>
                 <a href="/adminusers.json">Пользователи</a>
