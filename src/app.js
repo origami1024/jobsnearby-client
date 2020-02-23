@@ -480,7 +480,7 @@ async function adminPanel(req, res) {
           <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.25.0/babel.min.js"></script>
           <script>
             var data = ${JSON.stringify(sttsDay.map(val=>{val.day = val.day.substring(5);return val}))}//.map(val=>{val.day = String(val.day).split(' 2020')[0].split(' ').slice(1).join(' ');return val})
-            //console.log(JSON.stringify(data))
+            console.log(JSON.stringify(data))
             
             const svg = d3.select("svg"), 
             margin = {top: 5, right: 5, bottom: 40, left: 15}, 
@@ -508,7 +508,7 @@ async function adminPanel(req, res) {
              
             g.append("g") 
             .attr("class", "axis axis-y") 
-            .call(d3.axisLeft(y).ticks(10)); 
+            .call(d3.axisLeft(y)); 
             
             
 
@@ -520,9 +520,7 @@ async function adminPanel(req, res) {
             .attr("y", d => y(d.jobs)) 
             .attr("width", x.bandwidth()) 
             .attr("height", d => height - y(d.jobs))
-            .append("text")
-            .attr("class", "label")
-            .text("CLOWNS")
+
             g.selectAll(".NOTHING")
             .data(data)
             .enter().append("text") 
@@ -532,20 +530,6 @@ async function adminPanel(req, res) {
             .attr("y", d => y(d.jobs) + 15) 
             .attr("width", x.bandwidth()) 
             .attr("height", d => height - y(d.jobs))
-            
-            
-
-            // .enter().append("text")
-            // .attr("class", "bartext")
-            // .attr("text-anchor", "middle")
-            // .attr("fill", "white")
-            // .attr("x", function(d,i) {
-            //     return x(i);
-            // })
-            // .attr("y", d => 5)
-            // .text(function(d){
-            //     return 'asd' + d;
-            // });
 
             
           </script>
@@ -1335,10 +1319,12 @@ const SupremeValidator = {
   },
   isValidEmail(email) {
     //return /\S+@\S+\.\S+/.test(email);
+    if (email.length < 6 || email.length > 50) return false
     return /(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/.test(email)
   },
   isValidPW(pw) {
     let pwRegex = /[a-zA-Z]/
+    if (pw.length < 6 || pw.length > 25) return false
     return (pw && pw.length > 5 && pw.length < 26 && pwRegex.test(pw))
   },
   generateJSONWebToken(mail){

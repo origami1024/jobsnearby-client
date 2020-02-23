@@ -911,7 +911,7 @@ async function registerFinishAdmin (id, mail, hash) {
   
   let que = `
     UPDATE "users2"
-    SET (u2hash = $1, category_rights = '111')
+    SET (u2hash, category_rights) = ($1, '111')
     WHERE u2id = $2 AND u2mail = $3
   `
   let params = [hash, id, mail]
