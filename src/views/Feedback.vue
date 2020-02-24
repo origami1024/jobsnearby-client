@@ -117,8 +117,8 @@ export default {
 .feedback
   max-width 620px
   width 620px
+  min-height 70vh
   .fb_inner
-    min-height 70vh
     box-shadow 0 0 3px 1px var(--main-borders-color)
     margin-top 15px
     

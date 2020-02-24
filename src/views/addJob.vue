@@ -150,7 +150,7 @@
             dense
             outlined
             bg-color="white" color="cyan-10"
-            :options="jcatOptions"
+            :options="$t('addJob.jcats')"
             :hint="null"
           />
         </div>
@@ -181,7 +181,7 @@
             :lazy-rules="lazyRulesAll"
           />
         </div>
-        <p style="fontSize: 16px; marginBottom: 10px">{{$t('addJob.descLabel')}}<span style="color: #c10015">{{descError}}</span></p>
+        <p style="fontSize: 16px; marginBottom: 10px">{{$t('addJob.descLabel')}}<span style="color: #c10015"> {{descError}}</span></p>
         <div class="line">
           <div class="desc-col-wrap" style="textAlign: left; width: 100%">
             <vue-editor
@@ -210,7 +210,7 @@
               dense
               outlined
               bg-color="white" color="cyan-10"
-              :options="expOptions"
+              :options="$t('addJob.expOpts')"
               :hint="null"
             />
           </div>
@@ -223,7 +223,7 @@
               dense
               outlined
               bg-color="white" color="cyan-10"
-              :options="jtypeOptions"
+              :options="$t('addJob.jtypeOptions')"
               :hint="null"
               style="width: 180px"
             />
@@ -367,7 +367,7 @@
               :style="{width: '400px'}"
               max-values="3"
               v-model="job.langs"
-              :options="langOptions"
+              :options="$t('addJob.langOptions')"
               :hint="null"
             />
           </div>
@@ -402,9 +402,9 @@
 import axios from 'axios'
 const config = require('@/configs/main_config')
 
-let stringOptions = ["Ашхабад", "Дашогуз", "Мары", "Туркменабад", "Туркменбаши"]
-let scheduleOptions = ["5/2", "6/1", "2/2", "3/2", "3/1", "15/15"]
-let jobInit = {
+//let stringOptions = ["Ашхабад", "Дашогуз", "Мары", "Туркменабад", "Туркменбаши"]
+//let scheduleOptions = ["5/2", "6/1", "2/2", "3/2", "3/1", "15/15"]
+let jobInitOld = {
   title: '',
   salary_min: '',
   salary_max: '',
@@ -416,7 +416,6 @@ let jobInit = {
   worktime1: '',
   worktime2: '',
   schedule: '',
-  sex: {label: "Не имеет значения", value: ''},
   langs: [],
   edu: '',
   experience: {label: "Не имеет значения", value: -1},
@@ -449,34 +448,56 @@ export default {
         title: '',
         job_id: -1
       },
-      jcatOptions: [
-        {label: "Не имеет значения", value: 0}, 
-        {label: "Администрация", value: 1},
-        {label: "Юристы", value: 2},
-        {label: "Нефть и газ", value: 3},
-        {label: "Инженер", value: 4},
-        {label: "Образование", value: 5},
-        {label: "Продажи", value: 6},
-        {label: "Производство", value: 7},
-        {label: "Строительство", value: 8},
-        {label: "Недвижимость", value: 9},
-        {label: "Логистика", value: 10},
-        {label: "Туризм, гостиницы, рестораны", value: 11},
-        {label: "Информационные технологии", value: 12},
-        {label: "Медицина", value: 13},
-        {label: "Безопасность", value: 14}
-      ],
-      expOptions: [
-        {label: "Не имеет значения", value: -1},
-        {label: "Без опыта", value: 0},
-        {label: "от 1 до 3 лет", value: 2}, 
-        {label: "от 3 до 5 лет", value: 4},
-        {label: "от 5 лет", value: 6}
-      ],
+      // jcatOptions: [
+      //   {label: "Не имеет значения", value: 0}, 
+      //   {label: "Администрация", value: 1},
+      //   {label: "Юристы", value: 2},
+      //   {label: "Нефть и газ", value: 3},
+      //   {label: "Инженер", value: 4},
+      //   {label: "Образование", value: 5},
+      //   {label: "Продажи", value: 6},
+      //   {label: "Производство", value: 7},
+      //   {label: "Строительство", value: 8},
+      //   {label: "Недвижимость", value: 9},
+      //   {label: "Логистика", value: 10},
+      //   {label: "Туризм, гостиницы, рестораны", value: 11},
+      //   {label: "Информационные технологии", value: 12},
+      //   {label: "Медицина", value: 13},
+      //   {label: "Безопасность", value: 14}
+      // ],
+      // expOptions: [
+      //   {label: "Не имеет значения", value: -1},
+      //   {label: "Без опыта", value: 0},
+      //   {label: "от 1 до 3 лет", value: 2}, 
+      //   {label: "от 3 до 5 лет", value: 4},
+      //   {label: "от 5 лет", value: 6}
+      // ],
+      jobInit: {
+        title: '',
+        salary_min: '',
+        salary_max: '',
+        currency: this.$t('addJob.currDefault'),
+        jcategory: {label: '', value: 0},
+        city: '',
+        age1: '',
+        age2: '',
+        worktime1: '',
+        worktime2: '',
+        schedule: '',
+        langs: [],
+        edu: '',
+        experience: this.$t('addJob.expOpts[0]'),
+        description: '',
+        contact_mail: '',
+        contact_tel: '',
+        jtype: this.$t('addJob.jtypeOptions[0]'),
+      },
+      cityList: this.$t('addJob.cityList'),//["Ашхабад", "Дашогуз", "Мары", "Туркменабад", "Туркменбаши"],
+      scheduleList: this.$t('addJob.scheduleList'),//["5/2", "6/1", "2/2", "3/2", "3/1", "15/15"],
       lazyRulesAll: true,
       pageTypes: {
-        'new': {label: 'Создать новую вакансию'},
-        'edit': {label: 'Редактирование вакансии'}
+        'new': {label: this.$t('addJob.pTypeNewLabel')},
+        'edit': {label: this.$t('addJob.pTypeEditLabel')}
       },
       customToolbar: [
         ["bold", "italic", "underline"],
@@ -485,17 +506,33 @@ export default {
         [{ 'align': [] }],
         ['clean']
       ],
-      job: Object.assign({}, jobInit),
+      job: {
+        title: '',
+        salary_min: '',
+        salary_max: '',
+        currency: this.$t('addJob.currDefault'),
+        jcategory: {label: '', value: 0},
+        city: '',
+        age1: '',
+        age2: '',
+        worktime1: '',
+        worktime2: '',
+        schedule: '',
+        langs: [],
+        edu: '',
+        experience: this.$t('addJob.expOpts[0]'),
+        description: '',
+        contact_mail: '',
+        contact_tel: '',
+        jtype: this.$t('addJob.jtypeOptions[0]'),
+      },
       contactsValidated: true,
       salaryValidated: true,
       descError: '',
-      sexOptions: [{label: "Не имеет значения", value: ''}, {label: "Муж", value: 'm'}, {label: "Жен", value: 'w'},],
-      langOptions: ["Туркменский", "Русский", "Английский", "Китайский", "Немецкий", "Французкий"],
-      cityOptions: stringOptions,
-      scheduleOptions: scheduleOptions,
-      jtypeOptions: [
-        {label: "Постоянная", value: 'c'},
-        {label: "Временная", value: 'v'}],
+      //langOptions: ["Туркменский", "Русский", "Английский", "Китайский", "Немецкий", "Французкий"],
+      cityOptions: this.cityList,
+      scheduleOptions: this.scheduleList,
+      
       //mailRegex: /(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/
     }
   },
@@ -514,12 +551,12 @@ export default {
     jobEditedObj(newObj) {
       console.log('jobEditorWatcher cp0')
       if (this.newJobsPageType == 'edit') {
-        this.job = Object.assign({}, jobInit, newObj)
+        this.job = Object.assign({}, this.jobInit, newObj)
         
         console.log('jobEditorWatcher cp')
         
       } else {
-        this.job = Object.assign({}, jobInit)
+        this.job = Object.assign({}, this.jobInit)
         
       }
     },
@@ -527,9 +564,9 @@ export default {
   },
   mounted(){
     if (this.newJobsPageType == 'edit') {
-        this.job = Object.assign({}, jobInit, this.jobEditedObj)
+        this.job = Object.assign({}, this.jobInit, this.jobEditedObj)
     } else {
-      this.job = Object.assign({}, jobInit)
+      this.job = Object.assign({}, this.jobInit)
       
     }
   },
@@ -539,11 +576,11 @@ export default {
     },
     descBlur(e) {
       // if (e.root.innerHTML.length < 15) {this.descError = '(15 символов минимум)'}
-      if (e.root.innerHTML.length > 2000) {this.descError = '(2000 символов максимум)'}
+      if (e.root.innerHTML.length > 2000) {this.descError = this.$t('addJob.descValidation2000')}
       //this.job.description = e.root.innerHTML
     },
     resetFields() {
-      this.job = Object.assign({}, jobInit)
+      this.job = Object.assign({}, this.jobInit)
       this.salaryOn = false
       this.lazyRulesAll = true
     },
@@ -568,7 +605,7 @@ export default {
 
         this.$refs.salary_min.validate()
         this.$refs.salary_max.validate()
-        console.log('cp17: ', this.$refs.salary_max.hasError)
+        //console.log('cp17: ', this.$refs.salary_max.hasError)
         
         
         if (this.$refs.salary_min.hasError || this.$refs.salary_max.hasError) {
@@ -592,7 +629,7 @@ export default {
       }
       //description
       if (this.job.description.length > 2000) {
-        this.descError = '(2000 символов максимум)'
+        this.descError = this.$t('addJob.descValidation2000')
         scrollPos = 240
       }
       //age
@@ -652,7 +689,7 @@ export default {
         
         if (Number(j.salary_min) > Number(j.salary_max)) j.salary_max = j.salary_min
       } else j.salary_min = '', j.salary_max = ''
-      j.sex = j.sex.value
+      //j.sex = j.sex.value
       j.currency = j.currency.value
       j.experience = j.experience.value
       j.jtype = j.jtype.value
@@ -666,13 +703,10 @@ export default {
               this.returned.title = response.data.title
               this.returned.job_id = response.data.job_id
               this.$emit('setSentState', 'goodNew')
-              console.log('cp addOneJob: OK')
-              
             } else {this.$emit('setSentState', 'fail'); console.log('trespasser')}
             
           })
       } else {
-        console.log('NO TITLE')
         return false
       }
     },
@@ -688,13 +722,13 @@ export default {
     filterFn (val, update, abort) {
       update(() => {
         const needle = val.toLowerCase()
-        this.cityOptions = stringOptions.filter(v => v.toLowerCase().indexOf(needle) > -1)
+        this.cityOptions = this.cityList.filter(v => v.toLowerCase().indexOf(needle) > -1)
       })
     },
     filterSchedule (val, update, abort) {
       update(() => {
         const needle = val.toLowerCase()
-        this.scheduleOptions = scheduleOptions.filter(v => v.toLowerCase().indexOf(needle) > -1)
+        this.scheduleOptions = this.scheduleList.filter(v => v.toLowerCase().indexOf(needle) > -1)
       })
     },
     cityUpd(new1) {
