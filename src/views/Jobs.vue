@@ -10,9 +10,9 @@
             @resetFilters="resetFilters"
             @currUpd="currUpd"
             :currency="currency"
-            @cityUpd="cityUpd" @jtypeUpd="jtypeUpd" @expUpd="expUpd"
+            @cityUpd="cityUpd" @jcatUpd="jcatUpd" @expUpd="expUpd"
             @salaryUpd="salaryUpd" :city="city" :salary="salary"
-            :exp="exp" :jtype="jtype"
+            :exp="exp" :jcat="jcat"
             :pending="pending"
             @refresh="$emit('refresh')" :langOptions="langOptions"
             @updLangs="updLangs" @slideEnd="slideEnd"
@@ -242,7 +242,7 @@ export default {
     minSal: 0,
     langOptions: ["Русский", "Английский", "Немецкий", "Французкий"],
     city: '',
-    jtype: {label: "", value: ''},
+    jcat: {label: "", value: 0},
     salary: {label: "", value: 'idc'},
     exp: {label: "", value: 'idc'}, 
     currency: {label: "", value: 'idc'},
@@ -258,7 +258,7 @@ export default {
       else if (this.salary.value != 'idc') res = true
       else if (this.currency.value != 'idc') res = true
       else if (this.exp.value != 'idc') res = true
-      else if (this.jtype.value != '') res = true
+      else if (this.jcat.value != 0) res = true
       //else if (this.outerResetNeeded != false) res = true
 
       else if (this.sort.value != 'new') res = true
@@ -277,7 +277,7 @@ export default {
       if (this.perpage.value !== '25') params.push('perpage=' + this.perpage.value)
       if ((this.city !== 'Не имеет значения' && this.city !== '') && this.wordRegex.test(this.city)) params.push('city=' + this.city)
       if (this.exp.value !== 'idc') params.push('exp=' + this.exp.value)
-      if (this.jtype.value == 'c' || this.jtype.value == 'v') params.push('jtype=' + this.jtype.value)
+      if (this.jcat.value !== 0) params.push('jcat=' + this.jcat.value)
       if (this.salary.value !== 'idc') params.push('sal=' + this.salary.value)
       if (this.currency.value !== 'idc') params.push('cur=' + this.currency.value)
       let que = params.length == 0 ? '' : '?' + params.join('&')
@@ -316,7 +316,7 @@ export default {
     resetFilters() {
       this.txt = ''
       this.city = ''
-      this.jtype= {label: "", value: ''}
+      this.jcat= {label: "", value: 0}
       this.salary= {label: "", value: 'idc'}
       this.exp= {label: "", value: 'idc'}
       this.currency= {label: "", value: 'idc'}
@@ -363,8 +363,8 @@ export default {
     expUpd(new1) {
       this.exp = new1
     },
-    jtypeUpd(new1) {
-      this.jtype = new1
+    jcatUpd(new1) {
+      this.jcat = new1
     },
     cityUpd(new1) {
       this.city = new1

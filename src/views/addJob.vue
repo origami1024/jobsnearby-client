@@ -142,6 +142,21 @@
         <div class="line">
           <!-- <p class="startP">Город</p> -->
           <p class="star"> </p>
+          <p class="startP" style="width: 140px; min-width: 140px; textAlign: left">{{$t('addJob.jcatLabel')}}</p>
+          <q-select
+            v-model="job.jcategory"
+            style="width: 100%"
+            square
+            dense
+            outlined
+            bg-color="white" color="cyan-10"
+            :options="jcatOptions"
+            :hint="null"
+          />
+        </div>
+        <div class="line">
+          <!-- <p class="startP">Город</p> -->
+          <p class="star"> </p>
           <p class="startP" style="width: 140px; textAlign: left">{{$t('addJob.cityLabel')}}</p>
           <q-select
             :value="job.city"
@@ -394,6 +409,7 @@ let jobInit = {
   salary_min: '',
   salary_max: '',
   currency: {label: 'манат', value: 'm'},
+  jcategory: {label: '', value: 0},
   city: '',
   age1: '',
   age2: '',
@@ -433,6 +449,23 @@ export default {
         title: '',
         job_id: -1
       },
+      jcatOptions: [
+        {label: "Не имеет значения", value: 0}, 
+        {label: "Администрация", value: 1},
+        {label: "Юристы", value: 2},
+        {label: "Нефть и газ", value: 3},
+        {label: "Инженер", value: 4},
+        {label: "Образование", value: 5},
+        {label: "Продажи", value: 6},
+        {label: "Производство", value: 7},
+        {label: "Строительство", value: 8},
+        {label: "Недвижимость", value: 9},
+        {label: "Логистика", value: 10},
+        {label: "Туризм, гостиницы, рестораны", value: 11},
+        {label: "Информационные технологии", value: 12},
+        {label: "Медицина", value: 13},
+        {label: "Безопасность", value: 14}
+      ],
       expOptions: [
         {label: "Не имеет значения", value: -1},
         {label: "Без опыта", value: 0},
@@ -596,6 +629,7 @@ export default {
       j.currency = j.currency.value
       j.experience = j.experience.value
       j.jtype = j.jtype.value
+      j.jcategory = j.jcategory.value
       if (j.title != '' && j.title.length > 1) {
         axios
           .post(config.jobsUrl + '/updateJob', j, {headers: {'Content-Type' : 'application/json' }, withCredentials: true,})
@@ -622,7 +656,8 @@ export default {
       j.currency = j.currency.value
       j.experience = j.experience.value
       j.jtype = j.jtype.value
-          
+      j.jcategory = j.jcategory.value
+      
       if (j.title != '' && j.title.length > 1) {
         axios
           .post(config.jobsUrl + '/oneJob', j, {headers: {'Content-Type' : 'application/json' }, withCredentials: true,})

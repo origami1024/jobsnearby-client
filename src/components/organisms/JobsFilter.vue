@@ -1,5 +1,6 @@
 <template>
   <div class="jobsfilter">
+    <q-select color="cyan-10" @input="jcatUpd" dense :value="jcat" :options="jcatOptions" :label="$t('home.jcat')" />
     <q-select
       :value="city"
       @input="cityUpd"
@@ -25,7 +26,6 @@
       <q-select color="cyan-10" style="width: 30%; text-align: center" dense @input="currUpd" :value="currency" :options="currOptions" :label="$t('home.curr')" />
     </div>
     <q-select color="cyan-10" @input="expUpd" dense :value="exp" :options="expOptions" :label="$t('home.exp')" />
-    <q-select color="cyan-10" @input="jtypeUpd" dense :value="jtype" :options="jtypeOptions" :label="$t('home.jtyp')" />
     <div class="w100" :style="{justifyContent: isResetShown ? 'space-between': 'flex-end'}">
       <q-btn
         v-if="isResetShown"
@@ -60,7 +60,7 @@ export default {
     // perpage: {type: String, default: '25'},
     exp: {type: Object},
     city: {type: String},
-    jtype: {type: Object},
+    jcat: {type: Object},
     salary: {type: Object},
     currency: {type: Object},
     //outerResetNeeded: {type: Boolean}
@@ -84,10 +84,27 @@ export default {
       {label: "от 1 до 3 лет", value: '1-3'}, 
       {label: "от 3 до 5 лет", value: '3-5'},
       {label: "от 5 лет", value: '5'}],
-    jtypeOptions: [
-      {label: "Не имеет значения", value: ''}, 
-      {label: "Постоянная", value: 'c'},
-      {label: "Временная", value: 'v'}],
+    // jtypeOptions: [
+    //   {label: "Не имеет значения", value: ''}, 
+    //   {label: "Постоянная", value: 'c'},
+    //   {label: "Временная", value: 'v'}],
+    jcatOptions: [
+      {label: "Не имеет значения", value: 0}, 
+      {label: "Администрация", value: 1},
+      {label: "Юристы", value: 2},
+      {label: "Нефть и газ", value: 3},
+      {label: "Инженер", value: 4},
+      {label: "Образование", value: 5},
+      {label: "Продажи", value: 6},
+      {label: "Производство", value: 7},
+      {label: "Строительство", value: 8},
+      {label: "Недвижимость", value: 9},
+      {label: "Логистика", value: 10},
+      {label: "Туризм, гостиницы, рестораны", value: 11},
+      {label: "Информационные технологии", value: 12},
+      {label: "Медицина", value: 13},
+      {label: "Безопасность", value: 14}
+    ],
     salOptions: [
       {label: "Не имеет значения", value: 'idc'}, 
       {label: "от 0 до 1000", value: '0-1'}, 
@@ -113,9 +130,9 @@ export default {
       if (new1.value == 'idc') new1 = {label: '',value : "idc"}
       this.$emit('expUpd', new1)
     },
-    jtypeUpd(new1) {
-      if (new1.value == '') new1 = {label: '',value : "idc"}
-      this.$emit('jtypeUpd', new1)
+    jcatUpd(new1) {
+      if (new1.value == '') new1 = {label: '',value : 0}
+      this.$emit('jcatUpd', new1)
     },
     currUpd(new1) {
       if (new1.value == 'idc') new1 = {label: '',value : "idc"}

@@ -355,7 +355,23 @@ export default {
       this.jobEditId = jid
       //title: this.ownJobs.find(j => j.job_id == jid).title,
       let tmpObj = this.ownJobs.find(j => j.job_id == jid)
-
+      let jcatOptions = [
+        {label: "Не имеет значения", value: 0}, 
+        {label: "Администрация", value: 1},
+        {label: "Юристы", value: 2},
+        {label: "Нефть и газ", value: 3},
+        {label: "Инженер", value: 4},
+        {label: "Образование", value: 5},
+        {label: "Продажи", value: 6},
+        {label: "Производство", value: 7},
+        {label: "Строительство", value: 8},
+        {label: "Недвижимость", value: 9},
+        {label: "Логистика", value: 10},
+        {label: "Туризм, гостиницы, рестораны", value: 11},
+        {label: "Информационные технологии", value: 12},
+        {label: "Медицина", value: 13},
+        {label: "Безопасность", value: 14}
+      ]
       let jtypeOptions = [
         {label: "Постоянная", value: 'c'},
         {label: "Временная", value: 'v'}]
@@ -372,6 +388,10 @@ export default {
       ]
       
       let searched
+      
+      searched = jcatOptions.find(c => c.value == tmpObj.jcategory)
+      if (!searched) searched = jcatOptions[0]
+      tmpObj.jcategory = searched
 
       searched = curOpts.find(c => c.value == tmpObj.currency)
       if (!searched) searched = curOpts[0]

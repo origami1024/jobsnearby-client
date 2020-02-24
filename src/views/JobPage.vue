@@ -38,6 +38,9 @@
         (Резюме уже подано)
       </div>
       </section>
+      
+      <!-- <p v-if="jcategory != 0" style="text-align:left; padding: 0">Профессия: {{jcategory}}</p> -->
+      
       <section>
         <!--  v-if="job.experience >=0 || job.age1>0 || job.age2 > 0 || job.edu || (job.langs && job.langs.length > 0)" -->
         <div>
@@ -151,10 +154,24 @@ let currencydic = {
   'р': 'руб',
   'e': 'евро'
 }
-// let sexdic = {
-//   'w': '<li>Женщина</li>',
-//   'm': '<li>Мужчина</li>',
-// }
+
+let jcatdic = [
+  "Не имеет значения", 
+  "Администрация",
+  "Юристы",
+  "Нефть и газ",
+  "Инженер",
+  "Образование",
+  "Продажи",
+  "Производство",
+  "Строительство",
+  "Недвижимость",
+  "Логистика",
+  "Туризм, гостиницы, рестораны",
+  "Информационные технологии",
+  "Медицина",
+  "Безопасность"
+]
 
 export default {
   name: 'jobpage',
@@ -165,6 +182,7 @@ export default {
   data: ()=>{return {
     job: {},
     currency: 'манат',
+    jcategory: '',
     //salary_subtitle: '',
     salary_deriv: '',
     //langs: [],
@@ -201,7 +219,8 @@ export default {
     setVariables() {
       this.currency = currencydic[this.job.currency]
       //this.salary_subtitle = this.job.salary_max ? `<p style="font-size: 20px">${this.job.salary_max} ${this.currency}</p>` : ''
-      
+      this.jcategory = jcatdic[this.job.jcategory]
+
       if (this.job.salary_min < 1) {
         if (this.job.salary_max < 1) {
           this.salary_deriv = 'по итогам собеседования'

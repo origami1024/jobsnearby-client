@@ -45,9 +45,8 @@ const getJobs = (req, res) => {
     else cityN = '$2'
   }
 
-  let jtype
-  if (req.query.jtype == 'c') jtype = "'c'"
-  else if (req.query.jtype == 'v') jtype = "'v'"
+  let jcat
+  if (req.query.jcat && String(req.query.jcat).length < 3 && !isNaN(req.query.jcat)) jcat = req.query.jcat
   
   let exp_line
   if (req.query.exp == '0') exp_line = ` AND jobs.experience = 0`
@@ -69,7 +68,7 @@ const getJobs = (req, res) => {
   else curr_line = ''
   console.log('curr_line: ', curr_line)
 
-  let que =  `SELECT jobs.author_id, users.company as author, jobs.job_id, jobs.city, jobs.experience, jobs.jobtype, jobs.title, jobs.edu, jobs.currency, jobs.sex, jobs.salary_min, jobs.salary_max, jobs.description, jobs.worktime1, jobs.worktime2, jobs.schedule, jobs.age1, jobs.age2, jobs.langs, jobs.time_published as published, jobs.time_updated as updated, jobs.jobtype, jobs.contact_mail, contact_tel
+  let que =  `SELECT jobs.author_id, users.company as author, jobs.job_id, jobs.city, jobs.experience, jobs.jobtype, jobs.title, jobs.edu, jobs.currency, jobs.sex, jobs.salary_min, jobs.salary_max, jobs.description, jobs.worktime1, jobs.worktime2, jobs.schedule, jobs.age1, jobs.age2, jobs.langs, jobs.time_published as published, jobs.time_updated as updated, jobs.jobtype, jobs.contact_mail, contact_tel, jcategory
               FROM jobs, users
               WHERE jobs.author_id = users.user_id AND 
                 jobs.is_closed = FALSE
@@ -81,7 +80,7 @@ const getJobs = (req, res) => {
                 LOWER(jobs.city) LIKE $2)` : ''}
                 ${city != undefined ? ` AND 
                 LOWER(jobs.city) LIKE ${cityN}`: ''}
-                ${jtype != undefined ? ` AND jobs.jobtype = ${jtype}`: ''}
+                ${jcat != undefined ? ` AND jobs.jcategory = ${jcat}`: ''}
                 ${exp_line}
                 ${sal_line}
                 ${curr_line}
@@ -109,7 +108,7 @@ const getJobs = (req, res) => {
                       LOWER(jobs.city) LIKE $2)` : ''}
                       ${city != undefined ? ` AND 
                       LOWER(jobs.city) LIKE ${cityN}`: ''}
-                      ${jtype != undefined ? ` AND jobs.jobtype = ${jtype}`: ''}
+                      ${jcat != undefined ? ` AND jobs.jcategory = ${jcat}`: ''}
                       ${exp_line}
                       ${sal_line}
                       ${curr_line}
@@ -383,7 +382,7 @@ async function getJobById (id) {
   //'SELECT * FROM jobs WHERE job_id = $1'
 
   
-  let que = `SELECT * FROM (SELECT jobs.author_id, users.company as author, users.logo_url, jobs.job_id, jobs.city, jobs.experience, jobs.jobtype, jobs.title, jobs.edu, jobs.currency, jobs.sex, jobs.salary_min, jobs.salary_max, jobs.description, jobs.worktime1, jobs.worktime2, jobs.schedule, jobs.age1, jobs.age2, jobs.langs, jobs.time_published as published, jobs.time_updated as updated, contact_mail, contact_tel, cardinality(jobs.hits_log) as hits_all, jobs.is_closed, jobs.closed_why
+  let que = `SELECT * FROM (SELECT jobs.author_id, users.company as author, users.logo_url, jobs.job_id, jobs.city, jobs.experience, jobs.jobtype, jobs.title, jobs.edu, jobs.currency, jobs.sex, jobs.salary_min, jobs.salary_max, jobs.description, jobs.worktime1, jobs.worktime2, jobs.schedule, jobs.age1, jobs.age2, jobs.langs, jobs.time_published as published, jobs.time_updated as updated, contact_mail, contact_tel, cardinality(jobs.hits_log) as hits_all, jobs.is_closed, jobs.closed_why, jobs.jcategory
             FROM jobs, users
             WHERE jobs.author_id = users.user_id AND jobs.job_id = $1) a,
             (select count(distinct hits_log1) as hits_uniq
@@ -424,7 +423,7 @@ async function getOwnJobs (req, res) {
       //after cookies check, get the actual data from db
 
       //array_length(array_agg(distinct jobs.hits_log)) as hits_uniq
-      let que2nd = `SELECT jobs.job_id, jobs.city, jobs.experience, jobs.jobtype, jobs.title, jobs.edu, jobs.currency, jobs.salary_min, jobs.salary_max, jobs.sex, jobs.description, jobs.worktime1, jobs.worktime2, jobs.age1, jobs.age2, jobs.langs, jobs.time_published as published, jobs.time_updated as updated, jobs.contact_tel, jobs.contact_mail, cardinality(jobs.hits_log) as hits_all, (select count(distinct a) from unnest(jobs.hits_log) as a) as hits_uniq, jobs.is_closed
+      let que2nd = `SELECT jobs.job_id, jobs.city, jobs.experience, jobs.jobtype, jobs.title, jobs.edu, jobs.currency, jobs.salary_min, jobs.salary_max, jobs.sex, jobs.description, jobs.worktime1, jobs.worktime2, jobs.age1, jobs.age2, jobs.langs, jobs.time_published as published, jobs.time_updated as updated, jobs.contact_tel, jobs.contact_mail, cardinality(jobs.hits_log) as hits_all, (select count(distinct a) from unnest(jobs.hits_log) as a) as hits_uniq, jobs.is_closed, jobs.closed_why, jobs.jcategory
       FROM jobs
       WHERE jobs.author_id = $1
       GROUP BY jobs.job_id
@@ -615,11 +614,12 @@ async function updateJob (req, res) {
       console.log('editing, exp: ', parsedData.experience)
       //parsedData.author_id = results.rows[0].user_id - NO NEED TO UPDATE THIS FIELD
       //`UPDATE "users" SET auth_cookie = $1, last_logged_in = NOW() where user_id = $2`
-      let que2nd = `UPDATE "jobs" SET ("time_updated", "title", "salary_max", "salary_min", "currency", "age1", "age2", "worktime1", "worktime2", "schedule", "langs", "edu", "experience", "city", "jobtype", "description", "contact_tel", "contact_mail") =
-                    (NOW(), $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17)
-                    WHERE author_id = $18 AND job_id = $19
+      //console.log('cp7yyu: ', parsedData.jcategory)
+      let que2nd = `UPDATE "jobs" SET ("time_updated", "title", "salary_max", "salary_min", "currency", "age1", "age2", "worktime1", "worktime2", "schedule", "langs", "edu", "experience", "city", "jobtype", "description", "contact_tel", "contact_mail", "jcategory") =
+                    (NOW(), $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18)
+                    WHERE author_id = $19 AND job_id = $20
                     RETURNING job_id, title`
-      let params2nd = [parsedData.title, parsedData.salary_max, parsedData.salary_min, parsedData.currency, parsedData.age1, parsedData.age2, parsedData.worktime1, parsedData.worktime2, parsedData.schedule, parsedData.langs, parsedData.edu, parsedData.experience, parsedData.city, parsedData.jobtype, parsedData.description, parsedData.contact_tel, parsedData.contact_mail, results.rows[0].user_id, jid]
+      let params2nd = [parsedData.title, parsedData.salary_max, parsedData.salary_min, parsedData.currency, parsedData.age1, parsedData.age2, parsedData.worktime1, parsedData.worktime2, parsedData.schedule, parsedData.langs, parsedData.edu, parsedData.experience, parsedData.city, parsedData.jobtype, parsedData.description, parsedData.contact_tel, parsedData.contact_mail, parsedData.jcategory, results.rows[0].user_id, jid]
 
       pool.query(que2nd, params2nd, (error2, results2) => {
         if (error2) {
@@ -677,10 +677,10 @@ async function addOneJob (req, res) {
       //author_id - проверка не нужна
       parsedData.author_id = results.rows[0].user_id
       //console.log('addOneJob cp2: ', parsedData)
-      let que2nd = `INSERT INTO "jobs" ("title", "salary_max", "salary_min", "currency", "age1", "age2", "worktime1", "worktime2", "schedule", "langs", "edu", "experience", "city", "jobtype", "description", "author_id", "contact_tel", "contact_mail") VALUES
-                    ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18)
+      let que2nd = `INSERT INTO "jobs" ("title", "salary_max", "salary_min", "currency", "age1", "age2", "worktime1", "worktime2", "schedule", "langs", "edu", "experience", "city", "jobtype", "description", "author_id", "contact_tel", "contact_mail", "jcategory") VALUES
+                    ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19)
                     RETURNING job_id, title`
-      let params2nd = [parsedData.title, parsedData.salary_max, parsedData.salary_min, parsedData.currency, parsedData.age1, parsedData.age2, parsedData.worktime1, parsedData.worktime2, parsedData.schedule, parsedData.langs, parsedData.edu, parsedData.experience, parsedData.city, parsedData.jobtype, parsedData.description, parsedData.author_id, parsedData.contact_tel, parsedData.contact_mail]
+      let params2nd = [parsedData.title, parsedData.salary_max, parsedData.salary_min, parsedData.currency, parsedData.age1, parsedData.age2, parsedData.worktime1, parsedData.worktime2, parsedData.schedule, parsedData.langs, parsedData.edu, parsedData.experience, parsedData.city, parsedData.jobtype, parsedData.description, parsedData.author_id, parsedData.contact_tel, parsedData.contact_mail, parsedData.jcategory]
       
       pool.query(que2nd, params2nd, (error2, results2) => {
         if (error2) {
@@ -774,10 +774,15 @@ function validateOneJob (data) {
     parsedData.edu = data.edu
   } else parsedData.edu = ''
   //experience - стаж в годах, дробное число от 0 до 250
-  console.log('expcheck cp: ', data.experience)
+  //console.log('expcheck cp: ', data.experience)
   if (data.experience != undefined && isNaN(data.experience) === false && data.experience >= -1 && data.experience < 250) {
     parsedData.experience = Number(data.experience)
   } else parsedData.experience = -1 //не указано = -1, без опыта = 0
+  //jcategory - стаж в годах, дробное число от 0 до 250
+  //console.log('cp67yy1: ', data)
+  if (data.jcategory != undefined && isNaN(data.jcategory) === false && data.jcategory >= 0 && data.jcategory < 100) {
+    parsedData.jcategory = Math.round(Number(data.jcategory))
+  } else parsedData.jcategory = 0 //без категории = 0
   //city - необязат, от 2х символов до 100
   if (data.city && data.city.length > 1 && data.city.length < 101) {
     parsedData.city = data.city

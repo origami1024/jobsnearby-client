@@ -28,7 +28,8 @@ const loc = {
         "Туркменбаши"
       ],
       exp: 'Опыт',
-      jtyp: 'Занятость',
+      //jtyp: 'Занятость',
+      jcat: 'Профессия',
       applyBtn: 'Применить'
     },
     companyPage: {
@@ -68,6 +69,7 @@ const loc = {
       telValidationLengthMax: 'Максимум 15 символов',
       telValidationLengthMin: 'Минимум 5 символов',
       telValidationFormat: 'Неправильный формат',
+      jcatLabel: 'Профессия',
       cityLabel: 'Город',
       cityValidationLength: 'Максимум 70 символов',
       cityValidationFormat: 'Только буквы',
