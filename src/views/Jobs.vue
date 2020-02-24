@@ -75,13 +75,15 @@
                 </q-item>
               </q-menu>
             </button> -->
+
+            <!-- :style="{minWidth: '170px'}" -->
             <q-select dense outlined
-              :style="{minWidth: '170px'}"
+              style="white-space: nowrap"
               v-model="sort"
               @input="sortFilterChangeRefresh"
-              :options="[ {label: 'По дате', value: 'new'},
-                          {label: 'По убыванию зп', value: 'saldesc'},
-                          {label: 'По возрастанию зп', value: 'salasc'}]"
+              :options="[ {label: 'По дате ↓', value: 'new'},
+                          {label: 'По зп ↓', value: 'saldesc'},
+                          {label: 'По зп ↑', value: 'salasc'}]"
             />
             <!-- <button class="orderLink">
               {{timerange.label}}

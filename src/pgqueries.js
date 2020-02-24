@@ -832,9 +832,9 @@ async function addJobs (req, res) {
       //console.log('cp19: ', results)
       //console.log('r: ', req.body[0])
       //console.log('r: ', Array.isArray(req.body[0].langs))
-      let que2nd = `INSERT INTO "jobs" ("title", "salary_max", "salary_min", "currency", "age1", "age2", "worktime1", "worktime2", "schedule", "langs", "edu", "experience", "city", "jobtype", "description", "contact_tel", "contact_mail", "author_id") VALUES`
+      let que2nd = `INSERT INTO "jobs" ("title", "salary_max", "salary_min", "currency", "age1", "age2", "worktime1", "worktime2", "schedule", "langs", "edu", "experience", "jcategory", "city", "jobtype", "description", "contact_tel", "contact_mail", "author_id") VALUES`
       let params2nd = []
-      let n = 18
+      let n = 19
       let iSkipped = 0
       let processedlength = Math.min(req.body.length, 15)
       for (let i = 0; i < processedlength; i++) {//Math.min - максимум 15
@@ -843,7 +843,7 @@ async function addJobs (req, res) {
         //author_id - проверка не нужна
         parsedData.author_id = results.rows[0].user_id
         let j = i - iSkipped
-        que2nd += ` ($${(j * n) + 1}, $${(j * n) + 2}, $${(j * n) + 3}, $${(j * n) + 4}, $${(j * n) + 5}, $${(j * n) + 6}, $${(j * n) + 7}, $${(j * n) + 8}, $${(j * n) + 9}, $${(j * n) + 10}, $${(j * n) + 11}, $${(j * n) + 12}, $${(j * n) + 13}, $${(j * n) + 14}, $${(j * n) + 15}, $${(j * n) + 16}, $${(j * n) + 17}, $${(j * n) + 18}),`
+        que2nd += ` ($${(j * n) + 1}, $${(j * n) + 2}, $${(j * n) + 3}, $${(j * n) + 4}, $${(j * n) + 5}, $${(j * n) + 6}, $${(j * n) + 7}, $${(j * n) + 8}, $${(j * n) + 9}, $${(j * n) + 10}, $${(j * n) + 11}, $${(j * n) + 12}, $${(j * n) + 13}, $${(j * n) + 14}, $${(j * n) + 15}, $${(j * n) + 16}, $${(j * n) + 17}, $${(j * n) + 18}, $${(j * n) + 19}),`
         params2nd = [
           ...params2nd,
           ...Object.values(parsedData)
