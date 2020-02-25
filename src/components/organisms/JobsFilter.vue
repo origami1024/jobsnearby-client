@@ -84,6 +84,7 @@ export default {
       {label: "от 1 до 3 лет", value: '1-3'}, 
       {label: "от 3 до 5 лет", value: '3-5'},
       {label: "от 5 лет", value: '5'}],
+      
     // jtypeOptions: [
     //   {label: "Не имеет значения", value: ''}, 
     //   {label: "Постоянная", value: 'c'},
