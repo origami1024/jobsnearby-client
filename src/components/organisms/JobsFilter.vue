@@ -73,7 +73,6 @@ export default {
     wordRegex: /^[\wа-яА-ЯÇçÄä£ſÑñňÖö$¢Üü¥ÿýŽžŞş\s\\-]*$/,
     search: '',
     langsSelected: [],
-    //langOptions: ["Русский", "Английский", "Немецкий", "Французкий"],
     currOptions: [
       {label: "все", value: 'idc'},
       {label: "$", value: '$'},
@@ -84,11 +83,6 @@ export default {
       {label: "от 1 до 3 лет", value: '1-3'}, 
       {label: "от 3 до 5 лет", value: '3-5'},
       {label: "от 5 лет", value: '5'}],
-      
-    // jtypeOptions: [
-    //   {label: "Не имеет значения", value: ''}, 
-    //   {label: "Постоянная", value: 'c'},
-    //   {label: "Временная", value: 'v'}],
     jcatOptions: [
       {label: "Не имеет значения", value: 0}, 
       {label: "Администрация", value: 1},
