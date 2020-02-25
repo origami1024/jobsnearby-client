@@ -132,13 +132,13 @@
         </select> -->
         <button class="langLink" style="margin-right: 0; padding-right: 0;">{{app_lng}}
           <q-menu dense>
-            <q-item style="lineHeight: 2.2" dense :style="{color: app_lng == 'TM' ? 'indigo' : 'black'}" clickable v-close-popup @click="app_lng = 'TM'; $i18n.locale = 'tm'">
+            <q-item style="lineHeight: 2.2" dense :style="{color: app_lng == 'TM' ? 'indigo' : 'black'}" clickable v-close-popup @click="app_lng = 'TM'; $i18n.locale = 'tm'; setLang('tm')">
               TM
             </q-item>
-            <q-item style="lineHeight: 2.2" dense :style="{color: app_lng == 'RU' ? 'indigo' : 'black'}" clickable v-close-popup @click="app_lng = 'RU'; $i18n.locale = 'ru'">
+            <q-item style="lineHeight: 2.2" dense :style="{color: app_lng == 'RU' ? 'indigo' : 'black'}" clickable v-close-popup @click="app_lng = 'RU'; $i18n.locale = 'ru'; setLang('ru')">
               RU
             </q-item>
-            <q-item style="lineHeight: 2.2" dense :style="{color: app_lng == 'EN' ? 'indigo' : 'black'}" clickable v-close-popup @click="app_lng = 'EN'">
+            <q-item style="lineHeight: 2.2" dense :style="{color: app_lng == 'EN' ? 'indigo' : 'black'}" clickable v-close-popup @click="app_lng = 'EN'; $i18n.locale = 'en'; setLang('en')">
               EN
             </q-item>
           </q-menu>
@@ -238,6 +238,10 @@ export default {
     window.removeEventListener("storage", this.onStorageUpdate);
   },
   mounted() {
+    if (localStorage.lang) {
+      this.$i18n.locale = localStorage.lang
+      this.app_lng = localStorage.lang.toUpperCase()
+    }
     if (localStorage.user) {
       this.user = localStorage.user
     }
@@ -302,6 +306,9 @@ export default {
     // this.getFavedFull()
   },
   methods: {
+    setLang(lang) {
+      localStorage.lang = lang
+    },
     authPls() {
       if (this.dismiss != null) this.dismiss()
       this.dismiss = this.$q.notify('Авторизируйтесь для возможности добавления вакансий')

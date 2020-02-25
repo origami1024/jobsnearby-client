@@ -12,7 +12,8 @@
           </q-btn>
           
         </router-link>
-        <p style="fontSize: 20px; marginBottom: 22px">{{pageTypes[newJobsPageType].label}}</p>
+        <p style="fontSize: 20px; marginBottom: 22px" v-if="newJobsPageType === 'new'">{{$t('addJob.pTypeNewLabel')}}</p>
+        <p style="fontSize: 20px; marginBottom: 22px" v-else>{{$t('addJob.pTypeEditLabel')}}</p>
          <!-- {{jobEditId != -1 ? jobEditId : ''}}
          {{newJobsPageType}}
          <br>Название ВРЕМЕННОЕ: {{job.title}}
