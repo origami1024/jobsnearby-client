@@ -10,17 +10,17 @@
       >
         <!-- style="color: white; backgroundColor: var(--main-borders-color);" -->
         <q-tab name="login" style="width:50%;fontWeight:900; letter-spacing: 2px">
-          Вход
+          {{$t('reg.loginLabel')}}
         </q-tab>
         <q-tab name="reg" style="width:50%; letter-spacing: 1px">
-          Регистрация
+          {{$t('reg.regLabel')}}
         </q-tab>
       </q-tabs>
       <q-tab-panels class="registration__inner" :value="regState" animated>
         <q-tab-panel name="login">
           <form action="#" @submit.prevent="trylog" style="margin-top: 12px">
             <div style="display:flex; width: 100%; margin-bottom: 10px">
-              <label style="alignSelf: center; width: 100px;margin-bottom: 15px" for="mailInput1">* Email</label>
+              <label style="alignSelf: center; width: 100px;margin-bottom: 15px" for="mailInput1">* {{$t('reg.loginEmailLabel')}}</label>
               <q-input
                 id='mailInput1'
                 square
@@ -38,7 +38,7 @@
               />
             </div>
             <div style="display:flex; width: 100%;">
-              <label style="alignSelf: center; width: 100px;margin-bottom: 15px" for="pwInput1">* Пароль</label>
+              <label style="alignSelf: center; width: 100px;margin-bottom: 15px" for="pwInput1">* {{$t('reg.loginPWLabel')}}</label>
               <q-input
                 id='pwInput1'
                 square
@@ -54,27 +54,13 @@
                 @input="login.validation.pw = ''"
               />
             </div>
-            <!-- <div class="colx">
-              <div class="row">
-                
-                <span v-show="login.showErrors" class="err_span">{{login.validation.mail}}</span>
-              </div>
-              <input id="email" v-model="login.mail" type="text" placeholder="* Email">
-            
-              <div class="row">
-                
-                <span v-show="login.showErrors" class="err_span">{{login.validation.pw}}</span>
-              </div>
-              <input id="pw" v-model="login.pw" type="text" placeholder="* Пароль">
-            </div> -->
-            
             <div class="row spacebetw">
-              <q-checkbox color="red-10" v-model="login.rememberme" label="Запомнить меня" />
-              <a href="#" style="alignSelf: center; color:var(--main-borders-color)">Забыл пароль?</a>
+              <q-checkbox color="red-10" v-model="login.rememberme" :label="$t('reg.rmeLabel')" />
+              <a href="#" style="alignSelf: center; color:var(--main-borders-color)">{{$t('reg.frgtPWLabel')}}</a>
             </div>
             <q-btn 
               color="red-10"
-              label="Войти"
+              :label="$t('reg.enterBtn')"
               type="submit"
               :loading="submitting"
               class="submitBtn"
@@ -86,8 +72,8 @@
         <q-tab-panel name="reg">
           <form action="#" @submit.prevent="tryreg">
             <div style="display:flex; justify-content: space-around; width: 100%; margin-bottom: 10px">
-              <q-radio color="red-10" v-model="usertype" dense val="subscriber" label="Специалист" />
-              <q-radio color="red-10" v-model="usertype" dense val="company" label="Компания" />
+              <q-radio color="red-10" v-model="usertype" dense val="subscriber" :label="$t('reg.radioSub')" />
+              <q-radio color="red-10" v-model="usertype" dense val="company" :label="$t('reg.radioCom')" />
             </div>
             <!-- <div class="line">
               <input type="radio" v-model="usertype" id="r1" name="usertype" value="subscriber">
@@ -96,7 +82,7 @@
               <label class="twolined" for="r2">Компания (Работодатель)</label>
             </div> -->
             <div v-show="usertype === 'company'" style="display:flex; width: 100%;">
-              <label style="alignSelf: center; width: 100px;margin-bottom: 15px">* Компания</label>
+              <label style="alignSelf: center; width: 100px;margin-bottom: 15px">* {{$t('reg.companyLabel')}}</label>
               <q-input
                 square
                 dense
@@ -116,40 +102,14 @@
               style="display:flex; width: 100%; margin-top: -8px; margin-bottom: 14px"
             >
               <q-checkbox
-                color="red-10" label="Кадровое агенство"
+                color="red-10" :label="$t('reg.agencyLabel')"
                 v-model="agency"
                 left-label
               />
             </div>
-            
-            <!-- <div v-show="usertype === 'company'">
-              <div class="row">
-                <span v-show="showErrors" class="err_span">{{validation.company}}</span>
-              </div>
-              <div class="row">
-                <input v-model="agency" type="checkbox" id="agency">
-                <label for="agency">Кадровое агенство</label>
-              </div>
-            </div> -->
-            <!-- <div class="colx" v-show="usertype === 'subscriber'">
-              <div class="row">
-                <span v-show="showErrors" class="err_span">{{validation.name}}</span>
-              </div>
-              <input v-model="name" id="name" placeholder="* Имя">
-              <div class="row">
-                <span v-show="showErrors" class="err_span">{{validation.surname}}</span>
-              </div>
-              <input v-model="surname" id="surname" placeholder="* Фамилия">
-            </div> -->
-            <!-- <div class="colx">
-              <div class="row">
-                <span v-show="showErrors" class="err_span">{{validation.mail}}</span>
-              </div>
-              <input v-model="mail" id="email" placeholder="* Укажите свой Email">
-            </div> -->
             <div v-show="usertype === 'subscriber'">
               <div style="display:flex; width: 100%; margin-bottom: 10px">
-                <label style="alignSelf: center; width: 100px;margin-bottom: 15px" for="name2">* Имя</label>
+                <label style="alignSelf: center; width: 100px;margin-bottom: 15px" for="name2">* {{$t('reg.nameLabel')}}</label>
                 <q-input
                   id='name2'
                   square
@@ -166,7 +126,7 @@
                 />
               </div>
               <div style="display:flex; width: 100%; margin-bottom: 10px">
-                <label style="alignSelf: center; width: 100px;margin-bottom: 15px" for="surname2">* Фамилия</label>
+                <label style="alignSelf: center; width: 100px;margin-bottom: 15px" for="surname2">* {{$t('reg.surnameLabel')}}</label>
                 <q-input
                   id='surname2'
                   square
@@ -184,7 +144,7 @@
               </div>
             </div>
             <div style="display:flex; width: 100%; margin-bottom: 10px">
-              <label style="alignSelf: center; width: 100px;margin-bottom: 15px" for="mailInput2">* Email</label>
+              <label style="alignSelf: center; width: 100px;margin-bottom: 15px" for="mailInput2">* {{$t('reg.loginEmailLabel')}}</label>
               <q-input
                 id='mailInput2'
                 square
@@ -201,7 +161,7 @@
               />
             </div>
             <div style="display:flex; width: 100%; margin-bottom: 10px">
-              <label style="alignSelf: center; width: 100px;margin-bottom: 15px" for="pw2">* Пароль</label>
+              <label style="alignSelf: center; width: 100px;margin-bottom: 15px" for="pw2">* {{$t('reg.loginPWLabel')}}</label>
               <q-input
                 id='pw2'
                 square
@@ -218,7 +178,7 @@
               />
             </div>
             <div style="display:flex; width: 100%; margin-bottom: 10px">
-              <label style="alignSelf: center; width: 100px;margin-bottom: 15px; display:flex" for="pwc2"><div style="margin-right: 4px">*</div>Повтор пароля</label>
+              <label style="alignSelf: center; width: 100px;margin-bottom: 15px; display:flex" for="pwc2"><div style="margin-right: 4px">*</div>{{$t('reg.regConfirmPWLabel')}}</label>
               <q-input
                 id='pwc2'
                 square
@@ -250,7 +210,7 @@
               <q-checkbox
                 style="align-self: flex-start;margin-top:-8px" color="red-10" id="rulescb1" v-model="rules" :error-message="validation.rules" :error="validation.rules != ''"/>
               <label style="text-align: justify;" for="rulescb1">
-                * Я соглашаюсь с <a style="color: var(--btn-color)" href="#">правилами использования сервиса</a>, а также с передачей и обработкой моих данных в TEST.com. Я подтверждаю своё совершеннолетие и ответственность за размещение объявления.
+                * {{$t('reg.rulesStart')}} <a style="color: var(--btn-color)" href="#">{{$t('reg.rulesLink')}}</a>{{$t('reg.rulesEnd')}}
               </label>
             </div>
             <span style="margin-bottom: 10px; font-size: 12px " v-show="showErrors && !rules" class="err_span">{{validation.rules}}</span>          
@@ -263,7 +223,7 @@
             </div> -->
             <q-btn 
               color="red-10"
-              label="Регистрация"
+              :label="$t('reg.regBtn')"
               type="submit"
               :loading="submitting"
               class="submitBtn"
@@ -275,7 +235,7 @@
       </q-tab-panels>
     </div>
     <div v-else>
-      Успешная авторизация
+      {{$t('reg.alreadyAuthedMessage')}}
     </div>
   </div>
 </template>
@@ -329,7 +289,7 @@ export default {
   }},
   methods: {
     tryreg() {
-      this.status = 'Заполните все поля'
+      this.status = this.$t('reg.regAllFields')
       //client validation here
       if (this.rules != true) this.rules = false
       if (this.agency != true) this.agency = false
@@ -342,7 +302,7 @@ export default {
           .post(config.jobsUrl + '/reg', [this.mail.toLowerCase(), this.pw, this.usertype, this.usertype === 'subscriber' ? this.name : this.company, this.usertype === 'subscriber' ? this.surname : this.agency], {headers: {'Content-Type' : 'application/json' }})
           .then(response => {
             if (response.data == 'OK') {
-              this.status = 'Регистрация удалась'
+              this.status = this.$t('reg.regSuccess')
               // console.log(this.status)
               this.mail = ''
               this.pw = ''
@@ -360,15 +320,15 @@ export default {
               this.login.validation.pw = ''
             }
             else if (response.data == 'step3') {
-              this.status = 'Регистрация не удалась, ошибки на сервере'
+              this.status = this.$t('reg.regError3')
               //this.$q.notify(this.status)
             }
             else if (response.data == 'step2') {
-              this.status = 'Такой email уже существует в базе данных'
+              this.status = this.$t('reg.regError2')
               //this.$q.notify(this.status)
             }
             else if (response.data == 'step1') {
-              this.status = 'Email или пароль не зарегестрированы'
+              this.status = this.$t('reg.regError1')
               //this.$q.notify(this.status)
             }
             else console.dir('successful registering', response.data)
@@ -382,7 +342,7 @@ export default {
       if (this.mail.length === 0)
         this.validation.mail = ''
       else if (!mailregex.test(this.mail.toLowerCase())) 
-        this.validation.mail = 'Неправильный формат адреса'
+        this.validation.mail = this.$t('reg.loginValiMailFormat')
       else this.validation.mail = ''
       return this.validation.mail === ''
     },
@@ -391,11 +351,11 @@ export default {
         if (this.name.length === 0)
           this.validation.name = ''
         else if (this.name.length < 3)
-          this.validation.name = 'Минимальная длина 3 символа'
+          this.validation.name = this.$t('reg.nameValiMin')
         else if (this.name.length > 35)
-          this.validation.name = 'Максимальная длина 35 символов'
+          this.validation.name = this.$t('reg.nameValiMin')
         else if (!this.wordRegex.test(this.name))
-          this.validation.name = 'Неправильный формат имени'
+          this.validation.name = this.$t('reg.nameValiFormat')
         else this.validation.name = ''
         return this.validation.name === ''
       } else return true
@@ -405,11 +365,11 @@ export default {
         if (this.surname.length === 0)
           this.validation.surname = ''
         else if (this.surname.length < 3)
-          this.validation.surname = 'Минимальная длина 3 символа'
+          this.validation.surname = this.$t('reg.surnameValiMin')
         else if (this.surname.length > 35)
-          this.validation.surname = 'Максимальная длина 35 символов'
+          this.validation.surname = this.$t('reg.surnameValiMax')
         else if (!this.wordRegex.test(this.surname))
-          this.validation.surname = 'Неправильный формат фамилии'
+          this.validation.surname = this.$t('reg.surnameValiFormat')
         else this.validation.surname = ''
       } else return true
     },
@@ -418,11 +378,11 @@ export default {
         if (this.company.length === 0)
           this.validation.company = ''
         else if (this.company.length < 3)
-          this.validation.company = 'Минимальная длина 3 символа'
+          this.validation.company = this.$t('reg.compValiMin')
         else if (this.company.length > 60)
-          this.validation.company = 'Максимальная длина 60 символов'
+          this.validation.company = this.$t('reg.compValiMax')
         else if (!this.wordRegex.test(this.company))
-          this.validation.company = 'Неправильный формат названия'
+          this.validation.company = this.$t('reg.compValiFormat')
         else this.validation.company = ''
       } else return true
     },
@@ -430,11 +390,11 @@ export default {
       if (this.pw.length === 0)
         this.validation.pw = ''
       else if (this.pw.length < 6)
-        this.validation.pw = 'Минимум 6 символов'
+        this.validation.pw = this.$t('reg.regValiPWMin')
       else if (this.pw.length > 25)
-        this.validation.pw = 'Максимум 25 символов'
+        this.validation.pw = this.$t('reg.regValiPWMax')
       else if (!this.pwRegex.test(this.pw))
-        this.validation.pw = 'Минимум 1 английская буква'
+        this.validation.pw = this.$t('reg.regValiPWChar')
       else this.validation.pw = ''
       return this.validation.pw === ''
     },
@@ -442,68 +402,68 @@ export default {
       if (this.pwc.length === 0)
         this.validation.pwc = ''
       else if (this.pwc !== this.pw)
-        this.validation.pwc = 'Пароли не совпадают'
+        this.validation.pwc = this.$t('reg.regValiPWCDiff')
       else this.validation.pwc = ''
       return this.validation.pwc === ''
     },
     validate(){
       let mailregex = /(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/
       if (this.mail.length === 0)
-        this.validation.mail = 'Введите email'
+        this.validation.mail = this.$t('reg.loginValiMail0')
       else if (!mailregex.test(this.mail.toLowerCase())) 
-        this.validation.mail = 'Неправильный формат адреса'
+        this.validation.mail = this.$t('reg.loginValiMailFormat')
       else this.validation.mail = ''
 
       if (this.usertype === 'subscriber') {
         if (this.name.length === 0)
-          this.validation.name = 'Введите имя'
+          this.validation.name = this.$t('reg.nameVali0')
         else if (this.name.length < 3)
-          this.validation.name = 'Минимальная длина 3 символа'
+          this.validation.name = this.$t('reg.nameValiMin')
         else if (this.name.length > 35)
-          this.validation.name = 'Максимальная длина 35 символов'
+          this.validation.name = this.$t('reg.nameValiMax')
         else if (!this.wordRegex.test(this.name))
-          this.validation.name = 'Неправильный формат имени'
+          this.validation.name = this.$t('reg.nameValiFormat')
         else this.validation.name = ''
 
         if (this.surname.length === 0)
-          this.validation.surname = 'Введите фамилию'
+          this.validation.surname = this.$t('reg.surnameVali0')
         else if (this.surname.length < 3)
-          this.validation.surname = 'Минимальная длина 3 символа'
+          this.validation.surname = this.$t('reg.surnameValiMin')
         else if (this.surname.length > 35)
-          this.validation.surname = 'Максимальная длина 35 символов'
+          this.validation.surname = this.$t('reg.surnameValiMax')
         else if (!this.wordRegex.test(this.surname))
-          this.validation.surname = 'Неправильный формат фамилии'
+          this.validation.surname = this.$t('reg.surnameValiFormat')
         else this.validation.surname = ''
       } else {
 
         if (this.company.length === 0)
-          this.validation.company = 'Введите название'
+          this.validation.company = this.$t('reg.compVali0')
         else if (this.company.length < 3)
-          this.validation.company = 'Минимальная длина 3 символа'
+          this.validation.company = this.$t('reg.compValiMin')
         else if (this.company.length > 60)
-          this.validation.company = 'Максимальная длина 60 символов'
+          this.validation.company = this.$t('reg.compValiMax')
         else if (!this.wordRegex.test(this.company))
-          this.validation.company = 'Неправильный формат названия'
+          this.validation.company = this.$t('reg.compValiFormat')
         else this.validation.company = ''
       }
 
       if (this.pw.length === 0)
-        this.validation.pw = 'Введите пароль'
+        this.validation.pw = this.$t('reg.regValiPW0')
       else if (this.pw.length < 6)
-        this.validation.pw = 'Минимум 6 символов'
+        this.validation.pw = this.$t('reg.regValiPWMin')
       else if (this.pw.length > 25)
-        this.validation.pw = 'Максимум 25 символов'
+        this.validation.pw = this.$t('reg.regValiPWMax')
       else if (!this.pwRegex.test(this.pw))
-        this.validation.pw = 'Минимум 1 английская буква'
+        this.validation.pw = this.$t('reg.regValiPWChar')
       else this.validation.pw = ''
 
       if (this.pwc.length === 0)
-        this.validation.pwc = 'Подтвердите пароль'
+        this.validation.pwc = this.$t('reg.regValiPWC0')
       else if (this.pwc !== this.pw)
-        this.validation.pwc = 'Пароли не совпадают'
+        this.validation.pwc = this.$t('reg.regValiPWCDiff')
       else this.validation.pwc = ''
 
-      if (!this.rules) this.validation.rules = 'Ознакомтесь с правилами'
+      if (!this.rules) this.validation.rules = this.$t('reg.regValiRules')
       else this.validation.rules = ''
 
       if (this.validation.mail === '' && 
@@ -537,8 +497,8 @@ export default {
             //fix: need to send auth data on login
             if (response.data && response.data[0] === 'OK' && response.data.length > 3) {
               this.login.status = ''
-              this.$q.notify({type:'positive', message: 'Вход осуществлен'})
-              console.log('cp123ss:', response.data.slice(1))
+              this.$q.notify({type:'positive', message: this.$t('reg.loginSuccess')})
+              // console.log('cp123ss:', response.data.slice(1))
               this.$emit('authed', response.data.slice(1))
               this.$router.push({ name: 'home' })
               this.$emit('refresh')
@@ -546,16 +506,16 @@ export default {
               this.login.pw = ''
             }
             else if (response.data == 'step3') {
-              this.login.status = 'Не удалось выполнить вход'
+              this.login.status = this.$t('reg.loginError3')
               this.$q.notify(this.login.status)
             }
             else if (response.data == 'step2') {
-              this.login.status = 'Такого пользователя не существует, либо неверный пароль'
+              this.login.status = this.$t('reg.loginError2')
               this.$q.notify(this.login.status)
               //send this in both cases
             }
             else if (response.data == 'step1') {
-              this.login.status = 'Не существующий Email или не правильный пароль'
+              this.login.status = this.$t('reg.loginError1')
               this.$q.notify(this.login.status)
             }
             else if (response.status == 209) {
@@ -572,7 +532,7 @@ export default {
       if (this.login.mail.length === 0) 
         this.login.validation.mail = ''
       else if (!mailregex.test(this.login.mail.toLowerCase())) 
-        this.login.validation.mail = 'Неправильный формат адреса'
+        this.login.validation.mail = this.$t('reg.loginValiMailFormat')
       else this.login.validation.mail = ''
       return this.login.validation.mail === ''
     },
@@ -580,22 +540,22 @@ export default {
       if (this.login.pw.length === 0)
         this.login.validation.pw = ''
       else if (this.login.pw.length < 5 || this.login.pw.length > 25)
-        this.login.validation.pw = 'Кол-во символов от 5 до 25'
+        this.login.validation.pw = this.$t('reg.loginValiPWFormat')
       else this.login.validation.pw = ''
       return this.login.validation.pw === ''
     },
     validateLogin(){
       let mailregex = /(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/
       if (this.login.mail.length === 0) 
-        this.login.validation.mail = 'Введите email'
+        this.login.validation.mail = this.$t('reg.loginValiMail0')
       else if (!mailregex.test(this.login.mail.toLowerCase())) 
-        this.login.validation.mail = 'Неправильный формат адреса'
+        this.login.validation.mail = this.$t('reg.loginValiMailFormat')
       else this.login.validation.mail = ''
 
       if (this.login.pw.length === 0)
-        this.login.validation.pw = 'Введите пароль'
+        this.login.validation.pw = this.$t('reg.loginValiPW0')
       else if (this.login.pw.length < 5 || this.login.pw.length > 25)
-        this.login.validation.pw = 'Кол-во символов от 5 до 25'
+        this.login.validation.pw = this.$t('reg.loginValiPWFormat')
       else this.login.validation.pw = ''
 
       if (this.login.validation.mail === '' && 
