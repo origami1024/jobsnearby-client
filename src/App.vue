@@ -21,8 +21,8 @@
         style="padding: 0px;display: flex"
         class="logolink"
       >
-        <img src="logo1.png" style="align-self:center;height:40px; margin-top:-8px"/>
-        USSAT
+        <!-- <img src="logo1.png" style="align-self:center;height:40px; margin-top:-8px"/> -->
+        G<span style="color: var(--main-borders-color); letter-spacing:-1px">oo</span><span style="font-size:0.95em">d</span>w<span style="font-size:1.1em">i</span><span style="font-size:1.1em">l</span><span style="font-size:1.2em">l</span>
         <q-tooltip>
           <p style="font-size: 15px; margin: 0">Главная</p>
         </q-tooltip>
@@ -33,15 +33,16 @@
         <q-btn 
           @click.native="newJobInit"
           v-if="role == 'company'"
-          style="background-color: var(--btn-color); font-weight: 700; align-self:flex-start; padding: 0 5px;"
+          style="background-color: var(--btn-color); font-weight: 700; align-self:flex-start; padding: 0 5px;border-radius: 8px;"
           text-color="white" :loading="pending"
           :label="$t('App.newJobHint')"
+          rounded
           to="/addJob"
         />
         <q-btn 
           @click.native="authPls"
           v-else-if="role != 'subscriber'"
-          style="background-color: var(--btn-color); font-weight: 700; align-self:flex-start; padding: 0 5px;"
+          style="background-color: var(--btn-color); font-weight: 700; align-self:flex-start; padding: 0 5px;border-radius: 8px;"
           text-color="white" :loading="pending"
           :label="$t('App.newJobHint')"
           to="/registration"
@@ -68,7 +69,7 @@
         <!-- style="alignSelf: flex-end;" -->
         <div class="colx user-status-bar">
           <q-btn 
-            style="background-color: var(--main-borders-color); font-weight: 700; align-self:flex-start; margin: 0 10px; padding: 0 5px;"
+            style="background-color: var(--main-borders-color); font-weight: 700; align-self:flex-start; margin: 0 10px; padding: 0 5px;border-radius: 8px;"
             text-color="white" :loading="pending"
             :label="$t('App.login')"
             @click.native="regState='login'"
