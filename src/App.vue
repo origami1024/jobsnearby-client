@@ -28,30 +28,33 @@
         </q-tooltip>
       </router-link>
       <div class="separator" style="width: 150px"></div>
-      <div id="nav" shrink stretch>
-        <router-link @click.native="newJobInit" v-if="role == 'company'" class="r-link hoverred" to="/addJob">
-          <q-icon round glossy name="add_circle_outline" size="40px"></q-icon>
+      <div id="nav" style="margin-left: auto">
+        <!--  shrink stretch -->
+        <router-link @click.native="newJobInit" v-if="role == 'company'" class="newlinks" to="/addJob">
+          {{$t('App.newJobHint')}}
+          <!-- <q-icon round glossy name="add_circle_outline" size="40px"></q-icon>
           <q-tooltip>
             <p style="font-size: 15px; margin: 0">{{$t('App.newJobHint')}}</p>
-          </q-tooltip>
+          </q-tooltip> -->
         </router-link>
-        <router-link @click.native="authPls" v-else-if="role != 'subscriber'" class="r-link hoverred" to="/registration">
-          <q-icon round glossy name="add_circle_outline" size="40px"></q-icon>
+        <router-link @click.native="authPls" v-else-if="role != 'subscriber'" class="newlinks" to="/registration">
+          {{$t('App.newJobHint')}}
+          <!-- <q-icon round glossy name="add_circle_outline" size="40px"></q-icon>
           <q-tooltip>
             <p style="font-size: 15px; margin: 0">{{$t('App.newJobHint')}}</p>
-          </q-tooltip>
+          </q-tooltip> -->
         </router-link>
 
         
       </div>
-      <div class="separator" style="width: 150px"></div>
-      <div id="authmenu" >
+      <!-- <div class="separator" style="width: 0px"></div> -->
+      <div id="authmenu">
         <!-- style="alignSelf: flex-end;" -->
         <div class="colx user-status-bar">
           <router-link
             @click.native="regState='login'"
             v-if="role && role.startsWith('guest')"
-            class="headerBtn"
+            class="headerBtnNew"
             to="/registration">
             {{$t('App.login')}}
           </router-link>
@@ -122,7 +125,7 @@
           
         </div>
       </div>
-      <div style="alignSelf: flex-end;margin-bottom: 5px; margin-right: 0; padding-right: 0;">
+      <div style="font-weight: 700">
         <!-- Язык -->
         <!-- <p style="margin: 0; margin-bottom: 5px;">Язык</p>
         <select v-model="app_lng" style="width: 40px">
@@ -836,8 +839,8 @@ export default {
     color var(--btn-color)
     line-height 52px
   .user-status-bar
-    text-align left
-    align-items flex-start
+    //text-align left
+    //align-items flex-start
   .scrollTopBtn
     position fixed
     bottom 12px
@@ -863,11 +866,27 @@ export default {
   .langLink
     border 0
     background-color transparent
-    color black//purple
+    color var(--main-borders-color)
+    text-decoration underline
     cursor pointer
     font-size 14px
     &:hover
       color var(--btn-color)
+  .headerBtnNew
+    text-decoration none
+    color white//var(--main-borders-color)
+    font-size 17px
+    background-color var(--main-borders-color)
+    //text-transform uppercase
+    //border 2px solid transparent
+    //transition-duration .4s
+    padding 2px 10px
+    border-radius 50px
+    //padding-right 0px
+    //letter-spacing 2px
+    //font-weight 700
+    // &:hover
+    //   color var(--btn-color)
   .headerBtn
     text-decoration none
     color var(--main-borders-color)
@@ -893,7 +912,20 @@ export default {
   //   color white
   //   &:visited
   //     border 2px solid white
- 
+.newlinks
+  background-color var(--btn-color)
+  color white
+  margin-right 10px
+  display block
+  border-radius 50px
+  text-decoration none
+  padding 6px 10px
+  font-size 17px
+  white-space nowrap
+  &:visited
+    color white
+  &:hover
+    color white
 
 .q-item__label
   color var(--main-borders-color)
