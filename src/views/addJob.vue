@@ -196,6 +196,7 @@
           </div>
         </div>
         <q-expansion-item
+          ref="exp1"
           expand-separator
           :label="$t('addJob.moreLabel')"
           style="marginBottom: 10px; font-size: 16px;text-align:right;"
@@ -586,6 +587,7 @@ export default {
       this.lazyRulesAll = true
     },
     tryAdd() {
+      
       //validate first
       //validate all
       //on bad validation set the scroll value if its not set
@@ -631,26 +633,29 @@ export default {
       //description
       if (this.job.description.length > 2000) {
         this.descError = this.$t('addJob.descValidation2000')
-        scrollPos = 240
+        scrollPos = 340
       }
       //age
       this.$refs.age1.validate()
       this.$refs.age2.validate()
       if (this.$refs.age1.hasError || this.$refs.age2.hasError) {
-        scrollPos = 420
+        scrollPos = 520
+        this.$refs.exp1.show()
       }
       //worktime
       this.$refs.worktime1.validate()
       this.$refs.worktime2.validate()
       if (this.$refs.worktime1.hasError || this.$refs.worktime2.hasError) {
-        scrollPos = 450
+        scrollPos = 580
+        this.$refs.exp1.show()
       }
       //edu
       this.$refs.edu.validate()
       if (this.$refs.edu.hasError) {
-        scrollPos = 480
+        scrollPos = 620
+        this.$refs.exp1.show()
       }
-      
+      console.log(scrollPos)
       if (scrollPos)
         this.$emit('scrollTo', scrollPos)
       else {

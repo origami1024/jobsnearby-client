@@ -250,8 +250,11 @@ export default {
   position absolute
   left 50%
   bottom 5px
-  background-color #ddf
+  //background-color #ddf
   padding 2px
+  box-shadow 0 0 3px 0px var(--btn-color)
+  border-radius 3px
+  padding 5px
 .jobcard__salary p
   font-size 16px
 .descFormats

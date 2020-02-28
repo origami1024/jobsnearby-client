@@ -22,7 +22,7 @@
         class="logolink"
       >
         <!-- <img src="logo1.png" style="align-self:center;height:40px; margin-top:-8px"/> -->
-        G<span style="color: var(--main-borders-color); letter-spacing:-1px">oo</span><span style="font-size:0.95em">d</span>w<span style="font-size:1.1em">i</span><span style="font-size:1.1em">l</span><span style="font-size:1.2em">l</span>
+        <span style="font-size:1.1em; letter-spacing:-1px">G</span><span style="color: var(--main-borders-color); letter-spacing:-1px">oo</span><span style="font-size:0.95em; margin-left: 2px; margin-right: -2px">d</span>w<span style="font-size:1.1em">i</span><span style="font-size:1.15em">l</span><span style="font-size:1.15em; margin-left:-2px">l</span>
         <q-tooltip>
           <p style="font-size: 15px; margin: 0">Главная</p>
         </q-tooltip>
@@ -34,7 +34,7 @@
           @click.native="newJobInit"
           v-if="role == 'company'"
           style="background-color: var(--btn-color); font-weight: 700; align-self:flex-start; padding: 0 5px;border-radius: 8px;"
-          text-color="white" :loading="pending"
+          text-color="white" 
           :label="$t('App.newJobHint')"
           rounded
           to="/addJob"
@@ -43,7 +43,7 @@
           @click.native="authPls"
           v-else-if="role != 'subscriber'"
           style="background-color: var(--btn-color); font-weight: 700; align-self:flex-start; padding: 0 5px;border-radius: 8px;"
-          text-color="white" :loading="pending"
+          text-color="white" 
           :label="$t('App.newJobHint')"
           to="/registration"
         />
@@ -70,7 +70,7 @@
         <div class="colx user-status-bar">
           <q-btn 
             style="background-color: var(--main-borders-color); font-weight: 700; align-self:flex-start; margin: 0 10px; padding: 0 5px;border-radius: 8px;"
-            text-color="white" :loading="pending"
+            text-color="white" 
             :label="$t('App.login')"
             @click.native="regState='login'"
             v-if="role && role.startsWith('guest')"
@@ -892,7 +892,7 @@ export default {
     border 0
     background-color transparent
     color var(--main-borders-color)
-    text-decoration underline
+    
     cursor pointer
     font-size 14px
     &:hover
