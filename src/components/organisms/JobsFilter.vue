@@ -36,7 +36,14 @@
       />
       <q-btn
         :loading="pending"
-        style="background-color: var(--main-borders-color); font-weight: 700" text-color="white" :label="$t('home.applyBtn')" @click="refreshPlus"/>
+        style="background-color: var(--main-borders-color); font-weight: 700; padding: 0 5px"
+        text-color="white"
+        :label="$t('home.applyBtn')"
+        @click="refreshPlus"
+      />
+      <!-- <button class="newlinks btnnewlinks" @click="refreshPlus">
+        {{$t('home.applyBtn')}}
+      </button> -->
     </div>
     
   </div>
@@ -205,4 +212,7 @@ export default {
     padding-top 10px
 .jobsfilter__search-btn
   align-self flex-start
+
+  
+  
 </style>

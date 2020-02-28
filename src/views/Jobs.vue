@@ -25,7 +25,6 @@
             <q-input
               v-model="txt"
               dense
-              
               class="jobsfilter__search"
               @keyup.enter="refreshPlus"
               
@@ -40,7 +39,12 @@
                 <q-icon name="search" />
               </template>
             </q-input>
-            <q-btn @click="refreshPlus" style="background-color: var(--btn-color); font-weight: 700" text-color="white" :loading="pending" class="jobsfilter__search-btn" :label="$t('home.searchBtn')"/>
+            <q-btn 
+              @click="refreshPlus"
+              style="background-color: var(--btn-color); font-weight: 700; align-self:flex-start; padding: 0 5px"
+              text-color="white" :loading="pending"
+              :label="$t('home.searchBtn')"
+            />
           </div>
         </div>
         <div style="padding: 0 4px">
@@ -413,8 +417,6 @@ export default {
   .jobsfilter__search
     width 100%
     margin-right 5px
-  .jobsfilter__search-btn
-    align-self flex-start
   .jobs__main
     display flex
     position relative

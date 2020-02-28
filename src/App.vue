@@ -30,20 +30,36 @@
       <div class="separator" style="width: 150px"></div>
       <div id="nav" style="margin-left: auto">
         <!--  shrink stretch -->
-        <router-link @click.native="newJobInit" v-if="role == 'company'" class="newlinks" to="/addJob">
-          {{$t('App.newJobHint')}}
+        <q-btn 
+          @click.native="newJobInit"
+          v-if="role == 'company'"
+          style="background-color: var(--btn-color); font-weight: 700; align-self:flex-start; padding: 0 5px;"
+          text-color="white" :loading="pending"
+          :label="$t('App.newJobHint')"
+          to="/addJob"
+        />
+        <q-btn 
+          @click.native="authPls"
+          v-else-if="role != 'subscriber'"
+          style="background-color: var(--btn-color); font-weight: 700; align-self:flex-start; padding: 0 5px;"
+          text-color="white" :loading="pending"
+          :label="$t('App.newJobHint')"
+          to="/registration"
+        />
+        <!-- <router-link @click.native="newJobInit" v-if="role == 'company'" class="newlinks" to="/addJob">
+          {{$t('App.newJobHint')}} -->
           <!-- <q-icon round glossy name="add_circle_outline" size="40px"></q-icon>
           <q-tooltip>
             <p style="font-size: 15px; margin: 0">{{$t('App.newJobHint')}}</p>
           </q-tooltip> -->
-        </router-link>
+        <!-- </router-link>
         <router-link @click.native="authPls" v-else-if="role != 'subscriber'" class="newlinks" to="/registration">
-          {{$t('App.newJobHint')}}
+          {{$t('App.newJobHint')}} -->
           <!-- <q-icon round glossy name="add_circle_outline" size="40px"></q-icon>
           <q-tooltip>
             <p style="font-size: 15px; margin: 0">{{$t('App.newJobHint')}}</p>
           </q-tooltip> -->
-        </router-link>
+        <!-- </router-link> -->
 
         
       </div>
@@ -51,13 +67,21 @@
       <div id="authmenu">
         <!-- style="alignSelf: flex-end;" -->
         <div class="colx user-status-bar">
-          <router-link
+          <q-btn 
+            style="background-color: var(--main-borders-color); font-weight: 700; align-self:flex-start; margin: 0 10px; padding: 0 5px;"
+            text-color="white" :loading="pending"
+            :label="$t('App.login')"
+            @click.native="regState='login'"
+            v-if="role && role.startsWith('guest')"
+            to="/registration"
+          />
+          <!-- <router-link
             @click.native="regState='login'"
             v-if="role && role.startsWith('guest')"
             class="headerBtnNew"
             to="/registration">
             {{$t('App.login')}}
-          </router-link>
+          </router-link> -->
           <!-- :text-color="$route.path == '/registration' ? 'yellow' : 'white'"  -->
           <!-- <q-btn
             color="white"
@@ -912,21 +936,26 @@ export default {
   //   color white
   //   &:visited
   //     border 2px solid white
-.newlinks
-  background-color var(--btn-color)
-  color white
-  margin-right 10px
-  display block
-  border-radius 50px
-  text-decoration none
-  padding 6px 10px
-  font-size 17px
-  white-space nowrap
-  &:visited
-    color white
-  &:hover
-    color white
-
+// .newlinks
+//   background-color var(--btn-color)
+//   color white
+//   margin-right 10px
+//   display block
+//   border-radius 50px
+//   text-decoration none
+//   padding 6px 10px
+//   font-size 17px
+//   white-space nowrap
+//   &:visited
+//     color white
+//   &:hover
+//     color white
+// .btnnewlinks
+//   border 0
+//   display inline
+//   line-height 1
+//   padding 6px 16px
+//   cursor pointer
 .q-item__label
   color var(--main-borders-color)
 .q-manual-focusable--focused
