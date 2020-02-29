@@ -89,17 +89,8 @@
             <div class="logo-placeholder" :style="{'background-image': 'url(' + cabout.logo_url + ')'}" >{{cabout.logo_url == '' || !cabout.logo_url ? 'logo placeholder' : ''}}</div>
           </div>
           <div class="line" dense style="display: flex; width: 100%; justify-content: space-between;">
-            <form action="" ref="uplForm">
-              <!-- <label
-                for="fileinput1"
-                class="entprofile__inp"
-                style="display: block; marginBottom: 6px;"
-                :style="{color: logo_upload_error != null ? '#c10015' : 'inherit'}"
-              >
-                {{logo_upload_error ? logo_upload_error : 'Путь к лого: ' + cabout.logo_url}}
-              </label> -->
+            <!-- <form action="" ref="uplForm">
               <label for="fileinput1" style="margin-bottom: 5px; display: block">Загрузка логотипа компании</label>
-              
               <q-input
                 id="fileinput1"
                 @input="val => { logofile = val[0] }"
@@ -112,9 +103,25 @@
                 accept=".jpg, .png, .svg"
                 ref="logoUploader"
               />
-            </form>
+            </form> -->
+            <!-- url="http://localhost:4444/upload" -->
+            <form action="" ref="uplForm" style="width: 100%; padding: 10px 0;">
+            <q-uploader
+              label="Загрузка логотипа компании (Перетяните)"
+              color="red-10"
+              square
+              flat
+              bordered
+              ref="quploader1"
+              :max-file-size="102400"
+              accept=".jpg, image/*"
+              auto-upload
+              no-thumbnails
+              style="width: 100%"
+              :factory="fileUNew"
+            />
             <q-btn @click="uploadLogo" style="marginBottom: 22px" dense color="primary" v-if="logofile != null" label="Загрузить"/>
-            
+            </form>
             <!-- v-if="cabout.logo_url == ''" -->
             <!-- <img v-else :src="cabout.logo_url" alt="Лого"> -->
           </div>
@@ -236,6 +243,13 @@ export default {
     }
   },
   methods: {
+    fileUNew(files) {
+      //console.log(files.length)
+      this.logofile = files[0]
+      this.$refs.quploader1.files = []
+      this.$refs.quploader1.uploadSize = 0
+      this.uploadLogo()
+    },
     viewHit(hit) {
       console.log(hit)
       if (this.resps.find(val=>val.cvhit_id == hit).date_checked == null) {
@@ -341,6 +355,7 @@ export default {
             this.logo_upload_error = null
             this.cabout.logo_url = resp.data.replace('link:', '')
             this.$q.notify('Изображение загружено')
+            console.log(this.cabout.logo_url)
           } else {
             console.log('error uploading: ', resp.data)
             if (resp.data.startsWith('Error in file size')) {

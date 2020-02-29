@@ -1011,7 +1011,8 @@ export default {
   color white !important//var(--main-borders-color) !important
 // .ql-editor
 //   background-color #E0F2F1
-
+// .q-uploader__subtitle//in entprofile - q-uploader component related
+//   display none
 @media screen and (max-width: 550px)
   .sdpp-filters
     line-height 14px !important

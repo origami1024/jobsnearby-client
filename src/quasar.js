@@ -36,6 +36,7 @@ import {
   QExpansionItem,
   Notify,
   QRadio,
+  QUploader,
 } from 'quasar'
 
 Vue.use(Quasar, {
@@ -75,7 +76,8 @@ Vue.use(Quasar, {
     QSeparator,
     QTooltip,
     QMenu,
-    QExpansionItem
+    QExpansionItem,
+    QUploader
   },
   directives: {
     ClosePopup
