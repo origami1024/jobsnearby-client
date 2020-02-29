@@ -194,8 +194,6 @@ export default {
   box-sizing border-box
   box-shadow 0 0 4px 1px var(--main-borders-color)
   border-radius 15px
-  @media screen and (max-width: 550px)
-    display none
   *
     margin 0
   div, span, svg

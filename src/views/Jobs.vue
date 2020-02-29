@@ -22,6 +22,7 @@
       <div class="jobs__contents">
         <div class="jobs__top-wrapper">
           <div class="jobs__top">
+            <button class="filtersHamburgerBtn">Ф</button>
             <q-input
               v-model="txt"
               dense
@@ -413,6 +414,15 @@ export default {
     top 10px
     display flex
     margin-right 20px
+    @media screen and (max-width: 550px)
+      display block
+      display none
+      position fixed
+      z-index 10
+      top 10px
+      bottom 10px
+      left 10px
+      right 10px
   .jobsfilter__search
     box-sizing border-box
     width 100%
@@ -424,7 +434,7 @@ export default {
     // justify-content space-around
   .jobs__contents
     box-sizing border-box
-    width calc(100% - 20px)
+    width calc(100% - 10px)
     max-width calc(1000px - 310px) //that is including the filters to the left
   .jobs_prefilters
     margin-bottom 15px
@@ -464,12 +474,22 @@ export default {
       color blue
   .paginationWrap
     padding 0 3px
-
+.filtersHamburgerBtn
+  display none
+  border 0
+  color white
+  background-color var(--main-borders-color)
+  align-self center
+  padding 5px
+  cursor pointer
+  &:hover
+    background-color var(--btn-color)
 @media screen and (max-width: 550px)
   .jobs
     padding 0
+    padding-left 5px
     .jobs__filterpart
-      margin-right 10px
+      margin-right 0px
     .searchBtn
       font-size 12px
       margin auto
@@ -479,6 +499,7 @@ export default {
     .pageBtns
       padding 3px
       margin 0px
-      
+  .filtersHamburgerBtn
+    display block
 
 </style>
