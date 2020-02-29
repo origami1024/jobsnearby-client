@@ -1,6 +1,6 @@
 <template>
   <div class="jobsfilter">
-    <q-select color="cyan-10" @input="jcatUpd" dense :value="jcat" :options="jcatOptions" :label="$t('home.jcat')" />
+    <q-select color="cyan-10" @input="jcatUpd" dense :value="jcat" :options="jcatOptions" :label="$t('filters.jcat')" />
     <q-select
       :value="city"
       @input="cityUpd"
@@ -11,7 +11,7 @@
       dense
       :options="cityOptions"
       @filter="filterFn"
-      :label="$t('home.city')"
+      :label="$t('filters.city')"
       stack-label
       @keyup="addNewCity"
     />
@@ -22,10 +22,10 @@
         style="width: 65%;"
         color="cyan-10"
         @input="salaryUpd" dense
-        :value="salary" :options="salOptions" :label="$t('home.sal')" />
-      <q-select color="cyan-10" style="width: 30%; text-align: center" dense @input="currUpd" :value="currency" :options="currOptions" :label="$t('home.curr')" />
+        :value="salary" :options="salOptions" :label="$t('filters.sal')" />
+      <q-select color="cyan-10" style="width: 30%; text-align: center" dense @input="currUpd" :value="currency" :options="currOptions" :label="$t('filters.curr')" />
     </div>
-    <q-select color="cyan-10" @input="expUpd" dense :value="exp" :options="expOptions" :label="$t('home.exp')" />
+    <q-select color="cyan-10" @input="expUpd" dense :value="exp" :options="expOptions" :label="$t('filters.exp')" />
     <div class="w100" :style="{justifyContent: isResetShown ? 'space-between': 'flex-end'}">
       <q-btn
         v-if="isResetShown"
@@ -39,11 +39,11 @@
         style="background-color: var(--main-borders-color); font-weight: 700; padding: 0 5px"
         
         text-color="white"
-        :label="$t('home.applyBtn')"
+        :label="$t('filters.applyBtn')"
         @click="refreshPlus"
       />
       <!-- <button class="newlinks btnnewlinks" @click="refreshPlus">
-        {{$t('home.applyBtn')}}
+        {{$t('filters.applyBtn')}}
       </button> -->
     </div>
     
@@ -73,55 +73,56 @@ export default {
     currency: {type: Object},
     //outerResetNeeded: {type: Boolean}
   },
-  data: ()=>{return {
-    cityOptions: stringOptions, //i18n.$t('home.cityOpts'),
+  data() {return {
+    cityOptions: this.$t('filters.cities'),//stringOptions, //i18n.$t('filters.cityOpts'),
     //perpage: '25',
     //timerange: 'mon',
     //txt: '',
     wordRegex: /^[\wа-яА-ЯÇçÄä£ſÑñňÖö$¢Üü¥ÿýŽžŞş\s\\-]*$/,
     search: '',
     langsSelected: [],
-    currOptions: [
-      {label: "все", value: 'idc'},
-      {label: "$", value: '$'},
-      {label: "манат", value: 'm'},],
-    expOptions: [
-      {label: "Не имеет значения", value: 'idc'}, 
-      {label: "Без опыта", value: '0'},
-      {label: "от 1 до 3 лет", value: '1-3'}, 
-      {label: "от 3 до 5 лет", value: '3-5'},
-      {label: "от 5 лет", value: '5'}],
-    jcatOptions: [
-      {label: "Не имеет значения", value: 0}, 
-      {label: "Администрация", value: 1},
-      {label: "Безопасность", value: 14},
-      {label: "Инженер", value: 4},
-      {label: "Информационные технологии", value: 12},
-      {label: "Логистика", value: 10},
-      {label: "Медицина", value: 13},
-      {label: "Недвижимость", value: 9},
-      {label: "Нефть и газ", value: 3},
-      {label: "Образование", value: 5},
-      {label: "Продажи", value: 6},
-      {label: "Производство", value: 7},
-      {label: "Строительство", value: 8},
-      {label: "Туризм, гостиницы, рестораны", value: 11},
-      {label: "Юристы", value: 2},
-    ],
-    salOptions: [
-      {label: "Не имеет значения", value: 'idc'}, 
-      {label: "от 0 до 1000", value: '0-1'}, 
-      {label: "от 1000 до 3000", value: '1-3'}, 
-      {label: "от 3000", value: '3'},
-    ],
+    currOptions: this.$t('filters.currDefault'),
+    // currOptions: [
+    //   {label: "все", value: 'idc'},
+    //   {label: "$", value: '$'},
+    //   {label: "манат", value: 'm'},],
+    expOptions: this.$t('filters.expFilters'),
+    // expOptions: [
+    //   {label: "Не имеет значения", value: 'idc'}, 
+    //   {label: "Без опыта", value: '0'},
+    //   {label: "от 1 до 3 лет", value: '1-3'}, 
+    //   {label: "от 3 до 5 лет", value: '3-5'},
+    //   {label: "от 5 лет", value: '5'}],
+    jcatOptions: this.$t('App.jcats'),
+    // jcatOptions: [
+    //   {label: "Не имеет значения", value: 0}, 
+    //   {label: "Администрация", value: 1},
+    //   {label: "Безопасность", value: 14},
+    //   {label: "Инженер", value: 4},
+    //   {label: "Информационные технологии", value: 12},
+    //   {label: "Логистика", value: 10},
+    //   {label: "Медицина", value: 13},
+    //   {label: "Недвижимость", value: 9},
+    //   {label: "Нефть и газ", value: 3},
+    //   {label: "Образование", value: 5},
+    //   {label: "Продажи", value: 6},
+    //   {label: "Производство", value: 7},
+    //   {label: "Строительство", value: 8},
+    //   {label: "Туризм, гостиницы, рестораны", value: 11},
+    //   {label: "Юристы", value: 2},
+    // ],
+    salOptions: this.$t('filters.salFilters'),
+    // salOptions: [
+    //   {label: "Не имеет значения", value: 'idc'}, 
+    //   {label: "от 0 до 1000", value: '0-1'}, 
+    //   {label: "от 1000 до 3000", value: '1-3'}, 
+    //   {label: "от 3000", value: '3'},
+    // ],
   }},
-  computed: {
-    
-  },
   methods: {
     cityUpd(new1) {
       //console.log(new1)
-      if (new1 == 'Не имеет значения') new1 = ''
+      if (new1 == this.$t('filters.cities')[0]) new1 = ''
       this.$emit('cityUpd', new1)
       
     },
@@ -148,7 +149,7 @@ export default {
     filterFn (val, update, abort) {
       update(() => {
         const needle = val.toLowerCase()
-        this.cityOptions = stringOptions.filter(v => v.toLowerCase().indexOf(needle) > -1)
+        this.cityOptions = this.$t('filters.cities').filter(v => v.toLowerCase().indexOf(needle) > -1)
       })
     },
     // resetFields(){
@@ -162,10 +163,10 @@ export default {
     //   //this.search = ''
     //   //rangeValues???
     // },
-    updateAndSave: function(val) {
-      this.rangeValues = val
-      this.$emit('slideEnd', [val.min, val.max])
-    },
+    // updateAndSave: function(val) {
+    //   this.rangeValues = val
+    //   this.$emit('slideEnd', [val.min, val.max])
+    // },
     updateLangs: function(val) {
       if (val==null) {
         this.$emit('updLangs', [])
@@ -193,8 +194,8 @@ export default {
   box-sizing border-box
   box-shadow 0 0 4px 1px var(--main-borders-color)
   border-radius 15px
-  .header
-    background-color #ddd
+  @media screen and (max-width: 550px)
+    display none
   *
     margin 0
   div, span, svg

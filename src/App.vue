@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <q-btn v-if="$route.path == '/'" class="scrollTopBtn" icon="keyboard_arrow_up" glossy color="primary" round @click="scrollTop"/>
+    <q-btn v-if="$route.path == '/'" class="scrollTopBtn" icon="keyboard_arrow_up" glossy color="red-10" round @click="scrollTop"/>
     <header>
       <!-- <q-btn
         text-color="white"
@@ -18,22 +18,22 @@
       </q-btn> -->
       <router-link
         @click.native="refreshjobs('logoclick')" to="/"
-        style="padding: 0px;display: flex"
         class="logolink"
       >
         <!-- <img src="logo1.png" style="align-self:center;height:40px; margin-top:-8px"/> -->
         <span style="font-size:1.1em; letter-spacing:-1px">G</span><span style="color: var(--main-borders-color); letter-spacing:-1px">oo</span><span style="font-size:0.95em; margin-left: 2px; margin-right: -2px">d</span>w<span style="font-size:1.1em">i</span><span style="font-size:1.15em">l</span><span style="font-size:1.15em; margin-left:-2px">l</span>
         <q-tooltip>
-          <p style="font-size: 15px; margin: 0">Главная</p>
+          <p style="font-size: 15px; margin: 0">{{$t('App.logoTooltip')}}</p>
         </q-tooltip>
       </router-link>
-      <div class="separator" style="width: 150px"></div>
+      <!-- <div class="separator" style="width: 150px"></div> -->
       <div id="nav" style="margin-left: auto">
         <!--  shrink stretch -->
         <q-btn 
           @click.native="newJobInit"
           v-if="role == 'company'"
-          style="background-color: var(--btn-color); font-weight: 700; align-self:flex-start; padding: 0 5px;border-radius: 8px;"
+          style="background-color: var(--btn-color); font-weight: 700; align-self:flex-start;border-radius: 8px;"
+          class="headerBtns1"
           text-color="white" 
           :label="$t('App.newJobHint')"
           rounded
@@ -42,7 +42,8 @@
         <q-btn 
           @click.native="authPls"
           v-else-if="role != 'subscriber'"
-          style="background-color: var(--btn-color); font-weight: 700; align-self:flex-start; padding: 0 5px;border-radius: 8px;"
+          style="background-color: var(--btn-color); font-weight: 700; align-self:flex-start;border-radius: 8px;"
+          class="headerBtns1"
           text-color="white" 
           :label="$t('App.newJobHint')"
           to="/registration"
@@ -69,7 +70,8 @@
         <!-- style="alignSelf: flex-end;" -->
         <div class="colx user-status-bar">
           <q-btn 
-            style="background-color: var(--main-borders-color); font-weight: 700; align-self:flex-start; margin: 0 10px; padding: 0 5px;border-radius: 8px;"
+            style="background-color: var(--main-borders-color); font-weight: 700; align-self:flex-start; padding: 0 5px;border-radius: 8px;"
+            class="headerBtns1 loginBtns1"
             text-color="white" 
             :label="$t('App.login')"
             @click.native="regState='login'"
@@ -102,7 +104,7 @@
           >
             <q-icon name="person" size="36px"></q-icon>
             <q-tooltip>
-              <p style="font-size: 15px; margin: 0">Мой кабинет</p>
+              <p style="font-size: 15px; margin: 0">{{$t('App.myProfile')}}</p>
             </q-tooltip>
           </router-link>
           <router-link
@@ -113,7 +115,7 @@
           >
             <q-icon name="person" size="36px"></q-icon>
             <q-tooltip>
-              <p style="font-size: 15px; margin: 0">Мой кабинет</p>
+              <p style="font-size: 15px; margin: 0">{{$t('App.myProfile')}}</p>
             </q-tooltip>
           </router-link>
           <router-link
@@ -166,9 +168,6 @@
             <q-item style="lineHeight: 2.2" dense :style="{color: app_lng == 'RU' ? 'indigo' : 'black'}" clickable v-close-popup @click="app_lng = 'RU'; $i18n.locale = 'ru'; setLang('ru')">
               RU
             </q-item>
-            <q-item style="lineHeight: 2.2" dense :style="{color: app_lng == 'EN' ? 'indigo' : 'black'}" clickable v-close-popup @click="app_lng = 'EN'; $i18n.locale = 'en'; setLang('en')">
-              EN
-            </q-item>
           </q-menu>
         </button>
       </div>
@@ -200,7 +199,7 @@
       />
     </keep-alive>
     <footer class="main__footer">
-      <q-btn push style="color:white;backgroundColor: var(--main-borders-color)" label="Написать нам" to="/Feedback"/>
+      <q-btn push style="color:white;backgroundColor: var(--main-borders-color)" :label="$t('App.fbBtnLabel')" to="/Feedback"/>
     </footer>
     <!-- <LoginModal @authed="authIt" @loginclosed="modalShown = 'none'" :isShown="modalShown === 'login'"></LoginModal> -->
     <!-- <RegisterModal @regclosed="modalShown = 'none'" :isShown="modalShown === 'reg'"></RegisterModal> -->  
@@ -390,37 +389,41 @@ export default {
       this.jobEditId = jid
       //title: this.ownJobs.find(j => j.job_id == jid).title,
       let tmpObj = this.ownJobs.find(j => j.job_id == jid)
-      let jcatOptions = [
-        {label: "Не имеет значения", value: 0}, 
-        {label: "Администрация", value: 1},
-        {label: "Юристы", value: 2},
-        {label: "Нефть и газ", value: 3},
-        {label: "Инженер", value: 4},
-        {label: "Образование", value: 5},
-        {label: "Продажи", value: 6},
-        {label: "Производство", value: 7},
-        {label: "Строительство", value: 8},
-        {label: "Недвижимость", value: 9},
-        {label: "Логистика", value: 10},
-        {label: "Туризм, гостиницы, рестораны", value: 11},
-        {label: "Информационные технологии", value: 12},
-        {label: "Медицина", value: 13},
-        {label: "Безопасность", value: 14}
-      ]
-      let jtypeOptions = [
-        {label: "Постоянная", value: 'c'},
-        {label: "Временная", value: 'v'}]
-      let expOptions = [
-        {label: "Не имеет значения", value: -1},
-        {label: "Без опыта", value: 0},
-        {label: "от 1 до 3 лет", value: 2}, 
-        {label: "от 3 до 5 лет", value: 4},
-        {label: "от 5 лет", value: 6}
-      ]
-      let curOpts = [
-        {label: 'манат', value: 'm'},      
-        {label: '$', value: '$'},
-      ]
+      let jcatOptions = this.$t('App.jcats')
+      // let jcatOptions = [
+      //   {label: "Не имеет значения", value: 0}, 
+      //   {label: "Администрация", value: 1},
+      //   {label: "Юристы", value: 2},
+      //   {label: "Нефть и газ", value: 3},
+      //   {label: "Инженер", value: 4},
+      //   {label: "Образование", value: 5},
+      //   {label: "Продажи", value: 6},
+      //   {label: "Производство", value: 7},
+      //   {label: "Строительство", value: 8},
+      //   {label: "Недвижимость", value: 9},
+      //   {label: "Логистика", value: 10},
+      //   {label: "Туризм, гостиницы, рестораны", value: 11},
+      //   {label: "Информационные технологии", value: 12},
+      //   {label: "Медицина", value: 13},
+      //   {label: "Безопасность", value: 14}
+      // ]
+      let jtypeOptions = this.$t('App.jtypeOptions')
+      let expOptions = this.$t('App.expOpts')
+      // let jtypeOptions = [
+      //   {label: "Постоянная", value: 'c'},
+      //   {label: "Временная", value: 'v'}]
+      // let expOptions = [
+      //   {label: "Не имеет значения", value: -1},
+      //   {label: "Без опыта", value: 0},
+      //   {label: "от 1 до 3 лет", value: 2}, 
+      //   {label: "от 3 до 5 лет", value: 4},
+      //   {label: "от 5 лет", value: 6}
+      // ]
+      let curOpts = this.$t('App.curOpts')
+      // let curOpts = [
+      //   {label: 'манат', value: 'm'},      
+      //   {label: '$', value: '$'},
+      // ]
       
       let searched
       
@@ -553,7 +556,7 @@ export default {
         console.log(this.ownCVs)
       if (!this.cvurl || this.cvurl.length < 5) {
         this.$router.push("/subprofile")
-        this.$q.notify('Сначала загрузите резюме!')
+        this.$q.notify(this.$t('App.firstCVNote'))
         return false
       }
       let hitcvUrl = config.jobsUrl + '/hitjobcv?jid=' + id
@@ -570,7 +573,7 @@ export default {
       } else
       if (this.role != 'company') {
         this.$router.push("/registration")
-        this.$q.notify({html: true, message: 'Подавать резюме могут <span style="color: red">зарегистрированные</span> пользователи'})
+        this.$q.notify({html: true, message: this.$t('App.onlyRegisteredCV')})
         return false
       }
     },
@@ -798,11 +801,15 @@ export default {
   --main-borders-color #3A6E8F
   --btn-color #C00027
   --logoWidth 160px
-#app
   --maxW 1000px
+  @media screen and (max-width: 1000px)
+    --maxW 100%
+  @media screen and (max-width: 550px)
+    --maxW 100%
+#app
   //min-height calc(50vh - 15px)
   box-sizing border-box
-  position:relative
+  position relative
   font-family 'Varela Round', 'Nunito', sans-serif
   -webkit-font-smoothing antialiased
   -moz-osx-font-smoothing grayscale
@@ -825,6 +832,9 @@ export default {
     background-color var(--main-bg-color)//#8080f1//var(--main-bg-color)
     #nav
       display flex
+    @media screen and (max-width: 550px)
+      padding 5px
+      margin 10px 5px
   .r-link
     margin-right 10px
     display block
@@ -863,6 +873,38 @@ export default {
     font-size 36px
     color var(--btn-color)
     line-height 52px
+    padding 0
+    display flex
+    @media screen and (max-width: 550px)
+      font-size 24px
+      margin-right 2px
+  .headerBtns1
+    padding 0 5px
+    white-space nowrap
+    @media screen and (max-width: 550px)
+      font-size 12px
+      padding 0 !important
+      white-space normal
+      height 36px
+      line-height 14px
+      div
+        padding 0 !important
+        width 82px
+  .loginBtns1
+    margin 0 10px
+    @media screen and (max-width: 550px)
+      font-size 16px
+      line-height 36px
+      height 36px
+      padding 0 !important
+      margin-right 0
+      div
+        width 55px
+      div div
+        margin-top -3px
+        
+      
+
   .user-status-bar
     //text-align left
     //align-items flex-start
@@ -892,7 +934,7 @@ export default {
     border 0
     background-color transparent
     color var(--main-borders-color)
-    
+    width 30px
     cursor pointer
     font-size 14px
     &:hover
@@ -969,4 +1011,26 @@ export default {
   color white !important//var(--main-borders-color) !important
 // .ql-editor
 //   background-color #E0F2F1
+
+@media screen and (max-width: 550px)
+  .sdpp-filters
+    line-height 14px !important
+    min-height 16px !important
+    height 16px !important
+    font-size 12px !important
+    align-items center !important
+  .sdpp-filters *
+    padding 0 !important
+    margin 0 !important
+    align-items center !important
+  .sdpp-filters>div>div
+    padding-left 2px !important
+    min-height 18px !important
+    
+  .sdpp-filters i
+    margin-left -5px !important
+    margin-right -3px !important
+    align-items center !important
+    
+    
 </style>

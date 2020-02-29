@@ -151,7 +151,7 @@
             dense
             outlined
             bg-color="white" color="cyan-10"
-            :options="$t('addJob.jcats')"
+            :options="$t('App.jcats')"
             :hint="null"
           />
         </div>
@@ -212,7 +212,7 @@
               dense
               outlined
               bg-color="white" color="cyan-10"
-              :options="$t('addJob.expOpts')"
+              :options="$t('App.expOpts')"
               :hint="null"
             />
           </div>
@@ -225,7 +225,7 @@
               dense
               outlined
               bg-color="white" color="cyan-10"
-              :options="$t('addJob.jtypeOptions')"
+              :options="$t('App.jtypeOptions')"
               :hint="null"
               style="width: 180px"
             />
@@ -488,13 +488,13 @@ export default {
         schedule: '',
         langs: [],
         edu: '',
-        experience: this.$t('addJob.expOpts[0]'),
+        experience: this.$t('App.expOpts[0]'),
         description: '',
         contact_mail: '',
         contact_tel: '',
-        jtype: this.$t('addJob.jtypeOptions[0]'),
+        jtype: this.$t('App.jtypeOptions[0]'),
       },
-      cityList: this.$t('addJob.cityList'),//["Ашхабад", "Дашогуз", "Мары", "Туркменабад", "Туркменбаши"],
+      cityList: this.$t('App.cityList'),//["Ашхабад", "Дашогуз", "Мары", "Туркменабад", "Туркменбаши"],
       scheduleList: this.$t('addJob.scheduleList'),//["5/2", "6/1", "2/2", "3/2", "3/1", "15/15"],
       lazyRulesAll: true,
       pageTypes: {
@@ -522,11 +522,11 @@ export default {
         schedule: '',
         langs: [],
         edu: '',
-        experience: this.$t('addJob.expOpts[0]'),
+        experience: this.$t('App.expOpts[0]'),
         description: '',
         contact_mail: '',
         contact_tel: '',
-        jtype: this.$t('addJob.jtypeOptions[0]'),
+        jtype: this.$t('App.jtypeOptions[0]'),
       },
       contactsValidated: true,
       salaryValidated: true,

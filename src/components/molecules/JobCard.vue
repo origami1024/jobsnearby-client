@@ -17,7 +17,7 @@
           <p v-if="job.salary_min === job.salary_max && job.salary_min > 0">{{job.salary_max}} {{currency}}</p>
           <p v-else-if="job.salary_min && job.salary_min > 0">от {{job.salary_min}} до {{job.salary_max}} {{currency}}</p>
           <p v-else-if="job.salary_max > 0">{{job.salary_max}} {{currency}}</p>
-          <p v-else>По итогам собеседования</p>
+          <p v-else>{{$t('jc.salaryNone')}}</p>
         </strong>
         <p class="alignRight city" v-html="filteredCity"></p>
       </div>
@@ -25,22 +25,22 @@
     <div class="line" v-if="lenses == 'full'">
       <p class="filteredDesc" v-html="
         `${job.experience == -1 ?
-            'Опыт не указан.'
+            $t('jc.expEmpty')
           :(1 > job.experience) ?
-            'Без опыта.'
+            $t('jc.expNone')
           :(job.experience >= 1 && 3 > job.experience) ?
-            'Опыт: от 1 до 3 лет.'
+            $t('jc.exp1_3')
           :(job.experience >= 3 && 5 > job.experience) ?
-            'Опыт: от 3 до 5 лет.'
+            $t('jc.exp3_5')
           :job.experience >= 5 ?
-            'Опыт: от 5 лет.'
+            $t('jc.exp5_')
           : ''} ${filteredDesc}`"></p>
     </div>
     
     <div class="line">
       <div :class="{ line50: true, spbtw: lenses =='full' }">
         <a v-if="role != 'company' && !cved" class="cardLink" @click.prevent="$emit('hitcv', job.job_id)" href="#">
-          Подать резюме
+          {{$t('jc.sendCVLabel')}}
         </a>
         <q-btn 
           v-if="role != 'company' && cved" text-color="primary" 
@@ -50,13 +50,13 @@
           @click="$emit('hitcv', job.job_id)"
         >
           <q-tooltip v-if="hitcv">
-            <p v-if="(hitcv && hitcv.date_created)" style="font-size: 15px; margin: 0">Отправлено {{formatDate(hitcv.date_created)}}</p>
-            <p v-if="(hitcv && hitcv.date_checked)" style="font-size: 15px; margin: 0">Просмотрено {{formatDate(hitcv.date_checked)}}</p>
-            <p v-else style="font-size: 15px; margin: 0">Не просмотрено</p>
+            <p v-if="(hitcv && hitcv.date_created)" style="font-size: 15px; margin: 0">{{$t('jc.tooltipSent')}} {{formatDate(hitcv.date_created)}}</p>
+            <p v-if="(hitcv && hitcv.date_checked)" style="font-size: 15px; margin: 0">{{$t('jc.tooltipSeen')}} {{formatDate(hitcv.date_checked)}}</p>
+            <p v-else style="font-size: 15px; margin: 0">{{$t('jc.tooltipNotseen')}}</p>
           </q-tooltip>
         </q-btn>
         <!-- <q-btn class="mr-5px" v-else-if="role == 'subscriber'" round size="xs" icon="work"/> -->
-        <a v-if="lenses == 'full'" class="cardLink" @click.prevent="isContactsShown = !isContactsShown" href="#">Контакты</a>
+        <a v-if="lenses == 'full'" class="cardLink" @click.prevent="isContactsShown = !isContactsShown" href="#">{{$t('jc.contactsLabel')}}</a>
         <q-btn class="mr-5px" v-else round size="xs" @click="isContactsShown = !isContactsShown" icon="people"/>
       </div>
       <div v-if="isContactsShown" class="contactsPanel">
@@ -72,16 +72,10 @@
 </template>
 
 <script>
-const currencyDic = {
-  '$': '$',
-  'm': 'манат',
-  'р': 'руб',
-  'e': 'евро'
-}
-const sexDic = {
-  'w': '<li>Женщина</li>',
-  'm': '<li>Мужчина</li>',
-}
+// const currencyDic = {
+//   '$': '$',
+//   'm': 'манат',
+// }
 
 export default {
   name: 'JobCard',
@@ -105,16 +99,13 @@ export default {
       let msInDay = 24 * 60 * 60 * 1000
       let diff = (today.getTime() - d.getTime())/msInDay | 0
       let result = d.getDate() + '.' + (d.getMonth() + 1) + '.' + d.getFullYear()
-      if (diff == 0) result = '<span style="color: var(--btn-color); letter-spacing: 1px;">Сегодня</span>'
-      else if (diff == 1) result = '<span style="color: var(--btn-color); letter-spacing: 1px;">Вчера</span>'
-      else if (diff < 5) result = `<span class="gray">${diff} дня назад</span>`
+      if (diff == 0) result = '<span style="color: var(--btn-color); letter-spacing: 1px;">' + this.$t('jc.today') + '</span>'
+      else if (diff == 1) result = '<span style="color: var(--btn-color); letter-spacing: 1px;">' + this.$t('jc.yesterday') + '</span>'
+      else if (diff < 5) result = `<span class="gray">${diff} ${this.$t('jc.daysAgo')}</span>`
       return result
     },
     currency() {
-      return currencyDic[this.job.currency]
-    },
-    gender() {
-      return sexDic[this.job.sex] || ''
+      return this.$t('jc.currencyDic')[this.job.currency]
     },
     filteredTitle: function() {
       if (this.searchFilter.length > 1 && this.job.title.toLowerCase().includes(this.searchFilter)) {
@@ -223,7 +214,6 @@ export default {
     align-items center
     min-width 120px
     max-width 50%
-  
     
   .spbtw
     justify-content space-between
@@ -279,4 +269,17 @@ export default {
   word-break break-all
 .joblink
   color var(--main-borders-color)
+
+@media screen and (max-width: 550px)
+  .jobscard
+    .cardHeader
+      font-size 16px
+    .line50
+      max-width 75%
+    .jobcard__salary p
+      font-size 14px
+  .contactsPanel
+    background-color white
+    width calc(45% - 5px)
+    left 55%
 </style>

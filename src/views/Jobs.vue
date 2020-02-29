@@ -14,9 +14,9 @@
             @salaryUpd="salaryUpd" :city="city" :salary="salary"
             :exp="exp" :jcat="jcat"
             :pending="pending"
-            @refresh="$emit('refresh')" :langOptions="langOptions"
-            @updLangs="updLangs" @slideEnd="slideEnd"
-            :highest="maxSal" :lowest="minSal"></JobsFilter>
+            @refresh="$emit('refresh')"
+            @updLangs="updLangs"
+          ></JobsFilter>
         </div>
       </div>
       <div class="jobs__contents">
@@ -31,7 +31,7 @@
               color="red-10"
             >
               <!-- @input="txt != '' ? outerResetNeeded = true : null" -->
-              <!-- :rules="[val => wordRegex.test(val) || $t('home.searchValSym')]" -->
+              <!-- :rules="[val => wordRegex.test(val) || $t('filters.searchValSym')]" -->
               <template v-if="txt" v-slot:append>
                 <q-icon name="cancel" @click.stop="txt = ''" class="cursor-pointer" />
               </template>
@@ -41,9 +41,10 @@
             </q-input>
             <q-btn 
               @click="refreshPlus"
-              style="background-color: var(--btn-color); font-weight: 700; align-self:flex-start; padding: 0 5px"
+              style="background-color: var(--btn-color); font-weight: 700; align-self:flex-start;"
+              class="searchBtn"
               text-color="white" :loading="pending"
-              :label="$t('home.searchBtn')"
+              :label="$t('filters.searchBtn')"
             />
           </div>
         </div>
@@ -83,11 +84,10 @@
             <!-- :style="{minWidth: '170px'}" -->
             <q-select dense outlined
               style="white-space: nowrap"
+              class="sdpp-filters"
               v-model="sort"
               @input="sortFilterChangeRefresh"
-              :options="[ {label: 'По дате ↓', value: 'new'},
-                          {label: 'По зп ↓', value: 'saldesc'},
-                          {label: 'По зп ↑', value: 'salasc'}]"
+              :options="$t('jobs.sortOpts')"
             />
             <!-- <button class="orderLink">
               {{timerange.label}}
@@ -120,12 +120,11 @@
               </q-menu>
             </button> -->
             <q-select dense outlined
-              :style="{minWidth: '130px'}"
+              style="white-space: nowrap"
+              class="sdpp-filters"
               v-model="timerange"
               @input="timerangeFilterChangeRefresh"
-              :options="[ {label: 'За месяц', value: 'mon'},
-                          {label: 'За неделю', value: 'wee'},
-                          {label: 'За сутки', value: 'day'}]"
+              :options="$t('jobs.dateOpts')"
             />
             <!-- <button class="orderLink">
               {{perpage.label}}
@@ -158,12 +157,11 @@
               </q-menu>
             </button> -->
             <q-select dense outlined
-              :style="{minWidth: '120px'}"
+              style="white-space: nowrap"
+              class="sdpp-filters"
               v-model="perpage"
               @input="perpageFilterChangeRefresh"
-              :options="[ {label: '25 на стр', value: '25'},
-                          {label: '50 на стр', value: '50'},
-                          {label: '100 на стр', value: '100'}]"
+              :options="$t('jobs.perpageOpts')"
             />
             <!-- <div>По запросу: <strong>{{jobsFullcount}}</strong></div> -->
             <div v-if="pages && pages > 0" class="paginationWrap">
@@ -184,6 +182,7 @@
             <!-- <p>Показано {{jobslist.length}} из {{jobsFullcount}}</p> -->
             <!-- <p v-if="txt != ''">Найдено: {{jobsFullcount}}</p> -->
             <q-btn-toggle
+              v-if="wwidth > 549"
               v-model="lenses"
               toggle-color="red-10"
               size="sm"
@@ -196,7 +195,8 @@
             :ownCVs="ownCVs"
             :role="role"
             @hitcv="hitcv"
-            :lenses="lenses" :searchFilter="searchFilter" :jobslist="jobslist" msg="Полученные"/>
+            :lenses="wwidth > 549 ? lenses : 'short'" :searchFilter="searchFilter" :jobslist="jobslist"
+          />
         </div>
         <div v-if="pages && pages > 0" class="paginationWrap">
           <button
@@ -233,20 +233,19 @@ export default {
     page_current: {type: Number, default: 1},
     jobsFullcount: {type: Number, default: 0}
   },
-  data: ()=>{return {
+  data(){return {
     //outerResetNeeded: false,
     lenses: 'full',
     txt: '',
     wordRegex: /^[\wа-яА-ЯÇçÄä£ſÑñňÖö$¢Üü¥ÿýŽžŞş\s\\-]*$/,
-    sort: {label: 'По дате', value: 'new'},
-    timerange: {label: 'За месяц', value: 'mon'},
-    perpage: {label: '25 на стр', value: '25'},
+    sort: this.$t('jobs.sortOpts[0]'),//{label: 'По дате', value: 'new'},
+    timerange: this.$t('jobs.dateOpts[0]'),
+    perpage: this.$t('jobs.perpageOpts[0]'),
     searchFilter: '',
-    salaryVals: [-Infinity, Infinity],
     langsFilter: [],
     maxSal: 100000,
     minSal: 0,
-    langOptions: ["Русский", "Английский", "Немецкий", "Французкий"],
+    //langOptions: ["Русский", "Английский", "Немецкий", "Французкий"],
     city: '',
     jcat: {label: "", value: 0},
     salary: {label: "", value: 'idc'},
@@ -258,9 +257,12 @@ export default {
     JobsList
   },
   computed: {
+    wwidth() {
+      return window.innerWidth
+    },
     isResetShown() {
       let res = false
-      if (this.city != 'Не имеет значения' && this.city != '') res = true
+      if (this.city != this.$t('filters.cities[0]') && this.city != '') res = true
       else if (this.salary.value != 'idc') res = true
       else if (this.currency.value != 'idc') res = true
       else if (this.exp.value != 'idc') res = true
@@ -281,7 +283,7 @@ export default {
       if (this.sort.value !== 'new') params.push('sort=' + this.sort.value)
       if (this.timerange.value !== 'mon') params.push('timerange=' + this.timerange.value)
       if (this.perpage.value !== '25') params.push('perpage=' + this.perpage.value)
-      if ((this.city !== 'Не имеет значения' && this.city !== '') && this.wordRegex.test(this.city)) params.push('city=' + this.city)
+      if ((this.city !== this.$t('filters.cities[0]') && this.city !== '') && this.wordRegex.test(this.city)) params.push('city=' + this.city)
       if (this.exp.value !== 'idc') params.push('exp=' + this.exp.value)
       if (this.jcat.value !== 0) params.push('jcat=' + this.jcat.value)
       if (this.salary.value !== 'idc') params.push('sal=' + this.salary.value)
@@ -300,7 +302,7 @@ export default {
       this.maxSal = max1 + ((max1 - min1) / 10) | 0
       this.minSal = min1 - ((max1 - min1) / 10) | 0
       this.salaryVals = [this.minSal, this.maxSal]
-      this.langOptions = Array.from(new Set(this.jobslist.flatMap(j=>j.langs)))
+      //this.langOptions = Array.from(new Set(this.jobslist.flatMap(j=>j.langs)))
     }
   },
   mounted: function() {
@@ -327,9 +329,9 @@ export default {
       this.exp= {label: "", value: 'idc'}
       this.currency= {label: "", value: 'idc'}
 
-      this.sort = {label: 'По дате', value: 'new'}
-      this.timerange = {label: 'За месяц', value: 'mon'}
-      this.perpage = {label: '25 на стр', value: '25'}
+      this.sort = this.$t('jobs.sortOpts[0]')
+      this.timerange = this.$t('jobs.dateOpts[0]')
+      this.perpage = this.$t('jobs.perpageOpts[0]')
       //this.outerResetNeeded = false
       this.$emit('updQue', this.query)
       this.$emit('refresh')
@@ -341,10 +343,6 @@ export default {
       
       this.searchFilter = this.txt.toLowerCase()
       this.$emit('refresh')
-    },
-    slideEnd: function(vals) {
-      console.log('cp10: ', vals)
-      this.salaryVals = vals
     },
     updLangs: function(vals) {
       console.log('cp11: ', vals)
@@ -410,20 +408,23 @@ export default {
     border-radius 15px
   .jobs__filterpart
     position sticky
+    box-sizing border-box
     //top 105px
     top 10px
     display flex
     margin-right 20px
   .jobsfilter__search
+    box-sizing border-box
     width 100%
     margin-right 5px
   .jobs__main
+    box-sizing border-box
     display flex
     position relative
     // justify-content space-around
   .jobs__contents
-    
-    width 100%
+    box-sizing border-box
+    width calc(100% - 20px)
     max-width calc(1000px - 310px) //that is including the filters to the left
   .jobs_prefilters
     margin-bottom 15px
@@ -431,6 +432,7 @@ export default {
     padding 5px
     border-radius 5px
     box-shadow 0 0 4px 1px var(--main-borders-color)
+    box-sizing border-box
   *
     margin 0
   .line
@@ -462,4 +464,21 @@ export default {
       color blue
   .paginationWrap
     padding 0 3px
+
+@media screen and (max-width: 550px)
+  .jobs
+    padding 0
+    .jobs__filterpart
+      margin-right 10px
+    .searchBtn
+      font-size 12px
+      margin auto
+    .jobs__top
+      padding 5px
+      border-radius 5px
+    .pageBtns
+      padding 3px
+      margin 0px
+      
+
 </style>
