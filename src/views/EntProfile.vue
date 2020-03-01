@@ -47,7 +47,7 @@
                   </a>
                   <div style="width: 30%">
                     {{
-                      'Подано: ' +
+                      $t('entProfile.cvSent') + ' ' +
                       formatDate(resps.find(val=>val.cvhit_id == hit).date_created)
                       + '.'
                     }}
@@ -55,8 +55,8 @@
                   <div style="width: 35%">
                     {{
                       resps.find(val=>val.cvhit_id == hit).date_checked != null
-                        ? 'Просмотрено: ' + formatDate(resps.find(val=>val.cvhit_id == hit).date_checked)
-                        : 'Просмотрено: нет'
+                        ? $t('entProfile.cvSeen') + ' ' + formatDate(resps.find(val=>val.cvhit_id == hit).date_checked)
+                        : $t('entProfile.cvNotSeen')
                     }}
                     <q-btn
                       style="margin-left: 5px"
@@ -83,7 +83,7 @@
               square dense outlined bottom-slots
               color="cyan-10"
               v-model="cabout.company"
-              placeholder="Название компании" counter maxlength="80"
+              :placeholder="$t('entProfile.cname')" counter maxlength="80"
             />
             </div>
             <div class="logo-placeholder" :style="{'background-image': 'url(' + cabout.logo_url + ')'}" >{{cabout.logo_url == '' || !cabout.logo_url ? 'logo placeholder' : ''}}</div>
@@ -108,25 +108,24 @@
             <!-- :max-file-size="102400" -->
             <form action="" ref="uplForm" style="width: 100%; padding: 10px 0;">
             <q-uploader
-              label="Загрузка логотипа компании (Перетяните)"
+              :label="$t('entProfile.dragLogo')"
               color="red-10"
               square
               flat
               bordered
               ref="quploader1"
-              
               accept=".jpg, image/*"
               auto-upload
               no-thumbnails
               style="width: 100%"
               :factory="fileUNew"
             />
-            <q-btn @click="uploadLogo" style="marginBottom: 22px" dense color="primary" v-if="logofile != null" label="Загрузить"/>
+            <!-- <q-btn @click="uploadLogo" style="marginBottom: 22px" dense color="primary" v-if="logofile != null" label="Загрузить"/> -->
             </form>
             <!-- v-if="cabout.logo_url == ''" -->
             <!-- <img v-else :src="cabout.logo_url" alt="Лого"> -->
           </div>
-          <q-input square color="cyan-10" dense class="entprofile__inp" outlined v-model="cabout.website" placeholder="Сайт" counter maxlength="80"/>
+          <q-input square color="cyan-10" dense class="entprofile__inp" outlined v-model="cabout.website" :placeholder="$t('entProfile.sitePH')" counter maxlength="80"/>
           <q-select
             multiple
             use-chips
@@ -134,7 +133,7 @@
             outlined
             square
             color="cyan-10"
-            placeholder="Сфера деятельности"
+            :placeholder="$t('entProfile.catPH')"
             bg-color="white"
             :style="{width: '100%'}"
             max-values="3"
@@ -145,14 +144,14 @@
           <q-input
             v-model="cabout.full_description"
             outlined dense square color="cyan-10"
-            placeholder="Описание"
+            :placeholder="$t('entProfile.descPH')"
             type="textarea"
             counter maxlength="2000"
           />
-          <q-btn color="red-10" @click="updateCompanyData" style="margin-top: 10px">Отправить изменения</q-btn>
+          <q-btn color="red-10" @click="updateCompanyData" style="margin-top: 10px">{{$t('entProfile.sendChanges')}}</q-btn>
         </q-tab-panel>
         <q-tab-panel class="entprofile__settings entprofile__mid" name="settings">
-          <h3 style="width: 100%; marginBottom: 10px; text-align: center;">Компания <strong>{{company}}</strong></h3>
+          <h3 style="width: 100%; marginBottom: 10px; text-align: center;">{{$t('entProfile.settingsLabel')}} <strong>{{company}}</strong></h3>
           
           <!-- <p>Добавить контакты</p>
           <q-input dense class="entprofile__inp" outlined bottom-slots v-model="contacts1" label="Контакты" counter maxlength="30"/>
@@ -160,8 +159,8 @@
           <q-input dense v-show="contacts_count > 2" class="entprofile__inp" outlined bottom-slots v-model="contacts3" label="Контакты" counter maxlength="30"/>
           <q-btn round color="primary" @click="contacts_count < 4 ? contacts_count += 1 : ''" size="sm" icon="add" :disable="contacts_count > 2"/> -->
           <!-- <q-toggle v-model="editable" label="Изменить личные данные"/> -->
-          <q-input square color="cyan-10" type="email" class="entprofile__inp" outlined bottom-slots :value="user" label="Email" counter maxlength="50" />
-          <q-input square color="cyan-10" :type="isPwd ? 'password' : 'text'" class="entprofile__inp" outlined bottom-slots v-model="oldpw" label="Старый пароль" counter maxlength="25">
+          <q-input square color="cyan-10" type="email" class="entprofile__inp" outlined bottom-slots :value="user" :label="$t('entProfile.emailLabel')" counter maxlength="50" />
+          <q-input square color="cyan-10" :type="isPwd ? 'password' : 'text'" class="entprofile__inp" outlined bottom-slots v-model="oldpw" :label="$t('entProfile.oldPWLabel')" counter maxlength="25">
             <template v-slot:append>
               <q-icon
                 :name="isPwd ? 'visibility_off' : 'visibility'"
@@ -170,10 +169,10 @@
               />
             </template>
           </q-input>
-          <q-input square color="cyan-10" :type="isPwd ? 'password' : 'text'" class="entprofile__inp" outlined bottom-slots v-model="newpw" label="Новый пароль" counter maxlength="25">
+          <q-input square color="cyan-10" :type="isPwd ? 'password' : 'text'" class="entprofile__inp" outlined bottom-slots v-model="newpw" :label="$t('entProfile.newPWLabel')" counter maxlength="25">
             
           </q-input>
-          <q-btn color="red-10" @click="tryChangePw" label="Изменить"/>
+          <q-btn color="red-10" @click="tryChangePw" :label="$t('entProfile.changeSettingsBtn')"/>
         </q-tab-panel>
       </q-tab-panels>
     </div>

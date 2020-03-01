@@ -1,8 +1,8 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Registration from '../views/Registration.vue'
-import Jobs from '../views/Jobs.vue'
-import SubProfile from '../views/SubProfile.vue'
+// import Jobs from '../views/Jobs.vue'
+// import SubProfile from '../views/SubProfile.vue'
 import EntProfile from '../views/EntProfile.vue'
 import JobPage from '../views/JobPage.vue'
 import CompanyPage from '../views/CompanyPage.vue'
@@ -15,7 +15,8 @@ const routes = [
   {
     path: '/',
     name: 'home',
-    component: Jobs //Home
+    component: () => import(/* webpackChunkName: "about" */ '../views/Jobs.vue')
+    //component: Jobs //Home
   },
   {
     path: '/jobpage',
@@ -30,7 +31,7 @@ const routes = [
   {
     path: '/subprofile',
     name: 'subprofile',
-    component: SubProfile
+    component: () => import(/* webpackChunkName: "about" */ '../views/SubProfile.vue')
   },
   {
     path: '/entprofile',

@@ -109,7 +109,7 @@
           </router-link>
           <router-link
             @click.native="getOwnJobs"
-            v-if="role && role === 'company'"
+            v-if="role && role === 'company' && $route.name == 'entprofile'"
             class="headerBtn"
             to="/entprofile"
           >
@@ -118,6 +118,18 @@
               <p style="font-size: 15px; margin: 0">{{$t('App.myProfile')}}</p>
             </q-tooltip>
           </router-link>
+          <router-link
+            v-if="role && role === 'company' && $route.name != 'entprofile'"
+            class="headerBtn"
+            to="/entprofile"
+          >
+            <q-icon name="person" size="36px"></q-icon>
+            <q-tooltip>
+              <p style="font-size: 15px; margin: 0">{{$t('App.myProfile')}}</p>
+            </q-tooltip>
+          </router-link>
+
+
           <router-link
             @click.native="logout"
             v-if="user_id != -1"
@@ -162,10 +174,10 @@
         </select> -->
         <button class="langLink" style="margin-right: 0; padding-right: 0;">{{app_lng}}
           <q-menu dense>
-            <q-item style="lineHeight: 2.2" dense :style="{color: app_lng == 'TM' ? 'indigo' : 'black'}" clickable v-close-popup @click="app_lng = 'TM'; $i18n.locale = 'tm'; setLang('tm')">
+            <q-item style="lineHeight: 2.2" dense :style="{color: app_lng == 'TM' ? 'var(--main-borders-color)' : 'black', fontWeight: app_lng == 'TM' ? '700' : '400'}" clickable v-close-popup @click="app_lng = 'TM'; $i18n.locale = 'tm'; setLang('tm')">
               TM
             </q-item>
-            <q-item style="lineHeight: 2.2" dense :style="{color: app_lng == 'RU' ? 'indigo' : 'black'}" clickable v-close-popup @click="app_lng = 'RU'; $i18n.locale = 'ru'; setLang('ru')">
+            <q-item style="lineHeight: 2.2" dense :style="{color: app_lng == 'RU' ? 'var(--main-borders-color)' : 'black', fontWeight: app_lng == 'RU' ? '700' : '400'}" clickable v-close-popup @click="app_lng = 'RU'; $i18n.locale = 'ru'; setLang('ru')">
               RU
             </q-item>
           </q-menu>
@@ -178,26 +190,26 @@
       />
       <!-- color="accent" -->
     </header>
-    <keep-alive> <!-- @stepChange="stepChange" :step="step" -->
-      <router-view
-        :ownCVs="ownCVs"
-        @cvupd="cvupd"
-        @changeUDataSub="uDataChangeFromSubProfile"
-        @setSentState="setSentState" :sent="newJobSentState" @newJobInit="newJobInit" :jobEditedObj="jobEditedObj" :jobEditId="jobEditId" :newJobsPageType="newJobsPageType" @editJob="editJob"
-        @scrollTo="scrollTo"
-        @delJob="deleteJobById" @closeJob="closeJobById" @reopenJob="reopenJobById"
-        @logoutAndRetry="logoutAndRetry"
-        @hitcv="hitcv"
-        @getOwnJobs="getOwnJobs" :ownJobs="ownJobs"
-        @authed="authIt" @regStateUpd="regStateUpd" :regState="regState"
-        class="r-view"
-        :jobsFullcount="jobsFullcount"
-        :page_current="page_current" :pages="pages_count"
-        :pending="ajaxLoading" @updQue="updQue"
-        :user="user" :cvurl="cvurl" :role="role" :username="username" :surname="surname" :insearch="insearch" :company="company" :isagency="isagency" :jobslist="jobslist" @refresh="refreshjobs" 
-        :uid="user_id" :authed="user_id !== -1"
-      />
-    </keep-alive>
+    <router-view
+      :ownCVs="ownCVs"
+      @cvupd="cvupd"
+      @changeUDataSub="uDataChangeFromSubProfile"
+      @setSentState="setSentState" :sent="newJobSentState" @newJobInit="newJobInit" :jobEditedObj="jobEditedObj" :jobEditId="jobEditId" :newJobsPageType="newJobsPageType" @editJob="editJob"
+      @scrollTo="scrollTo"
+      @delJob="deleteJobById" @closeJob="closeJobById" @reopenJob="reopenJobById"
+      @logoutAndRetry="logoutAndRetry"
+      @hitcv="hitcv"
+      @getOwnJobs="getOwnJobs" :ownJobs="ownJobs"
+      @authed="authIt" @regStateUpd="regStateUpd" :regState="regState"
+      class="r-view"
+      :jobsFullcount="jobsFullcount"
+      :page_current="page_current" :pages="pages_count"
+      :pending="ajaxLoading" @updQue="updQue"
+      :user="user" :cvurl="cvurl" :role="role" :username="username" :surname="surname" :insearch="insearch" :company="company" :isagency="isagency" :jobslist="jobslist" @refresh="refreshjobs" 
+      :uid="user_id" :authed="user_id !== -1"
+    />
+    <!-- <keep-alive>
+    </keep-alive> -->
     <footer class="main__footer">
       <q-btn push style="color:white;backgroundColor: var(--main-borders-color)" :label="$t('App.fbBtnLabel')" to="/Feedback"/>
     </footer>
@@ -259,16 +271,15 @@ export default {
     // RegisterModal
   },
   created() {
-    
+    if (localStorage.lang) {
+      this.$i18n.locale = localStorage.lang
+      this.app_lng = localStorage.lang.toUpperCase()
+    }
   },
   beforeDestroy() {
     window.removeEventListener("storage", this.onStorageUpdate);
   },
   mounted() {
-    if (localStorage.lang) {
-      this.$i18n.locale = localStorage.lang
-      this.app_lng = localStorage.lang.toUpperCase()
-    }
     if (localStorage.user) {
       this.user = localStorage.user
     }
@@ -333,6 +344,11 @@ export default {
     // this.getFavedFull()
   },
   methods: {
+    // getOwnJobsWrapperRL() {
+    //   console.log('cpoo: ', this.$router.currentRoute.name)
+    //   console.log('cpoo: ', this.$route.name)
+    //   this.getOwnJobs()
+    // },
     setLang(lang) {
       localStorage.lang = lang
     },
