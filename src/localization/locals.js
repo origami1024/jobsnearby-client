@@ -13,6 +13,8 @@ const loc = {
       messageSuccess: 'Успешно отправлено',
       messageError: 'Ошибка на сервере',
       reqMail: 'Поле email обязательное',
+      fbSuccess: 'Фидбэк отправлен',
+      fbError: 'Ошибка на сервере',
     },
     companyPage: {
       categoriesHeader: 'Сферы деятельности компании',
@@ -306,6 +308,8 @@ const loc = {
       messageSuccess: 'Üstünlikli ugradyldy',
       messageError: 'Serwerde ýalňyş',
       reqMail: 'Hökmany ýer',
+      fbSuccess: 'Sorag ugradyldy',
+      fbError: 'Serwerde ýalňyşlyk',
     },
     companyPage: {
       categoriesHeader: 'Kompaniýanyň iş ugurlary',
