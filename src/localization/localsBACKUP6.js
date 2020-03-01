@@ -251,120 +251,38 @@ const loc = {
   },
   tm: {
     App: {
-      login: 'Girmek',
-      logoutHint: 'Çykmak',
-      newJobHint: 'Wezipe döretmek',
-      logoTooltip: 'Esasy sahypa',
-      myProfile: 'Kabinet',
-      fbBtnLabel: 'Bize ýazyň',
-      jcats: [
-        {label: "Tapawudy ýok", value: 0},
-        {label: "Buhuçet, maliýe", value: 19},
-        {label: "Döwlet işi", value: 1},
-        {label: "Dizaýn, çaphanaçylyk", value: 14},
-        {label: "IT, Internet", value: 4},
-        {label: "Owadanlyk, fitnes, sport", value: 12},
-        {label: "Logistika, ammar", value: 10},
-        {label: "Marketing, mahabat", value: 13},
-        {label: "Medisina, Farmasewtika, Weterinariýa", value: 9},
-        {label: "Gozgalmaýan emläk, rieltor hyzmatlary", value: 3},
-        {label: "Nebit we Gaz", value: 5},
-        {label: "Bilim, repetitorçylyk", value: 6},
-        {label: "Önümçilik, agrosenagat", value: 7},
-        {label: "Restoranlar, iýmit", value: 8},
-        {label: "Gurluşyk", value: 11},
-        {label: "Söwda", value: 2},
-        {label: "Transport, awtohyzmatlary", value: 15},
-        {label: "Syýahatçylyk, myhmanhanalar", value: 16},
-        {label: "Hukuk", value: 17},
-        {label: "HR, kadr işi", value: 18},
-      ],
-      expOpts: [
-        {label: "Tapawudy ýok", value: -1},
-        {label: "Tejribe hökman däl", value: 0},
-        {label: "1 den 3 ýyla", value: 2}, 
-        {label: "3 den 5 ýyla", value: 4},
-        {label: "5 ýyldan köp", value: 6}
-      ],
-      jtypeOptions: [
-        {label: "Hemişelik", value: 'c'},
-        {label: "Wagtlaýyn", value: 'v'}
-      ],
-      curOpts: [
-        {label: 'manat', value: 'm'},      
-        {label: '$', value: '$'},
-      ],
-      cityList: ["Aşgabat", "Daşoguz", "Mary", "Türkmenabat", "Türkmenbaşy"],
-      firstCVNote: 'Ilki rezýumeňizi ýerleşdiriň!',
-      onlyRegisteredCV: 'Rezýumeni diňe <span style="color: red">registrasiýa</span> bolan ulanyjylar ugradyp bilýär',
+      login: 'Вход',
+      logoutHint: 'Выйти',
+      newJobHint: 'Создать новую вакансию'
     },
-    filters: {
-      searchHint: 'Atlar boýunça, awtor, şäher, esasy tekst boýunça gözleg',
-      searchValSym: 'poiskyň ýalňyş setiri',
-      searchBtn: 'Gözle',
-      city: 'Şäher',
-      sal: 'Aýlyk',
-      curr: 'Walýuta',
+    home: {
+      searchHint: 'Поиск по полям название, автор, город, основной текст',
+      searchValSym: 'некорректная строка поиска',
+      searchBtn: 'Поиск',
+      city: 'Город',
+      sal: 'Зарплата',
+      curr: 'Валюта',
       currDefault: [
-        {label: "ähli", value: 'idc'},
-        {label: "manat", value: 'm'},
+        {label: "все", value: 'idc'},
         {label: "$", value: '$'},
-      ],
-      exp: 'Tejribe',
-      jcat: 'Hünär',
-      applyBtn: 'Ulanmak',
-      expFilters: [
-        {label: "Tapawudy ýok", value: 'idc'}, 
-        {label: "Tejribe hökman däl", value: '0'},
-        {label: "1 den 3 ýyla", value: '1-3'}, 
-        {label: "3 den 5 ýyla", value: '3-5'},
-        {label: "5 ýyldan köp", value: '5'}
-      ],
-      salFilters: [
-        {label: "Tapawudy ýok", value: 'idc'}, 
-        {label: "0 dan 1000 çenli", value: '0-1'}, 
-        {label: "1000 dan 3000 çenli", value: '1-3'}, 
-        {label: "3000 den köp", value: '3'},
-      ],
-      cities: ["Tapawudy ýok", "Aşgabat", "Daşoguz", "Mary", "Türkmenabat", "Türkmenbaşy"],
+        {label: "манат", value: 'm'},],
+      exp: 'Опыт',
+      //jtyp: 'Занятость',
+      jcat: 'Профессия',
+      applyBtn: 'Применить'
     },
-    jobs: {
-      sortOpts: [
-        {label: 'Güni ↓', value: 'new'},
-        {label: 'Aýlygyň azalmasy', value: 'saldesc'},
-        {label: 'Aýlygyň köpelmesi', value: 'salasc'}
-      ],
-      dateOpts: [
-        {label: 'Bir aýyňky', value: 'mon'},
-        {label: 'Bir hepdäňki', value: 'wee'},
-        {label: 'Bir günüňki', value: 'day'}
-      ],
-      perpageOpts: [
-        {label: '25 sany', value: '25'},
-        {label: '50 sany', value: '50'},
-        {label: '100 sany', value: '100'}
-      ],
-      
+    companyPage: {
+      categoriesHeader: 'Сферы деятельности компании',
+      descHeader: 'Описание',
+      publishedJobsCountLabel: 'Размещено вакансий: ',
+      registrationDate: 'Зарегистрирована: ',
     },
-    jc: {
-      salaryNone: 'Söhbetdeşlik esasynda',
-      expEmpty: 'Tejribe görkezilmedik.',
-      expNone: 'Tejribe hökman däl.',
-      exp1_3: 'Tejribe: 1 den 3 ýyla.',
-      exp3_5: 'Tejribe: 3 den 5 ýyla.',
-      exp5_: 'Tejribe: 5 ýyldan köp.',
-      sendCVLabel: 'Rezýumeni ugrat',
-      tooltipSent: 'Ugradyldy',
-      tooltipSeen: 'Seredildi',
-      tooltipNotseen: 'Seredilenok',
-      contactsLabel: 'Kontaktlar',
-      currencyDic: {
-        '$': '$',
-        'm': 'manat',
-      },
-      today: 'Bu gün',
-      yesterday: 'Düýn',
-      daysAgo: 'gün mundan öň',
+    entProfile: {
+      navPublishedLabel: 'Вакансии',
+      navResponsesLabel: 'Отклики',
+      navAboutLabel: 'О компании',
+      navSettingsLabel: 'Настройки',
+      publishedHeader: 'Опубликованные вакансии',
     },
     reg: {
       loginLabel: 'Giriş',
@@ -513,22 +431,8 @@ const loc = {
       cityList: ["Aşgabat", "Daşoguz", "Mary", "Türkmenabat", "Türkmenbaşy"],
       scheduleList: ["5/2", "6/1", "2/2", "3/2", "3/1", "15/15"],
       currDefault: {label: 'manat', value: 'm'},
-    },
-    companyPage: {
-      categoriesHeader: 'Сферы деятельности компании',
-      descHeader: 'Описание',
-      publishedJobsCountLabel: 'Размещено вакансий: ',
-      registrationDate: 'Зарегистрирована: ',
-    },
-    entProfile: {
-      navPublishedLabel: 'Вакансии',
-      navResponsesLabel: 'Отклики',
-      navAboutLabel: 'О компании',
-      navSettingsLabel: 'Настройки',
-      publishedHeader: 'Опубликованные вакансии',
-    },
+    }
   },
-
 }
 
 module.exports = {
