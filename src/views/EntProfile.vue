@@ -105,6 +105,7 @@
               />
             </form> -->
             <!-- url="http://localhost:4444/upload" -->
+            <!-- :max-file-size="102400" -->
             <form action="" ref="uplForm" style="width: 100%; padding: 10px 0;">
             <q-uploader
               label="Загрузка логотипа компании (Перетяните)"
@@ -113,7 +114,7 @@
               flat
               bordered
               ref="quploader1"
-              :max-file-size="102400"
+              
               accept=".jpg, image/*"
               auto-upload
               no-thumbnails
