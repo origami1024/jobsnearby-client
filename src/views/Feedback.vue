@@ -7,7 +7,7 @@
         square
         dense
         outlined
-        bg-color="white" color="cyan-10" placeholder="Тема"
+        bg-color="white" color="cyan-10" :placeholder="$t('fb.topic')"
         counter
         maxlength="25"
       />
@@ -17,17 +17,19 @@
         dense
         counter
         maxlength="25"    
-        bg-color="white" color="cyan-10" v-model="fbData.name" outlined placeholder="Ваше имя"/>
+        bg-color="white" color="cyan-10" v-model="fbData.name" outlined
+        :placeholder="$t('fb.yourname')"/>
       <br>
       <q-input
         square
         dense
-        bg-color="white" color="cyan-10" v-model="fbData.mail" outlined placeholder="* Email"
+        bg-color="white" color="cyan-10" v-model="fbData.mail" outlined
+        :placeholder="$t('fb.hyphenMail')"
         counter
         maxlength="70"
         :rules="[
-          val => !!val || 'Обязательное поле',
-          val => mailregex.test(val) || 'Некорректный формат адреса'
+          val => !!val || $t('fb.mailValReq'),
+          val => mailregex.test(val) || $t('fb.mailValFormat')
         ]"
       />        
       <br>
@@ -40,19 +42,19 @@
         bg-color="white" color="cyan-10"
         v-model="fbData.body"
         type="textarea"
-        placeholder="Пожелания"
+        :placeholder="$t('fb.textLabel')"
       />
-      <q-btn color="red-10" label="Отправить" @click="sendFB" />
+      <q-btn color="red-10" :label="$t('fb.btnSend')" @click="sendFB" />
       <!-- unelevated -->
     </div>
     <div v-else class="fb_inner">
       <p>{{
         state == 'OK'
-          ? 'Успешно отправлено'
-          : 'Ошибка на сервере'}}</p>
+          ? $t('fb.messageSuccess')
+          : $t('fb.messageError')}}</p>
       <div style="width: 100%;">
-        <q-btn style="margin-right: 10px" color="red-10" label="Отправить еще" @click="state='ready'" />
-        <q-btn color="red-10" label="На главную" @click="fbDataFlush(); state='ready'; $router.push('/')" />
+        <q-btn style="margin-right: 10px" color="red-10" :label="$t('fb.btnSendMore')" @click="state='ready'" />
+        <q-btn color="red-10" :label="$t('fb.toMain')" @click="fbDataFlush(); state='ready'; $router.push('/')" />
       </div>
     </div>
   </div>
@@ -105,7 +107,7 @@ export default {
             }
         })
       } else {
-        this.$q.notify({type:'negative', message:'Поле email обязательное'})
+        this.$q.notify({type:'negative', message:$t('fb.reqMail')})
       }
       
     }

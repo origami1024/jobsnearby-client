@@ -91,21 +91,21 @@ export default {
             
           })
     },
-    setVariables() {
-      this.currency = currencydic[this.job.currency]
-      if (this.job.salary_min < 1) {
-        if (this.job.salary_max < 1) {
-          this.salary_deriv = 'по итогам собеседования'
-        } else this.salary_deriv = this.job.salary_max + ' ' + this.currency
-      } else {
-        if (this.job.salary_min < this.job.salary_max) {
-          this.salary_deriv = `${this.job.salary_min} - ${this.job.salary_max}` + ' ' + this.currency
-        } else
-        if (this.job.salary_min = this.job.salary_max) {
-          this.salary_deriv = `${this.job.salary_max}` + ' ' + this.currency
-        } else this.salary_deriv = `${this.job.salary_max}` + ' ' + this.currency
-      }
-    }
+    // setVariables() {
+    //   this.currency = currencydic[this.job.currency]
+    //   if (this.job.salary_min < 1) {
+    //     if (this.job.salary_max < 1) {
+    //       this.salary_deriv = 'по итогам собеседования'
+    //     } else this.salary_deriv = this.job.salary_max + ' ' + this.currency
+    //   } else {
+    //     if (this.job.salary_min < this.job.salary_max) {
+    //       this.salary_deriv = `${this.job.salary_min} - ${this.job.salary_max}` + ' ' + this.currency
+    //     } else
+    //     if (this.job.salary_min = this.job.salary_max) {
+    //       this.salary_deriv = `${this.job.salary_max}` + ' ' + this.currency
+    //     } else this.salary_deriv = `${this.job.salary_max}` + ' ' + this.currency
+    //   }
+    // }
   }
 }
 </script>

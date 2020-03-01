@@ -105,7 +105,7 @@ export default {
       return result
     },
     currency() {
-      return this.$t('jc.currencyDic')[this.job.currency]
+      return this.$t('App.currencyDic')[this.job.currency]
     },
     filteredTitle: function() {
       if (this.searchFilter.length > 1 && this.job.title.toLowerCase().includes(this.searchFilter)) {

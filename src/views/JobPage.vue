@@ -1,20 +1,12 @@
 <template>
   <div class="jobpage">
     <main class="detailed__main1">
-      <div v-if="job.is_closed" style="color: red; font-size: 16px">Вакансия закрыта{{job.closed_why != '' ? ', причина: ' + job.closed_why : ''}}</div>
+      <div v-if="job.is_closed" style="color: red; font-size: 16px">
+        {{$t('jobPage.jobClosed')}} {{job.closed_why != '' ? ', ' + $t('jobPage.reason') + ': ' + job.closed_why : ''}}
+      </div>
       <section class="detailed__line" style="marginBottom: 5px">
         <div class="detailed__col">
-          <!-- <div style="display: flex"> -->
-            <h1 class="titleHeader">{{job.title}}</h1>
-            
-            <!-- <q-btn
-              v-else-if="role != 'company'"
-              color="red-10"
-              style="alignSelf: center; white-space: nowrap; margin-top:4px; margin-left: 20px; padding: 0 10px; font-weight: 700;"
-              dense label="Подать резюме"
-              @click.prevent="$emit('hitcv', -1)"
-            /> -->
-          <!-- </div> -->
+          <h1 class="titleHeader">{{job.title}}</h1>
           <p class="salary-deriv" style="font-size: 16px; font-weight: 700; color: #000">{{salary_deriv}}</p>
         </div>
         <div class="detailed__logo1" :style="{'background-image': 'url(' + job.logo_url + ')'}" >{{job.logo_url == '' || !job.logo_url ? 'logo placeholder' : ''}}</div>
@@ -28,14 +20,14 @@
         v-if="!ownCVs.find(val=>val.cvjob_id == job.job_id)"
         color="red-10"
         style="alignSelf: center; white-space: nowrap; margin-top:4px; margin-left: 10px; padding: 0 10px; font-weight: 700;"
-        dense label="Подать резюме"
+        dense :label="$t('jobPage.sendCV')"
         @click.prevent="$emit('hitcv', job.job_id)"
       />
       <div 
         style="margin-left: 20px; alignSelf: flex-end; color: gray"
         v-else-if="role == 'subscriber'"
       >
-        (Резюме уже подано)
+        ({{$t('jobPage.cvAlreadySent')}})
       </div>
       </section>
       
@@ -44,20 +36,20 @@
       <section>
         <!--  v-if="job.experience >=0 || job.age1>0 || job.age2 > 0 || job.edu || (job.langs && job.langs.length > 0)" -->
         <div>
-          <h4 class="detailed__header1">Требования</h4>
+          <h4 class="detailed__header1">{{$t('jobPage.reqs')}}</h4>
           <div class="subitem" v-if="!(job.experience >=0 || job.age1>0 || job.age2 > 0 || job.edu || (job.langs && job.langs.length > 0))">
-            Не указаны
+            {{$t('jobPage.none')}}
           </div>
           <div class="subitem" v-if="job.experience >= 0">
               {{
                 (1 > job.experience >= 0) ?
-                  'Без опыта.'
+                  $t('jobPage.expNone')
                 :(job.experience >= 1 && 3 > job.experience) ?
-                  'Опыт: от 1 до 3 лет.'
+                  $t('jobPage.exp1_3')
                 :(job.experience >= 3 && 5 > job.experience) ?
-                  'Опыт: от 3 до 5 лет.'
+                  $t('jobPage.exp3_5')
                 :job.experience >= 5 ?
-                  'Опыт: от 5 лет.'
+                  $t('jobPage.exp5_')
                 : ''
               }}
                   <!-- job.experience == 0 ?
@@ -71,42 +63,36 @@
                 : '' -->
           </div>
           <div class="subitem" v-if="job.age1 > 0 || job.age2 > 0">
-            Возраст:{{job.age1 > 0 ? ' от ' + job.age1 : ''}}{{job.age2 > 0 ? ' до ' + job.age2 : ''}} лет
+            {{$t('jobPage.ageLabel')}}{{job.age1 > 0 ? ' ' + $t('jobPage.from') + ' ' + job.age1 : ''}}{{job.age2 > 0 ? ' ' + $t('jobPage.to') + ' ' + job.age2 : ''}} {{$t('jobPage.years')}}
           </div>
           <div class="subitem" v-if="job.edu" >
-              Образование: {{job.edu}}
+              {{$t('jobPage.eduLabel')}} {{job.edu}}
           </div>
           <div class="subitem" v-if="job.langs && job.langs.length > 0">
-            
-              Языки: {{job.langs.join(', ')}}
-            
+              {{$t('jobPage.langsLabel')}} {{job.langs.join(', ')}}
           </div>
-          
         </div>
       </section>
       <section>
         <div>
-            <h4 class="detailed__header1">Условия работы</h4>
+            <h4 class="detailed__header1">{{$t('jobPage.conds')}}</h4>
             <div class="subitem" v-if="salary_deriv">
-              
-                Оклад {{salary_deriv}}
-              
+              {{$t('jobPage.salLabel')}} {{salary_deriv}}
             </div>
             <div class="subitem" v-if="(job.worktime1 > 0 && job.worktime2 > 0) || job.schedule" >
               
-                График работы: {{job.schedule}} {{job.worktime1 ? 'с ' + job.worktime1 : ''}} {{job.worktime2 ? 'до ' + job.worktime2 : ''}}
+              {{$t('jobPage.schedule')}} {{job.schedule}} {{job.worktime1 ? $t('jobPage.from2') + ' ' + job.worktime1 : ''}} {{job.worktime2 ? $t('jobPage.to') + ' ' + job.worktime2 : ''}}
               
             </div>
             <div class="subitem">
               
-                Вакансия {{job.jobtype == 'c' ? 'постоянная' : 'временная'}}
-              
+              {{$t('jobPage.jTypeLabel')}} {{job.jobtype == 'c' ? $t('jobPage.jTypePermanent') : $t('jobPage.jTypeTemporary')}}
             </div>
         </div>
       </section>
       <section v-if="job.description">
         <div>
-            <h4 class="detailed__header1">Описание</h4>
+            <h4 class="detailed__header1">{{$t('jobPage.desc')}}</h4>
             <div class="subitem">
               <div class="descriptionHTML" v-html="job.description">
               </div>
@@ -115,7 +101,7 @@
       </section>
       <section>
         <div>
-            <h4 class="detailed__header1">Контакты</h4>
+            <h4 class="detailed__header1">{{$t('jobPage.contacts')}}</h4>
             <div class="subitem" v-if="job.contact_mail">
               
                 {{job.contact_mail}}
@@ -133,7 +119,7 @@
         <p>Уникальных просмотров: {{job.hits_uniq > 0 ? job.hits_uniq : 1}}</p>
       </section> -->
       <section style="display: flex; justifyContent: space-between">
-        <p>Дата публикации: {{published}}</p>
+        <p>{{$t('jobPage.publishedDate')}} {{published}}</p>
         <p style="font-size: 17px">
           <q-icon class="bdscolored" :name="'visibility'" />
           <span>{{job.hits_all > 0 ? job.hits_all : 1}}</span>
@@ -148,35 +134,35 @@
 import axios from 'axios'
 const config = require('./../configs/main_config')
 
-let currencydic = {
-  '$': '$',
-  'm': 'манат',
-  'р': 'руб',
-  'e': 'евро'
-}
+// let currencydic = {
+//   '$': '$',
+//   'm': 'манат',
+//   'р': 'руб',
+//   'e': 'евро'
+// }
 
-let jcatdic = [
-  "Бух учет, финансы",
-  "Гос служба",
-  "Дизайн, полиграфия",
-  "ИТ, Интернет",
-  "Красота, фитнес, спорт",
-  "Логистика, склад",
-  "Маркетинг, реклама",
-  "Медицина, Фармация, Ветеринария",
-  "Недвижимость, риэлтерские услуги",
-  "Нефть и Газ",
-  "Образование, репетиторство",
-  "Охрана, безопасность",
-  "Производство, агропром",
-  "Рестораны, питание",
-  "Строительство",
-  "Торговля",
-  "Транспорт, автосервис",
-  "Туризм, гостиницы",
-  "Юриспруденция",
-  "HR, кадры",
-]
+// let jcatdic = [
+//   "Бух учет, финансы",
+//   "Гос служба",
+//   "Дизайн, полиграфия",
+//   "ИТ, Интернет",
+//   "Красота, фитнес, спорт",
+//   "Логистика, склад",
+//   "Маркетинг, реклама",
+//   "Медицина, Фармация, Ветеринария",
+//   "Недвижимость, риэлтерские услуги",
+//   "Нефть и Газ",
+//   "Образование, репетиторство",
+//   "Охрана, безопасность",
+//   "Производство, агропром",
+//   "Рестораны, питание",
+//   "Строительство",
+//   "Торговля",
+//   "Транспорт, автосервис",
+//   "Туризм, гостиницы",
+//   "Юриспруденция",
+//   "HR, кадры",
+// ]
 
 export default {
   name: 'jobpage',
@@ -184,9 +170,9 @@ export default {
     role: String,
     ownCVs: Array
   },
-  data: ()=>{return {
+  data() {return {
     job: {},
-    currency: 'манат',
+    currency: '',//this.$t('App.currencyDic')['m']
     jcategory: '',
     //salary_subtitle: '',
     salary_deriv: '',
@@ -222,13 +208,13 @@ export default {
           })
     },
     setVariables() {
-      this.currency = currencydic[this.job.currency]
+      this.currency = this.$t('App.currencyDic')[this.job.currency]
       //this.salary_subtitle = this.job.salary_max ? `<p style="font-size: 20px">${this.job.salary_max} ${this.currency}</p>` : ''
-      this.jcategory = jcatdic[this.job.jcategory]
+      //this.jcategory = jcatdic[this.job.jcategory]
 
       if (this.job.salary_min < 1) {
         if (this.job.salary_max < 1) {
-          this.salary_deriv = 'по итогам собеседования'
+          this.salary_deriv = this.$t('jobPage.salaryNone')
         } else this.salary_deriv = this.job.salary_max + ' ' + this.currency
       } else {
         if (this.job.salary_min < this.job.salary_max) {
