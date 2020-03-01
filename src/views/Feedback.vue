@@ -98,16 +98,16 @@ export default {
           .then(response => {
             //console.log('viewHit', response.data)
             if (response.data == 'OK') {
-              this.$q.notify('Фидбэк отправлен')
+              this.$q.notify(this.$t('fb.fbSuccess'))
               this.state = 'OK'
               this.fbDataFlush()
             } else {
-              this.$q.notify('Ошибка на сервере')
+              this.$q.notify(this.$t('fb.fbError'))
               this.state = 'BAD'
             }
         })
       } else {
-        this.$q.notify({type:'negative', message:$t('fb.reqMail')})
+        this.$q.notify({type:'negative', message: this.$t('fb.reqMail')})
       }
       
     }
