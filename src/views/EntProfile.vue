@@ -488,9 +488,12 @@ export default {
   .logo-placeholder
     width 180px
     height 80px
-    background-size 180px 80px
-    background-color pink
+    //background-size 180px 80px
+    //box-shadow 0 0 3px 0
     line-height 50px
+    background-size contain
+    background-repeat no-repeat
+    background-position center
   .responseLinkLvl1
     color var(--btn-color)
     margin-right 5px

@@ -168,9 +168,12 @@ export default {
     text-align center
     width 150px
     height 65px
-    background-size 100% 100%
-    background-color coral
+    // background-size 100% 100%
+    // background-color coral
     line-height 50px
+    background-size contain
+    background-repeat no-repeat
+    background-position center
   }
   .detailed__header
     color var(--btn-color)
