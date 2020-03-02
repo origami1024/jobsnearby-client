@@ -196,7 +196,7 @@ export default {
     role: String,
     user: String,
   },
-  data: ()=>{return {
+  data() {return {
     respsJreformat: [],
     resps: [],
     logo_upload_error: null,
@@ -208,7 +208,7 @@ export default {
       website: '',
       full_description: ''
     },
-    domainsAll: domainsAll,
+    domainsAll: this.$t('entProfile.companyDomains'),//domainsAll,
     lenses: 'full',
     contacts1: '',
     contacts2: '',
@@ -305,9 +305,9 @@ export default {
         .then(response => {
           //console.log('trychpw', response.data)
           if (response.data == 'OK') {
-            this.$q.notify('Пароль изменен')
+            this.$q.notify(this.$t('entProfile.pwChanged'))
           }
-          else this.$q.notify('Неправильные данные')
+          else this.$q.notify(this.$t('entProfile.pwWrongData'))
           //if ok show like compnenet
           //reset fields
           //error like validation
@@ -319,8 +319,8 @@ export default {
         .post(url, this.cabout, {headers: {'Content-Type' : 'application/json' }, withCredentials: true,})
         .then(response => {
           if (response.data == 'OK') {
-            this.$q.notify('Данные изменены')
-          } else this.$q.notify('Ошибка')
+            this.$q.notify(this.$t('entProfile.dataChanged'))
+          } else this.$q.notify(this.$t('entProfile.dataError'))
           //if error, show like popup or status update
       })
     },
@@ -354,13 +354,13 @@ export default {
           if (resp.data && resp.data.startsWith('link:')) {
             this.logo_upload_error = null
             this.cabout.logo_url = resp.data.replace('link:', '')
-            this.$q.notify('Изображение загружено')
+            this.$q.notify(this.$t('entProfile.picLoaded'))
             console.log(this.cabout.logo_url)
           } else {
             console.log('error uploading: ', resp.data)
             if (resp.data.startsWith('Error in file size')) {
-              this.logo_upload_error = 'Картинка больше 400кб'
-              this.$q.notify('Картинка больше 400кб')
+              this.logo_upload_error = this.$t('entProfile.picTooBig')
+              this.$q.notify(this.$t('entProfile.picTooBig'))
             }
           }
           //if (response.data === 'OK') {} else 
@@ -404,7 +404,7 @@ export default {
   mounted(){
     //this.newusername = this.username
     //this.newsurname = this.surname
-    setTimeout(()=>{this.$emit('getOwnJobs');},50)
+    setTimeout(()=>{this.$emit('getOwnJobs')},50)
     setTimeout(()=>{this.getResps()},100)
   },
   watch: {

@@ -70,7 +70,8 @@ const getJobs = (req, res) => {
 
   let que =  `SELECT jobs.author_id, users.company as author, jobs.job_id, jobs.city, jobs.experience, jobs.jobtype, jobs.title, jobs.edu, jobs.currency, jobs.sex, jobs.salary_min, jobs.salary_max, jobs.description, jobs.worktime1, jobs.worktime2, jobs.schedule, jobs.age1, jobs.age2, jobs.langs, jobs.time_published as published, jobs.time_updated as updated, jobs.jobtype, jobs.contact_mail, contact_tel, jcategory
               FROM jobs, users
-              WHERE jobs.author_id = users.user_id AND 
+              WHERE jobs.author_id = users.user_id AND
+                jobs.is_published = TRUE AND
                 jobs.is_closed = FALSE
                 ${timerange} 
                 ${txt != undefined ? ` AND
@@ -99,6 +100,7 @@ const getJobs = (req, res) => {
     let countque =  `SELECT count(*) OVER() AS full_count
                     FROM jobs, users
                     WHERE jobs.author_id = users.user_id AND
+                      jobs.is_published = TRUE AND
                       jobs.is_closed = FALSE
                       ${timerange} 
                       ${txt != undefined ? ` AND
@@ -228,6 +230,52 @@ async function closeJobByIdAdmin(req, res) {
     })
   } else {res.send('wrong userinfo(closeJBIA)')}
 }
+
+
+async function approveJobByIdAdmin(req, res) {
+  const jid = parseInt(req.body.jid)
+  if (isNaN(jid) || jid < 0 || String(jid).length > 10) {
+    console.log('Error: wrong id')
+    res.status(400).send('Неправильный id вакансии.')
+    return false
+  }
+  if (req.cookies.sessioa && req.cookies.sessioa.length > 50 && req.cookies.user2) {
+    let que1st = `SELECT u2id FROM "users2" WHERE "u2coo" = $1 AND "u2mail" = $2`
+    let params1st = [req.cookies.sessioa, req.cookies.user2]
+    pool.query(que1st, params1st, (error, results) => {
+      if (error) {
+        console.log(error)
+        res.send('step2')
+        //throw error
+        return false
+      }
+      if (results.rows.length < 1) {
+        console.log('no cookie found')
+        //Если юзера с таким куки не найдено, то выходим из функции прост
+        res.send('step3')
+        return false
+      }
+      
+      //по айди
+      //если есть в базе и автор сам удаляющий
+      //удалить
+      
+      let que2nd = `UPDATE jobs SET (is_published, time_updated) = (TRUE, NOW()) WHERE job_id = $1`
+      let params2nd = [jid]
+      pool.query(que2nd, params2nd, (error2, results2) => {
+        if (error2) {
+          console.log('approveJobByIdAdmin Error2: ', error2)
+          res.status(400).send('error222')
+          return false
+        }
+        res.status(200).send('OK')
+        addLog('Вакансия одобрена(A)', 'Id вакансии: ' + jid, results.rows[0].u2id, '(Модератор) ' + req.cookies.user2)
+      })
+
+    })
+  } else {res.send('wrong userinfo(approveJBIA)')}
+}
+
 async function deleteJobByIdAdmin(req, res) {
   const jid = parseInt(req.body.jid)
   //проверить жоб айди формально
@@ -423,7 +471,7 @@ async function getOwnJobs (req, res) {
       //after cookies check, get the actual data from db
 
       //array_length(array_agg(distinct jobs.hits_log)) as hits_uniq
-      let que2nd = `SELECT jobs.job_id, jobs.city, jobs.experience, jobs.jobtype, jobs.title, jobs.edu, jobs.currency, jobs.salary_min, jobs.salary_max, jobs.sex, jobs.description, jobs.worktime1, jobs.worktime2, jobs.age1, jobs.age2, jobs.langs, jobs.time_published as published, jobs.time_updated as updated, jobs.contact_tel, jobs.contact_mail, cardinality(jobs.hits_log) as hits_all, (select count(distinct a) from unnest(jobs.hits_log) as a) as hits_uniq, jobs.is_closed, jobs.closed_why, jobs.jcategory
+      let que2nd = `SELECT jobs.job_id, jobs.city, jobs.experience, jobs.jobtype, jobs.title, jobs.edu, jobs.currency, jobs.salary_min, jobs.salary_max, jobs.sex, jobs.description, jobs.worktime1, jobs.worktime2, jobs.age1, jobs.age2, jobs.langs, jobs.time_published as published, jobs.time_updated as updated, jobs.contact_tel, jobs.contact_mail, cardinality(jobs.hits_log) as hits_all, (select count(distinct a) from unnest(jobs.hits_log) as a) as hits_uniq, jobs.is_closed, jobs.closed_why, jobs.jcategory, jobs.is_published
       FROM jobs
       WHERE jobs.author_id = $1
       GROUP BY jobs.job_id
@@ -1747,6 +1795,7 @@ module.exports = {
 
   closeJobByIdAdmin,
   deleteJobByIdAdmin,
+  approveJobByIdAdmin,
 
   u2fbread,
   u2fbdel,

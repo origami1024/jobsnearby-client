@@ -103,6 +103,7 @@ app.post('/newu2.json', adminNew) //?check who is adding the new user!!!
 app.post('/fbaction.json', fbaction)
 app.post('/admnjobclo.json', db.closeJobByIdAdmin)
 app.post('/admnjobdel.json', db.deleteJobByIdAdmin)
+app.post('/admnjobapr.json', db.approveJobByIdAdmin)
 app.post('/auaction.json', auaction)
 
 function params1(request, response) {
@@ -643,6 +644,7 @@ async function adminJobs(req, res) {
         .hidden {
           display: none;
         }
+        tr:nth-child(even) {background: #DCD}
         </style>
         <h2 style="text-align:center; margin: 0;">Вакансии</h2>
         ${pageParts.cplink()}
@@ -653,8 +655,7 @@ async function adminJobs(req, res) {
               <td>title</td>
               <td>aid</td>
               <td>time_updated</td>
-              <td>salary_min</td>
-              <td>salary_max</td>
+              <td>is_published</td>
               <td>currency</td>
               <td>contact_mail</td>
               <td>contact_tel</td>
@@ -679,27 +680,30 @@ async function adminJobs(req, res) {
             <td>${val.title}</td>
             <td>${val.author_id}</td>
             <td>${d}</td>
-            <td>${val.salary_min}</td>
-            <td>${val.salary_max}</td>
+            <td id="td_apr_${val.job_id}">${val.is_published}</td>
             <td>${val.currency}</td>
             <td>${val.contact_mail}</td>
             <td>${val.contact_tel}</td>
             <td id="td_ic_${val.job_id}">${val.is_closed}</td>
             <td id="td_cw_${val.job_id}">${val.closed_why}</td>
-            <td>
+            <td style="width: 180px; display: flex">
               ${val.is_closed == false
                 ? `
                   <div id="cl_ctr_${val.job_id}">
-                    <button onclick="popup(${val.job_id})">Закрытие</button>
+                    <button style="padding:0" onclick="popup(${val.job_id})">Закрытие</button>
                     <div id="close_${val.job_id}" class="hidden">
                       <textarea id="ta_${val.job_id}" style="color: black" placeholder="укажите причину"></textarea>
-                      <button onclick="sendclosejob(${val.job_id})">Закрыть</button>
+                      <button style="padding:0" onclick="sendclosejob(${val.job_id})">Закрыть</button>
                     </div>
                   </div>
                 `
                 : ''
               }
-              <button onclick="senddeljob(${val.job_id})">Удалить</button>
+              <button style="padding:0" onclick="senddeljob(${val.job_id})">Удалить</button>
+              ${val.is_published
+                ? ''
+                : `<button id="btn_apr_${val.job_id}" style="padding:0" onclick="sendaprjob(${val.job_id})">Одобрить</button>`
+              }
             </td>
           </tr>
         `
@@ -744,6 +748,24 @@ async function adminJobs(req, res) {
             http.onreadystatechange = function() {
               if(http.readyState == 4 && http.status == 200) {
                 console.log('cpo2: ', http.responseText)
+
+              }
+            }
+            http.send(JSON.stringify(d))
+          }
+          function sendaprjob(jid) {
+            let d = {jid}
+            //console.log(d)
+            var http = new XMLHttpRequest()
+            var url = '/admnjobapr.json'
+            http.open('POST', url, true)
+            http.setRequestHeader('Content-type', 'application/json')
+            //
+            document.getElementById("td_apr_" + jid).textContent = 'true'
+            document.getElementById("btn_apr_" + jid).remove()
+            http.onreadystatechange = function() {
+              if(http.readyState == 4 && http.status == 200) {
+                console.log('cpo3: ', http.responseText)
 
               }
             }

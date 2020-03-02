@@ -4,20 +4,26 @@
       <table>
         <thead>
           <tr>
-            <td style="width: 35%; min-width: 35%; max-width: 35%; text-align: left">Название</td>
-            <td style="width: 15%; min-width: 15%; max-width: 15%;">Всего просмотров</td>
-            <td style="width: 15%; min-width: 15%; max-width: 15%;">Уникальных просмотров</td>
+            <td style="width: 30%; min-width: 30%; max-width: 30%; text-align: left">{{$t('jobsStats.title')}}</td>
+            <td style="width: 15%; min-width: 15%; max-width: 15%;">{{$t('jobsStats.views')}}</td>
+            <td style="width: 15%; min-width: 15%; max-width: 15%;">{{$t('jobsStats.uniqViews')}}</td>
             <!-- <td style="width: 15%; min-width: 15%; max-width: 15%;">Подали резюме</td> -->
-            <td style="width: 10%; min-width: 10%; max-width: 10%;">Изменить</td>
-            <td style="width: 10%; min-width: 10%; max-width: 10%;">Закрыть</td>
-            <td style="width: 10%; min-width: 10%; max-width: 10%;">Удалить</td>
+            <td style="width: 10%; min-width: 10%; max-width: 10%;">
+              {{$t('jobsStats.published')}}
+              <q-tooltip>
+                <p style="font-size: 15px; margin: 0">{{$t('jobsStats.publishedHint')}}</p>
+              </q-tooltip>
+            </td>
+            <td style="width: 10%; min-width: 10%; max-width: 10%;">{{$t('jobsStats.change')}}</td>
+            <td style="width: 10%; min-width: 10%; max-width: 10%;">{{$t('jobsStats.close')}}</td>
+            <td style="width: 10%; min-width: 10%; max-width: 10%;">{{$t('jobsStats.delete')}}</td>
           </tr>
         </thead>
         <tr class="jobstat" v-for="item in jobslist" :key="item.job_id">
           <td style="text-align: left"><a class="link1" target="_blank" :href="'/jobpage?id=' + item.job_id">{{item.title}}</a></td>
           <td>{{Number(item.hits_all)}}</td>
           <td>{{item.hits_uniq}}</td>
-          <!-- <td>0</td> -->
+          <td>{{item.is_published === true ? $t('jobsStats.yes') : $t('jobsStats.no')}}</td>
           <td>
             <q-btn
               v-if="!item.is_closed"
@@ -46,7 +52,7 @@
               @click="closeThis(item.job_id)"
             />
             <span v-else>
-              Закрыта
+              {{$t('jobsStats.closed')}}
             </span>
           </td>
           <td>
@@ -60,7 +66,7 @@
           </td>
         </tr>
       </table>
-      <p v-if="jobslist.length == 0">Нет ни одной вакансии</p>
+      <p v-if="jobslist.length == 0">{{$t('jobsStats.none')}}</p>
     </div>
   </div>
 </template>
