@@ -276,7 +276,7 @@ const loc = {
       sendJobBtnLabelNew: 'Разместить вакансию',
       sendJobBtnLabelUpdate: 'Отправить изменения',
       sendJobSuccess1: 'Вакансия ',
-      sendJobSuccess2: ' успешно добавлена',
+      sendJobSuccess2: ' добавлена. Она будет видна другим пользователям после проверки модератором',
       sendJobSuccess1x: 'Вакансия ',
       sendJobSuccess2x: ' успешно изменена',
       btnAddOneMore: 'Добавить еще одну',

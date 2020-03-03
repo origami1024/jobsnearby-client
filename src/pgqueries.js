@@ -430,7 +430,7 @@ async function getJobById (id) {
   //'SELECT * FROM jobs WHERE job_id = $1'
 
   
-  let que = `SELECT * FROM (SELECT jobs.author_id, users.company as author, users.logo_url, jobs.job_id, jobs.city, jobs.experience, jobs.jobtype, jobs.title, jobs.edu, jobs.currency, jobs.sex, jobs.salary_min, jobs.salary_max, jobs.description, jobs.worktime1, jobs.worktime2, jobs.schedule, jobs.age1, jobs.age2, jobs.langs, jobs.time_published as published, jobs.time_updated as updated, contact_mail, contact_tel, cardinality(jobs.hits_log) as hits_all, jobs.is_closed, jobs.closed_why, jobs.jcategory
+  let que = `SELECT * FROM (SELECT jobs.author_id, users.company as author, users.logo_url, jobs.job_id, jobs.city, jobs.experience, jobs.jobtype, jobs.title, jobs.edu, jobs.currency, jobs.sex, jobs.salary_min, jobs.salary_max, jobs.description, jobs.worktime1, jobs.worktime2, jobs.schedule, jobs.age1, jobs.age2, jobs.langs, jobs.time_published as published, jobs.time_updated as updated, contact_mail, contact_tel, cardinality(jobs.hits_log) as hits_all, jobs.is_closed, jobs.closed_why, jobs.jcategory, jobs.is_published
             FROM jobs, users
             WHERE jobs.author_id = users.user_id AND jobs.job_id = $1) a,
             (select count(distinct hits_log1) as hits_uniq
@@ -1556,6 +1556,8 @@ async function adminGetJobs() {
   let que = `
     SELECT *
     FROM "jobs"
+    ORDER BY time_created DESC
+
   `
   let result = await pool.query(que, null).catch(error => {
     console.log('cp adminGetJobs err1: ', error)
@@ -1731,7 +1733,11 @@ async function adminDayStats() {
 async function adminStats() {
   let que = `
     SELECT  (
-      
+      SELECT COUNT(*)
+      FROM jobs
+      WHERE NOT is_published = True OR is_published IS NULL
+      ) AS jobs_tba,
+      (
       SELECT COUNT(*)
       FROM users
       WHERE role = 'subscriber'

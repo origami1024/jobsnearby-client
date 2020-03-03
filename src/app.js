@@ -590,15 +590,21 @@ async function adminPanel(req, res) {
           </style>
             <ul class="cpul1" style="list-style-type: none; width: 65%">
               <li>
-                <a href="/allfb.json">Фидбек пользователей
-                ${stts.unread_fb > 0 ? `<sup style="background-color:red;color:white;padding:2px">${stts.unread_fb}</sup>` : ''}
+                <a href="/allfb.json">
+                  Фидбек пользователей
+                  ${stts.unread_fb > 0 ? `<sup style="background-color:red;color:white;padding:2px">${stts.unread_fb}</sup>` : ''}
                 </a>
               </li>
               <li>
-                <a href="/adminusers.json">Пользователи</a>
+                <a href="/adminusers.json">
+                  Пользователи
+                </a>
               </li>
               <li>
-                <a href="/adminjobs.json">Вакансии</a>
+                <a href="/adminjobs.json">
+                  Вакансии
+                  ${stts.jobs_tba > 0 ? `<sup style="background-color:red;color:white;padding:2px">${stts.jobs_tba}</sup>` : ''}
+                </a>
               </li>
               ${auth.category_rights === '777'
                 ? `<li>
@@ -675,9 +681,9 @@ async function adminJobs(req, res) {
       data.forEach(val=>{
         let d = new Date(val.time_updated).toString().split(' GMT')[0].substring(3)
         let tmp = `
-          <tr id="jtr_${val.job_id}">
+          <tr id="jtr_${val.job_id}" ${val.is_published == true ? '' : 'style="font-weight: 700"'}>
             <td>${val.job_id}</td>
-            <td>${val.title}</td>
+            <td><a href="/jobpage?id=${val.job_id}">${val.title}</a></td>
             <td>${val.author_id}</td>
             <td>${d}</td>
             <td id="td_apr_${val.job_id}">${val.is_published}</td>
@@ -763,6 +769,8 @@ async function adminJobs(req, res) {
             //
             document.getElementById("td_apr_" + jid).textContent = 'true'
             document.getElementById("btn_apr_" + jid).remove()
+            document.getElementById("jtr_" + jid).style.fontWeight = '400'
+            
             http.onreadystatechange = function() {
               if(http.readyState == 4 && http.status == 200) {
                 console.log('cpo3: ', http.responseText)

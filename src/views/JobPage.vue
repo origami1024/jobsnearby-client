@@ -4,7 +4,7 @@
       <div v-if="job.is_closed" style="color: red; font-size: 16px">
         {{$t('jobPage.jobClosed')}} {{job.closed_why != '' ? ', ' + $t('jobPage.reason') + ': ' + job.closed_why : ''}}
       </div>
-      <div v-if="!job.is_published" style="color: gray; font-size: 14px">
+      <div v-if="job.is_published != true" style="color: gray; font-size: 14px">
         ({{$t('jobPage.jobNotPublishedYet')}})
       </div>
       <section class="detailed__line" style="marginBottom: 5px">
