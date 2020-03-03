@@ -11,7 +11,7 @@
             <td style="width: 10%; min-width: 10%; max-width: 10%;">
               {{$t('jobsStats.published')}}
               <q-tooltip>
-                <p style="font-size: 15px; margin: 0">{{$t('jobsStats.publishedHint')}}</p>
+                <p style="font-size: 15px;margin: 0">{{$t('jobsStats.publishedHint')}}</p>
               </q-tooltip>
             </td>
             <td style="width: 10%; min-width: 10%; max-width: 10%;">{{$t('jobsStats.change')}}</td>

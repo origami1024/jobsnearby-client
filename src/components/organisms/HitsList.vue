@@ -6,11 +6,11 @@
       <table style="width:100%">
         <thead>
           <tr>
-            <td style="width: 30%; min-width: 30%; max-width: 30%; text-align: left">Вакансия</td>
-            <td style="width: 25%; min-width: 25%; max-width: 25%;">Компания</td>
-            <td style="width: 15%; min-width: 15%; max-width: 15%;">Примечания</td>
-            <td style="width: 15%; min-width: 15%; max-width: 15%;">Подано</td>
-            <td style="width: 15%; min-width: 15%; max-width: 15%;">Просмотрено</td>
+            <td style="width: 30%; min-width: 30%; max-width: 30%; text-align: left">{{$t('hits.job')}}</td>
+            <td style="width: 25%; min-width: 25%; max-width: 25%;">{{$t('hits.company')}}</td>
+            <td style="width: 15%; min-width: 15%; max-width: 15%;">{{$t('hits.remarks')}}</td>
+            <td style="width: 15%; min-width: 15%; max-width: 15%;">{{$t('hits.sent')}}</td>
+            <td style="width: 15%; min-width: 15%; max-width: 15%;">{{$t('hits.seen')}}</td>
           </tr>
         </thead>
         <tr class="jobstat" v-for="item in cvhitsHistory" :key="item.cvjob_id">
@@ -24,7 +24,7 @@
           </td>
           <td>
             <span v-if="item.is_closed">
-              Закрыта
+              {{$t('hits.closed')}}
             </span>
           </td>
           <td>
@@ -35,12 +35,12 @@
               {{formatDate(item.date_checked)}}
             </span>
             <span v-else>
-              Нет
+              {{$t('hits.no')}}
             </span>
           </td>
         </tr>
       </table>
-      <p v-if="cvhitsHistory.length == 0">Не подано ни на одну должность. Чтобы подать резюме кликните "Подать резюме" на карточке вакансии</p>
+      <p v-if="cvhitsHistory.length == 0">{{$t('hits.none')}}</p>
     </div>
   </div>
 </template>
@@ -83,7 +83,6 @@ export default {
     thead
       td
         border-bottom 3px solid transparent
-        
         font-weight 700
     td
       padding 3px

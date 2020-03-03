@@ -1,7 +1,7 @@
 <template>
   <div class="uploads">
     <div v-if="role === 'company'" class="authed">
-      <h4 class="uploads__header">Добавление нескольких вакансий</h4>
+      <h4 class="uploads__header">{{$t('upl.header')}}</h4>
       <q-stepper
         v-model="step"
         ref="stepper"
@@ -11,11 +11,11 @@
       >
         <q-step
           :name="1"
-          title="Добавить несколько вакансий через Excel"
+          :title="$t('upl.stepAdd')"
           icon="settings"
           :done="step > 1"
         >
-          Выберите файл с вакансиями. <a href="/Vacancy_V5.xlsx">Пример файла</a>
+          {{$t('upl.chooseFile')}} <a href="/Vacancy_V5.xlsx">{{$t('upl.fileExample')}}</a>
           <q-input
             @change="parseFile"
             outlined
@@ -31,30 +31,30 @@
         </q-step>
         <q-step
           :name="2"
-          title="Опубликовать вакансии"
+          :title="$t('upl.stepPublish')"
           icon="create_new_folder"
           :done="step > 2"
         >
           <div>
             <table style="border-spacing: 0">
               <thead :style="{backgroundColor: 'black', color: 'white'}">
-                <td>Название</td>
-                <td>Зарп от</td>
-                <td>Зарп до</td>
-                <td>Вал юта</td>
-                <td>возр от</td>
-                <td>возр до</td>
-                <td>время от</td>
-                <td>время до</td>
-                <td>режим</td>
-                <td>Языки</td>
-                <td>Образ ование</td>
-                <td>Стаж</td>
-                <td>Город</td>
-                <td>Тип занят ости</td>
-                <td>Дополнительно</td>
-                <td>Тел</td>
-                <td>Почта</td>
+                <td>{{$t('upl.tdTilte')}}</td>
+                <td>{{$t('upl.tdSalMin')}}</td>
+                <td>{{$t('upl.tdSalMax')}}</td>
+                <td>{{$t('upl.tdCurr')}}</td>
+                <td>{{$t('upl.tdAgeFrom')}}</td>
+                <td>{{$t('upl.tdAgeTo')}}</td>
+                <td>{{$t('upl.tdTimeFrom')}}</td>
+                <td>{{$t('upl.tdTimeTo')}}</td>
+                <td>{{$t('upl.tdSchedule')}}</td>
+                <td>{{$t('upl.tdLangs')}}</td>
+                <td>{{$t('upl.tdEdu')}}</td>
+                <td>{{$t('upl.tdExp')}}</td>
+                <td>{{$t('upl.tdCity')}}</td>
+                <td>{{$t('upl.tdJTyp')}}</td>
+                <td>{{$t('upl.tdMore')}}</td>
+                <td>{{$t('upl.tdTel')}}</td>
+                <td>{{$t('upl.tdMail')}}</td>
               </thead>
               <tr @input="onEditableInput" v-for="(item, index) in parsed" :key="index" :itemindex="index">
                 <td contenteditable="true" propname="title">{{item.title}}</td>
@@ -76,28 +76,28 @@
                 <td contenteditable="true" propname="contact_mail">{{item.contact_mail}}</td>
               </tr>
             </table>
-            <q-btn v-if="step > 1" flat color="primary" @click="resetParsed" label="Сбросить" class="q-ml-sm" />
-            <q-btn color="primary" @click="sendNewJobs" :disabled="parsed.length < 1" label="Опубликовать"/>
+            <q-btn v-if="step > 1" flat color="primary" @click="resetParsed" :label="$t('upl.reset')" class="q-ml-sm" />
+            <q-btn color="primary" @click="sendNewJobs" :disabled="parsed.length < 1" :label="$t('upl.publish')"/>
           </div>
         </q-step>
         <q-step
           :name="3"
-          title="Финиш"
+          :title="$t('upl.stepFinish')"
           icon="done"
           :done="step > 3"
         >
           <p>{{uploadStatus}}</p>
-          <q-btn color="primary" @click="step = 1" :disabled="step.length < 3" label="Добавить еще несколько вакансий через Excel"/>
+          <q-btn color="primary" @click="step = 1" :disabled="step.length < 3" :label="$t('upl.addMore')"/>
         </q-step>
       </q-stepper>
-      <h4 class="uploads__header">Все опубликованные вакансии({{ownJobs.length}})</h4>
+      <h4 class="uploads__header">{{$t('upl.allPublishedHeader')}}({{ownJobs.length}})</h4>
       <div class="uploads__published">
         <JobsStats @editJob="editJob" @delJob="delJob" :jobslist="ownJobs"/>
         <!-- <JobsList :jobslist="ownJobs"/> -->
       </div>
     </div>
     <div v-else>
-      Авторизируйтесь, для возможности загрузки вакансий
+      {{$t('upl.authPlsMsg')}}
     </div>
   </div>
 </template>
@@ -125,7 +125,7 @@ export default {
       step: 1,
       file: undefined,
       parsed: [],
-      uploadStatus: 'готов к загрузке'
+      uploadStatus: this.$t('upl.readyToUpload')
     }
   },
   computed: {
@@ -164,15 +164,15 @@ export default {
           .post(config.jobsUrl + '/entrance', this.parsed, {headers: {'Content-Type' : 'application/json' }, withCredentials: true,})
           .then(response => {
             if (response.data === 'OK') {
-              this.uploadStatus = 'Вакансии успешно опубликованы'
+              this.uploadStatus = this.$t('upl.success1')
               this.$emit('getOwnJobs')
-            } else {this.uploadStatus = 'Загрузка не удалась'}
+            } else {this.uploadStatus = this.$t('upl.err1')}
             
           })
         this.parsed = []
         this.step = 3
         
-      } else {this.uploadStatus = 'Загрузите данные'}
+      } else {this.uploadStatus = this.$t('upl.getData')}
     },
     parseFile: function (e) {
       this.files = e.target.files
@@ -189,7 +189,7 @@ export default {
         console.log('ccc', lastLineIndex)
         let getjtype = (val) => {
           //console.log('gettype cp1: ', val)
-          return (val == 'постоянная') ? 'c' : (val == 'временная') ? 'v' : ''
+          return (val == this.$t('upl.perm')) ? 'c' : (val == this.$t('upl.temp')) ? 'v' : ''
         }
 
         
@@ -212,27 +212,6 @@ export default {
           alphaIndex = 0
           newData.push({})
           entries.forEach(val => newl(val))
-          // if ('A'+lastLineIndex in tmp) newData[lastLineIndex].title = tmp['A'+lastLineIndex].v
-          // if ('B'+lastLineIndex in tmp) newData[lastLineIndex].salary_min = tmp['B'+lastLineIndex].v
-          // if ('C'+lastLineIndex in tmp) newData[lastLineIndex].salary_max = tmp['C'+lastLineIndex].v
-          // if ('D'+lastLineIndex in tmp) newData[lastLineIndex].currency = tmp['D'+lastLineIndex].v
-          // if ('E'+lastLineIndex in tmp) newData[lastLineIndex].contact_tel = tmp['E'+lastLineIndex].v
-          // if ('F'+lastLineIndex in tmp) newData[lastLineIndex].contact_mail = tmp['F'+lastLineIndex].v
-          // if ('E'+lastLineIndex in tmp) newData[lastLineIndex].contact_mail = tmp['E'+lastLineIndex].v
-          // if ('F'+lastLineIndex in tmp) newData[lastLineIndex].age1 = tmp['F'+lastLineIndex].v
-          // if ('G'+lastLineIndex in tmp) newData[lastLineIndex].age2 = tmp['G'+lastLineIndex].v
-          // if ('H'+lastLineIndex in tmp) newData[lastLineIndex].worktime1 = tmp['H'+lastLineIndex].v
-          // if ('I'+lastLineIndex in tmp) newData[lastLineIndex].worktime2 = tmp['I'+lastLineIndex].v
-          // newData[lastLineIndex].langs = []
-          // if ('J'+lastLineIndex in tmp) newData[lastLineIndex].langs.push(tmp['J'+lastLineIndex].v)
-          // if ('K'+lastLineIndex in tmp) newData[lastLineIndex].langs.push(tmp['K'+lastLineIndex].v)
-          // if ('L'+lastLineIndex in tmp) newData[lastLineIndex].langs.push(tmp['L'+lastLineIndex].v)
-          // if ('M'+lastLineIndex in tmp) newData[lastLineIndex].edu = tmp['M'+lastLineIndex].v
-          // if ('N'+lastLineIndex in tmp) newData[lastLineIndex].experience = tmp['N'+lastLineIndex].v
-          // if ('O'+lastLineIndex in tmp) newData[lastLineIndex].city = tmp['O'+lastLineIndex].v
-          // if ('P'+lastLineIndex in tmp && getjtype(tmp['P'+lastLineIndex].v) != '') newData[lastLineIndex].jtype = getjtype(tmp['P'+lastLineIndex].v)
-          // if ('Q'+lastLineIndex in tmp) newData[lastLineIndex].description = tmp['Q'+lastLineIndex].v
-          //newData[lastLineIndex].author_id = this.uid AUTHOR ID SHOULD BE TAKEN FROM DB BY SESSION, NOT SAFE HERE
           console.log((alpha[alphaIndex] + lastLineIndex in tmp && getjtype(tmp[alpha[alphaIndex] + lastLineIndex].v) != ''))
           if (alpha[alphaIndex] + lastLineIndex in tmp && getjtype(tmp[alpha[alphaIndex] + lastLineIndex].v) != '') newData[lastLineIndex].jtype = getjtype(tmp[alpha[alphaIndex] + lastLineIndex].v)
           alphaIndex += 1
@@ -272,13 +251,11 @@ export default {
 .uploads
   max-width 1280px
   &__header
-    //margin 8px 0
     margin-top 16px
     margin-bottom 8px
     font-size 15px
     font-weight 600
   &__published
-    //margin-top 15px
     padding 10px 10px
     box-shadow 0 1px 4px 2px #ddd
     border-radius 4px

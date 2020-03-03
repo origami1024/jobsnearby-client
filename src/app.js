@@ -651,6 +651,8 @@ async function adminJobs(req, res) {
           display: none;
         }
         tr:nth-child(even) {background: #DCD}
+        a {color:blue; text-decoration: none}
+        a:visited {color:blue}
         </style>
         <h2 style="text-align:center; margin: 0;">Вакансии</h2>
         ${pageParts.cplink()}

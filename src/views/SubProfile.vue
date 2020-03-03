@@ -4,8 +4,8 @@
       <ProfileNav
         :localRoute="tab"
         @setLocalRoute="setLocalRoute"
-        :localroutes="[{r: 'cv', l: 'Резюме'}, {r: 'sentCVS', l: 'Поданные резюме'}, {r: 'personal', l: 'Личные данные'}]"
-        :localroutesX="{r: 'settings', l: 'Настройки'}"
+        :localroutes="[{r: 'cv', l: $t('sub.navCV')}, {r: 'sentCVS', l: $t('sub.navSentCVs')}, {r: 'personal', l: $t('sub.navPersonal')}]"
+        :localroutesX="{r: 'settings', l: $t('sub.navSettings')}"
       />
       <q-tab-panels
         class="qtpans"
@@ -19,14 +19,14 @@
             Текущая ссылка на резюме <a :href="'https://docs.google.com/viewerng/viewer?url=' + cvurl" target="_blank">{{cvurl}}</a>
           </div> -->
           <div class="urlpanel" style="margin-bottom: 10px">
-            {{cvurl == '' ? 'Резюме не загружено' : 'Резюме загружено'}}
+            {{cvurl == '' ? $t('sub.cvurlUploaded') : $t('sub.cvurlNone')}}
             <a v-if="cvurl != ''" :href="'https://docs.google.com/viewerng/viewer?url=' + cvurl" target="_blank">
               <q-icon color="blue-10" size="30px" name="assignment">
               </q-icon>
             </a>
           </div>
           <form action="" ref="cvForm">
-            Загрузить резюме
+            {{$t('sub.loadCVHeader')}}
             <q-input
               id="fileinput1"
               @input="cvinput"
@@ -40,7 +40,7 @@
               ref="cvUploader"
             />
           </form>
-          <q-btn v-if="cvurl != ''" color="red-10" label="Удалить резюме" @click="cvdel" />
+          <q-btn v-if="cvurl != ''" color="red-10" :label="$t('sub.deleteCVBtn')" @click="cvdel" />
           <!-- <q-btn
             @click="updateCVLink"
             style="marginBottom: 22px" dense color="primary"
@@ -70,15 +70,15 @@
             class="subprofile__inp"
             color="cyan-10"
             square outlined bottom-slots 
-            v-model="userdata.username" label="Имя"
+            v-model="userdata.username" :label="$t('sub.name')"
             counter maxlength="35"  />
           <q-input
             class="subprofile__inp"
             color="cyan-10"
             square outlined bottom-slots
-            v-model="userdata.surname" label="Фамилия"
+            v-model="userdata.surname" :label="$t('sub.surname')"
             counter maxlength="35"  />
-          <q-btn color="red-10" @click="tryChangeUData" label="Изменить"/>
+          <q-btn color="red-10" @click="tryChangeUData" :label="$t('sub.change')"/>
         </q-tab-panel>
 
 
@@ -88,10 +88,10 @@
             square outlined bottom-slots
             color="cyan-10"
             :value="user"
-            label="Email"
+            :label="$t('sub.email')"
             counter maxlength="50"
           />
-          <q-input square color="cyan-10" :type="isPwd ? 'password' : 'text'" class="subprofile__inp" outlined bottom-slots v-model="mailpw.oldpw" label="Старый пароль" counter maxlength="25" >
+          <q-input square color="cyan-10" :type="isPwd ? 'password' : 'text'" class="subprofile__inp" outlined bottom-slots v-model="mailpw.oldpw" :label="$t('sub.oldPW')" counter maxlength="25" >
             <template v-slot:append>
               <q-icon
                 :name="isPwd ? 'visibility_off' : 'visibility'"
@@ -104,9 +104,9 @@
             square color="cyan-10" 
             :type="isPwd ? 'password' : 'text'" 
             class="subprofile__inp" outlined bottom-slots 
-            v-model="mailpw.newpw" label="Новый пароль" counter maxlength="25" >
+            v-model="mailpw.newpw" :label="$t('sub.newPW')" counter maxlength="25" >
           </q-input>
-          <q-btn color="red-10" @click="tryChangePw" label="Изменить"/>
+          <q-btn color="red-10" @click="tryChangePw" :label="$t('sub.change')"/>
         </q-tab-panel>
       </q-tab-panels>
     </div>
@@ -205,9 +205,9 @@ export default {
         .post(url, {cvurl: this.cvurlnew}, {headers: {'Content-Type' : 'application/json' }, withCredentials: true,})
         .then(response => {
           if (response.data == 'OK') {
-            this.$q.notify('Данные изменены')
+            this.$q.notify(this.$t('sub.dataChanged'))
             this.$emit('cvupd', this.cvurlnew)
-          } else this.$q.notify('Ошибка')
+          } else this.$q.notify(this.$t('sub.dataError'))
           this.cvurlnew = ''
           //if error, show like popup or status update
       })
@@ -218,9 +218,9 @@ export default {
         .post(url, null, {headers: {'Content-Type' : 'application/json' }, withCredentials: true,})
         .then(response => {
           if (response.data == 'OK') {
-            this.$q.notify('Резюме удалено')
+            this.$q.notify(this.$t('sub.cvDeleted'))
             this.$emit('cvupd', '')
-          } else this.$q.notify('Ошибка')
+          } else this.$q.notify(this.$t('sub.dataError'))
           this.cvurlnew = ''
           //if error, show like popup or status update
       })
@@ -253,11 +253,11 @@ export default {
           } else {
             console.log('error cv uploading: ', resp.data)
             if (resp.data.startsWith('Error in file size')) {
-              this.cv_upload_error = 'Резюме больше 100кб'
-              this.$q.notify('Резюме больше 100кб')
+              this.cv_upload_error = this.$t('sub.cvTooBig')
+              this.$q.notify(this.$t('sub.cvTooBig'))
             } else {
-              this.cv_upload_error = 'Ошибка'
-              this.$q.notify('Ошибка')
+              this.cv_upload_error = this.$t('sub.dataError')
+              this.$q.notify(this.$t('sub.dataError'))
             }
           }
           //if (response.data === 'OK') {} else 
@@ -276,9 +276,9 @@ export default {
           console.log('tryChangeUData', response.data)
           if (response.data == 'OK') {
             this.$emit('changeUDataSub', udata)
-            this.$q.notify('Данные изменены')
+            this.$q.notify(this.$t('sub.dataChanged'))
           }
-          else this.$q.notify('Неправильные данные')
+          else this.$q.notify(this.$t('sub.wrongData'))
           //if ok show like compnenet
           //reset fields
           //error like validation
@@ -292,9 +292,9 @@ export default {
         .then(response => {
           console.log('trychpw', response.data)
           if (response.data == 'OK') {
-            this.$q.notify('Пароль изменен')
+            this.$q.notify(this.$t('sub.pwChanged'))
           }
-          else this.$q.notify('Неправильные данные')
+          else this.$q.notify(this.$t('sub.wrongData'))
           //if ok show like compnenet
           //reset fields
           //error like validation
