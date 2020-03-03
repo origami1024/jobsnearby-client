@@ -30,7 +30,7 @@
               icon="edit"
               size="sm"
               color="green"
-              round
+              glossy
               @click="$emit('editJob', item.job_id)"
             />
             <q-btn
@@ -38,7 +38,7 @@
               icon="work"
               size="sm"
               color="blue"
-              round
+              glossy
               @click="$emit('reopenJob', item.job_id)"
             />
           </td>
@@ -48,7 +48,7 @@
               icon="work_off"
               size="sm"
               color="orange"
-              round
+              glossy
               @click="closeThis(item.job_id)"
             />
             <span v-else>
@@ -60,7 +60,7 @@
               icon="delete_forever"
               size="sm"
               color="red"
-              round
+              glossy
               @click="delThis(item.job_id)"
             />
           </td>
