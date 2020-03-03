@@ -683,7 +683,7 @@ async function adminJobs(req, res) {
         let tmp = `
           <tr id="jtr_${val.job_id}" ${val.is_published == true ? '' : 'style="font-weight: 700"'}>
             <td>${val.job_id}</td>
-            <td><a href="/jobpage?id=${val.job_id}">${val.title}</a></td>
+            <td><a href="/jobpage?id=${val.job_id}" target="_blank">${val.title}</a></td>
             <td>${val.author_id}</td>
             <td>${d}</td>
             <td id="td_apr_${val.job_id}">${val.is_published}</td>
