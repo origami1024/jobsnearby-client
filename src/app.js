@@ -520,25 +520,6 @@ async function adminPanel(req, res) {
             <p>Новые вакансии сегодня: <b>${stts.opened_today_count}</b></p>
             <p>Новые вакансии за неделю: <b>${stts.opened_this_week_count}</b></p>
           <div>
-          <div>
-            <input id="input1" />
-            <button onclick="sendMail()">sendMailToIt</button>
-            <script>
-              function sendMail() {
-                console.log('sendMail cp1')
-                var http = new XMLHttpRequest()
-                var url = '/testm.json'
-                http.open('POST', url, true)
-                http.setRequestHeader('Content-type', 'application/json')
-                http.onreadystatechange = function() {
-                  if(http.readyState == 4 && http.status == 200) {
-                    console.log('cpo1: ', http.responseText)
-                  }
-                }
-                http.send('{}')
-              }
-            </script>
-          </div>
         `
         //уник посетителей
         //вакансии по фильтрам
