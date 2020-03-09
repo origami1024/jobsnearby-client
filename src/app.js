@@ -145,7 +145,7 @@ async function verify(req, res) {
   console.log(veri)
   if (veri === 1) {
     let baseUrl = process.env.NODE_ENV ? 'https://jobsnearby.herokuapp.com' : 'http://127.0.0.1:8080'
-    res.send('Email пользователя верифицирован. Теперь вы можете войти <a href="' + baseUrl + '/registration?login=1">Войти</a>')
+    res.send('Email пользователя верифицирован. Теперь вы можете <a href="' + baseUrl + '/registration?login=1">Войти</a>')
   } else res.send('Ошибка в адресе верификации')
 }
 

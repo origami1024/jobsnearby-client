@@ -41,7 +41,7 @@
               ref="cvUploader"
             />
           </form>
-          <q-btn v-if="cvurl != ''" color="red-10" :label="$t('sub.deleteCVBtn')" @click="cvdel" />
+          <q-btn v-if="cvurl != null && cvurl != ''" color="red-10" :label="$t('sub.deleteCVBtn')" @click="cvdel" />
           <!-- <q-btn
             @click="updateCVLink"
             style="marginBottom: 22px" dense color="primary"
