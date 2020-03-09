@@ -8,8 +8,8 @@
       v-for="item in jobslist"
       :key="item.job_id">
     </JobCard>
-    <p v-if="jobslist.length == 0 && searchFilter == ''">{{$t('jobslist.zero')}}</p>
-    <p v-else-if="jobslist.length == 0 && searchFilter != ''">{{$t('jobslist.zerozero1')}} "{{searchFilter}}" {{$t('jobslist.zerozer2')}}</p>
+    <p v-if="jobslist.length == 0 && searchFilter == ''">{{$t('jobsList.zero')}}</p>
+    <p v-else-if="jobslist.length == 0 && searchFilter != ''">{{$t('jobsList.zerozero1')}} "{{searchFilter}}" {{$t('jobsList.zerozero2')}}</p>
   </div>
 </template>
 

@@ -49,7 +49,8 @@ const routes = [
   {
     path: '/registration',
     name: 'registration',
-    component: Registration
+    component: Registration,
+    props: true,
   },
   {
     path: '/uploads',

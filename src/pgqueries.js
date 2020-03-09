@@ -1575,6 +1575,7 @@ async function adminGetUsers() {
   let que = `
     SELECT *
     FROM "users"
+    ORDER BY user_id DESC
   `
   let result = await pool.query(que, null).catch(error => {
     console.log('cp adminGetUsers err1: ', error)
@@ -1794,7 +1795,50 @@ async function adminLogs() {
   else return []
 }
 
+
+async function tryInsertMailVerification(hash1, userId) {
+  let que = `INSERT INTO "verifications" ("uid", "url", "time_created") VALUES ($1, $2, NOW())`
+  let params = [userId, hash1]
+  let result = await pool.query(que, params).catch(error => {
+    console.log(error)
+    throw new Error('veri insertion failed')
+  })
+  if (result && result.rows) {
+    return true
+  } return undefined
+}
+
+async function verifCheck(n) {
+  let que = `
+    DELETE FROM "verifications"
+    WHERE url = $1
+    RETURNING uid
+  `
+  let params = [n]
+  let result = await pool.query(que, params).catch(error => {
+    console.log(error)
+    throw new Error('veri check err1')
+  })
+  if (result && result.rowCount === 1) {
+    let uid = result.rows[0].uid
+    console.log('cp67gg1: ', uid)
+    let que2 = `
+      UPDATE "users" SET (is_active, email_confirmed, block_reason) = (TRUE, TRUE, '')
+      WHERE user_id = $1
+    `
+    let params2 = [uid]
+    let result2 = await pool.query(que2, params2).catch(error => {
+      console.log(error)
+      throw new Error('veri check err2')
+    })
+    return result.rowCount
+  } return -1
+}
+
 module.exports = {
+  tryInsertMailVerification,
+  verifCheck,
+
   adminStats,
   adminDayStats,
   adminLogs,

@@ -520,7 +520,7 @@ export default {
             }
             else if (response.status == 209) {
               this.$q.notify({type: 'negative', message: response.data})
-              
+              this.login.status = response.data
             }
             else console.dir('successful login', response.data, response.headers)
             this.submitting = false
@@ -566,6 +566,15 @@ export default {
   },
   components: {
   },
+  // mounted() {
+  //   //console.log(this.$route.query.login)
+  // }
+  // watch: {
+  //   $route (to, from){
+  //     console.log('cp5', to)
+
+  //   },
+  // }
 }
 </script>
 

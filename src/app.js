@@ -88,6 +88,9 @@ app.post('/closeJobBy.id', db.closeJobById)
 app.post('/reopenJobBy.id', db.reopenJobById)
 
 
+
+app.get('/verify.json', verify)
+//app.post('/testm.json', testMail)
 app.post('/fb', db.feedback)
 app.get('/allfb.json', getAllFB)
 app.get('/adminusers.json', adminUsers)
@@ -117,6 +120,70 @@ function params1(request, response) {
 //   console.log('cp reached', path.join(__dirname, './../dist'))
 //   serveStatic(path.join(__dirname, './../dist'))
 // })
+
+
+async function verify(req, res) {
+  //check if in the base
+  
+  //get the param
+  //check if is a number
+  let reg = /^\d+$/
+  let n1 = req.query.n
+  console.log('got client: ' + n1)
+  if (reg.test(n1) == false || String(n1).length > 25) {
+    console.log('Error: wrong num')
+    res.status(400).send('WRONG VERIFICATION LINK')
+    return false
+  }
+  console.log('cp1: ', n1)
+  //after that check if its in db, check by deletion
+  
+  let veri = await db.verifCheck(n1).catch(error => {
+    //res.send('step2')
+    return -2
+  })
+  console.log(veri)
+  if (veri === 1) {
+    let baseUrl = process.env.NODE_ENV ? 'https://jobsnearby.herokuapp.com' : 'http://127.0.0.1:8080'
+    res.send('Email пользователя верифицирован. Теперь вы можете войти <a href="' + baseUrl + '/registration?login=1">Войти</a>')
+  } else res.send('Ошибка в адресе верификации')
+}
+
+nodeMailer = require('nodemailer')
+
+async function testMail(n, mail) {
+  //var fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
+  //console.log('cp13: ', fullUrl)
+  //sending test mail from this functions via smtp of gmail
+  let baseUrl = process.env.NODE_ENV ? 'https://jobsnearby.herokuapp.com/' : 'http://127.0.0.1:7777'
+  let txt = baseUrl + '/verify.json?n=' + n //String(hashSome()) + '888' + parseInt(Math.random()*1000000000, 10)
+  console.log('sending mail func: ' + txt)
+  let transporter = nodeMailer.createTransport({
+    host: 'smtp.gmail.com',
+    port: 465,
+    secure: true,
+    auth: {
+        // should be replaced with real sender's account
+        user: 'jobsnearby1000@gmail.com',
+        pass: 'h123456RR'
+    }
+  })
+  let mailOptions = {
+    // should be replaced with real recipient's account
+    to: mail, //'origami1024@gmail.com',
+    subject: 'Верификация пользователя на jobsnearby',
+    text: 'Перейдите по ссылке для верификации пользователя: ' + txt
+  }
+  transporter.sendMail(mailOptions, (error, info) => {
+    if (error) {
+      //res.send('NOT OK')
+      return 'ERR'
+    }
+    //res.send('OK')
+    console.log('Message %s sent: %s', info.messageId, info.response);
+    return 'OK'
+  })
+}
 
 async function auaction(req, res) {
   let cmd //read or del
@@ -453,6 +520,25 @@ async function adminPanel(req, res) {
             <p>Новые вакансии сегодня: <b>${stts.opened_today_count}</b></p>
             <p>Новые вакансии за неделю: <b>${stts.opened_this_week_count}</b></p>
           <div>
+          <div>
+            <input id="input1" />
+            <button onclick="sendMail()">sendMailToIt</button>
+            <script>
+              function sendMail() {
+                console.log('sendMail cp1')
+                var http = new XMLHttpRequest()
+                var url = '/testm.json'
+                http.open('POST', url, true)
+                http.setRequestHeader('Content-type', 'application/json')
+                http.onreadystatechange = function() {
+                  if(http.readyState == 4 && http.status == 200) {
+                    console.log('cpo1: ', http.responseText)
+                  }
+                }
+                http.send('{}')
+              }
+            </script>
+          </div>
         `
         //уник посетителей
         //вакансии по фильтрам
@@ -817,6 +903,7 @@ async function adminUsers(req, res) {
               <td>name</td>
               <td>surname</td>
               <td>company</td>
+              <td>Верифиц</td>
               <td>Рабочий?</td>
               <td>Причина блока</td>
               <td>Управление</td>
@@ -841,6 +928,7 @@ async function adminUsers(req, res) {
             <td>${val.name}</td>
             <td>${val.surname}</td>
             <td>${val.company}</td>
+            <td>${val.email_confirmed}</td>
             <td id="ia_${val.user_id}">${val.is_active}</td>
             <td id="br_${val.user_id}" style="max-width: 110px;">${val.block_reason}</td>
             <td>
@@ -1222,7 +1310,11 @@ async function login(req, res) {
     if (userData) {
       //check if blockd
       if (userData.is_active == false) {
-        res.status(209).send('Пользователь заблокирован модератором, причина: ' + userData.block_reason)
+        if (userData.block_reason == 'not_verified') {
+          res.status(209).send('Email не верифицирован. (Здесь поставить ссылку на страницу высылки повторно, продумать таймеры на это действие)')
+        } else {
+          res.status(209).send('Пользователь заблокирован модератором, причина: ' + userData.block_reason)
+        }
         return false
       }
       
@@ -1328,9 +1420,20 @@ async function reg(req, res) {
       return false
     })
     if (isDone === false) return false
-    console.log('it is successful registraion at this point')
-    //send back ok or not ok
-    res.send('OK')
+    
+    
+    let hash1 = String(hashSome()) + userId + parseInt(Math.random()*1000000000, 10)
+    
+    let success1 = await db.tryInsertMailVerification(hash1, userId).catch(error => {
+      res.send('step5')
+      return undefined
+    })
+    if (success1) {
+      testMail(hash1, mail)
+      console.log('it is successful registraion at this point')
+      res.send('OK')
+    } else {res.send('step6'); console.log('failed at creating the verification entry')}
+    
   } else {res.send('step1'); console.log('not valid mail or wrong pw')}
   
 }
@@ -1372,4 +1475,17 @@ const SupremeValidator = {
     );
     return token;
   }
+}
+
+
+function hashSome() {
+  let base = String(Number(new Date()))
+  var hash = 0, i, chr;
+  if (base.length === 0) return hash;
+  for (i = 0; i < base.length; i++) {
+    chr   = base.charCodeAt(i);
+    hash  = ((hash << 5) - hash) + chr;
+    hash |= 0; // Convert to 32bit integer
+  }
+  return Math.abs(hash);
 }

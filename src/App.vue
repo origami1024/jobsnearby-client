@@ -280,6 +280,9 @@ export default {
     window.removeEventListener("storage", this.onStorageUpdate);
   },
   mounted() {
+    if (this.$route.query.login == 1) this.regState = 'login'
+    if (this.$route.query.login == 2) this.regState = 'reg'
+
     if (localStorage.user) {
       this.user = localStorage.user
     }
@@ -765,9 +768,11 @@ export default {
       if (to.name === 'addjob') {
         this.newJobSentState = 'none'
       } else
-      if (to.name === 'entprofile') {
+      if (to.name === 'registration') {
+        //regState='login'
+        
         //this.getOwnJobs()
-        //console.log('from app')
+        
       }
 
     },

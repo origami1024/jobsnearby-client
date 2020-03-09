@@ -18,9 +18,10 @@
           <!-- <div class="urlpanel" style="margin-bottom: 10px">
             Текущая ссылка на резюме <a :href="'https://docs.google.com/viewerng/viewer?url=' + cvurl" target="_blank">{{cvurl}}</a>
           </div> -->
+          
           <div class="urlpanel" style="margin-bottom: 10px">
-            {{cvurl == '' ? $t('sub.cvurlUploaded') : $t('sub.cvurlNone')}}
-            <a v-if="cvurl != ''" :href="'https://docs.google.com/viewerng/viewer?url=' + cvurl" target="_blank">
+            {{(cvurl != null && cvurl != '') ? $t('sub.cvurlUploaded') : $t('sub.cvurlNone')}}
+            <a v-if="cvurl != null && cvurl != ''" :href="'https://docs.google.com/viewerng/viewer?url=' + cvurl" target="_blank">
               <q-icon color="blue-10" size="30px" name="assignment">
               </q-icon>
             </a>
