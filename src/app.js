@@ -155,7 +155,7 @@ async function testMail(n, mail) {
   //var fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
   //console.log('cp13: ', fullUrl)
   //sending test mail from this functions via smtp of gmail
-  let baseUrl = process.env.NODE_ENV ? 'https://jobsnearby.herokuapp.com/' : 'http://127.0.0.1:7777'
+  let baseUrl = process.env.NODE_ENV ? 'https://jobsnearby.herokuapp.com' : 'http://127.0.0.1:7777'
   let txt = baseUrl + '/verify.json?n=' + n //String(hashSome()) + '888' + parseInt(Math.random()*1000000000, 10)
   console.log('sending mail func: ' + txt)
   let transporter = nodeMailer.createTransport({
