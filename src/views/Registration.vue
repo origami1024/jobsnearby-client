@@ -56,7 +56,7 @@
             </div>
             <div class="row spacebetw">
               <q-checkbox color="red-10" v-model="login.rememberme" :label="$t('reg.rmeLabel')" />
-              <a href="#" style="alignSelf: center; color:var(--main-borders-color)">{{$t('reg.frgtPWLabel')}}</a>
+              <a href="/forgotten.json" style="alignSelf: center; color:var(--main-borders-color)">{{$t('reg.frgtPWLabel')}}</a>
             </div>
             <q-btn 
               color="red-10"
@@ -66,7 +66,10 @@
               class="submitBtn"
             />
             <!-- <input type="submit" value="Войти"> -->
-            <p v-if="login.status != ''" style="color: #c00; padding: 0; margin: 0; margin-top: 6px">{{login.status}}</p>
+            <p v-if="login.status != ''" style="color: #c00; padding: 0; margin: 0; margin-top: 10px">{{login.status}}</p>
+            <p v-if="notVerified == true" style="margin: 0; margin-top: 10px; alignSelf: center;">
+              <a href="/resend.json" style="color:var(--main-borders-color)">Отправить верификацию еще раз</a>
+            </p>
           </form>
         </q-tab-panel>
         <q-tab-panel name="reg">
@@ -252,6 +255,7 @@ export default {
     role: String,
   },
   data: ()=>{return {
+    notVerified: false,
     login: {
       mail: '',
       pw: '',
@@ -520,6 +524,11 @@ export default {
             }
             else if (response.status == 209) {
               this.$q.notify({type: 'negative', message: response.data})
+              this.login.status = response.data
+            }
+            else if (response.status == 211) {
+              this.$q.notify({type: 'negative', message: response.data})
+              this.notVerified = true
               this.login.status = response.data
             }
             else console.dir('successful login', response.data, response.headers)

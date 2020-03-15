@@ -88,8 +88,11 @@ app.post('/closeJobBy.id', db.closeJobById)
 app.post('/reopenJobBy.id', db.reopenJobById)
 
 
-
+app.get('/forgotten.json', forgotten)
+app.post('/forgottenx.json', forgottenx)
 app.get('/verify.json', verify)
+app.get('/resend.json', resend)
+app.post('/resender.json', resender)
 //app.post('/testm.json', testMail)
 app.post('/fb', db.feedback)
 app.get('/allfb.json', getAllFB)
@@ -121,6 +124,85 @@ function params1(request, response) {
 //   serveStatic(path.join(__dirname, './../dist'))
 // })
 
+async function forgottenx(req, res) {
+  console.log('cp3', req.body)
+  let mail = req.body.mail
+  if (SupremeValidator.isValidEmail(mail)) {
+    let veri = await db.verifiedMailExists(mail).catch(error => {
+      //res.send('step2')
+      return undefined
+    })
+  } else res.send('Неправильный формат адреса')
+}
+
+async function forgotten(req, res) {
+  let body = `
+    <main>
+      <form action="/forgottenx.json" method="POST">
+        <p>Пароль забыт и утерян?</p>
+        <p>Его можно восстановить получив письмо на оригинальный mail и перейдя по ссылке</p>
+        <br>
+        <label for="mail1">Введите Email</label>
+        <input id="mail1" name="mail"/>
+        <input type="submit" value="Отправить"/>
+      </form>
+    </main>
+  `
+  let page = pageParts.head + body + pageParts.footer
+  res.send(page)
+}
+
+async function resender(req, res) {
+  console.log('cp3', req.body)
+  //get the mail
+  let mail = req.body.mail
+
+  //check the mail's by regex and length
+  if (SupremeValidator.isValidEmail(mail)) {
+    //get data in db on that mail
+    //check the mail in table
+    let veri = await db.getVerificationEntry(mail).catch(error => {
+      //res.send('step2')
+      return undefined
+    })
+    if (veri) {
+      //also check the time of creation - 5mins
+      console.log('cpLLL:', veri)
+      //difference between time next
+      if (veri[0].time_passed < -300) {
+        console.log('time in', veri[0].time_passed)
+        //send mail if ok, and send the user, that its resent, or that u shall wait so much  
+        testMail(veri[0].url, mail)
+        console.log('stuff')
+        let upd = await db.veriUpdTime(mail).catch(error => {
+          //res.send('step2')
+          return undefined
+        })
+        let baseUrl = process.env.NODE_ENV ? 'https://jobsnearby.herokuapp.com' : 'http://127.0.0.1:8080'        
+        res.send('Повторное письмо с ссылкой для активации учетной записи отправлено. <a href="' + baseUrl + '/registration?login=1">Войти</a> на сайт.')
+      } else {
+        res.send('Неправильный email')
+      }
+    } else res.send('Неправильный email')
+  } else res.send('error 1')
+}
+
+async function resend(req, res) {
+  //page with form to request a resend
+  let body = `
+    <main>
+      <form action="/resender.json" method="POST">
+        <p>Письмо верификации не дошло? (в папке спам тоже нет?)</p>
+        <br>
+        <label for="mail1">Введите Email</label>
+        <input id="mail1" name="mail"/>
+        <input type="submit" value="Отправить"/>
+      </form>
+    </main>
+  `
+  let page = pageParts.head + body + pageParts.footer
+  res.send(page)
+}
 
 async function verify(req, res) {
   //check if in the base
@@ -1292,7 +1374,7 @@ async function login(req, res) {
       //check if blockd
       if (userData.is_active == false) {
         if (userData.block_reason == 'not_verified') {
-          res.status(209).send('Email не верифицирован. (Здесь поставить ссылку на страницу высылки повторно, продумать таймеры на это действие)')
+          res.status(211).send('Email не верифицирован. Вам на почту должно было прийти письмо о верификации')
         } else {
           res.status(209).send('Пользователь заблокирован модератором, причина: ' + userData.block_reason)
         }
@@ -1404,8 +1486,8 @@ async function reg(req, res) {
     
     
     let hash1 = String(hashSome()) + userId + parseInt(Math.random()*1000000000, 10)
-    
-    let success1 = await db.tryInsertMailVerification(hash1, userId).catch(error => {
+
+    let success1 = await db.tryInsertMailVerification(hash1, userId, mail).catch(error => {
       res.send('step5')
       return undefined
     })

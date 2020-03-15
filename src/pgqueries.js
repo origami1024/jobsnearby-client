@@ -1796,9 +1796,9 @@ async function adminLogs() {
 }
 
 
-async function tryInsertMailVerification(hash1, userId) {
-  let que = `INSERT INTO "verifications" ("uid", "url", "time_created") VALUES ($1, $2, NOW())`
-  let params = [userId, hash1]
+async function tryInsertMailVerification(hash1, userId, mail) {
+  let que = `INSERT INTO "verifications" ("uid", "url", "time_created", "mail") VALUES ($1, $2, NOW(), $3)`
+  let params = [userId, hash1, mail]
   let result = await pool.query(que, params).catch(error => {
     console.log(error)
     throw new Error('veri insertion failed')
@@ -1835,7 +1835,51 @@ async function verifCheck(n) {
   } return -1
 }
 
+async function getVerificationEntry(mail) {
+  //mail should be prechecked for validity outside this
+  //just get the whole entry by mail
+  let que = `
+  SELECT uid, url, mail, EXTRACT(EPOCH FROM time_created - 'now()'::timestamptz) AS time_passed
+  FROM "verifications" WHERE mail = $1
+  `
+  let params = [mail]
+  let result = await pool.query(que, params).catch(error => {
+    console.log(error)
+    throw new Error('getVerificationEntry failed')
+  })
+  if (result && result.rows && result.rows.length == 1) return result.rows
+  else return undefined
+}
+
+async function veriUpdTime(mail) {
+  //mail should be prechecked for validity outside this
+  let que = `
+    UPDATE "verifications"
+    SET time_created = NOW()
+    WHERE mail = $1
+  `
+  let params = [mail]
+  let result = await pool.query(que, params).catch(error => {
+    console.log(error)
+    throw new Error('veriUpdTime')
+  })
+}
+
+async function verifiedMailExists(mail) {
+  //check if its verified too!!!
+  //but need to return the result if it exists but is not verified, like verify first
+  let que = `
+    SELECT email_confirmed
+    FROM users
+    WHERE mail = $1
+  `
+  let params = [mail]
+  //
+}
+
 module.exports = {
+  veriUpdTime,
+  getVerificationEntry,
   tryInsertMailVerification,
   verifCheck,
 
