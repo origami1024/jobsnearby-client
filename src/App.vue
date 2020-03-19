@@ -282,6 +282,9 @@ export default {
   mounted() {
     if (this.$route.query.login == 1) this.regState = 'login'
     if (this.$route.query.login == 2) this.regState = 'reg'
+    if (this.$route.query.verified == 1) this.$q.notify({message: 'Email пользователя верифицирован.', icon: 'warning', color: 'green',timeout: 5000})
+    if (this.$route.query.resender == 1) this.$q.notify({message: 'Повторное письмо со ссылкой для активации учетной записи отправлено.', icon: 'warning', color: 'green',timeout: 5000})
+    if (this.$route.query.reset == 1) this.$q.notify({message: 'Пароль сброшен. Новый пароль отправлен на вашу почту.', icon: 'warning', color: 'green',timeout: 5000})
 
     if (localStorage.user) {
       this.user = localStorage.user

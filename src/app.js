@@ -87,7 +87,6 @@ app.post('/delJobBy.id', db.deleteJobById)
 app.post('/closeJobBy.id', db.closeJobById)
 app.post('/reopenJobBy.id', db.reopenJobById)
 
-
 app.get('/forgottenx2.json', forgottenx2)//u come here to confirm the pw regen request
 app.get('/forgotten.json', forgotten)
 app.post('/forgottenx.json', forgottenx)
@@ -124,6 +123,10 @@ function params1(request, response) {
 //   console.log('cp reached', path.join(__dirname, './../dist'))
 //   serveStatic(path.join(__dirname, './../dist'))
 // })
+
+// async function redirect1(req, res) {
+//   res.send('<html><body><script>window.location.replace("http://www.w3schools.com")</script></body></html>')
+// }
 
 async function forgottenx2(req, res) {
   console.log('fx2: ', req.query.n)
@@ -162,7 +165,8 @@ async function forgottenx2(req, res) {
       //send letter-2 to the mail in the consumed entry
       forgottenx2Mail(newpw, forg.mail)
       let baseUrl = process.env.NODE_ENV ? 'https://jobsnearby.herokuapp.com' : 'http://127.0.0.1:8080'
-      res.send('Пароль сброшен. Новый пароль отправлен на вашу почту. <a href="' + baseUrl + '/registration?login=1">Войти</a>')
+      //res.send('Пароль сброшен. Новый пароль отправлен на вашу почту. <a href="' + baseUrl + '/registration?login=1">Войти</a>')
+      res.send('<html><body><script>window.location.replace("' + baseUrl + '/registration?login=1&reset=1")</script></body></html>')
     } else res.send('Ссылка сброса пароля просрочена (2 часа макс), попробуйте еще раз')
   } else res.send('Ошибка в адресе верификации')
   
@@ -267,9 +271,10 @@ async function resender(req, res) {
           return undefined
         })
         let baseUrl = process.env.NODE_ENV ? 'https://jobsnearby.herokuapp.com' : 'http://127.0.0.1:8080'
-        res.send('Повторное письмо с ссылкой для активации учетной записи отправлено. <a href="' + baseUrl + '/registration?login=1">Войти</a> на сайт.')
+        //res.send('Повторное письмо с ссылкой для активации учетной записи отправлено. <a href="' + baseUrl + '/registration?login=1">Войти</a> на сайт.')
+        res.send('<html><body><script>window.location.replace("' + baseUrl + '/registration?login=1&resender=1")</script></body></html>')
       } else {
-        res.send('Неправильный email')
+        res.send('Повторная отправка верификации возможна не реже чем раз в 5 минут. Прошло ' + -Math.round(veri[0].time_passed/60) + ' минут')
       }
     } else res.send('Неправильный email')
   } else res.send('error 1')
@@ -315,7 +320,8 @@ async function verify(req, res) {
   console.log(veri)
   if (veri === 1) {
     let baseUrl = process.env.NODE_ENV ? 'https://jobsnearby.herokuapp.com' : 'http://127.0.0.1:8080'
-    res.send('Email пользователя верифицирован. Теперь вы можете <a href="' + baseUrl + '/registration?login=1">Войти</a>')
+    //res.send('Email пользователя верифицирован. Теперь вы можете <a href="' + baseUrl + '/registration?login=1">Войти</a>')
+    res.send('<html><body><script>window.location.replace("' + baseUrl + '/registration?login=1&verified=1")</script></body></html>')
   } else res.send('Ошибка в адресе верификации')
 }
 
