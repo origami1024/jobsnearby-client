@@ -283,13 +283,12 @@ async function resender(req, res) {
 async function resend(req, res) {
   //page with form to request a resend
   let body = `
-    <main>
-      <form action="/resender.json" method="POST">
+    <main style="width: 100%; display: flex; justify-content: center;">
+      <form action="/resender.json" method="POST" style="padding:10px; background-color: #dfd; width: auto; display: inline-block; font-size: 18px; font-family: sans-serif;">
         <p>Письмо верификации не дошло? (в папке спам тоже нет?)</p>
-        <br>
         <label for="mail1">Введите Email</label>
-        <input id="mail1" name="mail"/>
-        <input type="submit" value="Отправить"/>
+        <input id="mail1" name="mail" />
+        <input type="submit" value="Отправить еще раз"/>
       </form>
     </main>
   `
