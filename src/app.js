@@ -88,6 +88,7 @@ app.post('/closeJobBy.id', db.closeJobById)
 app.post('/reopenJobBy.id', db.reopenJobById)
 
 
+app.get('/forgottenx2.json', forgottenx2)//u come here to confirm the pw regen request
 app.get('/forgotten.json', forgotten)
 app.post('/forgottenx.json', forgottenx)
 app.get('/verify.json', verify)
@@ -124,14 +125,101 @@ function params1(request, response) {
 //   serveStatic(path.join(__dirname, './../dist'))
 // })
 
+async function forgottenx2(req, res) {
+  console.log('fx2: ', req.query.n)
+  let reg = /^\d+$/
+  let n1 = req.query.n
+  //u need to check if link in db
+  if (reg.test(n1) == false || String(n1).length > 25) {
+    console.log('Error: wrong num2')
+    res.status(400).send('WRONG VERIFICATION LINK2')
+    return false
+  }
+  //after that check if its in db, check by deletion//consume the db entry(delete)
+  let forg = await db.forgCheck(n1).catch(error => {
+    //res.send('step2')
+    return undefined
+  })
+  console.log('cp oot:', forg)
+  if (forg) {
+    //check here time, send diff response based on that.
+    //respond that its sent
+    if (forg.time_passed > -7200) {
+      //within the time - send mail, redirect
+      //generate the new pw
+      let pwarr = 'qwertyuiopasdfghjklzxcvbnm1234567890QWERTYUIOPASDFGHJKLZXCVBNMM'
+      let newpw = ''
+      var i = 10
+      while (i--) {
+        newpw += pwarr[Math.round(Math.random()*62)]
+      }
+      //generate the hash of that pw
+      let hash = bcrypt.hashSync(newpw, bcrypt.genSaltSync(9))
+      //put it into the db
+      let some = await db.forgChangePw(hash, forg.mail).catch(error => {
+        return undefined
+      })
+      //send letter-2 to the mail in the consumed entry
+      forgottenx2Mail(newpw, forg.mail)
+      let baseUrl = process.env.NODE_ENV ? 'https://jobsnearby.herokuapp.com' : 'http://127.0.0.1:8080'
+      res.send('Пароль сброшен. Новый пароль отправлен на вашу почту. <a href="' + baseUrl + '/registration?login=1">Войти</a>')
+    } else res.send('Ссылка сброса пароля просрочена (2 часа макс), попробуйте еще раз')
+  } else res.send('Ошибка в адресе верификации')
+  
+}
+
 async function forgottenx(req, res) {
-  console.log('cp3', req.body)
+  console.log('cp31', req.body)
   let mail = req.body.mail
   if (SupremeValidator.isValidEmail(mail)) {
     let veri = await db.verifiedMailExists(mail).catch(error => {
-      //res.send('step2')
       return undefined
     })
+    console.log('cp19k')
+    if (veri) {
+      //check if there is already a request for new pw in the table first
+      //need to check if mail in the forgotten basically
+      //just get all that info
+      let firstCheck = await db.forgottenRequest1stCheck(mail).catch(error => {
+        return undefined
+      })
+      console.log('cpXX1: ', firstCheck)
+      if (firstCheck == undefined) {
+        //create new
+        //getnerate the url
+        let hash1 = String(hashSome()) + parseInt(Math.random()*100000000000, 11)
+        //let baseUrl = process.env.NODE_ENV ? 'https://jobsnearby.herokuapp.com' : 'http://127.0.0.1:7777'
+        //let url = baseUrl + '/forgottenx2.json?' + hash1
+
+        //make a new record into the forgo
+        let dbEntry = await db.insertForgottenEntry(mail, hash1).catch(error => {
+          return undefined
+        })
+        if (dbEntry) {
+          //send mail
+          forgottenMail(hash1, mail)
+          //send page that its sent
+          res.send('Письмо подтверждения восстановления пароля отправлено на вашу почту. Оно будет действительно в течении 2 часов')
+        } else res.send('Ошибка базы данных 1')
+      } else if (firstCheck && firstCheck.time_passed <= -1200) {//1200 = 20 min?
+        //rewrite old
+        //use the old url
+        let hash1 = firstCheck.url
+        //rewrite the record
+        let dbEntry = await db.updateForgottenEntry(mail, hash1).catch(error => {
+          return undefined
+        })
+        if (dbEntry) {
+          //send mail
+          forgottenMail(hash1, mail)
+          //send page that its sent
+          res.send('Письмо подтверждения восстановления пароля отправлено на вашу почту')
+        } else res.send('Ошибка базы данных 2')
+      } else if (firstCheck && firstCheck.time_passed > -1200) {
+        //send back that time hasnt passed
+        res.send('Вы уже запрашивали восстановление пароля ' + Math.round(firstCheck.time_passed / -60) + ' минут назад. Минимальное время между сбросами 20 минут')
+      } else res.send('Ошибка на сервере')
+    } else res.send('Несуществующий, либо не верифицированный mail')
   } else res.send('Неправильный формат адреса')
 }
 
@@ -178,7 +266,7 @@ async function resender(req, res) {
           //res.send('step2')
           return undefined
         })
-        let baseUrl = process.env.NODE_ENV ? 'https://jobsnearby.herokuapp.com' : 'http://127.0.0.1:8080'        
+        let baseUrl = process.env.NODE_ENV ? 'https://jobsnearby.herokuapp.com' : 'http://127.0.0.1:8080'
         res.send('Повторное письмо с ссылкой для активации учетной записи отправлено. <a href="' + baseUrl + '/registration?login=1">Войти</a> на сайт.')
       } else {
         res.send('Неправильный email')
@@ -232,6 +320,65 @@ async function verify(req, res) {
 }
 
 nodeMailer = require('nodemailer')
+
+async function forgottenMail(url, mail) {
+  console.log('sending mail forgotten func: ' + url + ' ' + mail)
+  let transporter = nodeMailer.createTransport({
+    host: 'smtp.gmail.com',
+    port: 465,
+    secure: true,
+    auth: {
+        // should be replaced with real sender's account
+        user: 'jobsnearby1000@gmail.com',
+        pass: 'h123456RR'
+    }
+  })
+  let baseUrl = process.env.NODE_ENV ? 'https://jobsnearby.herokuapp.com' : 'http://127.0.0.1:7777'
+  let url1 = baseUrl + '/forgottenx2.json?n=' + url
+  let mailOptions = {
+    // should be replaced with real recipient's account
+    to: mail, //'origami1024@gmail.com',
+    subject: 'Восстановление пароля на jobsnearby',
+    text: 'Для получения нового пароля нужно подтвердить восстановление, перейдя по ссылке ' + url1 + '. После этого вы получите второе письмо с новым паролем. Эта ссылка действительна в течении 2 часов.'
+  }
+  transporter.sendMail(mailOptions, (error, info) => {
+    if (error) {
+      //res.send('NOT OK')
+      return 'ERR'
+    }
+    //res.send('OK')
+    console.log('Message2 %s sent: %s', info.messageId, info.response);
+    return 'OK'
+  })
+}
+
+async function forgottenx2Mail(newpw, mail) {
+  console.log('sending forgotten2: ' + newpw + ' ' + mail)
+  let transporter = nodeMailer.createTransport({
+    host: 'smtp.gmail.com',
+    port: 465,
+    secure: true,
+    auth: {
+        user: 'jobsnearby1000@gmail.com',
+        pass: 'h123456RR'
+    }
+  })
+  let mailOptions = {
+    // should be replaced with real recipient's account
+    to: mail, //'origami1024@gmail.com',
+    subject: 'Сгенерирован новый пароль на jobsnearby',
+    text: 'Пароль изменен на jobsnearby изменен по процедуре восстановления на: ' + newpw + '. Измените его в профиле на более безопасный.'
+  }
+  transporter.sendMail(mailOptions, (error, info) => {
+    if (error) {
+      //res.send('NOT OK')
+      return 'ERR'
+    }
+    //res.send('OK')
+    console.log('Message3 %s sent: %s', info.messageId, info.response);
+    return 'OK'
+  })
+}
 
 async function testMail(n, mail) {
   //var fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;

@@ -1871,13 +1871,101 @@ async function verifiedMailExists(mail) {
   let que = `
     SELECT email_confirmed
     FROM users
+    WHERE email = $1
+  `
+  let params = [mail]
+  let result = await pool.query(que, params).catch(error => {
+    console.log(error)
+    throw new Error('verifiedMailExists failed')
+  })
+  if (result && result.rows && result.rows.length == 1 && result.rows[0].email_confirmed == true) return true
+  else return undefined
+}
+
+async function insertForgottenEntry(mail, url) {
+  let que = `
+    INSERT INTO "forgotten"
+    ("mail", "url", "time_created") VALUES ($1, $2, NOW())
+  `
+  let params = [mail, url]
+  let result = await pool.query(que, params).catch(error => {
+    console.log(error)
+    throw new Error('insertForgottenEntry failed')
+  })
+  if (result) return true
+  else return undefined
+}
+
+async function forgottenRequest1stCheck(mail) {
+  let que = `
+    SELECT url, mail, EXTRACT(EPOCH FROM time_created - 'now()'::timestamptz) AS time_passed
+    FROM forgotten
     WHERE mail = $1
   `
   let params = [mail]
-  //
+  let result = await pool.query(que, params).catch(error => {
+    console.log(error)
+    throw new Error('forgottenRequest1stCheck failed')
+  })
+  if (result && result.rows && result.rows.length == 1) return result.rows[0]
+  else return undefined
+}
+
+async function updateForgottenEntry(mail,url) {
+  let que = `
+    UPDATE "forgotten"
+    SET ("url", "time_created") = ($1, NOW())
+    WHERE mail = $2
+  `
+  let params = [url, mail]
+  let result = await pool.query(que, params).catch(error => {
+    console.log(error)
+    throw new Error('updateForgottenEntry failed')
+  })
+  if (result) return true
+  else return undefined
+}
+
+async function forgCheck(n) {
+  let que = `
+    DELETE FROM "forgotten"
+    WHERE url = $1
+    RETURNING mail, EXTRACT(EPOCH FROM time_created - 'now()'::timestamptz) AS time_passed
+  `
+  let params = [n]
+  let result = await pool.query(que, params).catch(error => {
+    console.log(error)
+    throw new Error('forg check err1')
+  })
+  if (result && result.rowCount === 1) {
+    return result.rows[0]
+  } return undefined
+}
+
+
+async function forgChangePw(pwhash, mail) {
+  //mail and hash should be prechecked for validity
+  let que = `
+    UPDATE "users"
+    SET pwhash = $1
+    WHERE email = $2
+  `
+  let params = [pwhash, mail]
+  let result = await pool.query(que, params).catch(error => {
+    console.log('cp forgChangePw: ', error)
+    throw new Error('user update fail')
+  })
+  return true
 }
 
 module.exports = {
+  forgChangePw,
+  forgCheck,
+  updateForgottenEntry,
+  forgottenRequest1stCheck,
+  insertForgottenEntry,
+  verifiedMailExists,
+
   veriUpdTime,
   getVerificationEntry,
   tryInsertMailVerification,
