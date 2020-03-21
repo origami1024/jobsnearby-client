@@ -1,195 +1,201 @@
 <template>
   <div id="app">
     <q-btn v-if="$route.path == '/'" class="scrollTopBtn" icon="keyboard_arrow_up" glossy color="red-10" round @click="scrollTop"/>
-    <header>
-      <!-- <q-btn
-        text-color="white"
-        @click="refreshjobs('logoclick')" flat to="/"
-        size="36px" 
-        label="USSAT" style="padding: 0px;"
-        class="logo"
-      >
-        <q-avatar size="46px">
-          <img src="https://cdn.quasar.dev/app-icons/icon-128x128.png" />  
-        </q-avatar>
-        <q-tooltip>
-          <p style="font-size: 15px; margin: 0">Главная</p>
-        </q-tooltip>
-      </q-btn> -->
-      <router-link
-        @click.native="refreshjobs('logoclick')" to="/"
-        class="logolink"
-      >
-        <!-- <img src="logo1.png" style="align-self:center;height:40px; margin-top:-8px"/> -->
-        <span style="font-size:1.1em; letter-spacing:-1px">G</span><span style="color: var(--main-borders-color); letter-spacing:-1px">oo</span><span style="font-size:0.95em; margin-left: 2px; margin-right: -2px">d</span>w<span style="font-size:1.1em">i</span><span style="font-size:1.15em">l</span><span style="font-size:1.15em; margin-left:-2px">l</span>
-        <q-tooltip>
-          <p style="font-size: 15px; margin: 0">{{$t('App.logoTooltip')}}</p>
-        </q-tooltip>
-      </router-link>
-      <!-- <div class="separator" style="width: 150px"></div> -->
-      <div id="nav" style="margin-left: auto">
-        <!--  shrink stretch -->
-        <q-btn 
-          @click.native="newJobInit"
-          v-if="role == 'company'"
-          style="background-color: var(--btn-color); font-weight: 700; align-self:flex-start;border-radius: 8px;"
-          class="headerBtns1"
-          text-color="white" 
-          :label="$t('App.newJobHint')"
-          rounded
-          to="/addJob"
-        />
-        <q-btn 
-          @click.native="authPls"
-          v-else-if="role != 'subscriber'"
-          style="background-color: var(--btn-color); font-weight: 700; align-self:flex-start;border-radius: 8px;"
-          class="headerBtns1"
-          text-color="white" 
-          :label="$t('App.newJobHint')"
-          to="/registration"
-        />
-        <!-- <router-link @click.native="newJobInit" v-if="role == 'company'" class="newlinks" to="/addJob">
-          {{$t('App.newJobHint')}} -->
-          <!-- <q-icon round glossy name="add_circle_outline" size="40px"></q-icon>
+    <div class="header-wrapper">
+      <header>
+        <!-- <q-btn
+          text-color="white"
+          @click="refreshjobs('logoclick')" flat to="/"
+          size="36px" 
+          label="USSAT" style="padding: 0px;"
+          class="logo"
+        >
+          <q-avatar size="46px">
+            <img src="https://cdn.quasar.dev/app-icons/icon-128x128.png" />  
+          </q-avatar>
           <q-tooltip>
-            <p style="font-size: 15px; margin: 0">{{$t('App.newJobHint')}}</p>
-          </q-tooltip> -->
-        <!-- </router-link>
-        <router-link @click.native="authPls" v-else-if="role != 'subscriber'" class="newlinks" to="/registration">
-          {{$t('App.newJobHint')}} -->
-          <!-- <q-icon round glossy name="add_circle_outline" size="40px"></q-icon>
+            <p style="font-size: 15px; margin: 0">Главная</p>
+          </q-tooltip>
+        </q-btn> -->
+        <router-link
+          @click.native="refreshjobs('logoclick')" to="/"
+          class="logolink"
+        >
+          <!-- <img src="logo1.png" style="align-self:center;height:40px; margin-top:-8px"/> -->
+          <!-- <span style="font-size:1.1em; letter-spacing:-1px">G</span><span style="color: var(--main-borders-color); letter-spacing:-1px">oo</span><span style="font-size:0.95em; margin-left: 2px; margin-right: -2px">d</span>w<span style="font-size:1.1em">i</span><span style="font-size:1.15em">l</span><span style="font-size:1.15em; margin-left:-2px">l</span> -->
+          <span class="logoText">
+            G<span style="color: #8645FF; font-weight: bold;">OO</span>DWILL
+          </span>
           <q-tooltip>
-            <p style="font-size: 15px; margin: 0">{{$t('App.newJobHint')}}</p>
-          </q-tooltip> -->
-        <!-- </router-link> -->
-
-        
-      </div>
-      <!-- <div class="separator" style="width: 0px"></div> -->
-      <div id="authmenu">
-        <!-- style="alignSelf: flex-end;" -->
-        <div class="colx user-status-bar">
+            <p style="font-size: 15px; margin: 0">{{$t('App.logoTooltip')}}</p>
+          </q-tooltip>
+        </router-link>
+        <!-- <div class="separator" style="width: 150px"></div> -->
+        <div id="nav" style="margin-left: auto">
+          <!--  shrink stretch -->
           <q-btn 
-            style="background-color: var(--main-borders-color); font-weight: 700; align-self:flex-start; padding: 0 5px;border-radius: 8px;"
-            class="headerBtns1 loginBtns1"
+            @click.native="newJobInit"
+            v-if="role == 'company'"
+            class="headerBtns1"
             text-color="white" 
-            :label="$t('App.login')"
-            @click.native="regState='login'"
-            v-if="role && role.startsWith('guest')"
+            :label="$t('App.newJobHint')"
+            rounded
+            to="/addJob"
+          />
+          <q-btn 
+            @click.native="authPls"
+            v-else-if="role != 'subscriber'"
+            class="headerBtns1"
+            text-color="white" 
+            :label="$t('App.newJobHint')"
             to="/registration"
           />
-          <!-- <router-link
-            @click.native="regState='login'"
-            v-if="role && role.startsWith('guest')"
-            class="headerBtnNew"
-            to="/registration">
-            {{$t('App.login')}}
-          </router-link> -->
-          <!-- :text-color="$route.path == '/registration' ? 'yellow' : 'white'"  -->
-          <!-- <q-btn
-            color="white"
-            text-color="indigo"
-            size="16px"
-            dense
-            class="no-shadow"
-            style="font-weight: 700; alignSelf: flex-end; padding: 0 10px"
-            v-if="role && role.startsWith('guest')"
-            @click.native="regState='login'"
-            :label="$t('App.login')"
-            to="/registration"/> -->
-          <router-link
-            v-if="role && role === 'subscriber'"
-            class="headerBtn"
-            to="/subprofile"
-          >
-            <q-icon name="person" size="36px"></q-icon>
+          <!-- <router-link @click.native="newJobInit" v-if="role == 'company'" class="newlinks" to="/addJob">
+            {{$t('App.newJobHint')}} -->
+            <!-- <q-icon round glossy name="add_circle_outline" size="40px"></q-icon>
             <q-tooltip>
-              <p style="font-size: 15px; margin: 0">{{$t('App.myProfile')}}</p>
-            </q-tooltip>
-          </router-link>
-          <router-link
-            @click.native="getOwnJobs"
-            v-if="role && role === 'company' && $route.name == 'entprofile'"
-            class="headerBtn"
-            to="/entprofile"
-          >
-            <q-icon name="person" size="36px"></q-icon>
+              <p style="font-size: 15px; margin: 0">{{$t('App.newJobHint')}}</p>
+            </q-tooltip> -->
+          <!-- </router-link>
+          <router-link @click.native="authPls" v-else-if="role != 'subscriber'" class="newlinks" to="/registration">
+            {{$t('App.newJobHint')}} -->
+            <!-- <q-icon round glossy name="add_circle_outline" size="40px"></q-icon>
             <q-tooltip>
-              <p style="font-size: 15px; margin: 0">{{$t('App.myProfile')}}</p>
-            </q-tooltip>
-          </router-link>
-          <router-link
-            v-if="role && role === 'company' && $route.name != 'entprofile'"
-            class="headerBtn"
-            to="/entprofile"
-          >
-            <q-icon name="person" size="36px"></q-icon>
-            <q-tooltip>
-              <p style="font-size: 15px; margin: 0">{{$t('App.myProfile')}}</p>
-            </q-tooltip>
-          </router-link>
+              <p style="font-size: 15px; margin: 0">{{$t('App.newJobHint')}}</p>
+            </q-tooltip> -->
+          <!-- </router-link> -->
 
-
-          <router-link
-            @click.native="logout"
-            v-if="user_id != -1"
-            class="headerBtn"
-            to="/"
-          >
-            <q-icon name="logout" size="32px"></q-icon>
-            <q-tooltip>
-              <p style="font-size: 15px; margin: 0">{{$t('App.logoutHint')}}</p>
-            </q-tooltip>
-          </router-link>
-
-          <!-- <q-btn-group>
-            <q-btn flat @click="getFavedFull" :color="$route.path == '/subprofile' ? 'purple' : 'inherit'" :text-color="$route.path == '/subprofile' ? 'black' : 'black'" no-caps icon="person" v-if="role === 'subscriber'" to="/subprofile">
+          
+        </div>
+        <!-- <div class="separator" style="width: 0px"></div> -->
+        <div id="authmenu">
+          <!-- style="alignSelf: flex-end;" -->
+          <div class="colx user-status-bar">
+            <q-btn 
+              style="
+                background-color: var(--violet-btn-color);
+              "
+              class="headerBtns1 violetBtns"
+              text-color="white"
+              :label="$t('App.login')"
+              @click.native="regState='login'"
+              v-if="role && role.startsWith('guest')"
+              to="/registration"
+            />
+            <!-- <router-link
+              @click.native="regState='login'"
+              v-if="role && role.startsWith('guest')"
+              class="headerBtnNew"
+              to="/registration">
+              {{$t('App.login')}}
+            </router-link> -->
+            <!-- :text-color="$route.path == '/registration' ? 'yellow' : 'white'"  -->
+            <!-- <q-btn
+              color="white"
+              text-color="indigo"
+              size="16px"
+              dense
+              class="no-shadow"
+              style="font-weight: 700; alignSelf: flex-end; padding: 0 10px"
+              v-if="role && role.startsWith('guest')"
+              @click.native="regState='login'"
+              :label="$t('App.login')"
+              to="/registration"/> -->
+            <router-link
+              v-if="role && role === 'subscriber'"
+              class="headerBtn"
+              to="/subprofile"
+            >
+              <q-icon name="person" size="36px"></q-icon>
               <q-tooltip>
-                <p style="font-size: 15px; margin: 0">{{user}}</p>
+                <p style="font-size: 15px; margin: 0">{{$t('App.myProfile')}}</p>
               </q-tooltip>
-            </q-btn>
-            <q-btn flat no-caps icon="person" @click.native="getOwnJobs"
-            v-if="role === 'company'" to="/entprofile">
+            </router-link>
+            <router-link
+              @click.native="getOwnJobs"
+              v-if="role && role === 'company' && $route.name == 'entprofile'"
+              class="headerBtn"
+              to="/entprofile"
+            >
+              <q-icon name="person" size="36px"></q-icon>
               <q-tooltip>
-                <p style="font-size: 15px; margin: 0">{{user}}</p>
+                <p style="font-size: 15px; margin: 0">{{$t('App.myProfile')}}</p>
               </q-tooltip>
-            </q-btn>
-            <q-btn flat no-caps v-if="user_id != -1" @click="logout" icon="logout">
+            </router-link>
+            <router-link
+              v-if="role && role === 'company' && $route.name != 'entprofile'"
+              class="headerBtn"
+              to="/entprofile"
+            >
+              <q-icon name="person" size="36px"></q-icon>
+              <q-tooltip>
+                <p style="font-size: 15px; margin: 0">{{$t('App.myProfile')}}</p>
+              </q-tooltip>
+            </router-link>
+
+
+            <router-link
+              @click.native="logout"
+              v-if="user_id != -1"
+              class="headerBtn"
+              to="/"
+            >
+              <q-icon name="logout" size="32px"></q-icon>
               <q-tooltip>
                 <p style="font-size: 15px; margin: 0">{{$t('App.logoutHint')}}</p>
               </q-tooltip>
-            </q-btn>
-            @click.native="getOwnJobs"
-          </q-btn-group> -->
-          
+            </router-link>
+
+            <!-- <q-btn-group>
+              <q-btn flat @click="getFavedFull" :color="$route.path == '/subprofile' ? 'purple' : 'inherit'" :text-color="$route.path == '/subprofile' ? 'black' : 'black'" no-caps icon="person" v-if="role === 'subscriber'" to="/subprofile">
+                <q-tooltip>
+                  <p style="font-size: 15px; margin: 0">{{user}}</p>
+                </q-tooltip>
+              </q-btn>
+              <q-btn flat no-caps icon="person" @click.native="getOwnJobs"
+              v-if="role === 'company'" to="/entprofile">
+                <q-tooltip>
+                  <p style="font-size: 15px; margin: 0">{{user}}</p>
+                </q-tooltip>
+              </q-btn>
+              <q-btn flat no-caps v-if="user_id != -1" @click="logout" icon="logout">
+                <q-tooltip>
+                  <p style="font-size: 15px; margin: 0">{{$t('App.logoutHint')}}</p>
+                </q-tooltip>
+              </q-btn>
+              @click.native="getOwnJobs"
+            </q-btn-group> -->
+            
+          </div>
         </div>
-      </div>
-      <div style="font-weight: 700">
-        <!-- Язык -->
-        <!-- <p style="margin: 0; margin-bottom: 5px;">Язык</p>
-        <select v-model="app_lng" style="width: 40px">
-          <option value="tm">tm</option>
-          <option value="ru">ru</option>
-          <option value="en">en</option>
-        </select> -->
-        <button class="langLink" style="margin-right: 0; padding-right: 0;">{{app_lng}}
-          <q-menu dense>
-            <q-item style="lineHeight: 2.2" dense :style="{color: app_lng == 'TM' ? 'var(--main-borders-color)' : 'black', fontWeight: app_lng == 'TM' ? '700' : '400'}" clickable v-close-popup @click="app_lng = 'TM'; $i18n.locale = 'tm'; setLang('tm')">
-              TM
-            </q-item>
-            <q-item style="lineHeight: 2.2" dense :style="{color: app_lng == 'RU' ? 'var(--main-borders-color)' : 'black', fontWeight: app_lng == 'RU' ? '700' : '400'}" clickable v-close-popup @click="app_lng = 'RU'; $i18n.locale = 'ru'; setLang('ru')">
-              RU
-            </q-item>
-          </q-menu>
-        </button>
-      </div>
-      <q-ajax-bar
-        position="bottom"
-        color="red"
-        size="10px"
-      />
-      <!-- color="accent" -->
-    </header>
+        <div style="font-weight: 700">
+          <!-- Язык -->
+          <!-- <p style="margin: 0; margin-bottom: 5px;">Язык</p>
+          <select v-model="app_lng" style="width: 40px">
+            <option value="tm">tm</option>
+            <option value="ru">ru</option>
+            <option value="en">en</option>
+          </select> -->
+          <button class="langLink" style="display: flex; align-items: center; white-space: nowrap; margin-right: 0; padding-left: 0; padding-right: 0;">{{app_lng}}
+            <q-menu dense>
+              <q-item style="lineHeight: 2.2" dense :style="{color: app_lng == 'TM' ? 'var(--main-borders-color)' : 'black', fontWeight: app_lng == 'TM' ? '700' : '400'}" clickable v-close-popup @click="app_lng = 'TM'; $i18n.locale = 'tm'; setLang('tm')">
+                TM
+              </q-item>
+              <q-item style="lineHeight: 2.2" dense :style="{color: app_lng == 'RU' ? 'var(--main-borders-color)' : 'black', fontWeight: app_lng == 'RU' ? '700' : '400'}" clickable v-close-popup @click="app_lng = 'RU'; $i18n.locale = 'ru'; setLang('ru')">
+                RU
+              </q-item>
+            </q-menu>
+            <img style="display: inline-block; margin-left: 11px;" src="./../public/assets/arrow1.png">
+          </button>
+        </div>
+        <q-ajax-bar
+          position="bottom"
+          color="red"
+          size="10px"
+        />
+        <!-- color="accent" -->
+      </header>
+    </div>
     <router-view
       :ownCVs="ownCVs"
       @cvupd="cvupd"
@@ -820,40 +826,51 @@ export default {
 
 <style lang="stylus">
 *
-  font-family 'Varela Round', 'Nunito', sans-serif
-  --main-bg-color #fff//#f7f7f7//#8080f1//
+  //font-family 'Varela Round', 'Nunito', sans-serif
+  font-family "Montserrat", sans-serif
+  --main-bg-color #fff
   --main-borders-color #3A6E8F
   --btn-color #C00027
+  --violet-btn-color #8645FF
+  --color1 #181059
   --logoWidth 160px
-  --maxW 1000px
+  --maxW 1400px
   @media screen and (max-width: 1000px)
     --maxW 100%
   @media screen and (max-width: 550px)
     --maxW 100%
+body
+  background-image url('./../public/bg1.png')
+  background-repeat no-repeat
+  background-position right top
 #app
   //min-height calc(50vh - 15px)
   box-sizing border-box
   position relative
-  font-family 'Varela Round', 'Nunito', sans-serif
+  font-family 'Montserrat', sans-serif
   -webkit-font-smoothing antialiased
   -moz-osx-font-smoothing grayscale
   text-align center
   color #2c3e50
   font-size 13px
   line-height 14px
-  max-width var(--maxW)
+  //max-width var(--maxW)
   margin auto
   padding-bottom 70px
+  border-bottom 1.5px solid red//#E6E6E6
+  .header-wrapper
+    border-bottom 1.5px solid #E6E6E6
   header
     display flex
     align-items center
     justify-content space-between
-    margin 15px 10px
-    margin-bottom 5px
-    padding 5px 15px
+    margin 0px auto
+    height 150px
+    padding 0px 0px
     box-sizing border-box
-    box-shadow 0 0 3px 0px var(--main-borders-color)//#a0a9
-    background-color var(--main-bg-color)//#8080f1//var(--main-bg-color)
+    max-width var(--maxW)
+    //box-shadow 0 0 3px 0px var(--main-borders-color)//#a0a9
+    //background-color var(--main-bg-color)//#8080f1//var(--main-bg-color)
     #nav
       display flex
     @media screen and (max-width: 550px)
@@ -889,6 +906,14 @@ export default {
     margin-right 10px
     font-weight 700
     letter-spacing 2px
+  .logoText
+    color var(--color1)
+    letter-spacing 0.115em
+    font-size 55px
+    font-style normal
+    font-weight bold
+    font-family 'Montserrat', serif
+    line-height 123.4%
   .logolink
     margin-right 10px
     font-weight 700
@@ -903,8 +928,17 @@ export default {
       font-size 24px
       margin-right 2px
   .headerBtns1
-    padding 0 5px
+    padding 0 15px
     white-space nowrap
+    background-color: var(--btn-color);
+    font-weight: bold;
+    align-self:flex-start;
+    border-radius: 10px;
+    height: 62px;
+    div
+      font-family 'Montserrat', sans-serif !important
+      font-size 19px !important
+      line-height 23px !important
     @media screen and (max-width: 550px)
       font-size 12px
       padding 0 !important
@@ -914,8 +948,9 @@ export default {
       div
         padding 0 !important
         width 82px
-  .loginBtns1
-    margin 0 10px
+  .violetBtns
+    padding 0 19px
+    margin-left 19px
     @media screen and (max-width: 550px)
       font-size 16px
       line-height 36px
@@ -957,12 +992,18 @@ export default {
   .langLink
     border 0
     background-color transparent
-    color var(--main-borders-color)
-    width 30px
+    color var(--color1)
+    //width 30px
     cursor pointer
-    font-size 14px
-    &:hover
-      color var(--btn-color)
+    font-family: Montserrat, sans-serif;
+    font-style normal
+    font-weight 500
+    font-weight 500
+    font-size 19px
+    line-height 23px
+    margin-left 30px
+    // &:hover
+    //   color var(--btn-color)
   .headerBtnNew
     text-decoration none
     color white//var(--main-borders-color)

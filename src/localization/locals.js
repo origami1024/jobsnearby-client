@@ -180,7 +180,7 @@ const loc = {
     filters: {
       searchHint: 'Поиск по полям название, автор, город, основной текст',
       searchValSym: 'некорректная строка поиска',
-      searchBtn: 'Поиск',
+      searchBtn: 'Найти',
       city: 'Город',
       sal: 'Зарплата',
       curr: 'Валюта',

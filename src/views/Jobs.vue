@@ -1,54 +1,68 @@
 <template>
   <div class="jobs">
+    <div class="jobs__banner">
+      <div style="width: 120px; height: 120px; background: url('./../assets/checked.png');"></div>
+      <div class="jobs__banner-right">
+        <h2 style="margin-bottom: 50px;margin-left: 16px;color: var(--color1); font-family: Montserrat, sans-serif; font-weight: 600; font-size: 38px; line-height: 55px; max-width: 500px;">Найди подходящую вакансию уже сегодня!</h2>
+        <div class="jobs__top-search">
+        <button class="filtersHamburgerBtn">Ф</button>
+        <input
+          style="
+            box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.15);
+            border-radius: 10px;
+            width: 822px;
+            height: 62px;
+            border: 0;
+            padding: 0 50px;
+            font-family: Montserrat;
+            font-style: normal;
+            font-weight: normal;
+            font-size: 18px;
+            line-height: 22px;
+            margin-left: 16px;
+          "
+          type="text"
+          v-model="txt" @keyup.enter="refreshPlus"
+          placeholder="Введите ключевые слова"
+        >
+        <!-- <q-input
+          v-model="txt"
+          dense
+          class="jobsfilter__search"
+          @keyup.enter="refreshPlus"
+          
+          color="red-10"
+        >
+        </q-input> -->
+        <q-btn 
+          @click="refreshPlus"
+          class="headerBtns1 searchBtn"
+          style="background-color: var(--violet-btn-color); margin-left: -15px; padding: 0 33px;"
+          text-color="white" :loading="pending"
+          :label="$t('filters.searchBtn')"
+        />
+      </div>
+      </div>
+    </div>
+    <!-- <div class="jobs__top-wrapper"> -->
+      
+    <!-- </div> -->
     <div class="jobs__main">
-      <div style="padding-top: 10px">
-        <div class="jobs__filterpart">
-          <!-- :outerResetNeeded="outerResetNeeded" -->
-          <JobsFilter
-            
-            :isResetShown="isResetShown"
-            @resetFilters="resetFilters"
-            @currUpd="currUpd"
-            :currency="currency"
-            @cityUpd="cityUpd" @jcatUpd="jcatUpd" @expUpd="expUpd"
-            @salaryUpd="salaryUpd" :city="city" :salary="salary"
-            :exp="exp" :jcat="jcat"
-            :pending="pending"
-            @refresh="$emit('refresh')"
-            @updLangs="updLangs"
-          ></JobsFilter>
-        </div>
+      <div class="jobs__filterpart">
+        <JobsFilter
+          :isResetShown="isResetShown"
+          @resetFilters="resetFilters"
+          @currUpd="currUpd"
+          :currency="currency"
+          @cityUpd="cityUpd" @jcatUpd="jcatUpd" @expUpd="expUpd"
+          @salaryUpd="salaryUpd" :city="city" :salary="salary"
+          :exp="exp" :jcat="jcat"
+          :pending="pending"
+          @refresh="$emit('refresh')"
+          @updLangs="updLangs"
+        />
       </div>
       <div class="jobs__contents">
-        <div class="jobs__top-wrapper">
-          <div class="jobs__top">
-            <button class="filtersHamburgerBtn">Ф</button>
-            <q-input
-              v-model="txt"
-              dense
-              class="jobsfilter__search"
-              @keyup.enter="refreshPlus"
-              
-              color="red-10"
-            >
-              <!-- @input="txt != '' ? outerResetNeeded = true : null" -->
-              <!-- :rules="[val => wordRegex.test(val) || $t('filters.searchValSym')]" -->
-              <template v-if="txt" v-slot:append>
-                <q-icon name="cancel" @click.stop="txt = ''" class="cursor-pointer" />
-              </template>
-              <template v-slot:prepend>
-                <q-icon name="search" />
-              </template>
-            </q-input>
-            <q-btn 
-              @click="refreshPlus"
-              style="background-color: var(--btn-color); font-weight: 700; align-self:flex-start;"
-              class="searchBtn"
-              text-color="white" :loading="pending"
-              :label="$t('filters.searchBtn')"
-            />
-          </div>
-        </div>
         <div style="padding: 0 4px">
           <div class="line jobs_prefilters">
             <!-- <button class="orderLink">
@@ -212,6 +226,44 @@
           >
             {{i}}
           </button>
+        </div>
+      </div>
+      <div class="jobs__right-aside">
+        <div class="right-aside__salaries-stat statbox">
+          <h3
+            class="aside-h3"
+          >Зарплаты</h3>
+        </div>
+        <div class="right-aside__professions-stat statbox">
+          <h3
+            class="aside-h3"
+          >Топ профессий</h3>
+          <div class="professions-list">
+            <div class="professions-row">
+              <div>Программист</div>
+              <div>4000$</div>
+            </div>
+            <div class="professions-row">
+              <div>Программист</div>
+              <div>4000$</div>
+            </div>
+            <div class="professions-row">
+              <div>Обслуживающий персонал</div>
+              <div>4000$</div>
+            </div>
+            <div class="professions-row">
+              <div>Программист</div>
+              <div>4000$</div>
+            </div>
+            <div class="professions-row">
+              <div>Программист</div>
+              <div>4000$</div>
+            </div>
+            <div class="professions-row">
+              <div>Программист</div>
+              <div>4000$</div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -387,33 +439,39 @@ export default {
   display flex
   flex-direction column
   position relative
-  padding 0px 10px
-  .jobs__top-wrapper
-    z-index 1
-    background #fff
-    position sticky
-    top 0px
-    padding-top 10px
-    box-sizing border-box
-    margin-bottom 15px
-    border-bottom-left-radius 15px
-    border-bottom-right-radius 15px
-  .jobs__top
-    background-color var(--main-bg-color)
+  padding 0px 0px
+  // .jobs__top-wrapper
+  //   z-index 1
+  //   //background #fff
+  //   ////position sticky
+  //   top 0px
+  //   padding-top 10px
+  //   box-sizing border-box
+  //   margin-bottom 15px
+  //   border-bottom-left-radius 15px
+  //   border-bottom-right-radius 15px
+  .jobs__banner
     display flex
-    margin 0
-    padding 10px 15px
-    box-sizing border-box
+    text-align left
+    padding-top 37.5px
+    margin-bottom 75px
+  .jobs__top-search
+    //background-color var(--main-bg-color)
+    display flex
+    //justify-content center
+    //margin 0
+    //padding 10px 15px
+    //box-sizing border-box
     //box-shadow 0 0 3px 0px #a0a9
-    box-shadow 0 0 4px 1px var(--main-borders-color)
-    border-radius 15px
+    //box-shadow 0 0 4px 1px var(--main-borders-color)
+    //border-radius 15px
   .jobs__filterpart
-    position sticky
-    box-sizing border-box
+    //position sticky
+    //box-sizing border-box
     //top 105px
-    top 10px
-    display flex
-    margin-right 20px
+    //top 10px
+    //display flex
+    //margin-right 20px
     @media screen and (max-width: 550px)
       display block
       display none
@@ -433,9 +491,10 @@ export default {
     position relative
     // justify-content space-around
   .jobs__contents
-    box-sizing border-box
-    width calc(100% - 10px)
-    max-width calc(1000px - 310px) //that is including the filters to the left
+    margin 0 30px
+    //box-sizing border-box
+    //width calc(100% - 10px)
+    //max-width calc(var(--maxW) - 410px) //that is including the filters to the left
   .jobs_prefilters
     margin-bottom 15px
     background-color var(--main-bg-color)
@@ -484,6 +543,35 @@ export default {
   cursor pointer
   &:hover
     background-color var(--btn-color)
+.statbox
+  box-shadow 0px 5px 15px rgba(0, 0, 0, 0.15)
+  border-radius 10px
+  padding 34px 25px
+  width 250px
+  box-sizing border-box
+  text-align left
+  margin-bottom 44px
+.jobs__right-aside
+  .aside-h3
+    font-family "Montserrat", sans-serif
+    font-weight bold
+    font-size 18px !important
+    line-height 22px !important
+    color var(--color1)
+    text-transform uppercase
+    width 130px
+    margin-bottom 30px
+  .professions-list
+    width 172px
+  .professions-row
+    display flex
+    justify-content space-between
+    margin-bottom 15px
+    align-items flex-end
+    div
+      font-family "Montserrat", sans-serif !important
+      font-size 14px !important
+      line-height 17px !important
 @media screen and (max-width: 550px)
   .jobs
     padding 0
@@ -493,7 +581,7 @@ export default {
     .searchBtn
       font-size 12px
       margin auto
-    .jobs__top
+    .jobs__top-search
       padding 5px
       border-radius 5px
     .pageBtns
