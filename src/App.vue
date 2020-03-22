@@ -832,7 +832,7 @@ export default {
   --main-borders-color #3A6E8F
   --btn-color #C00027
   --violet-btn-color #8645FF
-  --color1 #181059
+  --color1 #2E2768 //#181059
   //--logoWidth 160px
   --maxW 1135px
   @media screen and (max-width: 1000px)
