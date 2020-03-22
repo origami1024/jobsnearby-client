@@ -1,9 +1,11 @@
 <template>
   <div class="jobs">
     <div class="jobs__banner">
-      <div style="width: 120px; height: 120px; background: url('./../assets/checked.png');"></div>
+      <div style="width: 68px; height: 68px; background: url('./../assets/checked.png');"></div>
       <div class="jobs__banner-right">
-        <h2 style="margin-bottom: 50px;margin-left: 16px;color: var(--color1); font-family: Montserrat, sans-serif; font-weight: 600; font-size: 38px; line-height: 55px; max-width: 500px;">Найди подходящую вакансию уже сегодня!</h2>
+        <div style="height: 68px; margin-bottom: 20px; display: flex; align-items: center;">
+          <h2 style="margin-left: 30px;color: var(--color1); font-family: Montserrat, sans-serif; font-weight: 600; font-size: 18px; line-height: 144.4%; max-width: 296px;">Найди подходящую вакансию уже сегодня!</h2>
+        </div>
         <div class="jobs__top-search">
         <button class="filtersHamburgerBtn">Ф</button>
         <input
@@ -11,14 +13,14 @@
             box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.15);
             border-radius: 10px;
             width: 822px;
-            height: 62px;
+            height: 40px;
             border: 0;
-            padding: 0 50px;
-            font-family: Montserrat;
+            padding: 0 26px;
+            font-family: Montserrat, sans-serif;
             font-style: normal;
             font-weight: normal;
-            font-size: 18px;
-            line-height: 22px;
+            font-size: 14px;
+            line-height: 17px;
             margin-left: 16px;
           "
           type="text"
@@ -37,7 +39,7 @@
         <q-btn 
           @click="refreshPlus"
           class="headerBtns1 searchBtn"
-          style="background-color: var(--violet-btn-color); margin-left: -15px; padding: 0 33px;"
+          style="background-color: var(--violet-btn-color); margin-left: -15px; padding: 0 12px;"
           text-color="white" :loading="pending"
           :label="$t('filters.searchBtn')"
         />
@@ -453,8 +455,8 @@ export default {
   .jobs__banner
     display flex
     text-align left
-    padding-top 37.5px
-    margin-bottom 75px
+    padding-top 12.5px
+    margin-bottom 46px
   .jobs__top-search
     //background-color var(--main-bg-color)
     display flex
@@ -491,7 +493,7 @@ export default {
     position relative
     // justify-content space-around
   .jobs__contents
-    margin 0 30px
+    margin 0 26px
     //box-sizing border-box
     //width calc(100% - 10px)
     //max-width calc(var(--maxW) - 410px) //that is including the filters to the left
@@ -544,34 +546,35 @@ export default {
   &:hover
     background-color var(--btn-color)
 .statbox
+  background white
   box-shadow 0px 5px 15px rgba(0, 0, 0, 0.15)
   border-radius 10px
-  padding 34px 25px
-  width 250px
+  padding 28px 30px 39px 30px
+  width 234px
   box-sizing border-box
   text-align left
-  margin-bottom 44px
+  margin-bottom 18px
 .jobs__right-aside
   .aside-h3
     font-family "Montserrat", sans-serif
     font-weight bold
-    font-size 18px !important
-    line-height 22px !important
+    font-size 16px !important
+    line-height 20px !important
     color var(--color1)
     text-transform uppercase
     width 130px
-    margin-bottom 30px
+    margin-bottom 22px
   .professions-list
     width 172px
   .professions-row
     display flex
     justify-content space-between
-    margin-bottom 15px
+    margin-bottom 11px
     align-items flex-end
     div
       font-family "Montserrat", sans-serif !important
-      font-size 14px !important
-      line-height 17px !important
+      font-size 12px !important
+      line-height 15px !important
 @media screen and (max-width: 550px)
   .jobs
     padding 0

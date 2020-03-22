@@ -185,7 +185,7 @@
                 RU
               </q-item>
             </q-menu>
-            <img style="display: inline-block; margin-left: 11px;" src="./../public/assets/arrow1.png">
+            <img style="display: inline-block; margin-left: 5px;" src="./../public/assets/arrow1.png">
           </button>
         </div>
         <q-ajax-bar
@@ -833,14 +833,14 @@ export default {
   --btn-color #C00027
   --violet-btn-color #8645FF
   --color1 #181059
-  --logoWidth 160px
-  --maxW 1400px
+  //--logoWidth 160px
+  --maxW 1135px
   @media screen and (max-width: 1000px)
     --maxW 100%
   @media screen and (max-width: 550px)
     --maxW 100%
 body
-  background-image url('./../public/bg1.png')
+  background-image url('./../public/assets/bg1.png')
   background-repeat no-repeat
   background-position right top
 #app
@@ -865,7 +865,7 @@ body
     align-items center
     justify-content space-between
     margin 0px auto
-    height 150px
+    height 115px
     padding 0px 0px
     box-sizing border-box
     max-width var(--maxW)
@@ -909,7 +909,7 @@ body
   .logoText
     color var(--color1)
     letter-spacing 0.115em
-    font-size 55px
+    font-size 34px
     font-style normal
     font-weight bold
     font-family 'Montserrat', serif
@@ -928,17 +928,17 @@ body
       font-size 24px
       margin-right 2px
   .headerBtns1
-    padding 0 15px
+    padding 0 5px
     white-space nowrap
     background-color: var(--btn-color);
     font-weight: bold;
     align-self:flex-start;
     border-radius: 10px;
-    height: 62px;
+    height 40px
     div
       font-family 'Montserrat', sans-serif !important
-      font-size 19px !important
-      line-height 23px !important
+      font-size 14px !important
+      line-height 17px !important
     @media screen and (max-width: 550px)
       font-size 12px
       padding 0 !important
@@ -949,8 +949,8 @@ body
         padding 0 !important
         width 82px
   .violetBtns
-    padding 0 19px
-    margin-left 19px
+    padding 0 3px
+    margin-left 15px
     @media screen and (max-width: 550px)
       font-size 16px
       line-height 36px
@@ -999,8 +999,8 @@ body
     font-style normal
     font-weight 500
     font-weight 500
-    font-size 19px
-    line-height 23px
+    font-size 14px
+    line-height 17px
     margin-left 30px
     // &:hover
     //   color var(--btn-color)
@@ -1098,5 +1098,9 @@ body
     margin-right -3px !important
     align-items center !important
     
-    
+
+//////FILTERS Q-SELECTS
+.q-select
+  background-color white !important
+  border-radius 10px !important
 </style>

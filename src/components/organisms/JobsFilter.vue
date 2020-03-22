@@ -3,36 +3,43 @@
     <h3
       style="
         text-transform: uppercase;
-        font-family: Montserrat;
+        font-family: Montserrat, sans-serif;
         font-style: normal;
         font-weight: bold;
-        font-size: 22px;
-        line-height: 27px;
-        margin-bottom: 30px;
+        font-size: 16px;
+        line-height: 20px;
+        margin-bottom: 15px;
       "
     >Расширенный поиск:</h3>
-    <span>{{$t('filters.city')}}</span>
+    <span class="f-label">{{$t('filters.city')}}</span>
     <q-select
       :value="city"
       @input="cityUpd"
       use-input
       color="cyan-10"
-      bg-color="white"
+      
       fill-input
       hide-selected
       dense
       :options="cityOptions"
       @filter="filterFn"
       placeholder="Ашхабад"
-      style="border-radius: 10px;"
+      style="border-radius: 10px; margin-bottom: 12px;"
       @keyup="addNewCity"
     />
-    <span>{{$t('filters.jcat')}}</span>
-    <q-select color="cyan-10" @input="jcatUpd" dense :value="jcat" :options="jcatOptions" />
+    <span class="f-label">{{$t('filters.jcat')}}</span>
+    <q-select
+      color="cyan-10"
+      @input="jcatUpd" dense :value="jcat" 
+      style="border-radius: 10px; margin-bottom: 12px;"
+      class="f-select"
+      :options="jcatOptions"
+    />
     <div class="line">
       <q-select
         :content-style="{ backgroundColor: 'red' }"
         style="width: 65%;"
+        
         color="cyan-10"
         @input="salaryUpd" dense
         :value="salary" :options="salOptions" :label="$t('filters.sal')" />
@@ -201,21 +208,26 @@ export default {
   background-color var(--color1)
   //flex 0 1 35%
   text-align left
-  max-width 410px
-  min-width 410px
+  max-width 278px
+  min-width 278px
   margin-bottom 15px
-  padding 38px 38px 42px 46px
+  padding 31px
   box-sizing border-box
   //box-shadow 0 0 4px 1px var(--main-borders-color)
   box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.1);
   border-radius 10px
   color white
-  span
-    font-family: Montserrat;
-    font-style: normal;
-    font-weight: normal;
-    font-size: 18px;
-    line-height: 22px;
+  .f-label
+    font-family: Montserrat, sans-serif;
+    font-weight normal
+    font-size 14px
+    line-height 17px !important
+    display block
+    margin-bottom 6px !important
+  f-select
+    background-color white !important
+    input
+      border-radius 10px !important
   *
     margin 0
   div, span, svg
