@@ -188,7 +188,7 @@ const loc = {
         {label: "все", value: 'idc'},
         {label: "$", value: '$'},
         {label: "манат", value: 'm'},],
-      exp: 'Опыт',
+      exp: 'Опыт работы',
       jcat: 'Профессия',
       applyBtn: 'Применить',
       expFilters: [

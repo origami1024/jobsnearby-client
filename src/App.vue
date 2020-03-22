@@ -1100,7 +1100,50 @@ body
     
 
 //////FILTERS Q-SELECTS
-.q-select
-  background-color white !important
-  border-radius 10px !important
+// .q-select
+//   border-radius 10px !important
+//   font-family: Montserrat, sans-serif !important;
+//   font-weight: normal !important
+//   background-color white !important
+//   max-height 36px !important
+//   height 36px !important
+//   min-height 36px !important
+//   box-sizing border-box !important
+//   padding 0 !important
+//   //margin 0 !important
+//   div
+//     border-radius 10px !important
+//     background-color white !important
+//     max-height 36px !important
+//     height 36px !important
+//     min-height 36px !important
+//     box-sizing border-box !important
+//     padding 0 !important
+//     margin 0 !important
+//     margin 0 !important
+//     div
+//       box-sizing border-box !important
+//       max-height 36px !important
+//       height 36px !important
+//       min-height 36px !important
+//       border-radius 10px !important
+//       padding 0 !important
+//       margin 0 !important
+//       div.q-field__control-container
+//         padding 0 !important
+//         margin 0 !important
+//         max-height 36px !important
+//         height 36px !important
+//         min-height 36px !important
+//         div
+//           padding 0 !important
+//           margin 0 !important
+//           max-height 36px !important
+//           height 36px !important
+//           min-height 36px !important
+//           input
+//             //height 36px !important
+//             font-size: 12px !important
+//             line-height: 15px !important
+
 </style>

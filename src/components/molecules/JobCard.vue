@@ -1,17 +1,26 @@
 <template>
   <div :class="{ jobscard: true }">
-    <div class="line">
-      <div class="colx">
-        <h4 class="cardHeader">
-          <!-- <a :href="'/jobBy.Id?id=' + job.job_id" target="_blank"> -->
-          <a :href="'/jobpage?id=' + job.job_id" target="_blank">
-            <strong class="joblink" v-html="filteredTitle"/>
-          </a>
-        </h4>
+    <div class="line" style="margin-bottom: 15px;">
+      <div class="line" style="align-items: center;">
+        <p class="city" :class="job.city.length > 0 ? 'cityOK' : ''" v-html="filteredCity" style="padding-right: 10px; border-right: 1px solid var(--color1); line-height: 25px; margin-right: 10px;"></p>
+        <!-- <div >|</div> -->
         <a :href="'/companypage?id=' + job.author_id" target="_blank">
           <div class="author joblink" v-html="filteredAuthor"></div>
         </a>
       </div>
+      <div class="line" style="align-items: center; font-weight: 500; font-size: 12px; line-height: 15px; color: var(--color1);">
+        <!-- <div class="circle alignRight"></div> -->
+        <div style="margin-right: 5px;">Размещено:</div>
+        <p v-html="lastUpdated"></p>
+      </div>
+    </div>
+    <div class="line">
+      <h4 class="cardHeader">
+        <!-- <a :href="'/jobBy.Id?id=' + job.job_id" target="_blank"> -->
+        <a :href="'/jobpage?id=' + job.job_id" target="_blank">
+          <strong class="joblink" v-html="filteredTitle"/>
+        </a>
+      </h4>
       <div class="colx">
         <strong class="alignRight jobcard__salary">
           <p v-if="job.salary_min === job.salary_max && job.salary_min > 0">{{job.salary_max}} {{currency}}</p>
@@ -19,7 +28,6 @@
           <p v-else-if="job.salary_max > 0">{{job.salary_max}} {{currency}}</p>
           <p v-else>{{$t('jc.salaryNone')}}</p>
         </strong>
-        <p class="alignRight city" v-html="filteredCity"></p>
       </div>
     </div>
     <div class="line" v-if="lenses == 'full'">
@@ -34,7 +42,8 @@
             $t('jc.exp3_5')
           :job.experience >= 5 ?
             $t('jc.exp5_')
-          : ''} ${filteredDesc}`"></p>
+          : ''} ${filteredDesc}`">
+      </p>
     </div>
     
     <div class="line">
@@ -62,10 +71,6 @@
       <div v-if="isContactsShown" class="contactsPanel">
         <div>{{job.contact_mail}}</div>
         <div>{{job.contact_tel}}</div>
-      </div>
-      <div :class="{colx: lenses == 'full', linej: lenses == 'short'}">
-        <!-- <div class="circle alignRight"></div> -->
-        <p class="alignRight" v-html="lastUpdated"></p>
       </div>
     </div>
   </div>
@@ -129,7 +134,8 @@ export default {
         return this.job.city.substr(0, i) + 
         '<span class="searched">' + this.job.city.substr(i, this.searchFilter.length) + '</span>' + 
         this.job.city.substr(i + this.searchFilter.length)
-      } else return this.job.city
+      } else if (this.job.city.length == 0) return 'Не указан'
+      else return this.job.city
     },
     filteredDesc: function() {
       if (this.searchFilter.length > 1 && this.job.description.toLowerCase().includes(this.searchFilter)) {
@@ -162,21 +168,28 @@ export default {
 *
   margin 0
   text-align left
+  font-family: Montserrat, sans-serif;
+  font-style: normal;
 .jobscard
   position relative
-  border-left 2px solid var(--main-borders-color)
-  padding-left 2px
-  font-size 14px
+  //border-left 2px solid var(--main-borders-color)
+  // padding-left 2px
+  // font-size 14px
   //margin-top 10px
   //max-width 300px
   display flex
   flex-direction column
-  margin-bottom 10px
+  
   box-sizing border-box
   transition-duration 0.3s
-  box-shadow 0 0 2px 1px #dfdfdf
+  //box-shadow 0 0 2px 1px #dfdfdf
+  background: #fff;
+  box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.15);
+  border-radius: 10px;
+  margin-bottom 18px
+  padding 19px 30px
   &:hover
-    box-shadow 0 0 2px 1px var(--main-borders-color)//#bbb
+    box-shadow 0 0 2px 1px var(--violet-btn-color)//#bbb
   a
     text-decoration none
     color #06f
@@ -194,15 +207,28 @@ export default {
     color white//#2837C6
 
   .cardHeader
-    font-weight 400
-    font-size 20px
-    margin-bottom 3px
+    //font-weight 400
+    //margin-bottom 3px
+    font-weight: bold;
+    font-size: 17px;
+    line-height: 21px;
+    text-transform uppercase
   .city
-    font-size 0.85em
+    //font-size 0.85em
+    font-weight: 500;
+    font-size: 12px;
+    line-height: 15px;
+    color var(--violet-btn-color)
+  .cityOK
+    &:before
+      content 'г.'
   .author
-    font-size 0.9em
+    font-weight: 500;
+    font-size: 12px;
+    line-height: 15px;
+    color var(--color1)
   .line
-    padding 5px
+    //padding 5px
     display flex
     justify-content space-between
     &:last-child
@@ -268,7 +294,7 @@ export default {
   margin-bottom 5px
   word-break break-all
 .joblink
-  color var(--main-borders-color)
+  color var(--color1)
 
 @media screen and (max-width: 550px)
   .jobscard

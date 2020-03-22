@@ -12,40 +12,59 @@
       "
     >Расширенный поиск:</h3>
     <span class="f-label">{{$t('filters.city')}}</span>
-    <q-select
+    <!-- {{city}} -->
+    <DDSelect :picked="city" @update:city="cityUpd($event)" :cities="cityOptions" ph="Не имеет значения" style="margin-bottom: 12px;"/>
+    <!-- <span class="f-label">{{$t('filters.city')}}</span> -->
+    <!-- <q-select
       :value="city"
       @input="cityUpd"
       use-input
-      color="cyan-10"
-      
-      fill-input
-      hide-selected
       dense
+      color="cyan-10"
+      hide-selected
       :options="cityOptions"
       @filter="filterFn"
       placeholder="Ашхабад"
       style="border-radius: 10px; margin-bottom: 12px;"
       @keyup="addNewCity"
-    />
+      no-border
+    /> -->
     <span class="f-label">{{$t('filters.jcat')}}</span>
+    <BasicSelect :picked="jcat" @update:value="jcatUpd($event)" :values="jcatOptions" ph="Не имеет значения" style="margin-bottom: 12px;" emptyTemplate='0' />
+    <!-- <span class="f-label">{{$t('filters.jcat')}}</span>
     <q-select
+      dense
       color="cyan-10"
-      @input="jcatUpd" dense :value="jcat" 
+      @input="jcatUpd" :value="jcat" 
       style="border-radius: 10px; margin-bottom: 12px;"
       class="f-select"
       :options="jcatOptions"
-    />
+    /> -->
+    <span class="f-label">{{$t('filters.exp')}}</span>
+    <BasicSelect :picked="exp" @update:value="expUpd($event)" :values="expOptions" ph="Не имеет значения" style="margin-bottom: 12px;" />
+    <!-- <q-select color="cyan-10" @input="expUpd" dense :value="exp" :options="expOptions" :label="$t('filters.exp')" /> -->
     <div class="line">
+      <div style="width: 125px">
+      <span class="f-label">{{$t('filters.sal')}}</span>
+      <BasicSelect :picked="salary" @update:value="salaryUpd($event)" :values="salOptions" ph="" style="margin-bottom: 12px;" />
+      </div>
+      <div style="width: 71px">
+      <span class="f-label">{{$t('filters.curr')}}</span>
+      <BasicSelect :picked="currency" @update:value="currUpd($event)" :values="currOptions" ph="" style="margin-bottom: 12px;" />
+      </div>
+    </div>
+
+    <!-- <div class="line">
       <q-select
         :content-style="{ backgroundColor: 'red' }"
         style="width: 65%;"
-        
+        dense
         color="cyan-10"
-        @input="salaryUpd" dense
+        @input="salaryUpd"
         :value="salary" :options="salOptions" :label="$t('filters.sal')" />
       <q-select color="cyan-10" style="width: 30%; text-align: center" dense @input="currUpd" :value="currency" :options="currOptions" :label="$t('filters.curr')" />
-    </div>
-    <q-select color="cyan-10" @input="expUpd" dense :value="exp" :options="expOptions" :label="$t('filters.exp')" />
+    </div> -->
+    
     <div class="w100" :style="{justifyContent: isResetShown ? 'space-between': 'flex-end'}">
       <q-btn
         v-if="isResetShown"
@@ -71,6 +90,9 @@
 </template>
 
 <script>
+import DDSelect from './../atoms/DDSelect'
+import BasicSelect from './../atoms/BasicSelect'
+
 //панелька справа с выбором фильтрации
 let stringOptions = ["Не имеет значения", "Ашхабад", "Дашогуз", "Мары", "Туркменабад", "Туркменбаши"]
 
@@ -139,9 +161,13 @@ export default {
     //   {label: "от 3000", value: '3'},
     // ],
   }},
+  components: {
+    DDSelect,
+    BasicSelect
+  },
   methods: {
     cityUpd(new1) {
-      //console.log(new1)
+      //console.log('cp7 ', new1)
       if (new1 == this.$t('filters.cities')[0]) new1 = ''
       this.$emit('cityUpd', new1)
       
@@ -206,6 +232,7 @@ export default {
 <style scoped lang="stylus">
 .jobsfilter
   background-color var(--color1)
+  //background-color yellow
   //flex 0 1 35%
   text-align left
   max-width 278px
