@@ -13,7 +13,7 @@
     >Расширенный поиск:</h3>
     <span class="f-label">{{$t('filters.city')}}</span>
     <!-- {{city}} -->
-    <DDSelect :picked="city" @update:city="cityUpd($event)" :cities="cityOptions" ph="Не имеет значения" style="margin-bottom: 12px;"/>
+    <DDSelect :picked="city" @update:city="cityUpd($event)" :cities="cityOptions" ph="Ашхабад" style="margin-bottom: 12px;"/>
     <!-- <span class="f-label">{{$t('filters.city')}}</span> -->
     <!-- <q-select
       :value="city"
@@ -30,7 +30,7 @@
       no-border
     /> -->
     <span class="f-label">{{$t('filters.jcat')}}</span>
-    <BasicSelect :picked="jcat" @update:value="jcatUpd($event)" :values="jcatOptions" ph="Не имеет значения" style="margin-bottom: 12px;" emptyTemplate='0' />
+    <BasicSelect :picked="jcat" @update:value="jcatUpd($event)" :values="jcatOptions" ph="Бухгалтер" style="margin-bottom: 12px;" emptyTemplate='0' />
     <!-- <span class="f-label">{{$t('filters.jcat')}}</span>
     <q-select
       dense
@@ -41,12 +41,12 @@
       :options="jcatOptions"
     /> -->
     <span class="f-label">{{$t('filters.exp')}}</span>
-    <BasicSelect :picked="exp" @update:value="expUpd($event)" :values="expOptions" ph="Не имеет значения" style="margin-bottom: 12px;" />
+    <BasicSelect :picked="exp" @update:value="expUpd($event)" :values="expOptions" ph="от 1 до 3 лет" style="margin-bottom: 12px;" />
     <!-- <q-select color="cyan-10" @input="expUpd" dense :value="exp" :options="expOptions" :label="$t('filters.exp')" /> -->
     <div class="line">
       <div style="width: 125px">
       <span class="f-label">{{$t('filters.sal')}}</span>
-      <BasicSelect :picked="salary" @update:value="salaryUpd($event)" :values="salOptions" ph="" style="margin-bottom: 12px;" />
+      <BasicSelect :picked="salary" @update:value="salaryUpd($event)" :values="salOptions" ph="от 200 до 500" style="margin-bottom: 12px;" />
       </div>
       <div style="width: 71px">
       <span class="f-label">{{$t('filters.curr')}}</span>
@@ -65,18 +65,17 @@
       <q-select color="cyan-10" style="width: 30%; text-align: center" dense @input="currUpd" :value="currency" :options="currOptions" :label="$t('filters.curr')" />
     </div> -->
     
-    <div class="w100" :style="{justifyContent: isResetShown ? 'space-between': 'flex-end'}">
+    <div class="w100" :style="{justifyContent: isResetShown ? 'space-between': 'flex-end'}" style="margin-top: 19px;">
       <q-btn
         v-if="isResetShown"
-        icon="delete_forever"
-        rounded
-        color="red-10"
+        class="headerBtns1 trashBg"
         @click="$emit('resetFilters')"
       />
       <q-btn
         :loading="pending"
-        style="background-color: var(--main-borders-color); font-weight: 700; padding: 0 5px"
-        
+        style="background-color: var(--violet-btn-color); font-weight: 700; width: 100%"
+        :style="{width: isResetShown ? '126px': '100%'}"
+        class="headerBtns1"
         text-color="white"
         :label="$t('filters.applyBtn')"
         @click="refreshPlus"
@@ -271,6 +270,14 @@ export default {
     width 100%
     justify-content flex-end
     padding-top 10px
+.trashBg
+  background url('./../../../public/assets/trash1.png') !important
+  background-repeat no-repeat !important
+  background-position center !important
+  background-color var(--btn-color) !important
+  width 70px
+  &:hover
+    background-color var(--btn-color1) !important
 .jobsfilter__search-btn
   align-self flex-start
 

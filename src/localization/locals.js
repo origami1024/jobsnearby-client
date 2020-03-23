@@ -174,7 +174,7 @@ const loc = {
       onlyRegisteredCV: 'Подавать резюме могут <span style="color: red">зарегистрированные</span> пользователи',
       currencyDic: {
         '$': '$',
-        'm': 'манат',
+        'm': '₼',
       },
     },
     filters: {
@@ -208,19 +208,19 @@ const loc = {
     },
     jobs: {
       sortOpts: [
-        {label: 'По дате ↓', value: 'new'},
-        {label: 'По зп ↓', value: 'saldesc'},
-        {label: 'По зп ↑', value: 'salasc'}
+        {label: 'По Дате', value: 'new'},
+        {label: 'По ЗП ↓', value: 'saldesc'},
+        {label: 'По ЗП ↑', value: 'salasc'}
       ],
       dateOpts: [
-        {label: 'За месяц', value: 'mon'},
-        {label: 'За неделю', value: 'wee'},
-        {label: 'За сутки', value: 'day'}
+        {label: 'За Месяц', value: 'mon'},
+        {label: 'За Неделю', value: 'wee'},
+        {label: 'За Сутки', value: 'day'}
       ],
       perpageOpts: [
-        {label: '25 на стр', value: '25'},
-        {label: '50 на стр', value: '50'},
-        {label: '100 на стр', value: '100'}
+        {label: '25 вакансий', value: '25'},
+        {label: '50 вакансий', value: '50'},
+        {label: '100 вакансий', value: '100'}
       ],
       
     },
@@ -619,7 +619,7 @@ const loc = {
       onlyRegisteredCV: 'Rezýumeni diňe <span style="color: red">registrasiýa</span> bolan ulanyjylar ugradyp bilýär',
       currencyDic: {
         '$': '$',
-        'm': 'manat',
+        'm': '₼',
       },
     },
     filters: {

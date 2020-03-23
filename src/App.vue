@@ -31,12 +31,12 @@
           </q-tooltip>
         </router-link>
         <!-- <div class="separator" style="width: 150px"></div> -->
-        <div id="nav" style="margin-left: auto">
+        <div id="nav" style="margin-left: auto;">
           <!--  shrink stretch -->
           <q-btn 
             @click.native="newJobInit"
             v-if="role == 'company'"
-            class="headerBtns1"
+            class="headerBtns1 headerBtnRed"
             text-color="white" 
             :label="$t('App.newJobHint')"
             rounded
@@ -45,7 +45,7 @@
           <q-btn 
             @click.native="authPls"
             v-else-if="role != 'subscriber'"
-            class="headerBtns1"
+            class="headerBtns1 headerBtnRed"
             text-color="white" 
             :label="$t('App.newJobHint')"
             to="/registration"
@@ -178,10 +178,10 @@
           </select> -->
           <button class="langLink" style="display: flex; align-items: center; white-space: nowrap; margin-right: 0; padding-left: 0; padding-right: 0;">{{app_lng}}
             <q-menu dense>
-              <q-item style="lineHeight: 2.2" dense :style="{color: app_lng == 'TM' ? 'var(--main-borders-color)' : 'black', fontWeight: app_lng == 'TM' ? '700' : '400'}" clickable v-close-popup @click="app_lng = 'TM'; $i18n.locale = 'tm'; setLang('tm')">
+              <q-item style="lineHeight: 2.2" dense :style="{color: app_lng == 'TM' ? 'var(--violet-btn-color)' : 'var(--color1)', fontWeight: app_lng == 'TM' ? '700' : '400'}" clickable v-close-popup @click="app_lng = 'TM'; $i18n.locale = 'tm'; setLang('tm')">
                 TM
               </q-item>
-              <q-item style="lineHeight: 2.2" dense :style="{color: app_lng == 'RU' ? 'var(--main-borders-color)' : 'black', fontWeight: app_lng == 'RU' ? '700' : '400'}" clickable v-close-popup @click="app_lng = 'RU'; $i18n.locale = 'ru'; setLang('ru')">
+              <q-item style="lineHeight: 2.2" dense :style="{color: app_lng == 'RU' ? 'var(--violet-btn-color)' : 'var(--color1)', fontWeight: app_lng == 'RU' ? '700' : '400'}" clickable v-close-popup @click="app_lng = 'RU'; $i18n.locale = 'ru'; setLang('ru')">
                 RU
               </q-item>
             </q-menu>
@@ -831,6 +831,7 @@ export default {
   --main-bg-color #fff
   --main-borders-color #3A6E8F
   --btn-color #C00027
+  --btn-color1 #D00027
   --violet-btn-color #8645FF
   --color1 #2E2768 //#181059
   //--logoWidth 160px
@@ -935,10 +936,14 @@ body
     align-self:flex-start;
     border-radius: 10px;
     height 40px
+    transition-duration 0.3s
     div
       font-family 'Montserrat', sans-serif !important
       font-size 14px !important
       line-height 17px !important
+  .headerBtnRed
+    &:hover
+      background-color var(--btn-color1) !important
     @media screen and (max-width: 550px)
       font-size 12px
       padding 0 !important

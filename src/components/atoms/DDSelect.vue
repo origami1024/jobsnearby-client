@@ -92,5 +92,6 @@ export default {
     &:hover
       background-color var(--violet-btn-color)
       color white
-
+.highlighted
+  background-color red
 </style>

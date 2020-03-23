@@ -14,7 +14,7 @@
         <p v-html="lastUpdated"></p>
       </div>
     </div>
-    <div class="line">
+    <div class="line" style="align-items: center;">
       <h4 class="cardHeader">
         <!-- <a :href="'/jobBy.Id?id=' + job.job_id" target="_blank"> -->
         <a :href="'/jobpage?id=' + job.job_id" target="_blank">
@@ -23,14 +23,15 @@
       </h4>
       <div class="colx">
         <strong class="alignRight jobcard__salary">
-          <p v-if="job.salary_min === job.salary_max && job.salary_min > 0">{{job.salary_max}} {{currency}}</p>
-          <p v-else-if="job.salary_min && job.salary_min > 0">от {{job.salary_min}} до {{job.salary_max}} {{currency}}</p>
-          <p v-else-if="job.salary_max > 0">{{job.salary_max}} {{currency}}</p>
+          <p v-if="job.salary_min === job.salary_max && job.salary_min > 0">{{job.salary_max}}{{currency}}</p>
+          <!-- <p v-else-if="job.salary_min && job.salary_min > 0">от {{job.salary_min}} до {{job.salary_max}} {{currency}}</p> -->
+          <p v-else-if="job.salary_min && job.salary_min > 0">{{job.salary_min}}{{currency}}-{{job.salary_max}}{{currency}}</p>
+          <p v-else-if="job.salary_max > 0">{{job.salary_max}}{{currency}}</p>
           <p v-else>{{$t('jc.salaryNone')}}</p>
         </strong>
       </div>
     </div>
-    <div class="line" v-if="lenses == 'full'">
+    <div class="line">
       <p class="filteredDesc" v-html="
         `${job.experience == -1 ?
             $t('jc.expEmpty')
@@ -47,11 +48,14 @@
     </div>
     
     <div class="line">
-      <div :class="{ line50: true, spbtw: lenses =='full' }">
+      <div class="line spbtw" style="width: 100%">
+        <!-- <q-btn class="mr-5px" v-else-if="role == 'subscriber'" round size="xs" icon="work"/> -->
+        <a v-if="lenses == 'full'" class="cardLink" @click.prevent="isContactsShown = !isContactsShown" href="#">{{$t('jc.contactsLabel')}}</a>
+        <q-btn class="mr-5px" v-else round size="xs" @click="isContactsShown = !isContactsShown" icon="people"/>
         <a v-if="role != 'company' && !cved" class="cardLink" @click.prevent="$emit('hitcv', job.job_id)" href="#">
           {{$t('jc.sendCVLabel')}}
         </a>
-        <q-btn 
+        <q-btn
           v-if="role != 'company' && cved" text-color="primary" 
           round
           size="xs" 
@@ -64,9 +68,6 @@
             <p v-else style="font-size: 15px; margin: 0">{{$t('jc.tooltipNotseen')}}</p>
           </q-tooltip>
         </q-btn>
-        <!-- <q-btn class="mr-5px" v-else-if="role == 'subscriber'" round size="xs" icon="work"/> -->
-        <a v-if="lenses == 'full'" class="cardLink" @click.prevent="isContactsShown = !isContactsShown" href="#">{{$t('jc.contactsLabel')}}</a>
-        <q-btn class="mr-5px" v-else round size="xs" @click="isContactsShown = !isContactsShown" icon="people"/>
       </div>
       <div v-if="isContactsShown" class="contactsPanel">
         <div>{{job.contact_mail}}</div>
@@ -177,8 +178,7 @@ export default {
   // font-size 14px
   //margin-top 10px
   //max-width 300px
-  display flex
-  flex-direction column
+  
   
   box-sizing border-box
   transition-duration 0.3s
@@ -196,7 +196,7 @@ export default {
     &:visited
       color #06f
   .cardLink
-    margin-right 15px
+    //margin-right 15px
     background-color var(--main-borders-color)
     color white
     text-decoration none
@@ -272,7 +272,12 @@ export default {
   border-radius 3px
   padding 5px
 .jobcard__salary p
-  font-size 16px
+  font-family: Montserrat;
+  font-style: normal;
+  font-weight: bold;
+  font-size: 18px;
+  line-height: 22px;
+  color var(--violet-btn-color)
 .descFormats
   height 21px
   line-height 20px

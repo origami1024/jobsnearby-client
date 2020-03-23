@@ -7,12 +7,12 @@
     <!-- <select>
       <option v-for="val in values" :key="val.value" :value="val.value">{{val.label}}</option>
     </select> -->
-    <div class="selected" @click="i_focus = !i_focus" @focusout="focout" tabindex="1">
+    <div class="selected" @click="i_focus = !i_focus; moved = false" @focusout="focout" tabindex="1">
       <div v-if="picked.value == emptyTemplate" class="ph">{{ph}}</div>
       <div v-else>{{picked.label}}</div>
     </div>
-    <ul class="dd" v-if="i_focus">
-      <li @click="selectit(val)" v-for="val in values" :key="val.value">{{val.label}}</li>
+    <ul class="dd" v-if="i_focus" @mousemove="moved = true">
+      <li :class="val == picked && moved == false ? 'highlighted' : ''" @click="selectit(val)" v-for="val in values" :key="val.value">{{val.label}}</li>
     </ul>
   </div>
 </template>
@@ -31,6 +31,7 @@ export default {
   data: ()=>{return {
     //picked: {label: 'Не имеет значения', value: 0},
     i_focus: false,
+    moved: false
   }},
   methods: {
     pressEnter(e) {
@@ -86,23 +87,10 @@ export default {
       font-style: normal;
       font-weight: normal;
       font-size: 12px;
-    option
-      color black
-      z-index 1
-      display inline-block
-      width 100%
-      cursor pointer
-      font-family: Montserrat, sans-serif;
-      font-style: normal;
-      font-weight: normal;
-      font-size: 15px;
-      line-height: 30px;
-      height 30px
-      box-shadow: 0px 2px 15px rgba(0, 0, 0, 0.1);
-      padding 4px 12px
-      &:hover
-        background-color var(--violet-btn-color)
-        color white
+      text-overflow ellipsis
+      white-space: nowrap;
+      overflow hidden
+
 .dd
   position absolute
   background-color white
@@ -132,4 +120,7 @@ export default {
   line-height: 36px;
   color black
   opacity 0.3
+.highlighted
+  background-color var(--violet-btn-color)
+  color white
 </style>

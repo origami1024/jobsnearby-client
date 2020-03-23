@@ -65,128 +65,71 @@
         />
       </div>
       <div class="jobs__contents">
-        <div style="padding: 0 4px">
+        <!-- <div> -->
           <div class="line jobs_prefilters">
-            <!-- <button class="orderLink">
+            <span class="jobs__prefilters-label">Сортировка:</span>
+            <button class="orderLink">
               {{sort.label}}
-              <q-icon name="arrow_drop_down"/>
               <q-menu dense>
                 <q-item
+                  v-for="sortee in $t('jobs.sortOpts')"
+                  :key="sortee.value"
                   style="lineHeight: 2"
-                  dense :style="{color: sort.value == 'new' ? 'purple' : 'black'}"
+                  dense :style="{color: sort.value == sortee.value ? 'var(--violet-btn-color)' : 'var(--color1)'}"
                   clickable v-close-popup
-                  @click="sort = {label: 'По дате', value: 'new'}"
+                  @click="sort = sortee; prefilterDelayedRefreshPlus()"
                 >
-                  По дате
-                </q-item>
-                <q-item
-                  style="lineHeight: 2"
-                  dense :style="{color: sort.value == 'saldesc' ? 'purple' : 'black'}"
-                  clickable v-close-popup
-                  @click="sort = {label: 'По убыв зп', value: 'saldesc'};outerResetNeeded = true"
-                >
-                  По убыв зп
-                </q-item>
-                <q-item
-                  style="lineHeight: 2"
-                  dense :style="{color: sort.value == 'salasc' ? 'purple' : 'black'}"
-                  clickable v-close-popup
-                  @click="sort = {label: 'По возр зп', value: 'salasc'};outerResetNeeded = true"
-                >
-                  По возр зп
+                  {{sortee.label}}
                 </q-item>
               </q-menu>
-            </button> -->
-
-            <!-- :style="{minWidth: '170px'}" -->
-            <q-select dense outlined
-              style="white-space: nowrap"
-              class="sdpp-filters"
-              v-model="sort"
-              @input="sortFilterChangeRefresh"
-              :options="$t('jobs.sortOpts')"
-            />
-            <!-- <button class="orderLink">
-              {{timerange.label}}
-              <q-icon name="arrow_drop_down"/>
-              <q-menu dense>
-                <q-item
-                  style="lineHeight: 2"
-                  dense :style="{color: timerange.value == 'mon' ? 'purple' : 'black'}"
-                  clickable v-close-popup
-                  @click="timerange = {label: 'За месяц', value: 'mon'}"
-                >
-                  За месяц
-                </q-item>
-                <q-item
-                  style="lineHeight: 2"
-                  dense :style="{color: timerange.value == 'wee' ? 'purple' : 'black'}"
-                  clickable v-close-popup
-                  @click="timerange = {label: 'За неделю', value: 'wee'};outerResetNeeded = true"
-                >
-                  За неделю
-                </q-item>
-                <q-item
-                  style="lineHeight: 2"
-                  dense :style="{color: timerange.value == 'day' ? 'purple' : 'black'}"
-                  clickable v-close-popup
-                  @click="timerange = {label: 'За сутки', value: 'day'};outerResetNeeded = true"
-                >
-                  За сутки
-                </q-item>
-              </q-menu>
-            </button> -->
-            <q-select dense outlined
-              style="white-space: nowrap"
-              class="sdpp-filters"
-              v-model="timerange"
-              @input="timerangeFilterChangeRefresh"
-              :options="$t('jobs.dateOpts')"
-            />
-            <!-- <button class="orderLink">
+            </button>
+            <span class="jobs__prefilters-label">Отображать:</span>
+            <button class="orderLink">
               {{perpage.label}}
-              <q-icon name="arrow_drop_down"/>
               <q-menu dense>
                 <q-item
+                  v-for="perpageee in $t('jobs.perpageOpts')"
+                  :key="perpageee.value"
                   style="lineHeight: 2"
-                  dense :style="{color: perpage.value == '25' ? 'purple' : 'black'}"
+                  dense :style="{color: perpage.value == perpageee.value ? 'var(--violet-btn-color)' : 'var(--color1)'}"
                   clickable v-close-popup
-                  @click="perpage = {label: '25 на стр', value: '25'}"
+                  @click="perpage = perpageee; prefilterDelayedRefreshPlus()"
                 >
-                  25 на стр
-                </q-item>
-                <q-item
-                  style="lineHeight: 2"
-                  dense :style="{color: perpage.value == '50' ? 'purple' : 'black'}"
-                  clickable v-close-popup
-                  @click="perpage = {label: '50 на стр', value: '50'};outerResetNeeded = true"
-                >
-                  50 на стр
-                </q-item>
-                <q-item
-                  style="lineHeight: 2"
-                  dense :style="{color: perpage.value == '100' ? 'purple' : 'black'}"
-                  clickable v-close-popup
-                  @click="perpage = {label: '100 на стр', value: '100'};outerResetNeeded = true"
-                >
-                  100 на стр
+                  {{perpageee.label}}
                 </q-item>
               </q-menu>
-            </button> -->
-            <q-select dense outlined
+            </button>
+            <button class="orderLink">
+              {{timerange.label}}
+              <q-menu dense>
+                <q-item
+                  v-for="timerangeee in $t('jobs.dateOpts')"
+                  :key="timerangeee.value"
+                  style="lineHeight: 2"
+                  dense :style="{color: timerange.value == timerangeee.value ? 'var(--violet-btn-color)' : 'var(--color1)'}"
+                  clickable v-close-popup
+                  @click="timerange = timerangeee; prefilterDelayedRefreshPlus()"
+                >
+                  {{timerangeee.label}}
+                </q-item>
+              </q-menu>
+            </button>
+            <!-- <q-select dense outlined
               style="white-space: nowrap"
               class="sdpp-filters"
               v-model="perpage"
               @input="perpageFilterChangeRefresh"
               :options="$t('jobs.perpageOpts')"
-            />
+            /> -->
+
             <!-- <div>По запросу: <strong>{{jobsFullcount}}</strong></div> -->
-            <div v-if="pages && pages > 0" class="paginationWrap">
+            
+            <!-- <div v-if="pages && pages > 0" class="paginationWrap">
               <button
                 :class="{pageBtns: true, currentPage: page_current == i}"
                 v-for="i of (
                   page_current == 1
-                    ? Math.min(pages, 3) 
+                    ? Math.min(pages, 3)
                     : Math.min(pages, page_current + 1)
                 )" :key="i"
                 @click="switchPage(i)"
@@ -194,11 +137,12 @@
               >
                 {{i}}
               </button>
-            </div>
+            </div> -->
+            
             <!-- @input="switchPage" -->
             <!-- <p>Показано {{jobslist.length}} из {{jobsFullcount}}</p> -->
             <!-- <p v-if="txt != ''">Найдено: {{jobsFullcount}}</p> -->
-            <q-btn-toggle
+            <!-- <q-btn-toggle
               v-if="wwidth > 549"
               v-model="lenses"
               toggle-color="red-10"
@@ -206,7 +150,7 @@
               dense
               :options="[ {value: 'short', icon: 'list'},
                           {value: 'full', icon: 'code'},]"
-            />
+            /> -->
           </div>
           <JobsList
             :ownCVs="ownCVs"
@@ -214,7 +158,7 @@
             @hitcv="hitcv"
             :lenses="wwidth > 549 ? lenses : 'short'" :searchFilter="searchFilter" :jobslist="jobslist"
           />
-        </div>
+        <!-- </div> -->
         <div v-if="pages && pages > 0" class="paginationWrap">
           <button
             :class="{pageBtns: true, currentPage: page_current == i}"
@@ -364,18 +308,21 @@ export default {
     
   },
   methods: {
-    sortFilterChangeRefresh() {
-      //if (this.sort.value != 'new') this.outerResetNeeded = true
+    prefilterDelayedRefreshPlus() {
       setTimeout(()=>this.refreshPlus())
     },
-    timerangeFilterChangeRefresh() {
-      //if (this.timerange.value != 'mon') this.outerResetNeeded = true
-      setTimeout(()=>this.refreshPlus())
-    },
-    perpageFilterChangeRefresh() {
-      //if (this.perpage.value != '25') this.outerResetNeeded = true
-      setTimeout(()=>this.refreshPlus())
-    },
+    // sortFilterChangeRefresh() {
+    //   //if (this.sort.value != 'new') this.outerResetNeeded = true
+    //   setTimeout(()=>this.refreshPlus())
+    // },
+    // timerangeFilterChangeRefresh() {
+    //   //if (this.timerange.value != 'mon') this.outerResetNeeded = true
+    //   setTimeout(()=>this.refreshPlus())
+    // },
+    // perpageFilterChangeRefresh() {
+    //   //if (this.perpage.value != '25') this.outerResetNeeded = true
+    //   setTimeout(()=>this.refreshPlus())
+    // },
     resetFilters() {
       this.txt = ''
       this.city = ''
@@ -498,12 +445,11 @@ export default {
     //width calc(100% - 10px)
     //max-width calc(var(--maxW) - 410px) //that is including the filters to the left
   .jobs_prefilters
-    margin-bottom 15px
-    background-color var(--main-bg-color)
-    padding 5px
-    border-radius 5px
-    box-shadow 0 0 4px 1px var(--main-borders-color)
-    box-sizing border-box
+    margin-bottom 26px
+    padding-top 6px
+    //background-color var(--main-bg-color)
+    //box-shadow 0 0 4px 1px var(--main-borders-color)
+    //box-sizing border-box
   *
     margin 0
   .line
@@ -528,11 +474,18 @@ export default {
     white-space nowrap
     border 0
     background-color transparent
-    color purple
+    color var(--violet-btn-color)
     cursor pointer
-    font-size 14px
+    font-family: Montserrat, sans-serif
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 17px;
+    background-image url('./../../public/assets/arrow3.png')
+    background-repeat no-repeat
+    background-position right 3px center
+    padding-right 18px
     &:hover
-      color blue
+      color var(--color1)
   .paginationWrap
     padding 0 3px
 .filtersHamburgerBtn
@@ -554,6 +507,12 @@ export default {
   box-sizing border-box
   text-align left
   margin-bottom 18px
+.jobs__prefilters-label
+  color black
+  font-family: Montserrat, sans-serif !important
+  font-weight: normal !important
+  font-size: 14px !important
+  line-height: 17px !important
 .jobs__right-aside
   .aside-h3
     font-family "Montserrat", sans-serif
