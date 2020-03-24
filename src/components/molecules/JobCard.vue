@@ -21,7 +21,7 @@
           <strong class="joblink" v-html="filteredTitle"/>
         </a>
       </h4>
-      <div class="colx">
+      <div class="colx" style="margin-left: 15px;">
         <strong class="alignRight jobcard__salary">
           <p v-if="job.salary_min === job.salary_max && job.salary_min > 0">{{job.salary_max}}{{currency}}</p>
           <!-- <p v-else-if="job.salary_min && job.salary_min > 0">от {{job.salary_min}} до {{job.salary_max}} {{currency}}</p> -->
@@ -50,9 +50,10 @@
     <div class="line">
       <div class="line spbtw" style="width: 100%">
         <!-- <q-btn class="mr-5px" v-else-if="role == 'subscriber'" round size="xs" icon="work"/> -->
-        <a v-if="lenses == 'full'" class="cardLink" @click.prevent="isContactsShown = !isContactsShown" href="#">{{$t('jc.contactsLabel')}}</a>
-        <q-btn class="mr-5px" v-else round size="xs" @click="isContactsShown = !isContactsShown" icon="people"/>
-        <a v-if="role != 'company' && !cved" class="cardLink" @click.prevent="$emit('hitcv', job.job_id)" href="#">
+        <a v-if="lenses == 'full'" class="showContactsLink" @click.prevent="isContactsShown = !isContactsShown" href="#">
+          {{$t('jc.contactsLabel')}}
+        </a>
+        <a v-if="role != 'company' && !cved" class="sendCVLink" @click.prevent="$emit('hitcv', job.job_id)" href="#">
           {{$t('jc.sendCVLabel')}}
         </a>
         <q-btn
@@ -69,10 +70,10 @@
           </q-tooltip>
         </q-btn>
       </div>
-      <div v-if="isContactsShown" class="contactsPanel">
-        <div>{{job.contact_mail}}</div>
-        <div>{{job.contact_tel}}</div>
-      </div>
+    </div>
+    <div :class="{heightTransition: isContactsShown}" class="contactsPanel line" style="margin-top: 10px;">
+      <div><span style="font-weight: 300;">Email:</span> {{job.contact_mail != '' ? job.contact_mail : 'Не указан'}}</div>
+      <div><span style="font-weight: 300;">Tel:</span> {{job.contact_tel}}</div>
     </div>
   </div>
 </template>
@@ -173,39 +174,18 @@ export default {
   font-style: normal;
 .jobscard
   position relative
-  //border-left 2px solid var(--main-borders-color)
-  // padding-left 2px
-  // font-size 14px
-  //margin-top 10px
-  //max-width 300px
-  
-  
   box-sizing border-box
   transition-duration 0.3s
   //box-shadow 0 0 2px 1px #dfdfdf
   background: #fff;
-  box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.15);
+  box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.15)
   border-radius: 10px;
   margin-bottom 18px
   padding 19px 30px
   &:hover
-    box-shadow 0 0 2px 1px var(--violet-btn-color)//#bbb
+    box-shadow 0 0 1px 0px var(--violet-btn-color)//#bbb
   a
     text-decoration none
-    color #06f
-    &:visited
-      color #06f
-  .cardLink
-    //margin-right 15px
-    background-color var(--main-borders-color)
-    color white
-    text-decoration none
-    padding 5px
-    // &:hover
-    //   color #5af
-  .cardLink:visited
-    color white//#2837C6
-
   .cardHeader
     //font-weight 400
     //margin-bottom 3px
@@ -213,6 +193,7 @@ export default {
     font-size: 17px;
     line-height: 21px;
     text-transform uppercase
+    
   .city
     //font-size 0.85em
     font-weight: 500;
@@ -258,19 +239,70 @@ export default {
     background-color lime
     border-radius 100%
     margin 5px
+
+.showContactsLink
+  background-image url(./../../../public/assets/arrow_jc.png)
+  background-repeat no-repeat
+  background-position right center
+  padding-right 15px
+  border-bottom 2px solid var(--violet-btn-color)
+  font-family: Montserrat, sans-serif;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 15px;
+  line-height: 18px;
+  color var(--color1)
+  display inline-block
+  align-self flex-end
+  padding-bottom 2px
+  &:hover
+    color var(--violet-btn-color)
+    background-image url(./../../../public/assets/arrow3.png)
+
+.sendCVLink
+  background-color var(--color-graypink)
+  color var(--color1)
+  text-decoration none
+  border: 2px solid var(--violet-btn-color)
+  box-sizing: border-box;
+  border-radius: 10px;
+  font-family: Montserrat, sans-serif
+  font-style: normal;
+  font-weight: 500;
+  font-size: 15px;
+  line-height: 18px;
+  padding 9px 20px
+  padding-right 17px
+  &:hover
+    color var(--violet-btn-color)
 .rowedCard
   margin 10px 5px
   border 1px solid gray
   min-width 220px
 .contactsPanel
-  position absolute
-  left 50%
-  bottom 5px
+  //position absolute
+  //left 50%
+  //bottom 5px
   //background-color #ddf
-  padding 2px
-  box-shadow 0 0 3px 0px var(--btn-color)
-  border-radius 3px
-  padding 5px
+  //box-shadow 0 0 3px 0px var(--btn-color)
+  border 0
+  border-radius 10px
+  padding 0px
+  transition-duration 0.3s
+  height 0
+  overflow hidden
+  color white
+.heightTransition
+  height auto
+  padding 10px
+  border: 1px solid var(--violet-btn-color)
+  color var(--color1)
+  margin 0
+  font-family: Montserrat, sans-serif
+  font-style: normal;
+  font-weight: 500;
+  font-size: 15px;
+  line-height: 18px;
 .jobcard__salary p
   font-family: Montserrat;
   font-style: normal;
@@ -288,18 +320,22 @@ export default {
   margin-right 10px
   word-break break-all
 .filteredDesc
-  height 42px
-  max-height 42px
-  line-height 20px
-  font-size 16px
+  //height 34px
+  max-height 34px
+  max-width 383px
   overflow hidden
-  max-width 100%
-  padding 5px
-  margin-right 10px
-  margin-bottom 5px
   word-break break-all
+  font-family: "Montserrat", sans-serif;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 17px;
+  color var(--color1)
+  margin-top 12px
+  margin-bottom 23px
 .joblink
   color var(--color1)
+  &:hover
+    color var(--violet-btn-color)
 
 @media screen and (max-width: 550px)
   .jobscard

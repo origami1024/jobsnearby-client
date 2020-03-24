@@ -12,7 +12,7 @@
         <q-tab name="login" style="width:50%;fontWeight:900; letter-spacing: 2px">
           {{$t('reg.loginLabel')}}
         </q-tab>
-        <q-tab name="reg" style="width:50%; letter-spacing: 1px">
+        <q-tab name="reg" style="width:50%; fontWeight:900; letter-spacing: 1px">
           {{$t('reg.regLabel')}}
         </q-tab>
       </q-tabs>

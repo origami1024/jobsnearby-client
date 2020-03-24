@@ -1784,7 +1784,7 @@ async function adminStats() {
 }
 async function adminLogs() {
   let que = `
-    SELECT * FROM "logs" ORDER BY time DESC
+    SELECT * FROM "logs" ORDER BY time DESC LIMIT 75
   `
   let result1 = await pool.query(que, null).catch(error => {
     console.log('cp adminLogs err: ', error)

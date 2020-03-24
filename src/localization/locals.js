@@ -174,7 +174,7 @@ const loc = {
       onlyRegisteredCV: 'Подавать резюме могут <span style="color: red">зарегистрированные</span> пользователи',
       currencyDic: {
         '$': '$',
-        'm': '₼',
+        'm': 'm',
       },
     },
     filters: {
@@ -231,11 +231,11 @@ const loc = {
       exp1_3: 'Опыт: от 1 до 3 лет.',
       exp3_5: 'Опыт: от 3 до 5 лет.',
       exp5_: 'Опыт: от 5 лет.',
-      sendCVLabel: 'Подать резюме',
+      sendCVLabel: 'Отправить резюме',
       tooltipSent: 'Отправлено',
       tooltipSeen: 'Просмотрено',
       tooltipNotseen: 'Не просмотрено',
-      contactsLabel: 'Контакты',
+      contactsLabel: 'Контакты работодателя',
       today: 'Сегодня',
       yesterday: 'Вчера',
       daysAgo: 'дня назад',
@@ -619,7 +619,7 @@ const loc = {
       onlyRegisteredCV: 'Rezýumeni diňe <span style="color: red">registrasiýa</span> bolan ulanyjylar ugradyp bilýär',
       currencyDic: {
         '$': '$',
-        'm': '₼',
+        'm': 'm',
       },
     },
     filters: {

@@ -834,6 +834,7 @@ export default {
   --btn-color1 #D00027
   --violet-btn-color #8645FF
   --color1 #2E2768 //#181059
+  --color-graypink #F8F4FF
   //--logoWidth 160px
   --maxW 1135px
   @media screen and (max-width: 1000px)

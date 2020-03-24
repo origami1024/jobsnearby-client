@@ -23,6 +23,7 @@
             line-height: 17px;
             margin-left: 16px;
           "
+          class="searchInput"
           type="text"
           v-model="txt" @keyup.enter="refreshPlus"
           placeholder="Введите ключевые слова"
@@ -67,53 +68,57 @@
       <div class="jobs__contents">
         <!-- <div> -->
           <div class="line jobs_prefilters">
-            <span class="jobs__prefilters-label">Сортировка:</span>
-            <button class="orderLink">
-              {{sort.label}}
-              <q-menu dense>
-                <q-item
-                  v-for="sortee in $t('jobs.sortOpts')"
-                  :key="sortee.value"
-                  style="lineHeight: 2"
-                  dense :style="{color: sort.value == sortee.value ? 'var(--violet-btn-color)' : 'var(--color1)'}"
-                  clickable v-close-popup
-                  @click="sort = sortee; prefilterDelayedRefreshPlus()"
-                >
-                  {{sortee.label}}
-                </q-item>
-              </q-menu>
-            </button>
-            <span class="jobs__prefilters-label">Отображать:</span>
-            <button class="orderLink">
-              {{perpage.label}}
-              <q-menu dense>
-                <q-item
-                  v-for="perpageee in $t('jobs.perpageOpts')"
-                  :key="perpageee.value"
-                  style="lineHeight: 2"
-                  dense :style="{color: perpage.value == perpageee.value ? 'var(--violet-btn-color)' : 'var(--color1)'}"
-                  clickable v-close-popup
-                  @click="perpage = perpageee; prefilterDelayedRefreshPlus()"
-                >
-                  {{perpageee.label}}
-                </q-item>
-              </q-menu>
-            </button>
-            <button class="orderLink">
-              {{timerange.label}}
-              <q-menu dense>
-                <q-item
-                  v-for="timerangeee in $t('jobs.dateOpts')"
-                  :key="timerangeee.value"
-                  style="lineHeight: 2"
-                  dense :style="{color: timerange.value == timerangeee.value ? 'var(--violet-btn-color)' : 'var(--color1)'}"
-                  clickable v-close-popup
-                  @click="timerange = timerangeee; prefilterDelayedRefreshPlus()"
-                >
-                  {{timerangeee.label}}
-                </q-item>
-              </q-menu>
-            </button>
+            <div>
+              <span class="jobs__prefilters-label">Сортировка:</span>
+              <button class="orderLink">
+                {{timerange.label}}
+                <q-menu dense>
+                  <q-item
+                    v-for="timerangeee in $t('jobs.dateOpts')"
+                    :key="timerangeee.value"
+                    style="lineHeight: 2"
+                    dense :style="{color: timerange.value == timerangeee.value ? 'var(--violet-btn-color)' : 'var(--color1)'}"
+                    clickable v-close-popup
+                    @click="timerange = timerangeee; prefilterDelayedRefreshPlus()"
+                  >
+                    {{timerangeee.label}}
+                  </q-item>
+                </q-menu>
+              </button>
+              <button class="orderLink" style="padding-left: 16px">
+                {{sort.label}}
+                <q-menu dense>
+                  <q-item
+                    v-for="sortee in $t('jobs.sortOpts')"
+                    :key="sortee.value"
+                    style="lineHeight: 2"
+                    dense :style="{color: sort.value == sortee.value ? 'var(--violet-btn-color)' : 'var(--color1)'}"
+                    clickable v-close-popup
+                    @click="sort = sortee; prefilterDelayedRefreshPlus()"
+                  >
+                    {{sortee.label}}
+                  </q-item>
+                </q-menu>
+              </button>
+            </div>
+            <div style="justify-self: flex-end">
+              <span class="jobs__prefilters-label">Отображать:</span>
+              <button class="orderLink">
+                {{perpage.label}}
+                <q-menu dense>
+                  <q-item
+                    v-for="perpageee in $t('jobs.perpageOpts')"
+                    :key="perpageee.value"
+                    style="lineHeight: 2"
+                    dense :style="{color: perpage.value == perpageee.value ? 'var(--violet-btn-color)' : 'var(--color1)'}"
+                    clickable v-close-popup
+                    @click="perpage = perpageee; prefilterDelayedRefreshPlus()"
+                  >
+                    {{perpageee.label}}
+                  </q-item>
+                </q-menu>
+              </button>
+            </div>
             <!-- <q-select dense outlined
               style="white-space: nowrap"
               class="sdpp-filters"
@@ -458,18 +463,20 @@ export default {
     align-items center
   .pageBtns
     cursor pointer
-    border 0px solid gray
-    margin 1px
-    padding 5px 4px
-    background-color #fff
-    border-radius 4px
-    font-size 14px
-    font-weight 700
-    color var(--main-borders-color)
+    border 0
+    margin 0
+    background-color transparent
+    font-family: Montserrat, sans-serif
+    font-weight: normal;
+    font-size: 16px;
+    line-height: 20px;
+    color var(--violet-btn-color)
+    &:focus
+      outline none
+    &:hover
+      color var(--color1)
   .currentPage
-    border 1px solid var(--main-borders-color)
-    color #fff
-    background-color var(--main-borders-color)
+    font-weight bold
   .orderLink
     white-space nowrap
     border 0
@@ -487,7 +494,7 @@ export default {
     &:hover
       color var(--color1)
   .paginationWrap
-    padding 0 3px
+    padding 22px 0
 .filtersHamburgerBtn
   display none
   border 0
@@ -534,6 +541,9 @@ export default {
       font-family "Montserrat", sans-serif !important
       font-size 12px !important
       line-height 15px !important
+.searchInput:focus
+  outline none
+  box-shadow 0px 0px 2px var(--violet-btn-color) !important
 @media screen and (max-width: 550px)
   .jobs
     padding 0

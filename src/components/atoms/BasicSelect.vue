@@ -82,6 +82,9 @@ export default {
     background-repeat no-repeat
     background-position right 11px center
     cursor pointer
+    &:focus
+      outline none !important
+      box-shadow 0px 0px 5px var(--violet-btn-color) !important
     div
       font-family: Montserrat, sans-serif;
       font-style: normal;
@@ -92,6 +95,8 @@ export default {
       overflow hidden
 
 .dd
+  margin-top 1px
+  border-radius 10px
   position absolute
   background-color white
   color black
@@ -109,6 +114,7 @@ export default {
   box-shadow: 0px 2px 15px rgba(0, 0, 0, 0.1);
   li
     padding 2px 12px
+    border-radius 10px
     &:hover
       background-color var(--violet-btn-color)
       color white

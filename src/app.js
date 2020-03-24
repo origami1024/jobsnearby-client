@@ -60,10 +60,10 @@ app.post('/updateJob', db.updateJob)
 app.post('/getOwnJobs.json', db.getOwnJobs)
 //app.post('/getOwnJobsShort.json', db.getOwnJobsShort)
 
-app.post('/favOne.json', db.favOne)
-app.post('/delFavOne.json', db.delFavOne)
-app.post('/getFaved.json', db.getFaved)
-app.post('/getFavedFull.json', db.getFavedFull)
+// app.post('/favOne.json', db.favOne)
+// app.post('/delFavOne.json', db.delFavOne)
+// app.post('/getFaved.json', db.getFaved)
+// app.post('/getFavedFull.json', db.getFavedFull)
 
 
 app.post('/hitjobcv', db.hitjobcv)
@@ -1115,6 +1115,7 @@ async function adminUsers(req, res) {
               <td>email</td>
               <td>role</td>
               <td>time_created</td>
+              <td>last_logged_in</td>
               <td>name</td>
               <td>surname</td>
               <td>company</td>
@@ -1134,12 +1135,14 @@ async function adminUsers(req, res) {
       //console.log('cp32: ', data)
       data.forEach(val=>{
         let d = new Date(val.time_created).toString().split(' GMT')[0].substring(3)
+        let d2 = new Date(val.last_logged_in).toString().split(' GMT')[0].substring(3)
         let tmp = `
           <tr id="tr_${val.user_id}">
             <td>${val.user_id}</td>
             <td>${val.email}</td>
             <td>${val.role}</td>
             <td>${d}</td>
+            <td>${d2}</td>
             <td>${val.name}</td>
             <td>${val.surname}</td>
             <td>${val.company}</td>
