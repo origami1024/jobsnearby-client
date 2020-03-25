@@ -306,10 +306,10 @@ export default {
     ownCVs: [],
     //step: 1, //для uploads
     dismiss: null,
-    salMin: "0",
-    salAvg: "0",
-    salMax: "0",
-    tops: [["N","0"],["N","0"],["N","0"],["N","0"],["N","0"],["N","0"]],
+    salMin: "",
+    salAvg: "",
+    salMax: "",
+    tops: [["",""],["",""],["",""],["",""],["",""],["",""]],
   }},
   computed: {
     pages_count() {
