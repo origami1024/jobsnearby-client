@@ -175,7 +175,7 @@ export default {
 .jobscard
   position relative
   box-sizing border-box
-  transition-duration 0.3s
+  transition-duration 0.1s
   //box-shadow 0 0 2px 1px #dfdfdf
   background: #fff;
   box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.15)
@@ -183,7 +183,7 @@ export default {
   margin-bottom 18px
   padding 19px 30px
   &:hover
-    box-shadow 0 0 1px 0px var(--violet-btn-color)//#bbb
+    box-shadow 0 0 2px 1px var(--violet-btn-color)//#bbb
   a
     text-decoration none
   .cardHeader
