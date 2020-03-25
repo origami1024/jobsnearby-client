@@ -191,15 +191,15 @@
               </svg>
             </div>
             <div class="wrapcol">
-              <div class="sal">100 m</div>
+              <div class="sal">{{salMin}}</div>
               <div class="boxMin"></div>
             </div>
             <div class="wrapcol">
-              <div class="sal">2000 m</div>
+              <div class="sal">{{salAvg}}</div>
               <div class="boxAvg"></div>
             </div>
             <div class="wrapcol">
-              <div class="sal">5000 m</div>
+              <div class="sal">{{salMax}}</div>
               <div class="boxMax"></div>
             </div>
           </div>
@@ -214,29 +214,9 @@
             class="aside-h3"
           >Топ профессий</h3>
           <div class="professions-list">
-            <div class="professions-row">
-              <div>Программист</div>
-              <div>4000$</div>
-            </div>
-            <div class="professions-row">
-              <div>Программист</div>
-              <div>4000$</div>
-            </div>
-            <div class="professions-row">
-              <div>Обслуживающий персонал</div>
-              <div>4000$</div>
-            </div>
-            <div class="professions-row">
-              <div>Программист</div>
-              <div>4000$</div>
-            </div>
-            <div class="professions-row">
-              <div>Программист</div>
-              <div>4000$</div>
-            </div>
-            <div class="professions-row">
-              <div>Программист</div>
-              <div>4000$</div>
+            <div class="professions-row" v-for="(top,i) in tops" :key="i">
+              <div>{{top[0]}}</div>
+              <div>{{top[1]}}</div>
             </div>
           </div>
         </div>
@@ -259,7 +239,11 @@ export default {
     pending: {type: Boolean, default: false},
     pages: {type: Number, default: 1},
     page_current: {type: Number, default: 1},
-    jobsFullcount: {type: Number, default: 0}
+    jobsFullcount: {type: Number, default: 0},
+    salMin: String,
+    salAvg: String,
+    salMax: String,
+    tops: Array,
   },
   data(){return {
     //outerResetNeeded: false,
@@ -470,6 +454,7 @@ export default {
     // justify-content space-around
   .jobs__contents
     margin 0 26px
+    flex-grow 2
     //box-sizing border-box
     //width calc(100% - 10px)
     //max-width calc(var(--maxW) - 410px) //that is including the filters to the left
@@ -519,6 +504,7 @@ export default {
       color var(--color1)
   .paginationWrap
     padding 22px 0
+    padding-bottom 32px
 .filtersHamburgerBtn
   display none
   border 0
@@ -624,4 +610,5 @@ export default {
    line-height: 12px;
    color: #181059;
    margin-bottom 11px;
+
 </style>

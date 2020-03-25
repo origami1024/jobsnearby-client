@@ -73,6 +73,7 @@
               </ul>
               
             </q-expansion-item>
+            <div v-if="resps.length == 0">Пока нет ни одного отклика</div>
           </div>
         </q-tab-panel>
         <q-tab-panel name="cabout" class="entprofile__mid">

@@ -80,6 +80,7 @@ app.get('/companyby.idjson=:id', getCompanyById)
 
 app.get('/jobsu.json', params1)
 app.get('/jobs.json', db.getJobs)
+app.get('/salStats.json', db.getSalStats)
 //app.get('/jobBy.id', getJobById)
 app.get('/jobby.idjson=:id', getJobByIdJSON)
 
@@ -98,6 +99,7 @@ app.post('/fb', db.feedback)
 app.get('/allfb.json', getAllFB)
 app.get('/adminusers.json', adminUsers)
 app.get('/adminjobs.json', adminJobs)
+app.get('/adminstats.json', adminStats)
 app.get('/cp.json', adminPanel)
 app.get('/cplogin.json', adminLogin)
 app.post('/cploginep.json', cpLoginEndpoint)
@@ -907,6 +909,11 @@ async function adminPanel(req, res) {
                   ${stts.jobs_tba > 0 ? `<sup style="background-color:red;color:white;padding:2px">${stts.jobs_tba}</sup>` : ''}
                 </a>
               </li>
+              <li>
+                <a href="/adminstats.json">
+                  Числа
+                </a>
+              </li>
               ${auth.category_rights === '777'
                 ? `<li>
                   <a href="/cpsuper.json">Суперадмин</a>
@@ -937,6 +944,67 @@ async function adminPanel(req, res) {
     } else res.send(pageParts.noau)
   } else res.send(pageParts.noau)
 }
+
+async function adminStats(req, res) {
+  //Страница в админке для изменения статистики показываемой пользователю в разных местах, типа зарплаты, топ профессий
+  if (req.cookies && req.cookies.sessioa && req.cookies.sessioa.length > 50 && req.cookies.user2) {
+    let auth = await db.adminAuth(req.cookies.user2, req.cookies.sessioa).catch(error => {
+      //res.send('step2')
+      return undefined
+    })
+    if (auth) {
+      let body = `
+      <style>
+        .hidden {
+          display: none;
+        }
+        tr:nth-child(even) {background: #DCD}
+        a {color:blue; text-decoration: none}
+        a:visited {color:blue}
+      </style>
+      <h2 style="text-align:center; margin: 0;">Статистика для пользователей</h2>
+      ${pageParts.cplink()}
+      <table style="width: 100%; font-size:14px">
+        <thead style="background-color: royalblue; color: white;">
+          <tr style="padding: 5px">
+            <td>statname</td>
+            <td>statlabel</td>
+            <td>statvalue</td>
+            <td>statcurrency</td>
+            <td>time_updated</td>
+            <td>Управление</td>
+          </tr>
+        </thead>
+        <tbody> 
+      `
+      let data = await db.adminGetStats().catch(error => {
+        console.log('cp adminGetStats err1: ', error)
+        return []
+      })
+      data.forEach(val=>{
+        let d = new Date(val.time_updated).toString().split(' GMT')[0].substring(3)
+        let tmp = `
+          <tr>
+            <td>${val.statname}</td>
+            <td>${val.statlabel}</td>
+            <td>${val.statvalue}</td>
+            <td>${val.statcurrency}</td>
+            <td>${d}</td>
+            <td style="width: 180px; display: flex">
+            </td>
+          </tr>
+        `
+        body += tmp
+      })
+      body += '</tbody></table>'
+      body +='<button>Перегенерировать всё</button>'
+      let wholeStatsPage = pageParts.head + body + pageParts.footer
+      
+      res.send(wholeStatsPage)
+    } else res.send(pageParts.noau)
+  } else res.send(pageParts.noau)
+}
+
 async function adminJobs(req, res) {
   //auth check
   if (req.cookies && req.cookies.sessioa && req.cookies.sessioa.length > 50 && req.cookies.user2) {

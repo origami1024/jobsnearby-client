@@ -12,7 +12,7 @@ const getJobs = (req, res) => {
   let perpage = '25'
   if (req.query.perpage === '50') perpage = '50'
   else if (req.query.perpage === '100') perpage = '100'
-  console.log('cpGetJobs, txt: ', req.query.txt)
+  //console.log('cpGetJobs, txt: ', req.query.txt)
   let txt
   if (req.query.txt != undefined && 
       req.query.txt.length > 0 && 
@@ -1959,7 +1959,42 @@ async function forgChangePw(pwhash, mail) {
   return true
 }
 
+async function getSalStats(req, res) {
+  let que = `
+    SELECT * FROM cached_salary_stats
+  `
+  //let params = []
+  let result = await pool.query(que, null).catch(error => {
+    console.log(error)
+    throw new Error('getSalStats failed')
+  })
+  if (result && result.rows) res.send(result.rows)
+  else res.send('Error 13')
+}
+
+async function adminGetStats() {
+  //check auth?
+  let que = `
+    SELECT *
+    FROM cached_salary_stats
+    ORDER BY statname DESC
+  `
+  let result = await pool.query(que, null).catch(error => {
+    console.log('cp adminGetStats err1: ', error)
+    return false
+  })
+  let resu
+  if (result && result.rows && result.rows.length > 0) {
+    resu = result.rows
+    //resu.forEach(function(v){ delete v.pwhash; delete v.auth_cookie });
+  } else resu = []
+  return resu
+}
+
 module.exports = {
+  adminGetStats,
+  getSalStats,
+
   forgChangePw,
   forgCheck,
   updateForgottenEntry,

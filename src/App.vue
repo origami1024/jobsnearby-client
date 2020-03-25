@@ -197,6 +197,8 @@
       </header>
     </div>
     <router-view
+      :salMin="salMin" :salAvg="salAvg" :salMax="salMax"
+      :tops="tops"
       :ownCVs="ownCVs"
       @cvupd="cvupd"
       @changeUDataSub="uDataChangeFromSubProfile"
@@ -217,7 +219,45 @@
     <!-- <keep-alive>
     </keep-alive> -->
     <footer class="main__footer">
-      <q-btn push style="color:white;backgroundColor: var(--main-borders-color)" :label="$t('App.fbBtnLabel')" to="/Feedback"/>
+      <!-- <q-btn push style="color:white;backgroundColor: var(--main-borders-color)" :label="$t('App.fbBtnLabel')" to="/Feedback"/> -->
+      <ul class="footer__ul-top">
+        <li>
+          <h3>О нас</h3>
+          <ul>
+            <li><a href="#">Наши вакансии</a></li>
+            <li><a href="#">Реклама на сайте</a></li>
+            <li><a href="#">Защита персональных данных</a></li>
+          </ul>
+        </li>
+        <li>
+          <h3>Соискателю</h3>
+          <ul>
+            <li><a href="#">Рассылка вакансий</a></li>
+            <li><a href="#">Рассылка вакансий</a></li>
+            <li><a href="#">Рассылка вакансий</a></li>
+            <li><a href="#">Рассылка вакансий</a></li>
+          </ul>
+        </li>
+        <li>
+          <h3>Работодателю</h3>
+          <ul>
+            <li><a href="#">Создать вакансию</a></li>
+            <li><a href="#">Создать вакансию</a></li>
+            <li><a href="#">Создать вакансию</a></li>
+            <li><a href="#">Создать вакансию</a></li>
+            <li><a href="#">Создать вакансию</a></li>
+          </ul>
+        </li>
+        <li>
+          <h3>Контакты</h3>
+          <ul>
+            <li><a href="#">info@gmail.com</a></li>
+            <li><a href="#">info@gmail.com</a></li>
+            <li><router-link to="/feedback">{{$t('App.fbBtnLabel')}}</router-link></li>
+            <li><a href="#">info@gmail.com</a></li>
+          </ul>
+        </li>
+      </ul>
     </footer>
     <!-- <LoginModal @authed="authIt" @loginclosed="modalShown = 'none'" :isShown="modalShown === 'login'"></LoginModal> -->
     <!-- <RegisterModal @regclosed="modalShown = 'none'" :isShown="modalShown === 'reg'"></RegisterModal> -->  
@@ -265,7 +305,11 @@ export default {
     //likedJobsList: [],
     ownCVs: [],
     //step: 1, //для uploads
-    dismiss: null
+    dismiss: null,
+    salMin: "0",
+    salAvg: "0",
+    salMax: "0",
+    tops: [["N","0"],["N","0"],["N","0"],["N","0"],["N","0"],["N","0"]],
   }},
   computed: {
     pages_count() {
@@ -354,6 +398,22 @@ export default {
     //need to do these two only depending on the route
     this.refreshjobs('init')
     // this.getFavedFull()
+    axios
+      .get(config.jobsUrl + '/salStats.json', null, {headers: {'Content-Type' : 'application/json' }})
+      .then(response => {
+        console.log('cp51: ', response)
+        let salMinTmp = response.data.find(stat=>stat.statname == 'salMin')
+        this.salMin = salMinTmp.statvalue + salMinTmp.statcurrency
+        let salAvgTmp = response.data.find(stat=>stat.statname == 'salAvg')
+        this.salAvg = salAvgTmp.statvalue + salAvgTmp.statcurrency
+        let salMaxTmp = response.data.find(stat=>stat.statname == 'salMax')
+        this.salMax = salMaxTmp.statvalue + salMaxTmp.statcurrency
+        for (let index = 0; index < 6; index++) {
+          let tmp = response.data.find(stat=>stat.statname == 'top' + (index + 1))
+          this.tops[index][0] = tmp.statlabel
+          this.tops[index][1] = tmp.statvalue + tmp.statcurrency 
+        }
+      })
   },
   methods: {
     // getOwnJobsWrapperRL() {
@@ -835,6 +895,7 @@ export default {
   --violet-btn-color #8645FF
   --color1 #2E2768 //#181059
   --color-graypink #F8F4FF
+  --footer-color #EDEEF2
   //--logoWidth 160px
   --maxW 1135px
   @media screen and (max-width: 1000px)
@@ -842,9 +903,10 @@ export default {
   @media screen and (max-width: 550px)
     --maxW 100%
 body
-  background-image url('./../public/assets/bg1.png')
+  background-image url('./../public/assets/bg1.png'), url('./../public/assets/bg2.png'), linear-gradient(180deg, var(--footer-color), var(--footer-color))
   background-repeat no-repeat
-  background-position right top
+  background-size: auto, auto, 100% 200px;
+  background-position right top, left 18px bottom, center bottom
 #app
   //min-height calc(50vh - 15px)
   box-sizing border-box
@@ -858,7 +920,7 @@ body
   line-height 14px
   //max-width var(--maxW)
   margin auto
-  padding-bottom 70px
+  //padding-bottom 70px
   border-bottom 1.5px solid red//#E6E6E6
   .header-wrapper
     border-bottom 1.5px solid #E6E6E6
@@ -980,21 +1042,52 @@ body
     opacity 0.7
     z-index 3
   .main__footer
-    position absolute
-    bottom 0
-    width calc(var(--maxW) - 20px)
     display flex
     justify-content flex-end
-    background-color var(--main-bg-color)
-    box-shadow 0 0 3px 0px var(--main-borders-color)
-    //position fixed
-    //bottom 0
-    margin 5px 10px
-    margin-bottom 0px
-    padding 12px 10px
+    margin 0 auto
+    padding-top 30px
     box-sizing border-box
-    //width 100%
+    height 200px
     max-width var(--maxW)
+    padding 30px 200px 12px 100px
+    .footer__ul-top
+      display flex
+      list-style-type none
+      padding 0
+      margin 0
+      width 100%
+      justify-content space-between
+      h3
+        text-decoration none
+        font-family: Montserrat, sans-serif
+        font-weight bold
+        font-size: 12px;
+        line-height: 15px;
+        color var(--color1)
+        margin 0
+        margin-bottom 15px
+      li
+        padding 0
+        margin 0
+        text-align left
+        max-width 20%
+        ul
+          list-style-type none
+          width 100%
+          padding 0
+          margin 0
+          li
+            max-width 100%
+            margin 3px 0
+            a
+              width 100%
+              text-decoration none
+              font-family: Montserrat, sans-serif
+              font-size: 12px;
+              line-height: 15px;
+              color var(--color1)
+        &:last-child li a
+          font-weight bold
   .langLink
     border 0
     background-color transparent
