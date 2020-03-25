@@ -183,7 +183,8 @@ export default {
   margin-bottom 18px
   padding 19px 30px
   &:hover
-    box-shadow 0 0 2px 1px var(--violet-btn-color)//#bbb
+    //box-shadow 0 0 2px 1px var(--violet-btn-color)//#bbb
+    box-shadow 0 0 15px var(--violet-btn-color)
   a
     text-decoration none
   .cardHeader
