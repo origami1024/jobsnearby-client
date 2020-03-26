@@ -50,7 +50,7 @@
     <div class="line">
       <div class="line spbtw" style="width: 100%">
         <!-- <q-btn class="mr-5px" v-else-if="role == 'subscriber'" round size="xs" icon="work"/> -->
-        <a v-if="lenses == 'full'" class="showContactsLink" @click.prevent="isContactsShown = !isContactsShown" href="#">
+        <a class="showContactsLink" @click.prevent="isContactsShown = !isContactsShown" href="#">
           {{$t('jc.contactsLabel')}}
         </a>
         <a v-if="role != 'company' && !cved" class="sendCVLink" @click.prevent="$emit('hitcv', job.job_id)" href="#">
@@ -182,9 +182,11 @@ export default {
   border-radius: 10px;
   margin-bottom 18px
   padding 19px 30px
+  @media screen and (max-width: 950px)
+    margin-bottom 10px
+    padding 10px 12px
   &:hover
     box-shadow 0 0 2px 1px var(--violet-btn-color)//#bbb
-    //box-shadow 0 0 15px var(--violet-btn-color)
   a
     text-decoration none
   .cardHeader
@@ -225,21 +227,11 @@ export default {
     
   .spbtw
     justify-content space-between
-  .mr-5px
-    margin-right 5px
   .colx
     display flex
     flex-direction column
   .alignRight
     align-self flex-end
-  .circle
-    min-width 10px
-    max-width 10px
-    min-height 10px
-    max-height 10px
-    background-color lime
-    border-radius 100%
-    margin 5px
 
 .showContactsLink
   background-image url(./../../../public/assets/arrow_jc.png)
@@ -256,6 +248,9 @@ export default {
   display inline-block
   align-self flex-end
   padding-bottom 2px
+  @media screen and (max-width: 950px)
+    font-size: 14px
+    max-width 116px
   &:hover
     color var(--violet-btn-color)
     background-image url(./../../../public/assets/arrow3.png)
@@ -274,18 +269,13 @@ export default {
   line-height: 18px;
   padding 9px 20px
   padding-right 17px
+  @media screen and (max-width: 950px)
+    padding 5px 10px
+    padding-right 8px
+    line-height: 26px;
   &:hover
     color var(--violet-btn-color)
-.rowedCard
-  margin 10px 5px
-  border 1px solid gray
-  min-width 220px
 .contactsPanel
-  //position absolute
-  //left 50%
-  //bottom 5px
-  //background-color #ddf
-  //box-shadow 0 0 3px 0px var(--btn-color)
   border 0
   border-radius 10px
   padding 0px
@@ -333,21 +323,11 @@ export default {
   color var(--color1)
   margin-top 12px
   margin-bottom 23px
+  @media screen and (max-width: 950px)
+    margin-top 5px
+    margin-bottom 10px
 .joblink
   color var(--color1)
   &:hover
     color var(--violet-btn-color)
-
-@media screen and (max-width: 550px)
-  .jobscard
-    .cardHeader
-      font-size 16px
-    .line50
-      max-width 75%
-    .jobcard__salary p
-      font-size 14px
-  .contactsPanel
-    background-color white
-    width calc(45% - 5px)
-    left 55%
 </style>

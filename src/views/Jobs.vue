@@ -1,28 +1,14 @@
 <template>
   <div class="jobs">
     <div class="jobs__banner">
-      <div style="width: 68px; height: 68px; background: url('./../assets/checked.png');"></div>
+      <div class="banner__pic"></div>
       <div class="jobs__banner-right">
-        <div style="height: 68px; margin-bottom: 20px; display: flex; align-items: center;">
-          <h2 style="margin-left: 30px;color: var(--color1); font-family: Montserrat, sans-serif; font-weight: 600; font-size: 18px; line-height: 144.4%; max-width: 296px;">Найди подходящую вакансию уже сегодня!</h2>
+        <div class="banner__header-wrap" style="height: 68px; display: flex; align-items: center;">
+          <h2 class="banner__header">Найди подходящую вакансию уже сегодня!</h2>
         </div>
         <div class="jobs__top-search">
         <button class="filtersHamburgerBtn">Ф</button>
         <input
-          style="
-            box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.15);
-            border-radius: 10px;
-            width: 822px;
-            height: 40px;
-            border: 0;
-            padding: 0 26px;
-            font-family: Montserrat, sans-serif;
-            font-style: normal;
-            font-weight: normal;
-            font-size: 14px;
-            line-height: 17px;
-            margin-left: 16px;
-          "
           class="searchInput"
           type="text"
           v-model="txt" @keyup.enter="refreshPlus"
@@ -68,7 +54,7 @@
       <div class="jobs__contents">
         <!-- <div> -->
           <div class="line jobs_prefilters">
-            <div>
+            <div class="prefilters-leftwrap">
               <span class="jobs__prefilters-label">Сортировка:</span>
               <button class="orderLink">
                 {{timerange.label}}
@@ -85,7 +71,7 @@
                   </q-item>
                 </q-menu>
               </button>
-              <button class="orderLink" style="padding-left: 16px">
+              <button class="orderLink">
                 {{sort.label}}
                 <q-menu dense>
                   <q-item
@@ -402,23 +388,44 @@ export default {
   flex-direction column
   position relative
   padding 0px 0px
-  // .jobs__top-wrapper
-  //   z-index 1
-  //   //background #fff
-  //   ////position sticky
-  //   top 0px
-  //   padding-top 10px
-  //   box-sizing border-box
-  //   margin-bottom 15px
-  //   border-bottom-left-radius 15px
-  //   border-bottom-right-radius 15px
   .jobs__banner
     display flex
     text-align left
     padding-top 12.5px
     margin-bottom 46px
+    @media screen and (max-width: 950px)
+      margin-bottom 26px
+    @media screen and (max-width 800px)
+      padding-top 5px
+      margin-bottom 20px
+  .banner__pic
+    --bsize 68px
+    width var(--bsize)
+    min-width var(--bsize)
+    height var(--bsize)
+    min-height var(--bsize)
+    background url('./../../public/assets/checked.png')
+    @media screen and (max-width 800px)
+      --bsize 40px
+      background-size 100%
+      margin-top 14px
+      margin-left 6px
+  .banner__header-wrap
+    margin-bottom: 20px
+    @media screen and (max-width 800px)
+      margin-bottom 6px
+  .banner__header
+    margin-left: 30px
+    color: var(--color1)
+    font-family: Montserrat, sans-serif
+    font-weight: 600 !important
+    font-size: 18px !important
+    line-height: 144.4% !important
+    max-width: 296px
+    @media screen and (max-width 800px)
+      margin-left 6px
+      line-height: 130% !important
   .jobs__top-search
-    //background-color var(--main-bg-color)
     display flex
     //justify-content center
     //margin 0
@@ -435,26 +442,55 @@ export default {
     //display flex
     //margin-right 20px
     @media screen and (max-width: 550px)
-      display block
-      display none
-      position fixed
-      z-index 10
-      top 10px
-      bottom 10px
-      left 10px
-      right 10px
+      // display block
+      // display none
+      // position fixed
+      // z-index 10
+      // top 10px
+      // bottom 10px
+      // left 10px
+      // right 10px
   .jobsfilter__search
     box-sizing border-box
     width 100%
     margin-right 5px
+  .searchInput
+    width 822px
+    padding 0 26px
+    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.15);
+    border-radius: 10px;
+    height: 40px !important
+    border: 0;
+    font-family: Montserrat, sans-serif;
+    font-weight: normal;
+    font-size: 14px !important
+    line-height: 17px !important
+    margin-left: 16px !important
+    @media screen and (max-width: 1160px)
+      width 600px
+      margin auto 0
+    @media screen and (max-width 800px)
+      padding 0 16px
+      margin-left: 0px !important
+      width calc(72vw - 16px)
+      height: 36px !important
+    &:focus
+      outline none
+      box-shadow 0px 0px 2px var(--violet-btn-color) !important
   .jobs__main
     box-sizing border-box
     display flex
     position relative
+    @media screen and (max-width: 1160px)
+      margin 0 10px
+    @media screen and (max-width 800px)
+      margin 0 6px
     // justify-content space-around
   .jobs__contents
     margin 0 26px
     flex-grow 2
+    @media screen and (max-width: 1160px)
+      margin 0 10px
     //box-sizing border-box
     //width calc(100% - 10px)
     //max-width calc(var(--maxW) - 410px) //that is including the filters to the left
@@ -464,6 +500,8 @@ export default {
     //background-color var(--main-bg-color)
     //box-shadow 0 0 4px 1px var(--main-borders-color)
     //box-sizing border-box
+    @media screen and (max-width: 950px)
+      margin-bottom 10px
   *
     margin 0
   .line
@@ -500,11 +538,18 @@ export default {
     background-repeat no-repeat
     background-position right 3px center
     padding-right 18px
+    &:nth-of-type(1)
+      padding-left 16px
+      @media screen and (max-width: 950px)
+        padding-left 0px
     &:hover
       color var(--color1)
   .paginationWrap
     padding 22px 0
     padding-bottom 32px
+    @media screen and (max-width: 1160px)
+      padding 12px 0
+      padding-bottom 22px
 .filtersHamburgerBtn
   display none
   border 0
@@ -515,21 +560,15 @@ export default {
   cursor pointer
   &:hover
     background-color var(--btn-color)
-.statbox
-  background white
-  box-shadow 0px 5px 15px rgba(0, 0, 0, 0.15)
-  border-radius 10px
-  padding 28px 30px 39px 30px
-  width 234px
-  box-sizing border-box
-  text-align left
-  margin-bottom 18px
 .jobs__prefilters-label
   color black
   font-family: Montserrat, sans-serif !important
   font-weight: normal !important
   font-size: 14px !important
   line-height: 17px !important
+  margin-right 5px
+  @media screen and (max-width: 950px)
+    display none
 .jobs__right-aside
   .aside-h3
     font-family "Montserrat", sans-serif
@@ -540,49 +579,54 @@ export default {
     text-transform uppercase
     width 130px
     margin-bottom 22px
+    @media screen and (max-width: 1160px)
+      margin-bottom 12px
   .professions-list
     width 172px
+    @media screen and (max-width: 1160px)
+      width 152px
   .professions-row
     display flex
     justify-content space-between
     margin-bottom 11px
     align-items flex-end
+    @media screen and (max-width: 1160px)
+      margin-bottom 7px
     div
       font-family "Montserrat", sans-serif !important
       font-size 12px !important
       line-height 15px !important
-.searchInput:focus
-  outline none
-  box-shadow 0px 0px 2px var(--violet-btn-color) !important
-@media screen and (max-width: 550px)
-  .jobs
-    padding 0
-    padding-left 5px
-    .jobs__filterpart
-      margin-right 0px
-    .searchBtn
-      font-size 12px
-      margin auto
-    .jobs__top-search
-      padding 5px
-      border-radius 5px
-    .pageBtns
-      padding 3px
-      margin 0px
-  .filtersHamburgerBtn
-    display block
 
+.statbox
+  background white
+  box-shadow 0px 5px 15px rgba(0, 0, 0, 0.15)
+  border-radius 10px
+  padding 28px 30px 39px 30px
+  width 234px
+  box-sizing border-box
+  text-align left
+  margin-bottom 18px
+  @media screen and (max-width: 1160px)
+    padding 18px 20px 19px 15px
+    width 190px
+    margin-bottom 10px
 .wrapline
   display flex
   width 155px
   height 100%
   padding-left 6px
+  @media screen and (max-width: 1160px)
+    width 140px
 .wrapline2
   padding 0
   margin 0
   margin-top -10px
   padding-left 9px
   width 170px
+  @media screen and (max-width: 1160px)
+    width 145px
+    svg
+      width 145px
 .wrapcol
   width 100%
   display flex
@@ -592,6 +636,8 @@ export default {
   padding 0 2.5px
   margin-bottom 4px
   flex-grow 1
+  @media screen and (max-width: 1160px)
+    padding 0 2px
  .boxMin
    height 51%
    background-color rgba(134, 69, 255, 0.3)
@@ -610,5 +656,7 @@ export default {
    line-height: 12px;
    color: #181059;
    margin-bottom 11px;
+   @media screen and (max-width: 1160px)
+    margin-bottom 7px
 
 </style>

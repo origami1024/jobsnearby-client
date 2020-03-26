@@ -44,11 +44,11 @@
     <BasicSelect :picked="exp" @update:value="expUpd($event)" :values="expOptions" ph="от 1 до 3 лет" style="margin-bottom: 12px;" />
     <!-- <q-select color="cyan-10" @input="expUpd" dense :value="exp" :options="expOptions" :label="$t('filters.exp')" /> -->
     <div class="line">
-      <div style="width: 125px">
+      <div class="salary_inp_wrapper">
       <span class="f-label">{{$t('filters.sal')}}</span>
       <BasicSelect :picked="salary" @update:value="salaryUpd($event)" :values="salOptions" ph="от 200 до 500" style="margin-bottom: 12px;" />
       </div>
-      <div style="width: 71px">
+      <div class="currency_inp_wrapper">
       <span class="f-label">{{$t('filters.curr')}}</span>
       <BasicSelect :picked="currency" @update:value="currUpd($event)" :values="currOptions" ph="" style="margin-bottom: 12px;" />
       </div>
@@ -75,7 +75,7 @@
         :loading="pending"
         style="background-color: var(--violet-btn-color); font-weight: 700; width: 100%"
         :style="{width: isResetShown ? '126px': '100%'}"
-        class="headerBtns1"
+        class="headerBtns1 applybtn"
         text-color="white"
         :label="$t('filters.applyBtn')"
         @click="refreshPlus"
@@ -99,20 +99,15 @@ export default {
   name: 'JobsFilter',
   props: {
     isResetShown: Boolean,
-    lowest: {type: Number, default: 0},
-    highest: {type: Number, default: 99550},
+    // lowest: {type: Number, default: 0},
+    // highest: {type: Number, default: 99550},
     langOptions: {type: Array, default: ()=>[]},
     pending: {type: Boolean, default: false},
-    // txt: {type: String, default: ''},
-    // sort: {type: String, default: 'new'},
-    // timerange: {type: String, default: 'mon'},
-    // perpage: {type: String, default: '25'},
     exp: {type: Object},
     city: {type: String},
     jcat: {type: Object},
     salary: {type: Object},
     currency: {type: Object},
-    //outerResetNeeded: {type: Boolean}
   },
   data() {return {
     cityOptions: this.$t('filters.cities'),//stringOptions, //i18n.$t('filters.cityOpts'),
@@ -236,13 +231,17 @@ export default {
   text-align left
   max-width 278px
   min-width 278px
-  margin-bottom 15px
+  //margin-bottom 15px
   padding 31px
   box-sizing border-box
   //box-shadow 0 0 4px 1px var(--main-borders-color)
   box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.1);
   border-radius 10px
   color white
+  @media screen and (max-width: 1160px)
+    max-width 210px
+    min-width 210px
+    padding 22px 8px
   .f-label
     font-family: Montserrat, sans-serif;
     font-weight normal
@@ -250,19 +249,14 @@ export default {
     line-height 17px !important
     display block
     margin-bottom 6px !important
-  f-select
-    background-color white !important
-    input
-      border-radius 10px !important
+    @media screen and (max-width: 1160px)
+      margin-bottom 3px !important
+      margin-left 10px
   *
     margin 0
-  div, span, svg
-    line-height 1.6
   .line
     display flex
     justify-content space-between
-  .borders
-    padding 0 2px
   .alignRight
     align-self flex-end
   .w100
@@ -270,17 +264,23 @@ export default {
     width 100%
     justify-content flex-end
     padding-top 10px
+.salary_inp_wrapper
+  width 125px
+  @media screen and (max-width: 1160px)
+    width 125px
+.currency_inp_wrapper
+  width 71px
+    @media screen and (max-width: 1160px)
+      width 50px
 .trashBg
   background url('./../../../public/assets/trash1.png') !important
   background-repeat no-repeat !important
   background-position center !important
   background-color var(--btn-color) !important
   width 70px
+  @media screen and (max-width: 1160px)
+    width 30%
   &:hover
     background-color var(--btn-color1) !important
-.jobsfilter__search-btn
-  align-self flex-start
-
-  
   
 </style>

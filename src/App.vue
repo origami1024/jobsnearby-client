@@ -401,7 +401,7 @@ export default {
     axios
       .get(config.jobsUrl + '/salStats.json', null, {headers: {'Content-Type' : 'application/json' }})
       .then(response => {
-        console.log('cp51: ', response)
+        //console.log('cp51: ', response)
         let salMinTmp = response.data.find(stat=>stat.statname == 'salMin')
         this.salMin = salMinTmp.statvalue + salMinTmp.statcurrency
         let salAvgTmp = response.data.find(stat=>stat.statname == 'salAvg')
@@ -898,9 +898,7 @@ export default {
   --footer-color #EDEEF2
   //--logoWidth 160px
   --maxW 1135px
-  @media screen and (max-width: 1000px)
-    --maxW 100%
-  @media screen and (max-width: 550px)
+  @media screen and (max-width: 1160px)
     --maxW 100%
 body
   background-image url('./../public/assets/bg1.png'), url('./../public/assets/bg2.png'), linear-gradient(180deg, var(--footer-color), var(--footer-color))
@@ -930,16 +928,19 @@ body
     justify-content space-between
     margin 0px auto
     height 115px
-    padding 0px 0px
+    padding 0px
     box-sizing border-box
     max-width var(--maxW)
-    //box-shadow 0 0 3px 0px var(--main-borders-color)//#a0a9
-    //background-color var(--main-bg-color)//#8080f1//var(--main-bg-color)
+    @media screen and (max-width 1160px)
+      padding 0px 10px
+    @media screen and (max-width 950px)
+      height 95px
+      margin 0px
+    @media screen and (max-width 800px)
+      height 75px
+      padding 0px 5px
     #nav
       display flex
-    @media screen and (max-width: 550px)
-      padding 5px
-      margin 10px 5px
   .r-link
     margin-right 10px
     display block
@@ -966,75 +967,80 @@ body
     //width 90%
     max-width var(--maxW)
     margin auto
-  .logo
-    margin-right 10px
-    font-weight 700
-    letter-spacing 2px
+  // .logo
+  //   //margin-right 10px
+  //   font-weight 700
+  //   letter-spacing 2px
   .logoText
     color var(--color1)
     letter-spacing 0.115em
     font-size 34px
-    font-style normal
     font-weight bold
     font-family 'Montserrat', serif
     line-height 123.4%
+    @media screen and (max-width 800px)
+      letter-spacing 0.01em
   .logolink
     margin-right 10px
-    font-weight 700
-    letter-spacing 2px
     text-decoration none
-    font-size 36px
-    color var(--btn-color)
-    line-height 52px
-    padding 0
-    display flex
     @media screen and (max-width: 550px)
-      font-size 24px
-      margin-right 2px
+      // font-size 24px
+      // margin-right 2px
   .headerBtns1
     padding 0 5px
     white-space nowrap
     background-color: var(--btn-color);
     font-weight: bold;
     align-self:flex-start;
-    border-radius: 10px;
+    border-radius 10px
     height 40px
     transition-duration 0.3s
+    @media screen and (max-width 800px)
+      height 36px
+      padding 0
+      white-space normal
+      max-width 120px
     div
       font-family 'Montserrat', sans-serif !important
       font-size 14px !important
       line-height 17px !important
+      @media screen and (max-width 800px)
+        line-height 1 !important
+        //max-height 30px
+        padding 0 5px
+      div
+        @media screen and (max-width 800px)
+          //max-height 24px
+          padding 0
   .headerBtnRed
     &:hover
       background-color var(--btn-color1) !important
     @media screen and (max-width: 550px)
-      font-size 12px
-      padding 0 !important
-      white-space normal
-      height 36px
-      line-height 14px
-      div
-        padding 0 !important
-        width 82px
+      // font-size 12px
+      // padding 0 !important
+      // white-space normal
+      // height 36px
+      // line-height 14px
+      // div
+      //   padding 0 !important
+      //   width 82px
   .violetBtns
     padding 0 3px
     margin-left 15px
+    @media screen and (max-width 800px)
+      margin-left 10px
+      padding 0 6px
     @media screen and (max-width: 550px)
-      font-size 16px
-      line-height 36px
-      height 36px
-      padding 0 !important
-      margin-right 0
-      div
-        width 55px
-      div div
-        margin-top -3px
+      // font-size 16px
+      // line-height 36px
+      // height 36px
+      // padding 0 !important
+      // margin-right 0
+      // div
+      //   width 55px
+      // div div
+      //   margin-top -3px
         
-      
-
-  .user-status-bar
-    //text-align left
-    //align-items flex-start
   .scrollTopBtn
     position fixed
     bottom 12px
@@ -1050,6 +1056,10 @@ body
     height 200px
     max-width var(--maxW)
     padding 30px 200px 12px 100px
+    @media screen and (max-width 950px)
+      padding 25px 75px 12px 50px
+    @media screen and (max-width 800px)
+      padding 20px 15px 12px 15px
     .footer__ul-top
       display flex
       list-style-type none
@@ -1066,11 +1076,15 @@ body
         color var(--color1)
         margin 0
         margin-bottom 15px
+        @media screen and (max-width 800px)
+          margin-bottom 10px
       li
         padding 0
         margin 0
         text-align left
         max-width 20%
+        @media screen and (max-width 800px)
+          max-width 26%
         ul
           list-style-type none
           width 100%
@@ -1101,21 +1115,8 @@ body
     font-size 14px
     line-height 17px
     margin-left 30px
-    // &:hover
-    //   color var(--btn-color)
-  .headerBtnNew
-    text-decoration none
-    color white//var(--main-borders-color)
-    font-size 17px
-    background-color var(--main-borders-color)
-    //text-transform uppercase
-    //border 2px solid transparent
-    //transition-duration .4s
-    padding 2px 10px
-    border-radius 50px
-    //padding-right 0px
-    //letter-spacing 2px
-    //font-weight 700
+    @media screen and (max-width 800px)
+      margin-left 20px
     // &:hover
     //   color var(--btn-color)
   .headerBtn
@@ -1133,36 +1134,6 @@ body
     font-weight 700
     &:hover
       color var(--btn-color)
-  .hoverred
-    &:hover
-      color var(--btn-color)
-      //border 2px solid white
-      //color white
-  // .headerBtn.router-link-exact-active
-  //   border 2px solid white
-  //   color white
-  //   &:visited
-  //     border 2px solid white
-// .newlinks
-//   background-color var(--btn-color)
-//   color white
-//   margin-right 10px
-//   display block
-//   border-radius 50px
-//   text-decoration none
-//   padding 6px 10px
-//   font-size 17px
-//   white-space nowrap
-//   &:visited
-//     color white
-//   &:hover
-//     color white
-// .btnnewlinks
-//   border 0
-//   display inline
-//   line-height 1
-//   padding 6px 16px
-//   cursor pointer
 .q-item__label
   color var(--main-borders-color)
 .q-manual-focusable--focused
@@ -1178,71 +1149,24 @@ body
 .q-uploader__subtitle//in entprofile - q-uploader component related
   display none
 @media screen and (max-width: 550px)
-  .sdpp-filters
-    line-height 14px !important
-    min-height 16px !important
-    height 16px !important
-    font-size 12px !important
-    align-items center !important
-  .sdpp-filters *
-    padding 0 !important
-    margin 0 !important
-    align-items center !important
-  .sdpp-filters>div>div
-    padding-left 2px !important
-    min-height 18px !important
+  // .sdpp-filters
+  //   line-height 14px !important
+  //   min-height 16px !important
+  //   height 16px !important
+  //   font-size 12px !important
+  //   align-items center !important
+  // .sdpp-filters *
+  //   padding 0 !important
+  //   margin 0 !important
+  //   align-items center !important
+  // .sdpp-filters>div>div
+  //   padding-left 2px !important
+  //   min-height 18px !important
     
-  .sdpp-filters i
-    margin-left -5px !important
-    margin-right -3px !important
-    align-items center !important
+  // .sdpp-filters i
+  //   margin-left -5px !important
+  //   margin-right -3px !important
+  //   align-items center !important
     
-
-//////FILTERS Q-SELECTS
-// .q-select
-//   border-radius 10px !important
-//   font-family: Montserrat, sans-serif !important;
-//   font-weight: normal !important
-//   background-color white !important
-//   max-height 36px !important
-//   height 36px !important
-//   min-height 36px !important
-//   box-sizing border-box !important
-//   padding 0 !important
-//   //margin 0 !important
-//   div
-//     border-radius 10px !important
-//     background-color white !important
-//     max-height 36px !important
-//     height 36px !important
-//     min-height 36px !important
-//     box-sizing border-box !important
-//     padding 0 !important
-//     margin 0 !important
-//     margin 0 !important
-//     div
-//       box-sizing border-box !important
-//       max-height 36px !important
-//       height 36px !important
-//       min-height 36px !important
-//       border-radius 10px !important
-//       padding 0 !important
-//       margin 0 !important
-//       div.q-field__control-container
-//         padding 0 !important
-//         margin 0 !important
-//         max-height 36px !important
-//         height 36px !important
-//         min-height 36px !important
-//         div
-//           padding 0 !important
-//           margin 0 !important
-//           max-height 36px !important
-//           height 36px !important
-//           min-height 36px !important
-//           input
-//             //height 36px !important
-//             font-size: 12px !important
-//             line-height: 15px !important
 
 </style>
