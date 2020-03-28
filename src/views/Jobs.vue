@@ -201,7 +201,7 @@
           >Топ профессий</h3>
           <div class="professions-list">
             <div class="professions-row" v-for="(top,i) in tops" :key="i">
-              <div>{{top[0]}}</div>
+              <div><a class="professions-link" :href="'/jobpage?id=' + top[2]" target='_blank'>{{top[0]}}</a></div>
               <div>{{top[1]}}</div>
             </div>
           </div>
@@ -605,8 +605,21 @@ export default {
       line-height 15px !important
     div:nth-of-type(1)
       width 70%
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     div:nth-of-type(2)
       width 30%
+  .professions-link
+    text-decoration none
+    color var(--color1)
+    font-family "Montserrat", sans-serif !important
+    font-size 12px !important
+    line-height 15px !important
+    &:visited
+      color var(--color1)
+    &:hover
+      color var(--violet-btn-color)
 
 .statbox
   background white

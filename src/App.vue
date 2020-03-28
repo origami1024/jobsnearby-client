@@ -309,7 +309,7 @@ export default {
     salMin: "",
     salAvg: "",
     salMax: "",
-    tops: [["",""],["",""],["",""],["",""],["",""],["",""]],
+    tops: [["","",""],["","",""],["","",""],["","",""],["","",""],["","",""]],
   }},
   computed: {
     pages_count() {
@@ -412,6 +412,7 @@ export default {
           let tmp = response.data.find(stat=>stat.statname == 'top' + (index + 1))
           this.tops[index][0] = tmp.statlabel
           this.tops[index][1] = tmp.statvalue + tmp.statcurrency 
+          this.tops[index][2] = tmp.statlink
         }
       })
   },
