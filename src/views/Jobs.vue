@@ -405,6 +405,8 @@ export default {
     height var(--bsize)
     min-height var(--bsize)
     background url('./../../public/assets/checked.png')
+    @media screen and (max-width 1160px)
+      margin-left 10px
     @media screen and (max-width 800px)
       --bsize 40px
       background-size 100%
@@ -434,14 +436,10 @@ export default {
     //box-shadow 0 0 3px 0px #a0a9
     //box-shadow 0 0 4px 1px var(--main-borders-color)
     //border-radius 15px
-  .jobs__filterpart
-    //position sticky
-    //box-sizing border-box
-    //top 105px
-    //top 10px
+  //.jobs__filterpart
     //display flex
     //margin-right 20px
-    @media screen and (max-width: 550px)
+    //@media screen and (max-width: 550px)
       // display block
       // display none
       // position fixed
@@ -454,29 +452,6 @@ export default {
     box-sizing border-box
     width 100%
     margin-right 5px
-  .searchInput
-    width 822px
-    padding 0 26px
-    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.15);
-    border-radius: 10px;
-    height: 40px !important
-    border: 0;
-    font-family: Montserrat, sans-serif;
-    font-weight: normal;
-    font-size: 14px !important
-    line-height: 17px !important
-    margin-left: 16px !important
-    @media screen and (max-width: 1160px)
-      width 600px
-      margin auto 0
-    @media screen and (max-width 800px)
-      padding 0 16px
-      margin-left: 0px !important
-      width calc(72vw - 16px)
-      height: 36px !important
-    &:focus
-      outline none
-      box-shadow 0px 0px 2px var(--violet-btn-color) !important
   .jobs__main
     box-sizing border-box
     display flex
@@ -485,12 +460,17 @@ export default {
       margin 0 10px
     @media screen and (max-width 800px)
       margin 0 6px
+      flex-direction column
     // justify-content space-around
+  // .main__sub
+  //   display flex
   .jobs__contents
     margin 0 26px
     flex-grow 2
     @media screen and (max-width: 1160px)
       margin 0 10px
+    // @media screen and (max-width 800px)
+    //   margin-left 0
     //box-sizing border-box
     //width calc(100% - 10px)
     //max-width calc(var(--maxW) - 410px) //that is including the filters to the left
@@ -550,6 +530,29 @@ export default {
     @media screen and (max-width: 1160px)
       padding 12px 0
       padding-bottom 22px
+.searchInput
+  width 822px
+  padding 0 26px
+  box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.15);
+  border-radius: 10px;
+  height: 40px !important
+  border: 0
+  font-family: Montserrat, sans-serif
+  font-weight: normal
+  font-size: 14px !important
+  line-height: 17px !important
+  margin-left 16px !important
+  @media screen and (max-width: 1160px)
+    width 600px
+    margin auto 0
+  @media screen and (max-width 800px)
+    padding 0 16px
+    margin-left: 0px !important
+    width calc(72vw - 16px)
+    height: 36px !important
+    &:focus
+      outline none
+      box-shadow 0px 0px 2px var(--violet-btn-color) !important
 .filtersHamburgerBtn
   display none
   border 0
@@ -569,7 +572,11 @@ export default {
   margin-right 5px
   @media screen and (max-width: 950px)
     display none
+  @media screen and (max-width: 800px)
+    display inline
 .jobs__right-aside
+  @media screen and (max-width 800px)
+    display none
   .aside-h3
     font-family "Montserrat", sans-serif
     font-weight bold
@@ -579,7 +586,7 @@ export default {
     text-transform uppercase
     width 130px
     margin-bottom 22px
-    @media screen and (max-width: 1160px)
+    @media screen and (max-width 1160px)
       margin-bottom 12px
   .professions-list
     width 172px
@@ -587,7 +594,7 @@ export default {
       width 152px
   .professions-row
     display flex
-    justify-content space-between
+    //justify-content space-between
     margin-bottom 11px
     align-items flex-end
     @media screen and (max-width: 1160px)
@@ -596,6 +603,10 @@ export default {
       font-family "Montserrat", sans-serif !important
       font-size 12px !important
       line-height 15px !important
+    div:nth-of-type(1)
+      width 70%
+    div:nth-of-type(2)
+      width 30%
 
 .statbox
   background white

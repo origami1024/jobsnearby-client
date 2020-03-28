@@ -11,9 +11,12 @@
         margin-bottom: 15px;
       "
     >Расширенный поиск:</h3>
-    <span class="f-label">{{$t('filters.city')}}</span>
-    <!-- {{city}} -->
-    <DDSelect :picked="city" @update:city="cityUpd($event)" :cities="cityOptions" ph="Ашхабад" style="margin-bottom: 12px;"/>
+    <span class="lowresline">
+      <span class="lowres__double">
+      <span class="f-label">{{$t('filters.city')}}</span>
+      <!-- {{city}} -->
+      <DDSelect :picked="city" @update:city="cityUpd($event)" :cities="cityOptions" ph="Ашхабад" class="selectWrapper" />
+      </span>
     <!-- <span class="f-label">{{$t('filters.city')}}</span> -->
     <!-- <q-select
       :value="city"
@@ -29,8 +32,11 @@
       @keyup="addNewCity"
       no-border
     /> -->
-    <span class="f-label">{{$t('filters.jcat')}}</span>
-    <BasicSelect :picked="jcat" @update:value="jcatUpd($event)" :values="jcatOptions" ph="Бухгалтер" style="margin-bottom: 12px;" emptyTemplate='0' />
+      <span class="lowres__double">
+      <span class="f-label">{{$t('filters.jcat')}}</span>
+      <BasicSelect :picked="jcat" @update:value="jcatUpd($event)" :values="jcatOptions" ph="Бухгалтер" class="selectWrapper" emptyTemplate='0' />
+      </span>
+    </span>
     <!-- <span class="f-label">{{$t('filters.jcat')}}</span>
     <q-select
       dense
@@ -40,20 +46,23 @@
       class="f-select"
       :options="jcatOptions"
     /> -->
-    <span class="f-label">{{$t('filters.exp')}}</span>
-    <BasicSelect :picked="exp" @update:value="expUpd($event)" :values="expOptions" ph="от 1 до 3 лет" style="margin-bottom: 12px;" />
+    <span class="lowresline">
+      <span class="lowres__double">
+      <span class="f-label">{{$t('filters.exp')}}</span>
+      <BasicSelect :picked="exp" @update:value="expUpd($event)" :values="expOptions" ph="от 1 до 3 лет" class="selectWrapper" />
+      </span>
     <!-- <q-select color="cyan-10" @input="expUpd" dense :value="exp" :options="expOptions" :label="$t('filters.exp')" /> -->
-    <div class="line">
+    <div class="line lowres__salaryWrap">
       <div class="salary_inp_wrapper">
       <span class="f-label">{{$t('filters.sal')}}</span>
-      <BasicSelect :picked="salary" @update:value="salaryUpd($event)" :values="salOptions" ph="от 200 до 500" style="margin-bottom: 12px;" />
+      <BasicSelect :picked="salary" @update:value="salaryUpd($event)" :values="salOptions" ph="от 200 до 500" class="selectWrapper" />
       </div>
       <div class="currency_inp_wrapper">
       <span class="f-label">{{$t('filters.curr')}}</span>
-      <BasicSelect :picked="currency" @update:value="currUpd($event)" :values="currOptions" ph="" style="margin-bottom: 12px;" />
+      <BasicSelect :picked="currency" @update:value="currUpd($event)" :values="currOptions" ph="" class="selectWrapper" />
       </div>
     </div>
-
+    </span>
     <!-- <div class="line">
       <q-select
         :content-style="{ backgroundColor: 'red' }"
@@ -65,7 +74,7 @@
       <q-select color="cyan-10" style="width: 30%; text-align: center" dense @input="currUpd" :value="currency" :options="currOptions" :label="$t('filters.curr')" />
     </div> -->
     
-    <div class="w100" :style="{justifyContent: isResetShown ? 'space-between': 'flex-end'}" style="margin-top: 19px;">
+    <div class="w100 lowres__bottom" :style="{justifyContent: isResetShown ? 'space-between': 'flex-end'}">
       <q-btn
         v-if="isResetShown"
         class="headerBtns1 trashBg"
@@ -238,10 +247,31 @@ export default {
   box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.1);
   border-radius 10px
   color white
-  @media screen and (max-width: 1160px)
+  @media screen and (max-width 1160px)
     max-width 210px
     min-width 210px
     padding 22px 8px
+  @media screen and (max-width 800px)
+    max-width 100%
+    min-width (100% - 10px)
+    margin 0 10px
+  .lowresline
+    @media screen and (max-width 800px)
+      display flex
+      justify-content space-between
+      align-items center
+      height 70px
+      //outline 1px dotted yellow
+  .lowres__double
+    @media screen and (max-width 800px)
+      width 50%
+      //outline 1px solid green
+      display flex
+      flex-direction column
+      box-sizing border-box
+  .lowres__double:first-of-type
+    @media screen and (max-width 800px)
+      padding-right 10px
   .f-label
     font-family: Montserrat, sans-serif;
     font-weight normal
@@ -252,8 +282,23 @@ export default {
     @media screen and (max-width: 1160px)
       margin-bottom 3px !important
       margin-left 10px
+    @media screen and (max-width 800px)
+      margin-left 0
+      margin-bottom 0
+  .selectWrapper
+    margin-bottom 12px
+    @media screen and (max-width 800px)
+      margin 0// 10px
+      margin-bottom 0
+      width 100%
+  .selectWrapper:last-of-type
+    margin-right 0
   *
     margin 0
+  .lowres__bottom
+    margin-top: 19px
+    @media screen and (max-width 800px)
+      margin-top 0px
   .line
     display flex
     justify-content space-between
@@ -264,14 +309,34 @@ export default {
     width 100%
     justify-content flex-end
     padding-top 10px
+.lowres__salaryWrap
+  @media screen and (max-width: 800px)
+    width 50%
+    min-width 50%
+    display flex
+    //outline 1px solid red
 .salary_inp_wrapper
   width 125px
   @media screen and (max-width: 1160px)
     width 125px
+  @media screen and (max-width: 800px)
+    display flex
+    flex-direction column
+    //outline 1px solid red
+    min-width 70%
+    padding-right 10px
 .currency_inp_wrapper
   width 71px
-    @media screen and (max-width: 1160px)
-      width 50px
+  @media screen and (max-width: 1160px)
+    width 50px
+  @media screen and (max-width: 800px)
+    display flex
+    flex-direction column
+    width 100%
+    justify-content space-between
+    //margin-left 10px
+    *
+      min-width 50%
 .trashBg
   background url('./../../../public/assets/trash1.png') !important
   background-repeat no-repeat !important
@@ -282,5 +347,11 @@ export default {
     width 30%
   &:hover
     background-color var(--btn-color1) !important
+
+.applybtn
+  max-width 100% !important
+  @media screen and (max-width 800px)
+    width 50% !important
+    
   
 </style>
