@@ -56,18 +56,3 @@ export default {
 }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped lang="stylus">
-.jobslist
-  box-sizing border-box
-  width 100%
-  min-width 300px
-  .line
-    display flex
-    align-items center
-    border 1px solid gray
-    padding 5px
-*
-  margin 0
-
-</style>
