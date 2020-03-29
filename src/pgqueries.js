@@ -2086,7 +2086,7 @@ async function userStatRegen(req, res) {
       }
       addLog('Manual userstat regen', '-', auth.u2id, '(Модератор) ' + req.cookies.user2)
       res.send(resubig)
-
+      //res.send(`<html><script>window.location.href = "/cplogin.json"</script></html>`)
     } else res.send('Auth error 2')
   } else res.send('Auth error 1')
 }

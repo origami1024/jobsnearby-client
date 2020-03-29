@@ -1010,7 +1010,7 @@ async function adminStats(req, res) {
             http.onreadystatechange = function() {
               if(http.readyState == 4 && http.status == 200) {
                 console.log('cpo1: ', http.responseText)
-
+                window.location.href = "/adminstats.json"
               }
             }
             http.send(JSON.stringify(d))
