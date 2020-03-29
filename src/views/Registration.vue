@@ -7,9 +7,10 @@
         inline-label
         class="shadow-2 tabs"
         style="fontWeight:700;"
+        active-color="red-10"
       >
         <!-- style="color: white; backgroundColor: var(--main-borders-color);" -->
-        <q-tab name="login" style="width:50%;fontWeight:900; letter-spacing: 2px">
+        <q-tab name="login" style="width:50%;fontWeight:900; letter-spacing: 2px;">
           {{$t('reg.loginLabel')}}
         </q-tab>
         <q-tab name="reg" style="width:50%; fontWeight:900; letter-spacing: 1px">
@@ -20,14 +21,14 @@
         <q-tab-panel name="login">
           <form action="#" @submit.prevent="trylog" style="margin-top: 12px">
             <div style="display:flex; width: 100%; margin-bottom: 10px">
-              <label style="alignSelf: center; width: 100px;margin-bottom: 15px" for="mailInput1">* {{$t('reg.loginEmailLabel')}}</label>
+              <label style="alignSelf: center; width: 110px;;margin-bottom: 15px" for="mailInput1">* {{$t('reg.loginEmailLabel')}}</label>
               <q-input
                 id='mailInput1'
                 square
                 dense
                 outlined
                 use-input
-                bg-color="teal-1" color="cyan-10"
+                bg-color="deep-purple-1" color="deep-purple-10"
                 v-model="login.mail"
                 hint=""
                 :error-message="login.validation.mail"
@@ -38,13 +39,13 @@
               />
             </div>
             <div style="display:flex; width: 100%;">
-              <label style="alignSelf: center; width: 100px;margin-bottom: 15px" for="pwInput1">* {{$t('reg.loginPWLabel')}}</label>
+              <label style="alignSelf: center; width: 110px;;margin-bottom: 15px" for="pwInput1">* {{$t('reg.loginPWLabel')}}</label>
               <q-input
                 id='pwInput1'
                 square
                 dense
                 outlined
-                bg-color="teal-1" color="cyan-10"
+                bg-color="deep-purple-1" color="deep-purple-10"
                 v-model="login.pw"
                 hint=""
                 :error-message="login.validation.pw"
@@ -85,12 +86,12 @@
               <label class="twolined" for="r2">Компания (Работодатель)</label>
             </div> -->
             <div v-show="usertype === 'company'" style="display:flex; width: 100%;">
-              <label style="alignSelf: center; width: 100px;margin-bottom: 15px">* {{$t('reg.companyLabel')}}</label>
+              <label style="alignSelf: center; width: 110px;;margin-bottom: 15px">* {{$t('reg.companyLabel')}}</label>
               <q-input
                 square
                 dense
                 outlined
-                bg-color="teal-1" color="cyan-10"
+                bg-color="deep-purple-1" color="deep-purple-10"
                 v-model="company"
                 hint=""
                 style="width: 100%;"
@@ -112,13 +113,13 @@
             </div>
             <div v-show="usertype === 'subscriber'">
               <div style="display:flex; width: 100%; margin-bottom: 10px">
-                <label style="alignSelf: center; width: 100px;margin-bottom: 15px" for="name2">* {{$t('reg.nameLabel')}}</label>
+                <label style="alignSelf: center; width: 110px;margin-bottom: 15px" for="name2">* {{$t('reg.nameLabel')}}</label>
                 <q-input
                   id='name2'
                   square
                   dense
                   outlined
-                  bg-color="teal-1" color="cyan-10"
+                  bg-color="deep-purple-1" color="deep-purple-10"
                   v-model="name"
                   hint=""
                   :error-message="validation.name"
@@ -129,13 +130,13 @@
                 />
               </div>
               <div style="display:flex; width: 100%; margin-bottom: 10px">
-                <label style="alignSelf: center; width: 100px;margin-bottom: 15px" for="surname2">* {{$t('reg.surnameLabel')}}</label>
+                <label style="alignSelf: center; width: 110px;margin-bottom: 15px" for="surname2">* {{$t('reg.surnameLabel')}}</label>
                 <q-input
                   id='surname2'
                   square
                   dense
                   outlined
-                  bg-color="teal-1" color="cyan-10"
+                  bg-color="deep-purple-1" color="deep-purple-10"
                   v-model="surname"
                   hint=""
                   :error-message="validation.surname"
@@ -147,13 +148,13 @@
               </div>
             </div>
             <div style="display:flex; width: 100%; margin-bottom: 10px">
-              <label style="alignSelf: center; width: 100px;margin-bottom: 15px" for="mailInput2">* {{$t('reg.loginEmailLabel')}}</label>
+              <label style="alignSelf: center; width: 110px;;margin-bottom: 15px" for="mailInput2">* {{$t('reg.loginEmailLabel')}}</label>
               <q-input
                 id='mailInput2'
                 square
                 dense
                 outlined
-                bg-color="teal-1" color="cyan-10"
+                bg-color="deep-purple-1" color="deep-purple-10"
                 v-model="mail"
                 hint=""
                 :error-message="validation.mail"
@@ -164,13 +165,13 @@
               />
             </div>
             <div style="display:flex; width: 100%; margin-bottom: 10px">
-              <label style="alignSelf: center; width: 100px;margin-bottom: 15px" for="pw2">* {{$t('reg.loginPWLabel')}}</label>
+              <label style="alignSelf: center; width: 110px;;margin-bottom: 15px" for="pw2">* {{$t('reg.loginPWLabel')}}</label>
               <q-input
                 id='pw2'
                 square
                 dense
                 outlined
-                bg-color="teal-1" color="cyan-10"
+                bg-color="deep-purple-1" color="deep-purple-10"
                 v-model="pw"
                 hint=""
                 :error-message="validation.pw"
@@ -181,13 +182,13 @@
               />
             </div>
             <div style="display:flex; width: 100%; margin-bottom: 10px">
-              <label style="alignSelf: center; width: 100px;margin-bottom: 15px; display:flex" for="pwc2"><div style="margin-right: 4px">*</div>{{$t('reg.regConfirmPWLabel')}}</label>
+              <label style="alignSelf: center; width: 110px;;margin-bottom: 15px; display:flex" for="pwc2"><div style="margin-right: 4px">*</div>{{$t('reg.regConfirmPWLabel')}}</label>
               <q-input
                 id='pwc2'
                 square
                 dense
                 outlined
-                bg-color="teal-1" color="cyan-10"
+                bg-color="deep-purple-1" color="deep-purple-10"
                 v-model="pwc"
                 hint=""
                 :error-message="validation.pwc"
@@ -588,6 +589,9 @@ export default {
 </script>
 
 <style scoped lang="stylus">
+*
+  font-family Montserrat, sans-serif
+  font-size 14px
 .registration
   padding 15px 0
   margin 0
@@ -609,6 +613,7 @@ export default {
     border-top-left-radius 5px
     border-top-right-radius 5px
     box-shadow 0 0 4px 1px var(--main-borders-color)
+    color var(--color1)
   form
     display flex
     flex-direction column

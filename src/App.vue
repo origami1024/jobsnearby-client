@@ -876,7 +876,7 @@ export default {
   //font-family 'Varela Round', 'Nunito', sans-serif
   font-family "Montserrat", sans-serif
   --main-bg-color #fff
-  --main-borders-color #3A6E8F
+  --main-borders-color #2E2768//#3A6E8F
   --btn-color #C00027
   --btn-color1 #D00027
   --violet-btn-color #8645FF
