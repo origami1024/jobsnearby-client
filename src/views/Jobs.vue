@@ -3,11 +3,11 @@
     <div class="jobs__banner">
       <div class="banner__pic"></div>
       <div class="jobs__banner-right">
-        <div class="banner__header-wrap" style="height: 68px; display: flex; align-items: center;">
+        <div class="banner__header-wrap">
           <h2 class="banner__header">Найди подходящую вакансию уже сегодня!</h2>
         </div>
         <div class="jobs__top-search">
-        <button class="filtersHamburgerBtn">Ф</button>
+        <!-- <button class="filtersHamburgerBtn">Ф</button> -->
         <input
           class="searchInput"
           type="text"
@@ -87,7 +87,7 @@
                 </q-menu>
               </button>
             </div>
-            <div style="justify-self: flex-end">
+            <div class="prefilters-rightwrap">
               <span class="jobs__prefilters-label">Отображать:</span>
               <button class="orderLink">
                 {{perpage.label}}
@@ -398,6 +398,8 @@ export default {
     @media screen and (max-width 800px)
       padding-top 5px
       margin-bottom 20px
+    @media screen and (max-width 550px)
+      justify-content center
   .banner__pic
     --bsize 68px
     width var(--bsize)
@@ -412,10 +414,17 @@ export default {
       background-size 100%
       margin-top 14px
       margin-left 6px
+    @media screen and (max-width 550px)
+      display none
   .banner__header-wrap
     margin-bottom: 20px
+    height: 68px
+    display: flex
+    align-items: center
     @media screen and (max-width 800px)
       margin-bottom 6px
+    @media screen and (max-width 550px)
+      display none
   .banner__header
     margin-left: 30px
     color: var(--color1)
@@ -429,6 +438,12 @@ export default {
       line-height: 130% !important
   .jobs__top-search
     display flex
+    @media screen and (max-width 550px)
+      //margin 0 auto
+      // width 100%
+      // justify-content center
+      margin-top 15px
+      
     //justify-content center
     //margin 0
     //padding 10px 15px
@@ -452,6 +467,8 @@ export default {
     box-sizing border-box
     width 100%
     margin-right 5px
+    @media screen and (max-width 550px)
+      margin-right 0
   .jobs__main
     box-sizing border-box
     display flex
@@ -461,14 +478,19 @@ export default {
     @media screen and (max-width 800px)
       margin 0 6px
       flex-direction column
-    // justify-content space-around
-  // .main__sub
-  //   display flex
+    @media screen and (max-width 550px)
+      margin 0
   .jobs__contents
     margin 0 26px
     flex-grow 2
     @media screen and (max-width: 1160px)
       margin 0 10px
+    @media screen and (max-width 550px)
+      //margin 0 5px
+      margin 0
+      padding 0 5px
+      //width calc(100% - 30px)
+      
     // @media screen and (max-width 800px)
     //   margin-left 0
     //box-sizing border-box
@@ -482,6 +504,8 @@ export default {
     //box-sizing border-box
     @media screen and (max-width: 950px)
       margin-bottom 10px
+    .prefilters-rightwrap
+      align-self flex-start
   *
     margin 0
   .line
@@ -544,7 +568,7 @@ export default {
   margin-left 16px !important
   @media screen and (max-width: 1160px)
     width 600px
-    margin auto 0
+    margin auto
   @media screen and (max-width 800px)
     padding 0 16px
     margin-left: 0px !important
@@ -553,6 +577,9 @@ export default {
     &:focus
       outline none
       box-shadow 0px 0px 2px var(--violet-btn-color) !important
+  @media screen and (max-width 550px)
+    padding 0 8px
+
 .filtersHamburgerBtn
   display none
   border 0

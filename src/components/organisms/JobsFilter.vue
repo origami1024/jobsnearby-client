@@ -255,6 +255,8 @@ export default {
     max-width 100%
     min-width (100% - 10px)
     margin 0 10px
+  @media screen and (max-width 550px)
+    margin 0 5px
   .lowresline
     @media screen and (max-width 800px)
       display flex
@@ -262,16 +264,24 @@ export default {
       align-items center
       height 70px
       //outline 1px dotted yellow
+    @media screen and (max-width 550px)
+      display inline
+      height auto
   .lowres__double
     @media screen and (max-width 800px)
-      width 50%
       //outline 1px solid green
       display flex
       flex-direction column
       box-sizing border-box
+      width 50%
+    @media screen and (max-width 550px)
+      display inline
+      width auto
   .lowres__double:first-of-type
     @media screen and (max-width 800px)
       padding-right 10px
+    @media screen and (max-width 550px)
+      padding-right 0
   .f-label
     font-family: Montserrat, sans-serif;
     font-weight normal
@@ -285,12 +295,17 @@ export default {
     @media screen and (max-width 800px)
       margin-left 0
       margin-bottom 0
+    @media screen and (max-width 550px)
+      margin-bottom 6px !important
   .selectWrapper
     margin-bottom 12px
     @media screen and (max-width 800px)
       margin 0// 10px
       margin-bottom 0
       width 100%
+    @media screen and (max-width 550px)
+      margin-bottom 12px
+
   .selectWrapper:last-of-type
     margin-right 0
   *
@@ -315,6 +330,10 @@ export default {
     min-width 50%
     display flex
     //outline 1px solid red
+  @media screen and (max-width 550px)
+    width auto
+    min-width auto
+    display inline
 .salary_inp_wrapper
   width 125px
   @media screen and (max-width: 1160px)
@@ -343,15 +362,20 @@ export default {
   background-position center !important
   background-color var(--btn-color) !important
   width 70px
-  @media screen and (max-width: 1160px)
-    width 30%
   &:hover
     background-color var(--btn-color1) !important
+  @media screen and (max-width: 1160px)
+    width 30%
+  @media screen and (max-width 550px)
+    min-width 25%
+    margin-right 10px
 
 .applybtn
   max-width 100% !important
   @media screen and (max-width 800px)
     width 50% !important
+  @media screen and (max-width 550px)
+    width 100% !important
     
   
 </style>

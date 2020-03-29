@@ -1,27 +1,24 @@
 <template>
   <div :class="{ jobscard: true }">
-    <div class="line" style="margin-bottom: 15px;">
+    <div class="line lowres_twolines cityAndCompany">
       <div class="line" style="align-items: center;">
-        <p class="city" :class="job.city.length > 0 ? 'cityOK' : ''" v-html="filteredCity" style="padding-right: 10px; border-right: 1px solid var(--color1); line-height: 25px; margin-right: 10px;"></p>
-        <!-- <div >|</div> -->
+        <p class="city" :class="job.city.length > 0 ? 'cityOK' : ''" v-html="filteredCity"></p>
         <a :href="'/companypage?id=' + job.author_id" target="_blank">
           <div class="author joblink" v-html="filteredAuthor"></div>
         </a>
       </div>
       <div class="line" style="align-items: center; font-weight: 500; font-size: 12px; line-height: 15px; color: var(--color1);">
-        <!-- <div class="circle alignRight"></div> -->
-        <div style="margin-right: 5px;">Размещено:</div>
-        <p v-html="lastUpdated"></p>
+        <div class="updated__label">Размещено:</div>
+        <p class="updated__value" v-html="lastUpdated"></p>
       </div>
     </div>
-    <div class="line" style="align-items: center;">
+    <div class="line lowres_twolines linetwo">
       <h4 class="cardHeader">
-        <!-- <a :href="'/jobBy.Id?id=' + job.job_id" target="_blank"> -->
         <a :href="'/jobpage?id=' + job.job_id" target="_blank">
           <strong class="joblink" v-html="filteredTitle"/>
         </a>
       </h4>
-      <div class="colx" style="margin-left: 15px;">
+      <div class="colx salary__outer-wrap">
         <strong class="alignRight jobcard__salary">
           <p v-if="job.salary_min === job.salary_max && job.salary_min > 0">{{job.salary_max}}{{currency}}</p>
           <!-- <p v-else-if="job.salary_min && job.salary_min > 0">от {{job.salary_min}} до {{job.salary_max}} {{currency}}</p> -->
@@ -48,7 +45,7 @@
     </div>
     
     <div class="line">
-      <div class="line spbtw" style="width: 100%">
+      <div class="line spbtw lowres_twolines" style="width: 100%">
         <!-- <q-btn class="mr-5px" v-else-if="role == 'subscriber'" round size="xs" icon="work"/> -->
         <a class="showContactsLink" @click.prevent="isContactsShown = !isContactsShown" href="#">
           {{$t('jc.contactsLabel')}}
@@ -182,9 +179,12 @@ export default {
   border-radius: 10px;
   margin-bottom 18px
   padding 19px 30px
-  @media screen and (max-width: 950px)
+  @media screen and (max-width 950px)
     margin-bottom 10px
     padding 10px 12px
+  @media screen and (max-width 550px)
+    padding 6px
+    width 100% //calc(100% - 5px)
   &:hover
     box-shadow 0 0 2px 1px var(--violet-btn-color)//#bbb
   a
@@ -197,12 +197,22 @@ export default {
     line-height: 21px;
     text-transform uppercase
     
+  .cityAndCompany
+    margin-bottom 15px
+    @media screen and (max-width 550px)
+      margin-bottom 0
   .city
     //font-size 0.85em
     font-weight: 500;
     font-size: 12px;
     line-height: 15px;
     color var(--violet-btn-color)
+    padding-right: 10px
+    border-right: 1px solid var(--color1)
+    line-height: 25px
+    margin-right: 10px
+    @media screen and (max-width 550px)
+      width 50%
   .cityOK
     &:before
       content 'г.'
@@ -211,6 +221,19 @@ export default {
     font-size: 12px;
     line-height: 15px;
     color var(--color1)
+  .updated__label
+    margin-right 5px
+    margin-left auto
+    @media screen and (max-width 550px)
+      display none
+  .updated__value
+    @media screen and (max-width 550px)
+      margin-left auto
+  .salary__outer-wrap
+    margin-left 15px
+    @media screen and (max-width 550px)
+      margin-left 0
+      margin-top 5px
   .line
     //padding 5px
     display flex
@@ -224,7 +247,13 @@ export default {
     align-items center
     min-width 120px
     max-width 50%
-    
+  .lowres_twolines
+    @media screen and (max-width 550px)
+      flex-direction column
+  .linetwo
+    align-items center
+    @media screen and (max-width 550px)
+      align-items: flex-start
   .spbtw
     justify-content space-between
   .colx
@@ -251,6 +280,11 @@ export default {
   @media screen and (max-width: 950px)
     font-size: 14px
     max-width 116px
+  @media screen and (max-width: 550px)
+    max-width 100%
+    font-size 15px
+    margin-right auto
+    order 2
   &:hover
     color var(--violet-btn-color)
     background-image url(./../../../public/assets/arrow3.png)
@@ -273,6 +307,10 @@ export default {
     padding 5px 10px
     padding-right 8px
     line-height: 26px;
+  @media screen and (max-width 550px)
+    order 1
+    margin-bottom 6px
+    align-self flex-start
   &:hover
     color var(--violet-btn-color)
 .contactsPanel
