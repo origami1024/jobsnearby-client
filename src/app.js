@@ -113,6 +113,7 @@ app.post('/admnjobclo.json', db.closeJobByIdAdmin)
 app.post('/admnjobdel.json', db.deleteJobByIdAdmin)
 app.post('/admnjobapr.json', db.approveJobByIdAdmin)
 app.post('/auaction.json', auaction)
+app.post('/userstatregen.json', db.userStatRegen)
 
 function params1(request, response) {
   //get query like ?id=23123
@@ -997,7 +998,25 @@ async function adminStats(req, res) {
         body += tmp
       })
       body += '</tbody></table>'
-      body +='<button>Перегенерировать всё</button>'
+      body +='<button onclick="regen()">Перегенерировать всё</button>'
+      body += `
+        <script>
+          function regen() {
+            let d = {}
+            var http = new XMLHttpRequest()
+            var url = '/userstatregen.json'
+            http.open('POST', url, true)
+            http.setRequestHeader('Content-type', 'application/json')
+            http.onreadystatechange = function() {
+              if(http.readyState == 4 && http.status == 200) {
+                console.log('cpo1: ', http.responseText)
+
+              }
+            }
+            http.send(JSON.stringify(d))
+          }
+        </script>
+      `
       let wholeStatsPage = pageParts.head + body + pageParts.footer
       
       res.send(wholeStatsPage)

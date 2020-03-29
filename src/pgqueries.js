@@ -1991,7 +1991,109 @@ async function adminGetStats() {
   return resu
 }
 
+async function userStatRegen(req, res) {
+  //generate new stuff
+  if (req.cookies && req.cookies.sessioa && req.cookies.sessioa.length > 50 && req.cookies.user2) {
+    let auth = await adminAuth(req.cookies.user2, req.cookies.sessioa).catch(error => {
+      //res.send('step2')
+      return undefined
+    })
+    if (auth) {
+      let que = `
+        SELECT salary_min, salary_max, currency FROM jobs
+        WHERE salary_min = (SELECT MIN(sal)
+        FROM (SELECT salary_min as sal, currency
+        FROM jobs
+        WHERE salary_min > 0
+        UNION ALL
+        SELECT salary_max as sal, currency
+        FROM jobs
+        WHERE salary_max > 0) AS sal) or salary_max = (SELECT MIN(sal)
+        FROM (SELECT salary_min as sal, currency
+        FROM jobs
+        WHERE salary_min > 0
+        UNION ALL
+        SELECT salary_max as sal, currency
+        FROM jobs
+        WHERE salary_max > 0) AS sal)
+      `
+      //let salMin
+      var result = await pool.query(que, null).catch(error => {
+        console.log('cp userStatRegen err1: ', error)
+        return false
+      })
+      let resubig = []
+      let resu = {}
+      if (result && result.rows && result.rows.length > 0) {
+        resu.salMin = result.rows[0]
+        let salMin = 0
+        if (resu.salMin.salary_min > 0) salMin = resu.salMin.salary_min
+        else salMin = resu.salMin.salary_max
+        salMinCurr = resu.salMin.currency
+        console.log(resu.salMin)
+        let que = `
+          UPDATE cached_salary_stats
+          SET (statvalue, statcurrency, time_updated) = (${salMin}, '${salMinCurr}', NOW())
+          WHERE statname = 'salMin'
+        `
+        let result2 = await pool.query(que, null).catch(error => {
+          console.log('cp userStatRegen err2: ', error)
+          return false
+        })
+
+      }
+      resubig.push(resu)
+      resu = {}
+      let que2 = `
+        SELECT salary_min, salary_max, currency FROM jobs
+        WHERE salary_min = (SELECT MAX(sal)
+        FROM (SELECT salary_min as sal, currency
+        FROM jobs
+        WHERE salary_min > 0
+        UNION ALL
+        SELECT salary_max as sal, currency
+        FROM jobs
+        WHERE salary_max > 0) AS sal) or salary_max = (SELECT MAX(sal)
+        FROM (SELECT salary_min as sal, currency
+        FROM jobs
+        WHERE salary_min > 0
+        UNION ALL
+        SELECT salary_max as sal, currency
+        FROM jobs
+        WHERE salary_max > 0) AS sal)
+      `
+      var result = await pool.query(que2, null).catch(error => {
+        console.log('cp userStatRegen err3: ', error)
+        return false
+      })
+      if (result && result.rows && result.rows.length > 0) {
+        resu.salMax = result.rows[0]
+        let salMax = 0
+        if (resu.salMax.salary_max > 0) salMax = resu.salMax.salary_max
+        else salMax = resu.salMax.salary_min
+        salMaxCurr = resu.salMax.currency
+        console.log(resu.salMax)
+        let que = `
+          UPDATE cached_salary_stats
+          SET (statvalue, statcurrency, time_updated) = (${salMax}, '${salMaxCurr}', NOW())
+          WHERE statname = 'salMax'
+        `
+        let result2 = await pool.query(que, null).catch(error => {
+          console.log('cp userStatRegen err4: ', error)
+          return false
+        })
+
+      }
+      addLog('Manual userstat regen', '-', auth.u2id, '(Модератор) ' + req.cookies.user2)
+      res.send(resubig)
+
+    } else res.send('Auth error 2')
+  } else res.send('Auth error 1')
+}
+
 module.exports = {
+  userStatRegen,
+
   adminGetStats,
   getSalStats,
 

@@ -112,6 +112,8 @@ export default {
   line-height: 30px;
   user-select: none;
   box-shadow: 0px 2px 15px rgba(0, 0, 0, 0.1);
+  // @media screen and (max-width 1160px)
+  //   width 194px
   li
     padding 2px 12px
     border-radius 10px

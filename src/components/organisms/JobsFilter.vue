@@ -63,7 +63,7 @@
       <BasicSelect :picked="salary" @update:value="salaryUpd($event)" :values="salOptions" ph="от 200 до 500" class="selectWrapper" />
       </div>
       <div class="currency_inp_wrapper">
-      <span class="f-label">{{$t('filters.curr')}}</span>
+      <span class="f-label" style="margin-left: 0;">{{$t('filters.curr')}}</span>
       <BasicSelect :picked="currency" @update:value="currUpd($event)" :values="currOptions" ph="" class="selectWrapper" />
       </div>
     </div>
@@ -387,7 +387,7 @@ export default {
 .currency_inp_wrapper
   width 71px
   @media screen and (max-width: 1160px)
-    width 50px
+    width 55px
   @media screen and (max-width: 800px)
     display flex
     flex-direction column

@@ -568,6 +568,9 @@ export default {
   font-size: 14px !important
   line-height: 17px !important
   margin-left 16px !important
+  &:focus
+    outline none
+    box-shadow 0px 0px 2px var(--violet-btn-color) !important
   @media screen and (max-width: 1160px)
     width 600px
     margin auto
@@ -576,9 +579,6 @@ export default {
     margin-left: 0px !important
     width calc(72vw - 16px)
     height: 36px !important
-    &:focus
-      outline none
-      box-shadow 0px 0px 2px var(--violet-btn-color) !important
   @media screen and (max-width 550px)
     padding 0 8px
     width calc(72vw - 40px)
@@ -649,12 +649,13 @@ export default {
       font-size 12px !important
       line-height 15px !important
     div:nth-of-type(1)
-      width 70%
+      width 68%
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
     div:nth-of-type(2)
-      width 30%
+      width 25%
+      margin-left 6%
   .professions-link
     text-decoration none
     color var(--color1)

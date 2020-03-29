@@ -166,7 +166,7 @@ const loc = {
         {label: "Временная", value: 'v'}
       ],
       curOpts: [
-        {label: 'манат', value: 'm'},      
+        {label: 'm', value: 'm'},      
         {label: '$', value: '$'},
       ],
       cityList: ["Ашхабад", "Дашогуз", "Мары", "Туркменабад", "Туркменбаши"],
@@ -187,7 +187,7 @@ const loc = {
       currDefault: [
         {label: "все", value: 'idc'},
         {label: "$", value: '$'},
-        {label: "манат", value: 'm'},],
+        {label: "m", value: 'm'},],
       exp: 'Опыт работы',
       jcat: 'Профессия',
       applyBtn: 'Применить',
@@ -200,8 +200,8 @@ const loc = {
       ],
       salFilters: [
         {label: "Не имеет значения", value: 'idc'}, 
-        {label: "от 0 до 1000", value: '0-1'}, 
-        {label: "от 1000 до 3000", value: '1-3'}, 
+        {label: "0 - 1000", value: '0-1'}, 
+        {label: "1000 - 3000", value: '1-3'}, 
         {label: "от 3000", value: '3'},
       ],
       cities: ["Не имеет значения", "Ашхабад", "Дашогуз", "Мары", "Туркменабад", "Туркменбаши"],
@@ -358,7 +358,7 @@ const loc = {
       cityOptions: ["Ашхабад", "Дашогуз", "Мары", "Туркменабад", "Туркменбаши"],
       langOptions: ["Туркменский", "Русский", "Английский", "Китайский", "Немецкий", "Французкий"],
       scheduleList: ["5/2", "6/1", "2/2", "3/2", "3/1", "15/15"],
-      currDefault: {label: 'манат', value: 'm'},
+      currDefault: {label: 'm', value: 'm'},
     },
     entProfile: {
       navPublishedLabel: 'Вакансии',
