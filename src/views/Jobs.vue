@@ -7,7 +7,7 @@
           <h2 class="banner__header">Найди подходящую вакансию уже сегодня!</h2>
         </div>
         <div class="jobs__top-search">
-        <!-- <button class="filtersHamburgerBtn">Ф</button> -->
+        <button class="filtersHamburgerBtn" @click="filtersToggle = !filtersToggle">Ф</button>
         <input
           class="searchInput"
           type="text"
@@ -49,6 +49,8 @@
           :pending="pending"
           @refresh="$emit('refresh')"
           @updLangs="updLangs"
+          :filtersToggle="filtersToggle"
+          @toggleFilters="filtersToggle = !filtersToggle"
         />
       </div>
       <div class="jobs__contents">
@@ -232,7 +234,7 @@ export default {
     tops: Array,
   },
   data(){return {
-    //outerResetNeeded: false,
+    filtersToggle: false,
     lenses: 'full',
     txt: '',
     wordRegex: /^[\wа-яА-ЯÇçÄä£ſÑñňÖö$¢Üü¥ÿýŽžŞş\s\\-]*$/,
@@ -579,17 +581,33 @@ export default {
       box-shadow 0px 0px 2px var(--violet-btn-color) !important
   @media screen and (max-width 550px)
     padding 0 8px
-
+    width calc(72vw - 40px)
+    letter-spacing -1px
+.searchBtn
+  @media screen and (max-width 550px)
+    padding 0 4px !important
 .filtersHamburgerBtn
   display none
   border 0
   color white
-  background-color var(--main-borders-color)
+  background-color var(--btn-color)
   align-self center
   padding 5px
   cursor pointer
+  margin 0 5px
+  border-radius 10px
+  min-width 28px
+  height 36px
+  font-size 20px
   &:hover
-    background-color var(--btn-color)
+    background-color var(--btn-color1) !important
+  &:active
+    background-color var(--btn-color1) !important
+    box-shadow 0 2px 3px 1px #bbb
+  &:focus
+    outline none
+  @media screen and (max-width 550px)
+    display block
 .jobs__prefilters-label
   color black
   font-family: Montserrat, sans-serif !important

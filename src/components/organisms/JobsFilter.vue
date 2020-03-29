@@ -1,16 +1,21 @@
 <template>
-  <div class="jobsfilter">
-    <h3
-      style="
-        text-transform: uppercase;
-        font-family: Montserrat, sans-serif;
-        font-style: normal;
-        font-weight: bold;
-        font-size: 16px;
-        line-height: 20px;
-        margin-bottom: 15px;
-      "
-    >Расширенный поиск:</h3>
+  <div class="jobsfilter" :class="{ filtersHideBelow550: !filtersToggle}">
+    <span class="line0">
+      <h3
+        style="
+          text-transform: uppercase;
+          font-family: Montserrat, sans-serif;
+          font-style: normal;
+          font-weight: bold;
+          font-size: 16px;
+          line-height: 20px;
+          margin-bottom: 15px;
+        "
+      >
+        Расширенный поиск:
+      </h3>
+      <button class="closeModal" @click="$emit('toggleFilters')">X</button>
+    </span>
     <span class="lowresline">
       <span class="lowres__double">
       <span class="f-label">{{$t('filters.city')}}</span>
@@ -107,6 +112,7 @@ let stringOptions = ["Не имеет значения", "Ашхабад", "Да
 export default {
   name: 'JobsFilter',
   props: {
+    filtersToggle: {type: Boolean, default: false},
     isResetShown: Boolean,
     // lowest: {type: Number, default: 0},
     // highest: {type: Number, default: 99550},
@@ -224,7 +230,7 @@ export default {
     refreshPlus(){
       //this.query()
       //this.$emit('updSearch', this.txt.toLowerCase())
-      
+      this.$emit('toggleFilters')
       this.$emit('refresh')
     }
   },
@@ -256,7 +262,13 @@ export default {
     min-width (100% - 10px)
     margin 0 10px
   @media screen and (max-width 550px)
-    margin 0 5px
+    margin 0// 5px
+    position fixed
+    top 5px
+    bottom 5px
+    left 5px
+    right 5px
+    z-index 4
   .lowresline
     @media screen and (max-width 800px)
       display flex
@@ -282,6 +294,31 @@ export default {
       padding-right 10px
     @media screen and (max-width 550px)
       padding-right 0
+  .line0
+    @media screen and (max-width 550px)
+      display flex
+  .closeModal
+    display none
+    border 0
+    color white
+    background-color var(--btn-color)
+    margin-top -14px
+    cursor pointer
+    margin-left auto
+    border-radius 10px
+    min-width 28px
+    height 20px
+    font-size 15px
+    line-height 20px
+    &:hover
+      background-color var(--btn-color1) !important
+    &:active
+      background-color var(--btn-color1) !important
+      box-shadow 0 2px 3px 1px #bbb
+    &:focus
+      outline none
+    @media screen and (max-width 550px)
+      display block
   .f-label
     font-family: Montserrat, sans-serif;
     font-weight normal
@@ -324,6 +361,9 @@ export default {
     width 100%
     justify-content flex-end
     padding-top 10px
+.filtersHideBelow550
+  @media screen and (max-width 550px)
+    display none
 .lowres__salaryWrap
   @media screen and (max-width: 800px)
     width 50%
