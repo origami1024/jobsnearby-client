@@ -182,6 +182,7 @@
         <!-- color="accent" -->
       </header>
     </div>
+    <keep-alive>
     <router-view
       :salMin="salMin" :salAvg="salAvg" :salMax="salMax"
       :tops="tops"
@@ -202,8 +203,8 @@
       :user="user" :cvurl="cvurl" :role="role" :username="username" :surname="surname" :insearch="insearch" :company="company" :isagency="isagency" :jobslist="jobslist" @refresh="refreshjobs" 
       :uid="user_id" :authed="user_id !== -1"
     />
-    <!-- <keep-alive>
-    </keep-alive> -->
+    
+    </keep-alive>
     <footer class="main__footer">
       <!-- <q-btn push style="color:white;backgroundColor: var(--main-borders-color)" :label="$t('App.fbBtnLabel')" to="/Feedback"/> -->
       <ul class="footer__ul-top">

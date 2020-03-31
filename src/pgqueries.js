@@ -2030,6 +2030,11 @@ async function userStatRegen(req, res) {
         if (resu.salMin.salary_min > 0) salMin = resu.salMin.salary_min
         else salMin = resu.salMin.salary_max
         salMinCurr = resu.salMin.currency
+        if ((salMin < 870 && salMinCurr == 'm') || (salMin < 248 && salMinCurr == '$')) {
+          salMin = 870
+          salMinCurr = 'm'
+        }
+        
         console.log(resu.salMin)
         let que = `
           UPDATE cached_salary_stats
@@ -2084,8 +2089,80 @@ async function userStatRegen(req, res) {
         })
 
       }
+
+      let que3 = 'SELECT salary_min, salary_max, currency FROM jobs'
+      var result = await pool.query(que3, null).catch(error => {
+        console.log('cp userStatRegen err5: ', error)
+        return false
+      })
+      if (result && result.rows && result.rows.length > 0) {
+        var dataa = result.rows
+        var sals = []
+        //
+        for (let index = 0; index < dataa.length; index++) {
+          if (dataa[index].currency == '$') {
+            dataa[index].currency = 'm'
+            dataa[index].salary_min = dataa[index].salary_min * 3.5
+            dataa[index].salary_max = dataa[index].salary_max * 3.5
+          }
+          var tmp = []
+          if (dataa[index].salary_min > 0) tmp.push(dataa[index].salary_min)
+          if (dataa[index].salary_max > 0) tmp.push(dataa[index].salary_max)
+          if (tmp.length == 2) {
+            sals.push((tmp[0] + tmp[1]) / 2)
+          } else
+          if (tmp.length == 1) sals.push(tmp[0])
+        }
+        sum = 0
+        sals.forEach(v=>sum += v)
+        avgSal = Math.round(sum / sals.length)
+        let que = `
+          UPDATE cached_salary_stats
+          SET (statvalue, statcurrency, time_updated) = (${avgSal}, 'm', NOW())
+          WHERE statname = 'salAvg'
+        `
+        let result2 = await pool.query(que, null).catch(error => {
+          console.log('cp userStatRegen err6: ', error)
+          return false
+        })
+      }
+
+      let que4 = 'SELECT title, job_id, salary_min, salary_max, currency FROM jobs'
+      var result = await pool.query(que4, null).catch(error => {
+        console.log('cp userStatRegen err7: ', error)
+        return false
+      })
+      if (result && result.rows && result.rows.length > 0) {
+        var dataa = result.rows
+        for (let index = 0; index < dataa.length; index++) {
+          if (dataa[index].currency == '$') {
+            dataa[index].currency = 'm'
+            dataa[index].salary_min = dataa[index].salary_min * 3.5
+            dataa[index].salary_max = dataa[index].salary_max * 3.5
+          }
+          if (dataa[index].salary_max < dataa[index].salary_min) dataa[index].salary_max = dataa[index].salary_min
+        }
+        //теперь отсорт по salmax
+        dataa.sort((a,b)=>b.salary_max - a.salary_max)
+        console.log(dataa)
+        let quex = ''
+        for (let x1 = 0; x1 < 6; x1++) {
+          //first five
+          quex += `
+            UPDATE cached_salary_stats SET 
+            (statvalue, time_updated, statlabel, statcurrency, statlink) = (${dataa[x1].salary_max}, NOW(), '${dataa[x1].title}', 'm', ${dataa[x1].job_id})
+            WHERE statname = 'top${x1 + 1}';
+          `
+        }
+
+        var result = await pool.query(quex, null).catch(error => {
+          console.log('cp userStatRegen err8: ', error)
+          return false
+        })
+      }
+
       addLog('Manual userstat regen', '-', auth.u2id, '(Модератор) ' + req.cookies.user2)
-      res.send(resubig)
+      res.send('OK')
       //res.send(`<html><script>window.location.href = "/cplogin.json"</script></html>`)
     } else res.send('Auth error 2')
   } else res.send('Auth error 1')
