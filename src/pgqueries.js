@@ -2048,47 +2048,9 @@ async function userStatRegen(req, res) {
 
       }
       resubig.push(resu)
-      resu = {}
-      let que2 = `
-        SELECT salary_min, salary_max, currency FROM jobs
-        WHERE salary_min = (SELECT MAX(sal)
-        FROM (SELECT salary_min as sal, currency
-        FROM jobs
-        WHERE salary_min > 0
-        UNION ALL
-        SELECT salary_max as sal, currency
-        FROM jobs
-        WHERE salary_max > 0) AS sal) or salary_max = (SELECT MAX(sal)
-        FROM (SELECT salary_min as sal, currency
-        FROM jobs
-        WHERE salary_min > 0
-        UNION ALL
-        SELECT salary_max as sal, currency
-        FROM jobs
-        WHERE salary_max > 0) AS sal)
-      `
-      var result = await pool.query(que2, null).catch(error => {
-        console.log('cp userStatRegen err3: ', error)
-        return false
-      })
-      if (result && result.rows && result.rows.length > 0) {
-        resu.salMax = result.rows[0]
-        let salMax = 0
-        if (resu.salMax.salary_max > 0) salMax = resu.salMax.salary_max
-        else salMax = resu.salMax.salary_min
-        salMaxCurr = resu.salMax.currency
-        console.log(resu.salMax)
-        let que = `
-          UPDATE cached_salary_stats
-          SET (statvalue, statcurrency, time_updated) = (${salMax}, '${salMaxCurr}', NOW())
-          WHERE statname = 'salMax'
-        `
-        let result2 = await pool.query(que, null).catch(error => {
-          console.log('cp userStatRegen err4: ', error)
-          return false
-        })
+      
+        
 
-      }
 
       let que3 = 'SELECT salary_min, salary_max, currency FROM jobs'
       var result = await pool.query(que3, null).catch(error => {
@@ -2127,7 +2089,7 @@ async function userStatRegen(req, res) {
         })
       }
 
-      let que4 = 'SELECT title, job_id, salary_min, salary_max, currency FROM jobs'
+      let que4 = `SELECT title, job_id, salary_min, salary_max, currency FROM jobs WHERE time_updated > now() - interval '1 month'`
       var result = await pool.query(que4, null).catch(error => {
         console.log('cp userStatRegen err7: ', error)
         return false
@@ -2143,9 +2105,15 @@ async function userStatRegen(req, res) {
           if (dataa[index].salary_max < dataa[index].salary_min) dataa[index].salary_max = dataa[index].salary_min
         }
         //теперь отсорт по salmax
+        let salMax = dataa[0].salary_max
+        let salMaxCurr = 'm'
         dataa.sort((a,b)=>b.salary_max - a.salary_max)
         console.log(dataa)
-        let quex = ''
+        let quex = `
+          UPDATE cached_salary_stats
+          SET (statvalue, statcurrency, time_updated) = (${salMax}, '${salMaxCurr}', NOW())
+          WHERE statname = 'salMax';
+        `
         for (let x1 = 0; x1 < 6; x1++) {
           //first five
           quex += `
