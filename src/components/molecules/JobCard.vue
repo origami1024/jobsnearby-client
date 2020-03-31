@@ -8,7 +8,7 @@
         </a>
       </div>
       <div class="line" style="align-items: center; font-weight: 500; font-size: 12px; line-height: 15px; color: var(--color1);">
-        <div class="updated__label">Размещено:</div>
+        <!-- <div class="updated__label">Размещено:</div> -->
         <p class="updated__value" v-html="lastUpdated"></p>
       </div>
     </div>
@@ -231,6 +231,7 @@ export default {
       margin-left auto
   .salary__outer-wrap
     margin-left 15px
+    min-width 100px
     @media screen and (max-width 550px)
       margin-left 0
       margin-top 5px
@@ -351,9 +352,9 @@ export default {
 .filteredDesc
   //height 34px
   max-height 34px
-  max-width 383px
+  //max-width 383px
   overflow hidden
-  word-break break-all
+  word-break break-word
   font-family: "Montserrat", sans-serif;
   font-weight: normal;
   font-size: 14px;

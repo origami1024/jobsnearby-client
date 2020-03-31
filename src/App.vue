@@ -213,34 +213,28 @@
           <ul>
             <li><a href="#">Наши вакансии</a></li>
             <li><a href="#">Реклама на сайте</a></li>
-            <li><a href="#">Защита персональных данных</a></li>
           </ul>
         </li>
         <li>
           <h3>Соискателю</h3>
           <ul>
             <li><a href="#">Рассылка вакансий</a></li>
-            <li><a href="#">Рассылка вакансий</a></li>
-            <li><a href="#">Рассылка вакансий</a></li>
-            <li><a href="#">Рассылка вакансий</a></li>
           </ul>
         </li>
         <li>
           <h3>Работодателю</h3>
           <ul>
-            <li><a href="#">Создать вакансию</a></li>
-            <li><a href="#">Создать вакансию</a></li>
-            <li><a href="#">Создать вакансию</a></li>
-            <li><a href="#">Создать вакансию</a></li>
-            <li><a href="#">Создать вакансию</a></li>
+            <li>
+              <router-link @click.native="newJobInit();scrollTop()" v-if="role == 'company'" class="newlinks" to="/addJob">
+              {{$t('App.newJobHint')}}
+              </router-link>
+            </li>
           </ul>
         </li>
         <li>
           <h3>Контакты</h3>
           <ul>
-            <li><a href="#">info@gmail.com</a></li>
-            <li><a href="#">info@gmail.com</a></li>
-            <li><router-link to="/feedback">{{$t('App.fbBtnLabel')}}</router-link></li>
+            <li><router-link class="headerBtns1 violetBtns footerLinkFB" @click.native="scrollTop()" to="/feedback">{{$t('App.fbBtnLabel')}}</router-link></li>
             <li><a href="#">info@gmail.com</a></li>
           </ul>
         </li>
@@ -881,6 +875,7 @@ export default {
   --btn-color #C00027
   --btn-color1 #D00027
   --violet-btn-color #8645FF
+  --violet2 #9955FF
   --color1 #2E2768 //#181059
   --color-graypink #F8F4FF
   --footer-color #EDEEF2
@@ -1055,6 +1050,7 @@ body
     display flex
     justify-content flex-end
     margin 0 auto
+    margin-top 20px
     padding-top 30px
     box-sizing border-box
     height 200px
@@ -1148,6 +1144,18 @@ body
     font-weight 700
     &:hover
       color var(--btn-color)
+.footerLinkFB
+  background-color: var(--violet-btn-color) !important
+  color: white !important
+  height: 32px !important
+  line-height: 32px !important
+  padding 0 5px !important
+  text-align: center;
+  display: inline-block;
+  margin: 0 !important
+  text-transform uppercase
+  &:hover
+    background-color var(--violet2) !important
 .q-item__label
   color var(--main-borders-color)
 .q-manual-focusable--focused

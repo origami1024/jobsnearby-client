@@ -326,6 +326,7 @@ export default {
     // },
     resetFilters() {
       this.txt = ''
+      this.searchFilter = this.txt.toLowerCase()
       this.city = ''
       this.jcat= {label: "", value: 0}
       this.salary= {label: "", value: 'idc'}
@@ -552,10 +553,10 @@ export default {
       color var(--color1)
   .paginationWrap
     padding 22px 0
-    padding-bottom 32px
+    padding-bottom 10px//32
     @media screen and (max-width: 1160px)
       padding 12px 0
-      padding-bottom 22px
+      padding-bottom 6px//22
 .searchInput
   width 822px
   padding 0 26px
