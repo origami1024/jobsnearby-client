@@ -232,6 +232,7 @@ export default {
   .salary__outer-wrap
     margin-left 15px
     min-width 100px
+    max-width 150px
     @media screen and (max-width 550px)
       margin-left 0
       margin-top 5px
