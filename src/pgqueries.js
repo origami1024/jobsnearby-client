@@ -2105,10 +2105,11 @@ async function userStatRegen(req, res) {
           if (dataa[index].salary_max < dataa[index].salary_min) dataa[index].salary_max = dataa[index].salary_min
         }
         //теперь отсорт по salmax
+        
+        dataa.sort((a,b)=>b.salary_max - a.salary_max)
+        // console.log(dataa)
         let salMax = dataa[0].salary_max
         let salMaxCurr = 'm'
-        dataa.sort((a,b)=>b.salary_max - a.salary_max)
-        console.log(dataa)
         let quex = `
           UPDATE cached_salary_stats
           SET (statvalue, statcurrency, time_updated) = (${salMax}, '${salMaxCurr}', NOW())
