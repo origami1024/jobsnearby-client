@@ -89,7 +89,7 @@ exports.jobinfo1 = (job) => {
   <style>
   * {
     margin: 0;
-    font-family: 'Varela Round', 'Nunito', sans-serif;
+    font-family: 'Montserrat', sans-serif;
   }
   .detailed__main1{
     width: 80%;

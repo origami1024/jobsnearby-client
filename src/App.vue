@@ -18,6 +18,18 @@
         <div class="lowres__header-right">
           <div id="nav">
             <!--  shrink stretch -->
+            <!-- r-link -->
+            <router-link
+              class="headerBtn"
+              v-if="role === 'company' && isagency == true" to="/uploads"
+              style="color: green;"
+            >
+              <q-icon name="description" style="font-size: 32px;" class="nav-icon multipleUploadsHeader"></q-icon>
+              <!-- <q-btn round icon="description" dense></q-btn> -->
+              <q-tooltip>
+                <p style="font-size: 15px; margin: 0">{{$t('addJob.xlsBtn')}}</p>
+              </q-tooltip>
+            </router-link>
             <q-btn 
               @click.native="newJobInit"
               v-if="role == 'company'"
@@ -27,7 +39,7 @@
               rounded
               to="/addJob"
             />
-            <q-btn 
+            <q-btn
               @click.native="authPls"
               v-else-if="role != 'subscriber'"
               class="headerBtns1 headerBtnRed"
@@ -57,9 +69,7 @@
             <!-- style="alignSelf: flex-end;" -->
             <div class="colx user-status-bar">
               <q-btn 
-                style="
-                  background-color: var(--violet-btn-color);
-                "
+                style="background-color: var(--violet-btn-color);"
                 class="headerBtns1 violetBtns"
                 text-color="white"
                 :label="$t('App.login')"
@@ -91,18 +101,19 @@
                 class="headerBtn marginLeft30pxOnBig"
                 to="/subprofile"
               >
-                <q-icon name="person" size="36px"></q-icon>
+                <q-icon name="person" style="font-size: 36px;" class="nav-icon"></q-icon>
                 <q-tooltip>
                   <p style="font-size: 15px; margin: 0">{{$t('App.myProfile')}}</p>
                 </q-tooltip>
               </router-link>
+
               <router-link
                 @click.native="getOwnJobs"
                 v-if="role && role === 'company' && $route.name == 'entprofile'"
                 class="headerBtn marginLeft30pxOnBig"
                 to="/entprofile"
               >
-                <q-icon name="person" size="36px"></q-icon>
+                <q-icon name="person" style="font-size: 36px;" class="nav-icon"></q-icon>
                 <q-tooltip>
                   <p style="font-size: 15px; margin: 0">{{$t('App.myProfile')}}</p>
                 </q-tooltip>
@@ -112,7 +123,7 @@
                 class="headerBtn marginLeft30pxOnBig"
                 to="/entprofile"
               >
-                <q-icon name="person" size="36px"></q-icon>
+                <q-icon name="person" style="font-size: 36px;" class="nav-icon"></q-icon>
                 <q-tooltip>
                   <p style="font-size: 15px; margin: 0">{{$t('App.myProfile')}}</p>
                 </q-tooltip>
@@ -125,32 +136,11 @@
                 class="headerBtn"
                 to="/"
               >
-                <q-icon name="logout" size="32px"></q-icon>
+                <q-icon name="logout" style="font-size: 32px; font-weight: bold" class="nav-icon-logout"></q-icon>
                 <q-tooltip>
                   <p style="font-size: 15px; margin: 0">{{$t('App.logoutHint')}}</p>
                 </q-tooltip>
               </router-link>
-
-              <!-- <q-btn-group>
-                <q-btn flat @click="getFavedFull" :color="$route.path == '/subprofile' ? 'purple' : 'inherit'" :text-color="$route.path == '/subprofile' ? 'black' : 'black'" no-caps icon="person" v-if="role === 'subscriber'" to="/subprofile">
-                  <q-tooltip>
-                    <p style="font-size: 15px; margin: 0">{{user}}</p>
-                  </q-tooltip>
-                </q-btn>
-                <q-btn flat no-caps icon="person" @click.native="getOwnJobs"
-                v-if="role === 'company'" to="/entprofile">
-                  <q-tooltip>
-                    <p style="font-size: 15px; margin: 0">{{user}}</p>
-                  </q-tooltip>
-                </q-btn>
-                <q-btn flat no-caps v-if="user_id != -1" @click="logout" icon="logout">
-                  <q-tooltip>
-                    <p style="font-size: 15px; margin: 0">{{$t('App.logoutHint')}}</p>
-                  </q-tooltip>
-                </q-btn>
-                @click.native="getOwnJobs"
-              </q-btn-group> -->
-              
             </div>
           </div>
           <div style="font-weight: 700">
@@ -178,6 +168,7 @@
           position="bottom"
           color="red"
           size="10px"
+          
         />
         <!-- color="accent" -->
       </header>
@@ -226,6 +217,9 @@
           <ul>
             <li>
               <router-link @click.native="newJobInit();scrollTop()" v-if="role == 'company'" class="newlinks" to="/addJob">
+              {{$t('App.newJobHint')}}
+              </router-link>
+              <router-link @click.native="newJobInit();scrollTop()" v-else-if="role != 'subscriber'" class="newlinks" to="/registration">
               {{$t('App.newJobHint')}}
               </router-link>
             </li>
@@ -866,9 +860,9 @@ export default {
 }
 </script>
 
+
 <style lang="stylus">
 *
-  //font-family 'Varela Round', 'Nunito', sans-serif
   font-family "Montserrat", sans-serif
   --main-bg-color #fff
   --main-borders-color #2E2768//#3A6E8F
@@ -879,7 +873,7 @@ export default {
   --color1 #2E2768 //#181059
   --color-graypink #F8F4FF
   --footer-color #EDEEF2
-  //--logoWidth 160px
+  --logoWidth 180px
   --maxW 1135px
   @media screen and (max-width: 1160px)
     --maxW 100%
@@ -891,7 +885,7 @@ body
   @media screen and (max-width 550px)
     background-size: auto, auto, 100% 300px;
 #app
-  //min-height calc(50vh - 15px)
+  //calc(50vh - 15px)
   box-sizing border-box
   position relative
   font-family 'Montserrat', sans-serif
@@ -904,7 +898,7 @@ body
   //max-width var(--maxW)
   margin auto
   //padding-bottom 70px
-  border-bottom 1.5px solid red//#E6E6E6
+  //border-bottom 1.5px solid red//#E6E6E6
   .header-wrapper
     border-bottom 1.5px solid #E6E6E6
   header
@@ -929,9 +923,12 @@ body
       margin-bottom 20px
     #nav
       display flex
+      align-items center
       margin-left auto
+      margin-right 15px
       @media screen and (max-width 550px)
         margin-left 0
+        margin-right 0
   .lowres__header-right
     display flex
     align-items center
@@ -963,6 +960,8 @@ body
   .r-view
     //width 90%
     max-width var(--maxW)
+    min-height calc(100vh - 150px - 1.5px - 200px)
+    box-sizing border-box
     margin auto
   // .logo
   //   //margin-right 10px
@@ -995,7 +994,7 @@ body
     height 40px
     transition-duration 0.3s
     @media screen and (max-width 800px)
-      height 36px
+      height 40px
       padding 0
       white-space normal
       max-width 120px
@@ -1069,7 +1068,7 @@ body
       width 100%
       justify-content space-between
       @media screen and (max-width 550px)
-        display block
+        flex-wrap wrap
       h3
         text-decoration none
         font-family: Montserrat, sans-serif
@@ -1128,15 +1127,19 @@ body
       margin-left 20px
     // &:hover
     //   color var(--btn-color)
+  .user-status-bar
+    display flex
+    align-items center
   .headerBtn
     text-decoration none
     color var(--main-borders-color)
     font-size 16px
     background-color transparent
     text-transform uppercase
-    border 2px solid transparent
+    //border 2px solid transparent
     //transition-duration .4s
-    padding 4px
+    //padding 4px
+    margin 0 2px
     border-radius 4px
     padding-right 0px
     letter-spacing 2px
@@ -1147,6 +1150,13 @@ body
   margin-left 30px
   @media screen and (max-width 550px)
     margin-left 0px
+.multipleUploadsHeader
+  margin-right 5px
+  transition-duration 0.25s
+  &:hover
+    color var(--violet-btn-color)
+  @media screen and (max-width 550px)
+    margin-right 0px
 .footerLinkFB
   background-color: var(--violet-btn-color) !important
   color: white !important
@@ -1160,6 +1170,12 @@ body
   &:hover
     background-color var(--violet2) !important
 
+.nav-icon
+  @media screen and (max-width 550px)
+    font-size 30px !important
+.nav-icon-logout
+  @media screen and (max-width 550px)
+    font-size 26px !important
 // .q-item__label
 //   color var(--main-borders-color)
 // .q-manual-focusable--focused

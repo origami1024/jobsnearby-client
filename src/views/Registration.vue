@@ -19,11 +19,13 @@
       </q-tabs>
       <q-tab-panels class="registration__inner" :value="regState" animated>
         <q-tab-panel name="login">
-          <form action="#" @submit.prevent="trylog" style="margin-top: 12px">
+          <form @submit.prevent="trylog" style="margin-top: 12px">
+            <!-- trylog -->
             <div style="display:flex; width: 100%; margin-bottom: 10px">
-              <label style="alignSelf: center; width: 110px;;margin-bottom: 15px" for="mailInput1">* {{$t('reg.loginEmailLabel')}}</label>
+              <label style="alignSelf: center; width: 120px;margin-bottom: 15px" for="mailInput1">* {{$t('reg.loginEmailLabel')}}</label>
               <q-input
                 id='mailInput1'
+                name="login__mail"
                 square
                 dense
                 outlined
@@ -31,6 +33,7 @@
                 bg-color="deep-purple-1" color="deep-purple-10"
                 v-model="login.mail"
                 hint=""
+                autocomplete="true"
                 :error-message="login.validation.mail"
                 :error="login.validation.mail != ''"
                 style="width: 100%;"
@@ -39,9 +42,10 @@
               />
             </div>
             <div style="display:flex; width: 100%;">
-              <label style="alignSelf: center; width: 110px;;margin-bottom: 15px" for="pwInput1">* {{$t('reg.loginPWLabel')}}</label>
+              <label style="alignSelf: center; width: 120px;;margin-bottom: 15px" for="pwInput1">* {{$t('reg.loginPWLabel')}}</label>
               <q-input
                 id='pwInput1'
+                name="login__pw"
                 square
                 dense
                 outlined
@@ -86,7 +90,7 @@
               <label class="twolined" for="r2">Компания (Работодатель)</label>
             </div> -->
             <div v-show="usertype === 'company'" style="display:flex; width: 100%;">
-              <label style="alignSelf: center; width: 110px;;margin-bottom: 15px">* {{$t('reg.companyLabel')}}</label>
+              <label style="alignSelf: center; width: 120px;margin-bottom: 15px">* {{$t('reg.companyLabel')}}</label>
               <q-input
                 square
                 dense
@@ -108,12 +112,13 @@
               <q-checkbox
                 color="red-10" :label="$t('reg.agencyLabel')"
                 v-model="agency"
+                style="font-family: Montserrat, sans-serif;"
                 left-label
               />
             </div>
             <div v-show="usertype === 'subscriber'">
               <div style="display:flex; width: 100%; margin-bottom: 10px">
-                <label style="alignSelf: center; width: 110px;margin-bottom: 15px" for="name2">* {{$t('reg.nameLabel')}}</label>
+                <label style="alignSelf: center; width: 120px;margin-bottom: 15px" for="name2">* {{$t('reg.nameLabel')}}</label>
                 <q-input
                   id='name2'
                   square
@@ -130,7 +135,7 @@
                 />
               </div>
               <div style="display:flex; width: 100%; margin-bottom: 10px">
-                <label style="alignSelf: center; width: 110px;margin-bottom: 15px" for="surname2">* {{$t('reg.surnameLabel')}}</label>
+                <label style="alignSelf: center; width: 120px;margin-bottom: 15px" for="surname2">* {{$t('reg.surnameLabel')}}</label>
                 <q-input
                   id='surname2'
                   square
@@ -148,7 +153,7 @@
               </div>
             </div>
             <div style="display:flex; width: 100%; margin-bottom: 10px">
-              <label style="alignSelf: center; width: 110px;;margin-bottom: 15px" for="mailInput2">* {{$t('reg.loginEmailLabel')}}</label>
+              <label style="alignSelf: center; width: 120px;;margin-bottom: 15px" for="mailInput2">* {{$t('reg.loginEmailLabel')}}</label>
               <q-input
                 id='mailInput2'
                 square
@@ -165,7 +170,7 @@
               />
             </div>
             <div style="display:flex; width: 100%; margin-bottom: 10px">
-              <label style="alignSelf: center; width: 110px;;margin-bottom: 15px" for="pw2">* {{$t('reg.loginPWLabel')}}</label>
+              <label style="alignSelf: center; width: 120px;;margin-bottom: 15px" for="pw2">* {{$t('reg.loginPWLabel')}}</label>
               <q-input
                 id='pw2'
                 square
@@ -182,7 +187,7 @@
               />
             </div>
             <div style="display:flex; width: 100%; margin-bottom: 10px">
-              <label style="alignSelf: center; width: 110px;;margin-bottom: 15px; display:flex" for="pwc2"><div style="margin-right: 4px">*</div>{{$t('reg.regConfirmPWLabel')}}</label>
+              <label style="alignSelf: center; width: 120px;;margin-bottom: 15px; display:flex" for="pwc2"><div style="margin-right: 4px">*</div>{{$t('reg.regConfirmPWLabel')}}</label>
               <q-input
                 id='pwc2'
                 square

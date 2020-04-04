@@ -4,7 +4,7 @@ const pool = new Pool({
   connectionString: process.env.DATABASE_URL || `postgres://postgres:123456@localhost:5433/jobsnearby`
 })
 
-const titleRegex = /^[\wа-яА-ЯÇçÄä£ſÑñňÖö$¢Üü¥ÿýŽžŞş\s\-\+\$\%\(\)\№\:\#]*$/
+const titleRegex = /^[\wа-яА-ЯÇçÄä£ſÑñňÖö$¢Üü¥ÿýŽžŞş\s\-\+\$\%\(\)\№\:\#\/]*$/
 
 
 
@@ -659,7 +659,7 @@ async function updateJob (req, res) {
         return false
       }
       let parsedData = validateOneJob(req.body)
-      if (parsedData == false) return false
+      if (parsedData == false) {res.send('error, not passing validation')}
       console.log('editing, exp: ', parsedData.experience)
       //parsedData.author_id = results.rows[0].user_id - NO NEED TO UPDATE THIS FIELD
       //`UPDATE "users" SET auth_cookie = $1, last_logged_in = NOW() where user_id = $2`
@@ -722,7 +722,7 @@ async function addOneJob (req, res) {
       //que2 go
       //console.log('addOneJob cp2: ', req.body)
       let parsedData = validateOneJob(req.body)
-      if (parsedData == false) return false
+      if (parsedData == false) {res.send('error, not passing validation')}
       //author_id - проверка не нужна
       parsedData.author_id = results.rows[0].user_id
       //console.log('addOneJob cp2: ', parsedData)
@@ -990,12 +990,12 @@ async function tryInsertEmail (mail) {
 }
 async function registerFinish (id, hash, usertype, arg1, arg2) {
   let insert = ''
-  //console.log(usertype)
-  if (usertype === 'company' && (arg2 != true || arg2 != 'true')) arg2 = false
+  console.log(usertype)
+  if (usertype === 'company' && (arg2 != true && arg2 != 'true')) arg2 = false
   if (usertype === 'subscriber') insert = `, name = $4, surname = $5`
   else if (usertype === 'company') insert = `, company = $4, isagency = $5`
   let que = `UPDATE "users" SET pwhash = $1, role = $3${insert} where user_id = $2 RETURNING email`
-  //console.log(que)
+  console.log(que, '///', arg2)
   let params = [hash, id, usertype, arg1, arg2]
   let result = await pool.query(que, params).catch(error => {
     console.log(error)

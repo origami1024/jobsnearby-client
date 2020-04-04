@@ -7,11 +7,12 @@
         clickable
         :active="localRoute === lr.r"
         @click="$emit('setLocalRoute', lr.r)"
-        active-class="my-menu-link"
+        class="nav__link"
+        active-class="nav__link-active"
       >
-        <q-item-section>
+        <q-item-section style="position:relative">
           {{lr.l}}
-          <q-badge v-if="lr.badges > 0" color="red-10" floating :label="lr.badges"/>
+          <q-badge v-if="lr.badges > 0" style="background-color: var(--violet-btn-color); right: 25%;" floating :label="lr.badges"/>
         </q-item-section>
       </q-item>
       <q-separator spaced />
@@ -19,7 +20,8 @@
         clickable
         :active="localRoute == localroutesX.r"
         @click="$emit('setLocalRoute', localroutesX.r)"
-        active-class="my-menu-link"
+        class="nav__link"
+        active-class="nav__link-active"
       >
         <q-item-section>{{localroutesX.l}}</q-item-section>
       </q-item>
@@ -42,7 +44,10 @@ export default {
 <style scoped lang="stylus">
 .profilenav
   box-shadow 0 0 3px 0px var(--main-borders-color)
-.my-menu-link
-  color white !important
-  background var(--main-borders-color)//#248CEC
+.nav__link
+  color var(--color1) !important
+.nav__link-active
+  color var(--violet-btn-color) !important
+  //color var(--color1) !important
+  //background var(--color-graypink)//#248CEC
 </style>

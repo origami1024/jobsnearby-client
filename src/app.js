@@ -412,15 +412,13 @@ async function testMail(n, mail) {
     subject: 'Верификация пользователя на jobsnearby',
     text: 'Перейдите по ссылке для верификации пользователя: ' + txt
   }
-  transporter.sendMail(mailOptions, (error, info) => {
-    if (error) {
-      //res.send('NOT OK')
-      return 'ERR'
-    }
-    //res.send('OK')
-    console.log('Message %s sent: %s', info.messageId, info.response);
-    return 'OK'
-  })
+  // transporter.sendMail(mailOptions, (error, info) => {
+  //   if (error) {
+  //     return 'ERR'
+  //   }
+  //   console.log('Message %s sent: %s', info.messageId, info.response);
+  //   return 'OK'
+  // })
 }
 
 async function auaction(req, res) {

@@ -113,7 +113,7 @@ export default {
 <style lang="stylus" scoped>
 * {
     margin: 0;
-    font-family: 'Varela Round', 'Nunito', sans-serif;
+    font-family: 'Montserrat', sans-serif;
   }
   .detailed__main
     width: 80%;

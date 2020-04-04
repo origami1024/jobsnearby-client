@@ -1,6 +1,7 @@
 <template>
   <div class="DDSelect">
     <input ref="mainInput" @input="$emit('update:city', $event.target.value)" @keypress="pressEnter" type="text" :value="picked" @focusin="i_focus = true" @focusout="focout" :placeholder="ph">
+    <button class="DD__reset" v-if="picked != ''" @click="selectit('')">X</button>
     <ul class="dd" v-if="i_focus">
       <li @click="selectit(city)" v-for="city in cities.slice(1).filter(c=>c.toLowerCase().includes(picked.toLowerCase()))" :key="city">{{city}}</li>
     </ul>
@@ -52,11 +53,12 @@ export default {
 <style scoped lang="stylus">
 .DDSelect
   position relative
+  --height 36px
   input
     width 100%
     border-radius 10px
     border 0
-    height 36px
+    height var(--height)
     box-shadow 0px 2px 15px rgba(0, 0, 0, 0.1)
     padding 0 12px
     font-family: Montserrat, sans-serif;
@@ -73,6 +75,26 @@ export default {
     &::placeholder
       color black
       opacity .3
+  .DD__reset
+    position absolute
+    height 20px
+    width 20px
+    border-radius 50%
+    font-size 12px
+    border 0
+    color white
+    background-color gray//#C00027
+    cursor pointer
+    top calc((var(--height) / 2) - 10px)
+    right 28px
+    transition-duration 0.25s
+    font-weight bold
+    &:focus
+      outline none
+    &:hover
+      background-color black//#D00027
+      color #ddd
+      
 .dd
   margin-top 1px
   border-radius 10px

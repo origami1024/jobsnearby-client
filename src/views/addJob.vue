@@ -2,16 +2,6 @@
   <div class="addJob">
     <transition name="bounce">
       <div v-if="role === 'company' && sent == 'none'" class="jobpage__wrapper" :key="1">
-        <router-link class="r-link" v-if="role === 'company'" to="/uploads"
-          style="text-align: right; marginBottom: -15px; color: green;"
-        >
-          <q-btn round icon="description">
-            <q-tooltip>
-              <p style="font-size: 15px; margin: 0">{{$t('addJob.xlsBtn')}}</p>
-            </q-tooltip>
-          </q-btn>
-          
-        </router-link>
         <p style="fontSize: 20px; marginBottom: 22px" v-if="newJobsPageType === 'new'">{{$t('addJob.pTypeNewLabel')}}</p>
         <p style="fontSize: 20px; marginBottom: 22px" v-else>{{$t('addJob.pTypeEditLabel')}}</p>
          <!-- {{jobEditId != -1 ? jobEditId : ''}}
@@ -34,7 +24,7 @@
               val => (lazyRulesAll || !!val) || $t('addJob.titleValidationRequired'),
               val => (lazyRulesAll || val.length > 1) || $t('addJob.titleValidationMin'),
               val => val.length < 76 || $t('addJob.titleValidationMax'),
-              val => /^[\wа-яА-ЯÇçÄä£ſÑñňÖö$¢Üü¥ÿýŽžŞş\s\-\+\$\%\(\)\№\:\#]*$/.test(val) || $t('addJob.titleValidationSymbols'),
+              val => /^[\wа-яА-ЯÇçÄä£ſÑñňÖö$¢Üü¥ÿýŽžŞş\s\-\+\$\%\(\)\№\:\#\/]*$/.test(val) || $t('addJob.titleValidationSymbols'),
               ]"
             :lazy-rules="lazyRulesAll"
             
@@ -673,6 +663,7 @@ export default {
       j.experience = j.experience.value
       j.jtype = j.jtype.value
       j.jcategory = j.jcategory.value
+      j.description = j.description.split("\t").join("&emsp;")
       if (j.title != '' && j.title.length > 1) {
         axios
           .post(config.jobsUrl + '/updateJob', j, {headers: {'Content-Type' : 'application/json' }, withCredentials: true,})
@@ -700,7 +691,7 @@ export default {
       j.experience = j.experience.value
       j.jtype = j.jtype.value
       j.jcategory = j.jcategory.value
-      
+      j.description = j.description.split("\t").join("&emsp;")
       if (j.title != '' && j.title.length > 1) {
         axios
           .post(config.jobsUrl + '/oneJob', j, {headers: {'Content-Type' : 'application/json' }, withCredentials: true,})

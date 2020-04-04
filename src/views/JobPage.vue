@@ -21,8 +21,9 @@
       <section v-if="role != 'company'">
         <q-btn
         v-if="!ownCVs.find(val=>val.cvjob_id == job.job_id)"
-        color="red-10"
-        style="alignSelf: center; white-space: nowrap; margin-top:4px; margin-left: 10px; padding: 0 10px; font-weight: 700;"
+        text-color="white"
+        style="background-color: var(--violet-btn-color);alignSelf: center; white-space: nowrap; margin-top:4px; margin-left: 10px; padding: 0 10px; font-weight: 700;"
+        class="headerBtns1 violetBtns"
         dense :label="$t('jobPage.sendCV')"
         @click.prevent="$emit('hitcv', job.job_id)"
       />
@@ -235,15 +236,15 @@ export default {
 <style lang="stylus">
 * {
     margin: 0;
-    font-family: 'Varela Round', 'Nunito', sans-serif;
+    font-family: 'Montserrat', sans-serif;
   }
   .detailed__main1
     width: 80%;
     max-width: 850px;
     background-color: white;
-    padding: 0 10px;
+    padding: 0 15px;
     padding-top: 10px;
-    
+    border-radius 5px
     box-sizing border-box
     box-shadow 0 0 3px 2px var(--main-borders-color)
     display flex

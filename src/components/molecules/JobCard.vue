@@ -20,11 +20,11 @@
       </h4>
       <div class="colx salary__outer-wrap">
         <strong class="alignRight jobcard__salary">
-          <p v-if="job.salary_min === job.salary_max && job.salary_min > 0">{{job.salary_max}}{{currency}}</p>
+          <p v-if="job.salary_min === job.salary_max && job.salary_min > 0">{{job.salary_max}}&nbsp;{{currency}}</p>
           <!-- <p v-else-if="job.salary_min && job.salary_min > 0">от {{job.salary_min}} до {{job.salary_max}} {{currency}}</p> -->
-          <p v-else-if="job.salary_min && job.salary_min > 0">{{job.salary_min}}{{currency}}-{{job.salary_max}}{{currency}}</p>
-          <p v-else-if="job.salary_max > 0">{{job.salary_max}}{{currency}}</p>
-          <p v-else>{{$t('jc.salaryNone')}}</p>
+          <p v-else-if="job.salary_min && job.salary_min > 0">{{job.salary_min}}&nbsp;-&nbsp;{{job.salary_max}}&nbsp;{{currency}}</p>
+          <p v-else-if="job.salary_max > 0">{{job.salary_max}}&nbsp;{{currency}}</p>
+          <p v-else style="text-align: right; font-size: 16px;">{{$t('jc.salaryNone')}}</p>
         </strong>
       </div>
     </div>
@@ -53,7 +53,15 @@
         <a v-if="role != 'company' && !cved" class="sendCVLink" @click.prevent="$emit('hitcv', job.job_id)" href="#">
           {{$t('jc.sendCVLabel')}}
         </a>
-        <q-btn
+        <div v-else class="cvSentSpan">
+          <span style="font-size: 13px; color: gray; user-select: none">Резюме отправлено</span>
+          <q-tooltip v-if="hitcv">
+            <p v-if="(hitcv && hitcv.date_created)" style="font-size: 15px; margin: 0">{{$t('jc.tooltipSent')}} {{formatDate(hitcv.date_created)}}</p>
+            <p v-if="(hitcv && hitcv.date_checked)" style="font-size: 15px; margin: 0">{{$t('jc.tooltipSeen')}} {{formatDate(hitcv.date_checked)}}</p>
+            <p v-else style="font-size: 15px; margin: 0">{{$t('jc.tooltipNotseen')}}</p>
+          </q-tooltip>
+        </div>
+        <!-- <q-btn
           v-if="role != 'company' && cved" text-color="primary" 
           round
           size="xs" 
@@ -65,7 +73,7 @@
             <p v-if="(hitcv && hitcv.date_checked)" style="font-size: 15px; margin: 0">{{$t('jc.tooltipSeen')}} {{formatDate(hitcv.date_checked)}}</p>
             <p v-else style="font-size: 15px; margin: 0">{{$t('jc.tooltipNotseen')}}</p>
           </q-tooltip>
-        </q-btn>
+        </q-btn> -->
       </div>
     </div>
     <div :class="{heightTransition: isContactsShown}" class="contactsPanel line" style="margin-top: 10px;">
@@ -236,6 +244,8 @@ export default {
     @media screen and (max-width 550px)
       margin-left 0
       margin-top 5px
+      min-width auto
+      max-width 100%
   .line
     //padding 5px
     display flex
@@ -305,6 +315,7 @@ export default {
   line-height: 18px;
   padding 9px 20px
   padding-right 17px
+  transition-duration 0.25s
   @media screen and (max-width: 950px)
     padding 5px 10px
     padding-right 8px
@@ -314,7 +325,9 @@ export default {
     margin-bottom 6px
     align-self flex-start
   &:hover
-    color var(--violet-btn-color)
+    //color var(--violet-btn-color)
+    background-color var(--violet-btn-color)
+    color white
 .contactsPanel
   border 0
   border-radius 10px
@@ -368,6 +381,12 @@ export default {
     margin-bottom 10px
 .joblink
   color var(--color1)
+  overflow-wrap: anywhere;
   &:hover
     color var(--violet-btn-color)
+.cvSentSpan
+  align-self center
+  @media screen and (max-width 550px)
+    align-self flex-end
+    margin-bottom 10px
 </style>
