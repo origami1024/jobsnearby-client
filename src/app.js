@@ -76,6 +76,7 @@ app.post('/getcvhitshistory', db.getCVHitsHistory)
 
 app.post('/ownCompany.json', getOwnCompanyJSON)
 app.post('/companyUpdate.json', db.updateOneCompany)
+app.post('/companyupdpic.json', db.updateOneCompanyPic)
 app.get('/companyby.idjson=:id', getCompanyById)
 
 app.get('/jobsu.json', params1)

@@ -1125,6 +1125,55 @@ async function getOneCompany(uid) {
 }
 
 
+async function updateOneCompanyPic(req, res) {
+  //app.post('/companyUpdate.json', db.updateOneCompany)
+  if (req.cookies.session && req.cookies.session.length > 50) {
+    let que1st = `SELECT user_id, company, logo_url, role FROM "users" WHERE "auth_cookie" = ($1)`
+    let params1st = [req.cookies.session]
+    pool.query(que1st, params1st, (error, results) => {
+      if (error) {
+        res.send('step2')
+        console.log('updateOneCompanyPic Error: ', error)
+        return false
+      }
+      if (results.rows.length < 1) {
+        //Если юзера с таким куки не найдено, то выходим из функции прост
+        res.send('step3')
+        return false
+      }
+      if (results.rows[0].role != 'company') {
+        res.send('step3')
+        return false
+      }
+
+      let uid = results.rows[0].user_id
+      
+      let logo_url = ''
+      //VALIDATE SHIET HERE!
+      if (req.body.logo_url && req.body.logo_url.length < 86) {
+        logo_url = req.body.logo_url
+      } else logo_url = results.rows[0].logo_url
+
+      let que2nd = `
+        UPDATE "users"
+        SET "logo_url" = $1
+        WHERE user_id = $2
+      `
+      let params2nd = [logo_url, uid]
+
+      pool.query(que2nd, params2nd, (error2, results2) => {
+        if (error2) {
+          console.log('updateOneCompanyPic, err2: ', error2)
+          res.send('error')
+          return false
+        }
+        res.send('OK')
+      })
+
+
+    })
+  }
+}
 
 async function updateOneCompany(req, res) {
   //check auth and if its a company
@@ -1135,7 +1184,8 @@ async function updateOneCompany(req, res) {
     pool.query(que1st, params1st, (error, results) => {
       if (error) {
         res.send('step2')
-        console.log('addJobs Error: ', error)
+        console.log('updateOneCompany Error: ', error)
+        return false
       }
       if (results.rows.length < 1) {
         //Если юзера с таким куки не найдено, то выходим из функции прост
@@ -2213,5 +2263,6 @@ module.exports = {
   updateOneCompany,
   checkIfUserAuthed,
   authedForUserData,
-  updateUserData
+  updateUserData,
+  updateOneCompanyPic,
 }

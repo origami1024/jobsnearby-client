@@ -77,19 +77,32 @@
           </div>
         </q-tab-panel>
         <q-tab-panel name="cabout" class="entprofile__mid">
+          <!-- <h2>Изменение отображаемых св-в профиля</h2> -->
           <div style="display: flex; justify-content: space-between">
             <div>
-            <q-input
-              class="entprofile__inp"
-              square dense outlined bottom-slots
-              color="cyan-10"
-              v-model="cabout.company"
-              :placeholder="$t('entProfile.cname')" counter maxlength="80"
-            />
+              <label for="companyInp" style="text-align: left;margin-bottom: 5px !important; display: block">{{$t('entProfile.cname')}}</label>
+              <q-input
+                for="companyInp"
+                class="entprofile__inp"
+                square dense outlined bottom-slots
+                bg-color="white" color="deep-purple-10"
+                v-model="cabout.company"
+                counter maxlength="80"
+              />
+              <!-- :placeholder="$t('entProfile.cname')" -->
             </div>
-            <div class="logo-placeholder" :style="{'background-image': 'url(' + cabout.logo_url + ')'}" >{{cabout.logo_url == '' || !cabout.logo_url ? 'logo placeholder' : ''}}</div>
           </div>
-          <div class="line" dense style="display: flex; width: 100%; justify-content: space-between;">
+          <div class="line" style="display: flex; width: 100%; justify-content: space-between;" @drop="picDrop">
+            <div style="width:300px;">
+              <label for="fileInp" style="text-align: left;margin-bottom: 5px !important; display: block">{{$t('entProfile.dragLogo')}}</label>
+              <label class="uploaderWrapper" tabindex="0">
+              <input id="fileInp" ref="fileInput" @change="readUrl($refs.fileInput.files)" type="file" style="display:none" accept=".gif,.jpg,.jpeg,.png,.webp,.svg"/>
+              <!-- <span>{{$t('entProfile.dragLogo')}}</span> -->
+              <div class="logo-placeholder" :style="{'background-image': 'url(' + cabout.logo_url + ')'}" >{{cabout.logo_url == '' || !cabout.logo_url ? 'logo placeholder' : ''}}</div>
+              </label>
+            </div>
+          </div>
+          <div class="line" style="display: flex; width: 100%; justify-content: space-between;">
             <!-- <form action="" ref="uplForm">
               <label for="fileinput1" style="margin-bottom: 5px; display: block">Загрузка логотипа компании</label>
               <q-input
@@ -105,10 +118,9 @@
                 ref="logoUploader"
               />
             </form> -->
-            <!-- url="http://localhost:4444/upload" -->
-            <!-- :max-file-size="102400" -->
-            <form action="" ref="uplForm" style="width: 100%; padding: 10px 0;">
-            <q-uploader
+            
+            <!--<form action="" ref="uplForm" style="width: 100%; padding: 10px 0;">
+             <q-uploader
               :label="$t('entProfile.dragLogo')"
               color="red-10"
               square
@@ -120,36 +132,35 @@
               no-thumbnails
               style="width: 100%"
               :factory="fileUNew"
-            />
-            <!-- <q-btn @click="uploadLogo" style="marginBottom: 22px" dense color="primary" v-if="logofile != null" label="Загрузить"/> -->
-            </form>
-            <!-- v-if="cabout.logo_url == ''" -->
-            <!-- <img v-else :src="cabout.logo_url" alt="Лого"> -->
+            /> 
+            </form>-->
           </div>
-          <q-input square color="cyan-10" dense class="entprofile__inp" outlined v-model="cabout.website" :placeholder="$t('entProfile.sitePH')" counter maxlength="80"/>
+          <label for="siteInp" style="text-align: left;margin-bottom: 5px !important; display: block">{{$t('entProfile.sitePH')}}</label>
+          <q-input square for="siteInp" bg-color="white" color="deep-purple-10" dense class="entprofile__inp" outlined v-model="cabout.website"  counter maxlength="80"/>
+          <label for="domainsInp" style="text-align: left;margin-bottom: 5px !important; display: block">{{$t('entProfile.catPH')}}</label>
           <q-select
+            for="domainsInp"
             multiple
             use-chips
             dense
             outlined
             square
-            color="cyan-10"
-            :placeholder="$t('entProfile.catPH')"
-            bg-color="white"
+            bg-color="white" color="deep-purple-10"
             :style="{width: '100%'}"
             max-values="3"
             v-model="cabout.domains"
             :options="domainsAll"
             :hint="null"
           />
+          <label for="descInp" style="text-align: left;margin-bottom: 5px !important; display: block">{{$t('entProfile.descPH')}}</label>
           <q-input
+            for="descInp"
             v-model="cabout.full_description"
-            outlined dense square color="cyan-10"
-            :placeholder="$t('entProfile.descPH')"
+            outlined dense square bg-color="white" color="deep-purple-10"
             type="textarea"
             counter maxlength="2000"
           />
-          <q-btn color="red-10" @click="updateCompanyData" style="margin-top: 10px">{{$t('entProfile.sendChanges')}}</q-btn>
+          <q-btn color="red-10" class="headerBtns1 headerBtnRed" @click="updateCompanyData" style="margin-top: 10px">{{$t('entProfile.sendChanges')}}</q-btn>
         </q-tab-panel>
         <q-tab-panel class="entprofile__settings entprofile__mid" name="settings">
           <h3 style="width: 100%; marginBottom: 10px; text-align: center;">{{$t('entProfile.settingsLabel')}} <strong>{{company}}</strong></h3>
@@ -181,6 +192,16 @@
 </template>
 
 <script>
+//без этого дропать файлы нельзя
+window.addEventListener("dragover",function(e){
+  e = e || event;
+  e.preventDefault()
+},false)
+window.addEventListener("drop",function(e){
+  e = e || event;
+  e.preventDefault()
+},false)
+
 import JobsStats from '@/components/organisms/JobsStats.vue'
 import ProfileNav from '@/components/molecules/ProfileNav.vue'
 
@@ -244,6 +265,49 @@ export default {
     }
   },
   methods: {
+    picDrop(e) {
+      if (e.dataTransfer.files.length == 1) {
+        let n = e.dataTransfer.files[0].name
+        let ext = n.substr(n.lastIndexOf(".")).toLowerCase()
+        if (['.gif','.jpg','.jpeg','.png','.webp','.svg'].includes(ext)) {
+          this.readUrl(e.dataTransfer.files)
+        }
+        window.console.log(e.dataTransfer.files[0])
+      }
+      window.console.log(e)
+    },
+    readUrl(files) {
+      if (files && files[0]) {
+        this.logofile = files[0]
+      
+        let dumper = 'https://decreed-silk.000webhostapp.com/outer.php'
+        console.log('start uploa1')
+        var formData = new FormData()
+        formData.append("image", this.logofile)
+        //this.$refs.uplForm.reset()
+        //this.logofile = null
+        axios
+          .post(dumper, formData, {
+            headers: {'Content-Type': 'multipart/form-data'}
+          })
+          .then(resp => {
+            if (resp.data && resp.data.startsWith('link:')) {
+              this.logo_upload_error = null
+              this.cabout.logo_url = resp.data.replace('link:', '')
+              this.$q.notify(this.$t('entProfile.picLoaded'))
+              console.log(this.cabout.logo_url)
+              this.updateCompanyPic() // / /////// // / /// // /
+            } else {
+              console.log('error uploading: ', resp.data)
+              if (resp.data.startsWith('Error in file size')) {
+                this.logo_upload_error = this.$t('entProfile.picTooBig')
+                this.$q.notify(this.$t('entProfile.picTooBig'))
+              }
+            }
+            //if (response.data === 'OK') {} else 
+          })
+      }
+    },
     fileUNew(files) {
       //console.log(files.length)
       this.logofile = files[0]
@@ -323,6 +387,16 @@ export default {
             this.$q.notify(this.$t('entProfile.dataChanged'))
           } else this.$q.notify(this.$t('entProfile.dataError'))
           //if error, show like popup or status update
+      })
+    },
+    updateCompanyPic() {
+      let url = config.jobsUrl + '/companyupdpic.json'
+      axios
+        .post(url, {logo_url: this.cabout.logo_url}, {headers: {'Content-Type' : 'application/json' }, withCredentials: true,})
+        .then(response => {
+          if (response.data == 'OK') {
+            this.$q.notify(this.$t('entProfile.picUploaded'))
+          } else this.$q.notify(this.$t('entProfile.dataError'))
       })
     },
     getOwnCompanyData() {
@@ -441,10 +515,11 @@ export default {
   //border 1px solid #eee
   box-shadow 0 0 4px 1px var(--main-borders-color)
   border-radius 4px
+  background-color transparent
 .entprofile
   max-width 900px
-  padding 0 10px
-  padding-top 10px
+  padding 20px 0px
+  //padding-top 20px
   display flex
   flex-direction column
   justify-content center
@@ -456,6 +531,7 @@ export default {
     margin-bottom 15px
   &__inp
     width 300px
+    margin-bottom 12px !important
   &__header
     display flex
     justify-content flex-end
@@ -487,14 +563,18 @@ export default {
     animation-duration 0.3s
     transition-duration 0.3s
   .logo-placeholder
-    width 180px
-    height 80px
+    width 100%
+    height 90px
+    max-height 90px
     //background-size 180px 80px
     //box-shadow 0 0 3px 0
-    line-height 50px
+    //line-height 50px
     background-size contain
     background-repeat no-repeat
     background-position center
+    outline 1px solid rgba(0,0,0,0.24)
+    box-sizing border-box
+    transition-duration 0.3s
   .responseLinkLvl1
     color var(--btn-color)
     margin-right 5px
@@ -508,4 +588,23 @@ export default {
     margin-right 5px
   *
     margin 0
+.uploaderWrapper
+  display block
+  border 1px solid rgba(0,0,0,0.24)
+  padding 12px
+  transition-duration 0.3s
+  min-width 300px
+  margin-bottom 15px
+  cursor pointer
+  box-sizing border-box
+  background-color white//#ede7f6
+  &:focus
+    outline none
+    box-shadow inset 0px 0px 0px 2px var(--color1) !important
+  &:hover
+    border-color var(--color1)
+    // background-color var(--violet-btn-color)
+  &:hover>.logo-placeholder
+    outline 1px solid var(--color1)
+    //border-color var(--color1)
 </style>

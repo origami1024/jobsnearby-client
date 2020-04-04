@@ -88,7 +88,7 @@
                 to="/registration"/> -->
               <router-link
                 v-if="role && role === 'subscriber'"
-                class="headerBtn"
+                class="headerBtn marginLeft30pxOnBig"
                 to="/subprofile"
               >
                 <q-icon name="person" size="36px"></q-icon>
@@ -99,7 +99,7 @@
               <router-link
                 @click.native="getOwnJobs"
                 v-if="role && role === 'company' && $route.name == 'entprofile'"
-                class="headerBtn"
+                class="headerBtn marginLeft30pxOnBig"
                 to="/entprofile"
               >
                 <q-icon name="person" size="36px"></q-icon>
@@ -109,7 +109,7 @@
               </router-link>
               <router-link
                 v-if="role && role === 'company' && $route.name != 'entprofile'"
-                class="headerBtn"
+                class="headerBtn marginLeft30pxOnBig"
                 to="/entprofile"
               >
                 <q-icon name="person" size="36px"></q-icon>
@@ -235,7 +235,7 @@
           <h3>Контакты</h3>
           <ul>
             <li><router-link class="headerBtns1 violetBtns footerLinkFB" @click.native="scrollTop()" to="/feedback">{{$t('App.fbBtnLabel')}}</router-link></li>
-            <li><a href="#">info@gmail.com</a></li>
+            <!-- <li><a href="#">info@gmail.com</a></li> -->
           </ul>
         </li>
       </ul>
@@ -1039,7 +1039,6 @@ body
       //   width 55px
       // div div
       //   margin-top -3px
-        
   .scrollTopBtn
     position fixed
     bottom 12px
@@ -1133,7 +1132,7 @@ body
     text-decoration none
     color var(--main-borders-color)
     font-size 16px
-    background-color white
+    background-color transparent
     text-transform uppercase
     border 2px solid transparent
     //transition-duration .4s
@@ -1144,6 +1143,10 @@ body
     font-weight 700
     &:hover
       color var(--btn-color)
+.marginLeft30pxOnBig
+  margin-left 30px
+  @media screen and (max-width 550px)
+    margin-left 0px
 .footerLinkFB
   background-color: var(--violet-btn-color) !important
   color: white !important
@@ -1156,39 +1159,19 @@ body
   text-transform uppercase
   &:hover
     background-color var(--violet2) !important
-.q-item__label
-  color var(--main-borders-color)
-.q-manual-focusable--focused
-  background-color var(--main-borders-color)
-.q-manual-focusable--focused .q-item__label
-  color var(--main-bg-color) !important
-  &:hover
-    color white !important
-.q-item--active
-  color white !important//var(--main-borders-color) !important
-// .ql-editor
-//   background-color #E0F2F1
-.q-uploader__subtitle//in entprofile - q-uploader component related
-  display none
-@media screen and (max-width: 550px)
-  // .sdpp-filters
-  //   line-height 14px !important
-  //   min-height 16px !important
-  //   height 16px !important
-  //   font-size 12px !important
-  //   align-items center !important
-  // .sdpp-filters *
-  //   padding 0 !important
-  //   margin 0 !important
-  //   align-items center !important
-  // .sdpp-filters>div>div
-  //   padding-left 2px !important
-  //   min-height 18px !important
-    
-  // .sdpp-filters i
-  //   margin-left -5px !important
-  //   margin-right -3px !important
-  //   align-items center !important
+
+// .q-item__label
+//   color var(--main-borders-color)
+// .q-manual-focusable--focused
+//   background-color var(--main-borders-color)
+// .q-manual-focusable--focused .q-item__label
+//   color var(--main-bg-color) !important
+//   &:hover
+//     color white !important
+// .q-item--active
+//   color white !important//var(--main-borders-color) !important
+// .q-uploader__subtitle//in entprofile - q-uploader component related
+//   display none
     
 
 </style>
