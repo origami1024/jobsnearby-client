@@ -26,19 +26,23 @@
               :key="item"
               
               style="line-height: 30px; font-size: 16px;text-align:left;"
+              
             >
               <template v-slot:header>
-                <a class="responseLinkLvl1" :style="{color: respsJreformat[item].hasNew ? 'var(--violet-btn-color)' : 'var(--color1)'}" :href="'/jobpage?id=' + item" target="_blank">
+                <!--  -->
+                <a class="responseLinkLvl1" :href="'/jobpage?id=' + item" target="_blank" style="display: flex;">
                   {{resps.find(val=>val.cvjob_id == item).title}}
+                  <q-badge v-if="respsJreformat[item].hasNew > 0" style="background-color: var(--violet-btn-color); align-self: start;"  :label="respsJreformat[item].hasNew + ' новых'"/>
                   <!-- resps.find(val=>val.cvjob_id == item).cv_url -->
                 </a>
                 ({{respsJreformat[item].cvhits.length}})
+                
               </template>
               
               <ul style="list-style-type:none; padding: 0 15px;">
-                <li style="display: flex" v-for="hit in respsJreformat[item].cvhits" :key="hit" :style="{color: resps.find(val=>val.cvhit_id == hit).date_checked == null ? 'var(--violet-btn-color)' : 'var(--color1)'}">
+                <li style="display: flex; padding-left: 10px;" v-for="hit in respsJreformat[item].cvhits" :key="hit" :style="{backgroundColor: resps.find(val=>val.cvhit_id == hit).date_checked == null ? 'var(--color-graypink)' : 'rgba(1,1,1,0.03)'}">
                   <!-- <q-item clickable> -->
-                  <a style="width: 35%" class="responseLinkLvl2" :style="{color: resps.find(val=>val.cvhit_id == hit).date_checked == null ? 'var(--violet-btn-color)' : 'var(--color1)'}" @click="viewHit(hit)" :href="'https://docs.google.com/viewerng/viewer?url=' + resps.find(val=>val.cvhit_id == hit).cv_url" target="_blank">
+                  <a style="width: 35%" class="responseLinkLvl2" @click="viewHit(hit)" :href="'https://docs.google.com/viewerng/viewer?url=' + resps.find(val=>val.cvhit_id == hit).cv_url" target="_blank">
                     {{
                       resps.find(val=>val.cvhit_id == hit).name + ' ' + 
                       resps.find(val=>val.cvhit_id == hit).surname
@@ -59,10 +63,9 @@
                         : $t('entProfile.cvNotSeen')
                     }}
                     <q-btn
-                      style="margin-left: 5px"
+                      style="margin-left: 5px; background-color: var(--violet-btn-color); color: white;"
                       v-if="resps.find(val=>val.cvhit_id == hit).date_checked == null"
                       round
-                      color="red-10"
                       size="sm"
                       icon="visibility"
                       @click="viewHit(hit)"
@@ -92,7 +95,7 @@
               <!-- :placeholder="$t('entProfile.cname')" -->
             </div>
           </div>
-          <div class="line" style="display: flex; width: 100%; justify-content: space-between;" @drop="picDrop">
+          <div class="line" ref="fileInputWrap" style="display: flex; width: 100%; justify-content: space-between;" @drop="picDrop">
             <div style="width:300px;">
               <label for="fileInp" style="text-align: left;margin-bottom: 5px !important; display: block">{{$t('entProfile.dragLogo')}}</label>
               <label class="uploaderWrapper" tabindex="0">
@@ -171,8 +174,8 @@
           <q-input dense v-show="contacts_count > 2" class="entprofile__inp" outlined bottom-slots v-model="contacts3" label="Контакты" counter maxlength="30"/>
           <q-btn round color="primary" @click="contacts_count < 4 ? contacts_count += 1 : ''" size="sm" icon="add" :disable="contacts_count > 2"/> -->
           <!-- <q-toggle v-model="editable" label="Изменить личные данные"/> -->
-          <q-input square color="cyan-10" type="email" class="entprofile__inp" outlined bottom-slots :value="user" :label="$t('entProfile.emailLabel')" counter maxlength="50" />
-          <q-input square color="cyan-10" :type="isPwd ? 'password' : 'text'" class="entprofile__inp" outlined bottom-slots v-model="oldpw" :label="$t('entProfile.oldPWLabel')" counter maxlength="25">
+          <q-input square color="deep-purple-10" type="email" class="entprofile__inp" outlined bottom-slots :value="user" :label="$t('entProfile.emailLabel')" counter maxlength="50" />
+          <q-input square color="deep-purple-10" :type="isPwd ? 'password' : 'text'" class="entprofile__inp" outlined bottom-slots v-model="oldpw" :label="$t('entProfile.oldPWLabel')" counter maxlength="25">
             <template v-slot:append>
               <q-icon
                 :name="isPwd ? 'visibility_off' : 'visibility'"
@@ -181,10 +184,10 @@
               />
             </template>
           </q-input>
-          <q-input square color="cyan-10" :type="isPwd ? 'password' : 'text'" class="entprofile__inp" outlined bottom-slots v-model="newpw" :label="$t('entProfile.newPWLabel')" counter maxlength="25">
+          <q-input square color="deep-purple-10" :type="isPwd ? 'password' : 'text'" class="entprofile__inp" outlined bottom-slots v-model="newpw" :label="$t('entProfile.newPWLabel')" counter maxlength="25">
             
           </q-input>
-          <q-btn color="red-10" @click="tryChangePw" :label="$t('entProfile.changeSettingsBtn')"/>
+          <q-btn color="red-10" class="headerBtns1 headerBtnRed" @click="tryChangePw" :label="$t('entProfile.changeSettingsBtn')"/>
         </q-tab-panel>
       </q-tab-panels>
     </div>
@@ -276,6 +279,20 @@ export default {
       }
       window.console.log(e)
     },
+    // nonpicDragStart(ev) {
+    //   //ev.dataTransfer.setData("text", ev.target.id);
+    //   //ev.dataTransfer.dropEffect = "none";
+    //   //$refs.fileInputWrap.style.cursor = "pointer"
+    //   ev.dataTransfer.dropEffect = "none"
+    // },
+    // picDragStart(e) {
+    //   //ev.dataTransfer.setData("text", ev.target.id);
+    //   //ev.dataTransfer.effectAllowed = "move";
+    //   //e.currentTarget.classList.add("being-dragged")
+
+    //   console.log('derp')
+    //   console.log(e)
+    // },
     readUrl(files) {
       if (files && files[0]) {
         this.logofile = files[0]
@@ -348,14 +365,14 @@ export default {
             for (let x of response.data.rows) {
               dic1[x.cvjob_id] = {}
               dic1[x.cvjob_id]['cvhits'] = []
-              dic1[x.cvjob_id]['hasNew'] = false
+              dic1[x.cvjob_id]['hasNew'] = 0
             }
             //console.log(response.data.rows)
             for (let x of response.data.rows) {
               dic1[x.cvjob_id]['cvhits'].push(x.cvhit_id)
               //console.log(JSON.stringify(x))
               if (x.date_checked == null) {
-                dic1[x.cvjob_id]['hasNew'] = true
+                dic1[x.cvjob_id]['hasNew'] += 1
               }
               //console.log(x.cvhit_id)
             }
@@ -582,7 +599,7 @@ export default {
     box-sizing border-box
     transition-duration 0.3s
   .responseLinkLvl1
-    color var(--btn-color)
+    color #248CEC//var(--color1)
     margin-right 5px
     text-decoration none
     white-space nowrap

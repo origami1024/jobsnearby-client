@@ -22,7 +22,7 @@
             <router-link
               class="headerBtn"
               v-if="role === 'company' && isagency == true" to="/uploads"
-              style="color: green;"
+              :style="{color: $route.name != 'uploads' ? 'green' : 'var(--violet-btn-color)'}"
             >
               <q-icon name="description" style="font-size: 32px;" class="nav-icon multipleUploadsHeader"></q-icon>
               <!-- <q-btn round icon="description" dense></q-btn> -->
@@ -100,6 +100,7 @@
                 v-if="role && role === 'subscriber'"
                 class="headerBtn marginLeft30pxOnBig"
                 to="/subprofile"
+                :style="{color: $route.name != 'subprofile' ? '' : 'var(--violet-btn-color)'}"
               >
                 <q-icon name="person" style="font-size: 36px;" class="nav-icon"></q-icon>
                 <q-tooltip>
@@ -112,6 +113,7 @@
                 v-if="role && role === 'company' && $route.name == 'entprofile'"
                 class="headerBtn marginLeft30pxOnBig"
                 to="/entprofile"
+                :style="{color: $route.name != 'entprofile' ? '' : 'var(--violet-btn-color)'}"
               >
                 <q-icon name="person" style="font-size: 36px;" class="nav-icon"></q-icon>
                 <q-tooltip>
@@ -122,6 +124,7 @@
                 v-if="role && role === 'company' && $route.name != 'entprofile'"
                 class="headerBtn marginLeft30pxOnBig"
                 to="/entprofile"
+                :style="{color: $route.name != 'entprofile' ? '' : 'var(--violet-btn-color)'}"
               >
                 <q-icon name="person" style="font-size: 36px;" class="nav-icon"></q-icon>
                 <q-tooltip>
@@ -1145,7 +1148,7 @@ body
     letter-spacing 2px
     font-weight 700
     &:hover
-      color var(--btn-color)
+      color var(--violet-btn-color)//var(--btn-color)
 .marginLeft30pxOnBig
   margin-left 30px
   @media screen and (max-width 550px)

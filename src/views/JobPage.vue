@@ -276,6 +276,9 @@ export default {
   }
   .detailed__author-link1
     color var(--main-borders-color)
+    text-decoration none
+    &:hover
+      color var(--violet-btn-color)
   .author-link-wrapper
     min-width var(--logoWidth)
     

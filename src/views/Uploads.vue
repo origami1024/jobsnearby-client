@@ -165,6 +165,7 @@ export default {
           .then(response => {
             if (response.data === 'OK') {
               this.uploadStatus = this.$t('upl.success1')
+              this.$q.notify(this.$t('upl.success1'))
               this.$emit('getOwnJobs')
             } else {this.uploadStatus = this.$t('upl.err1')}
             

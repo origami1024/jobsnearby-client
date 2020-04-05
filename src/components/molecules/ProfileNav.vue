@@ -12,7 +12,7 @@
       >
         <q-item-section style="position:relative">
           {{lr.l}}
-          <q-badge v-if="lr.badges > 0" style="background-color: var(--violet-btn-color); right: 25%;" floating :label="lr.badges"/>
+          <q-badge v-if="lr.badges > 0" style="background-color: var(--btn-color);" floating :label="lr.badges + ' новых'"/>
         </q-item-section>
       </q-item>
       <q-separator spaced />
@@ -45,9 +45,9 @@ export default {
 .profilenav
   box-shadow 0 0 3px 0px var(--main-borders-color)
 .nav__link
-  color var(--color1) !important
-.nav__link-active
-  color var(--violet-btn-color) !important
   //color var(--color1) !important
-  //background var(--color-graypink)//#248CEC
+.nav__link-active
+  color white
+  //color var(--color1) !important
+  background #248CEC
 </style>

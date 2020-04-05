@@ -846,11 +846,12 @@ function validateOneJob (data) {
   } else parsedData.description = ''
   //"contact_tel", "contact_mail", 
   //contact_tel - не обязат на самом деле; длина до 15 символов
-  console.log('cp10: ', data.contact_tel)
+  data.contact_tel = String(data.contact_tel).trim()
+  //console.log('cp10: ', data.contact_tel)
   if (data.contact_tel && data.contact_tel.length < 16 && /^[\+0-9\-\(\)]*$/.test(data.contact_tel)) {
     parsedData.contact_tel = data.contact_tel
   } else parsedData.contact_tel = ''
-  console.log('cp11: ', parsedData.contact_tel)
+  //console.log('cp11: ', parsedData.contact_tel)
   //contact_mail - не обязат на самом деле; длина до 40 символов
   if (data.contact_mail && data.contact_mail.length < 41 && /(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/.test(data.contact_mail)) {
     parsedData.contact_mail = data.contact_mail
@@ -961,14 +962,14 @@ async function tryInsertEmailAdmin (mail) {
   //console.log('tryingInsert in the end: ', result.rows[0])
   return result.rows[0].u2id
 }
-async function registerFinishAdmin (id, mail, hash) {
+async function registerFinishAdmin (id, mail, hash, note) {
   
   let que = `
     UPDATE "users2"
-    SET (u2hash, category_rights) = ($1, '111')
+    SET (u2hash, category_rights, supernote) = ($1, '111', $4)
     WHERE u2id = $2 AND u2mail = $3
   `
-  let params = [hash, id, mail]
+  let params = [hash, id, mail, note]
   let result = await pool.query(que, params).catch(error => {
     console.log('cp iii: ', error)
     throw new Error('user update fail')

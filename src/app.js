@@ -412,13 +412,13 @@ async function testMail(n, mail) {
     subject: 'Верификация пользователя на jobsnearby',
     text: 'Перейдите по ссылке для верификации пользователя: ' + txt
   }
-  // transporter.sendMail(mailOptions, (error, info) => {
-  //   if (error) {
-  //     return 'ERR'
-  //   }
-  //   console.log('Message %s sent: %s', info.messageId, info.response);
-  //   return 'OK'
-  // })
+  transporter.sendMail(mailOptions, (error, info) => {
+    if (error) {
+      return 'ERR'
+    }
+    console.log('Message %s sent: %s', info.messageId, info.response);
+    return 'OK'
+  })
 }
 
 async function auaction(req, res) {
@@ -567,7 +567,7 @@ async function superAdmin(req, res) {
             <td>
               <button>Выключить акк</button>
               <button>Изменить права</button>
-              <button>Добавить заметку</button>
+              <button>Изменить заметку</button>
             </td>
           </tr>
         `
@@ -583,10 +583,12 @@ async function superAdmin(req, res) {
               <tr>
                 <td style="width:130px">mail</td>
                 <td style="width:130px">pw</td>
+                <td style="width:390px">note</td>
               </tr>
               <tr>
                 <td style="border: 1px solid black" id="newmail" contenteditable="true"></td>
                 <td style="border: 1px solid black" id="newpw" contenteditable="true"></td>
+                <td style="border: 1px solid black" id="note" contenteditable="true"></td>
               </r>
             </table>
             <button onclick="addNew()">Добавить модера</button>
@@ -595,7 +597,8 @@ async function superAdmin(req, res) {
               function addNew() {
                 let newmail = document.getElementById("newmail").textContent
                 let newpw = document.getElementById("newpw").textContent
-                let d = {newmail, newpw}
+                let note = document.getElementById("note").textContent
+                let d = {newmail, newpw, note}
                 console.log(d)
                 var http = new XMLHttpRequest()
                 var url = '/newu2.json'
@@ -626,6 +629,8 @@ async function superAdmin(req, res) {
 async function adminNew(req, res) {
   let mail = req.body.newmail
   let pw = req.body.newpw
+  let note = req.body.note
+  if (note.length > 750) note = note.substr(0,750)
   if (SupremeValidator.isValidEmail(mail) && SupremeValidator.isValidPW(pw)) {
     let auth = await db.adminAuth(req.cookies.user2, req.cookies.sessioa).catch(error => {
       //res.send('step2')
@@ -643,7 +648,7 @@ async function adminNew(req, res) {
       //if id is back mail is uniq else ret
       let hash = bcrypt.hashSync(pw, bcrypt.genSaltSync(9))
       //store rest of the new user
-      let isDone = await db.registerFinishAdmin(user2Id, mail, hash).catch(error => {
+      let isDone = await db.registerFinishAdmin(user2Id, mail, hash, note).catch(error => {
         console.log('STEP5', error)
         res.send('step5')
         return false
@@ -773,7 +778,7 @@ async function adminPanel(req, res) {
         sttsDaybody = `
           <div class="charts">
             <h3 style="margin: 0; margin-bottom: 10px">Новые вакансии по дням за последние два месяца</h3>
-            <svg id="jobs_per_day_chart" width="600" height="300"></svg>
+            <svg id="jobs_per_day_chart" width="800" height="300"></svg>
           </div>
           <style>
             .bar {
@@ -787,7 +792,7 @@ async function adminPanel(req, res) {
             //console.log(JSON.stringify(data))
             
             const svg = d3.select("svg"), 
-            margin = {top: 15, right: 5, bottom: 40, left: 15}, 
+            margin = {top: 15, right: 5, bottom: 45, left: 15}, 
             width = +svg.attr("width") - margin.left - margin.right, 
             height = +svg.attr("height") - margin.top - margin.bottom, 
             x = d3.scaleBand().rangeRound([0, width]).padding(0.0), 
@@ -807,12 +812,8 @@ async function adminPanel(req, res) {
             .style("text-anchor", "end")
             .attr("dx", "-9px")
             .attr("dy", "-8px")
-            .attr("font-size", "9px")
+            .attr("font-size", "14px")
             .attr("transform", "rotate(-90)");
-            
-            // g.append("g")
-            // .attr("class", "axis axis-y") 
-            // .call(d3.axisLeft(y)); 
             
             g.selectAll(".NOTHING")
             .data(data)

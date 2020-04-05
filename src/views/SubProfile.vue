@@ -19,14 +19,8 @@
             Текущая ссылка на резюме <a :href="'https://docs.google.com/viewerng/viewer?url=' + cvurl" target="_blank">{{cvurl}}</a>
           </div> -->
           
-          <div class="urlpanel" style="margin-bottom: 10px">
-            {{(cvurl != null && cvurl != '') ? $t('sub.cvurlUploaded') : $t('sub.cvurlNone')}}
-            <a v-if="cvurl != null && cvurl != ''" :href="'https://docs.google.com/viewerng/viewer?url=' + cvurl" target="_blank">
-              <q-icon color="blue-10" size="30px" name="assignment">
-              </q-icon>
-            </a>
-          </div>
-          <form action="" ref="cvForm">
+          
+          <!-- <form action="" ref="cvForm">
             {{$t('sub.loadCVHeader')}}
             <q-input
               id="fileinput1"
@@ -40,8 +34,27 @@
               accept=".doc, .docx, .pdf, .rtf"
               ref="cvUploader"
             />
-          </form>
-          <q-btn v-if="cvurl != null && cvurl != ''" color="red-10" :label="$t('sub.deleteCVBtn')" @click="cvdel" />
+          </form> -->
+          
+          <div class="line" style="display: flex; width: 100%;">
+            <div style="width:300px; margin-bottom: 20px;">
+
+              <label for="cvInp" class="uploaderWrapper" tabindex="0">
+                <!-- class="uploaderWrapper" -->
+                <input id="cvInp" ref="cvUplInp" @change="cvinput($refs.cvUplInp.files)" type="file" style="display:none" accept=".doc, .docx, .pdf, .rtf"/>
+                <span>{{$t('sub.loadCVHeader')}}</span>
+              </label>
+              <div class="urlpanel" style="display: flex; justify-content: space-between; align-items: center; font-size: 16px;">
+                {{(cvurl != null && cvurl != '') ? $t('sub.cvurlUploaded') + ':' : $t('sub.cvurlNone')}}
+                <a v-if="cvurl != null && cvurl != ''" :href="'https://docs.google.com/viewerng/viewer?url=' + cvurl" target="_blank">
+                  <q-icon color="blue-10" size="32px" name="assignment">
+                  </q-icon>
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <q-btn class="headerBtns1" v-if="cvurl != null && cvurl != ''" color="red-10" :label="$t('sub.deleteCVBtn')" @click="cvdel" />
           <!-- <q-btn
             @click="updateCVLink"
             style="marginBottom: 22px" dense color="primary"
@@ -69,17 +82,17 @@
           
           <q-input
             class="subprofile__inp"
-            color="cyan-10"
+            color="deep-purple-10"
             square outlined bottom-slots 
             v-model="userdata.username" :label="$t('sub.name')"
             counter maxlength="35"  />
           <q-input
             class="subprofile__inp"
-            color="cyan-10"
+            color="deep-purple-10"
             square outlined bottom-slots
             v-model="userdata.surname" :label="$t('sub.surname')"
             counter maxlength="35"  />
-          <q-btn color="red-10" @click="tryChangeUData" :label="$t('sub.change')"/>
+          <q-btn class="headerBtns1" color="red-10" @click="tryChangeUData" :label="$t('sub.change')"/>
         </q-tab-panel>
 
 
@@ -87,12 +100,12 @@
           <q-input
             type="email" class="subprofile__inp" 
             square outlined bottom-slots
-            color="cyan-10"
+            color="deep-purple-10" 
             :value="user"
             :label="$t('sub.email')"
             counter maxlength="50"
           />
-          <q-input square color="cyan-10" :type="isPwd ? 'password' : 'text'" class="subprofile__inp" outlined bottom-slots v-model="mailpw.oldpw" :label="$t('sub.oldPW')" counter maxlength="25" >
+          <q-input square color="deep-purple-10"  :type="isPwd ? 'password' : 'text'" class="subprofile__inp" outlined bottom-slots v-model="mailpw.oldpw" :label="$t('sub.oldPW')" counter maxlength="25" >
             <template v-slot:append>
               <q-icon
                 :name="isPwd ? 'visibility_off' : 'visibility'"
@@ -102,12 +115,12 @@
             </template>
           </q-input>
           <q-input 
-            square color="cyan-10" 
+            square color="deep-purple-10" 
             :type="isPwd ? 'password' : 'text'" 
             class="subprofile__inp" outlined bottom-slots 
             v-model="mailpw.newpw" :label="$t('sub.newPW')" counter maxlength="25" >
           </q-input>
-          <q-btn color="red-10" @click="tryChangePw" :label="$t('sub.change')"/>
+          <q-btn class="headerBtns1" color="red-10" @click="tryChangePw" :label="$t('sub.change')"/>
         </q-tab-panel>
       </q-tab-panels>
     </div>
@@ -169,6 +182,9 @@ export default {
     this.$destroy()
   },
   methods: {
+    readUrl(file) {
+
+    },
     getCVHitsHistory() {
       let url = config.jobsUrl + '/getcvhitshistory'
       axios
@@ -237,7 +253,7 @@ export default {
       console.log('start cvu')
       var formData = new FormData()
       formData.append("cv", this.cvfile)
-      this.$refs.cvForm.reset()
+      //this.$refs.cvForm.reset()
       this.cvfile = null
       axios
         .post(dumper, formData, {
@@ -382,4 +398,23 @@ export default {
     transition-duration 0.3s
   *
     margin 0
+.uploaderWrapper
+  display block
+  border 1px solid rgba(0,0,0,0.24)
+  padding 12px
+  transition-duration 0.3s
+  min-width 300px
+  margin-bottom 15px
+  cursor pointer
+  box-sizing border-box
+  background-color white//#ede7f6
+  &:focus
+    outline none
+    box-shadow inset 0px 0px 0px 2px var(--color1) !important
+  &:hover
+    border-color var(--color1)
+    // background-color var(--violet-btn-color)
+  &:hover>.logo-placeholder
+    outline 1px solid var(--color1)
+    //border-color var(--color1)
 </style>

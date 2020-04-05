@@ -53,7 +53,7 @@
         <a v-if="role != 'company' && !cved" class="sendCVLink" @click.prevent="$emit('hitcv', job.job_id)" href="#">
           {{$t('jc.sendCVLabel')}}
         </a>
-        <div v-else class="cvSentSpan">
+        <div v-else-if="role == 'subscriber'" class="cvSentSpan">
           <span style="font-size: 13px; color: gray; user-select: none">Резюме отправлено</span>
           <q-tooltip v-if="hitcv">
             <p v-if="(hitcv && hitcv.date_created)" style="font-size: 15px; margin: 0">{{$t('jc.tooltipSent')}} {{formatDate(hitcv.date_created)}}</p>
