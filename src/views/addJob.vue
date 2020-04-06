@@ -771,7 +771,7 @@ div.q-field__messages
     margin-top 15px
     background-color var(--main-bg-color)//#eee
     padding 10px
-    padding-top 10px
+    padding-top 20px
     box-shadow 0 0 3px 1px var(--main-borders-color)
   .line
     display flex

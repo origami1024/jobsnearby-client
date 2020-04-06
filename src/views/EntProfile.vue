@@ -93,7 +93,7 @@
               <!-- :placeholder="$t('entProfile.cname')" -->
             </div>
           </div>
-          <div class="line" ref="fileInputWrap" style="display: flex; width: 100%; justify-content: space-between;" @drop="picDrop">
+          <div class="line" ref="fileInputWrap" style="display: flex; width: 100%; justify-content: space-between;" @drop="picDrop" >
             <div style="width:300px;">
               <label for="fileInp" style="text-align: left;margin-bottom: 5px !important; display: block">{{$t('entProfile.dragLogo')}}</label>
               <label class="uploaderWrapper" tabindex="0">
