@@ -15,7 +15,7 @@
             square
             dense
             outlined
-            bg-color="white" color="cyan-10"
+            bg-color="white" color="deep-purple-10"
             :style="{width: '100%'}"
             :hint="null"
             v-model="job.title"
@@ -39,7 +39,7 @@
             square
             dense
             outlined
-            bg-color="white" color="cyan-10"
+            bg-color="white" color="deep-purple-10"
             v-model="job.salary_min"
             ref="salary_min"
             :placeholder="$t('addJob.salaryMinPH')" :hint="null"
@@ -52,7 +52,7 @@
             square
             dense
             outlined
-            bg-color="white" color="cyan-10"
+            bg-color="white" color="deep-purple-10"
             v-model="job.salary_max"
             ref="salary_max"
             :placeholder="$t('addJob.salaryMaxPH')" :hint="null"
@@ -67,7 +67,7 @@
             square
             dense
             outlined
-            bg-color="white" color="cyan-10"
+            bg-color="white" color="deep-purple-10"
             v-model="job.currency"
             style="width: 95px; lineHeight: 3.2;color: white !important"
             :options="[
@@ -96,7 +96,7 @@
             square
             dense
             outlined
-            bg-color="white" color="cyan-10"
+            bg-color="white" color="deep-purple-10"
             v-model="job.contact_mail"
             :placeholder="$t('addJob.emailPH')"
             type="email"
@@ -115,7 +115,7 @@
             square
             dense
             outlined
-            bg-color="white" color="cyan-10"
+            bg-color="white" color="deep-purple-10"
             v-model="job.contact_tel"
             :placeholder="$t('addJob.telPH')"
             type="tel"
@@ -140,7 +140,7 @@
             square
             dense
             outlined
-            bg-color="white" color="cyan-10"
+            bg-color="white" color="deep-purple-10"
             :options="$t('App.jcats')"
             :hint="null"
           />
@@ -155,7 +155,7 @@
             square
             dense
             outlined
-            bg-color="white" color="cyan-10"
+            bg-color="white" color="deep-purple-10"
             use-input
             input-debounce="0"
             fill-input
@@ -201,7 +201,7 @@
               square
               dense
               outlined
-              bg-color="white" color="cyan-10"
+              bg-color="white" color="deep-purple-10"
               :options="$t('App.expOpts')"
               :hint="null"
             />
@@ -214,7 +214,7 @@
               square
               dense
               outlined
-              bg-color="white" color="cyan-10"
+              bg-color="white" color="deep-purple-10"
               :options="$t('App.jtypeOptions')"
               :hint="null"
               style="width: 180px"
@@ -228,7 +228,7 @@
               square
               dense
               outlined
-              bg-color="white" color="cyan-10"
+              bg-color="white" color="deep-purple-10"
               v-model="job.age1"
               ref="age1"
               :placeholder="$t('addJob.genericFrom')"
@@ -245,7 +245,7 @@
               square
               dense
               outlined
-              bg-color="white" color="cyan-10"
+              bg-color="white" color="deep-purple-10"
               v-model="job.age2"
               :placeholder="$t('addJob.genericTo')"
               :hint="null"
@@ -266,7 +266,7 @@
               square
               dense
               outlined
-              bg-color="white" color="cyan-10"
+              bg-color="white" color="deep-purple-10"
               v-model="job.worktime1"
               ref="worktime1"
               :placeholder="$t('addJob.genericFrom')"
@@ -284,7 +284,7 @@
               square
               dense
               outlined
-              bg-color="white" color="cyan-10"
+              bg-color="white" color="deep-purple-10"
               v-model="job.worktime2"
               :placeholder="$t('addJob.genericTo')"
               :hint="null"
@@ -303,7 +303,7 @@
               square
               dense
               outlined
-              bg-color="white" color="cyan-10"
+              bg-color="white" color="deep-purple-10"
               style="max-width: 110px"
               use-input
               input-debounce="0"
@@ -329,7 +329,7 @@
               square
               dense
               outlined
-              bg-color="white" color="cyan-10"
+              bg-color="white" color="deep-purple-10"
               v-model="job.edu"
               style="marginRight: 10px"
               :hint="null"
@@ -355,7 +355,7 @@
               square
               dense
               outlined
-              bg-color="white" color="cyan-10"
+              bg-color="white" color="deep-purple-10"
               :style="{width: '400px'}"
               max-values="3"
               v-model="job.langs"
@@ -365,22 +365,22 @@
           </div>
         </q-expansion-item>
         <q-btn
-          color="red-10"
+          color="red-10" class="headerBtns1 headerBtnRed" 
           :label="newJobsPageType == 'new' ? $t('addJob.sendJobBtnLabelNew') : $t('addJob.sendJobBtnLabelUpdate')"
           @click="tryAdd"
         />
       </div>
       <div v-else-if="sent == 'goodNew'" :key="2" class="jobpage__wrapper">
         <p>{{$t('addJob.sendJobSuccess1')}}<a :href="'/jobpage?id=' + returned.job_id" target="_blank">{{returned.title}}</a>{{$t('addJob.sendJobSuccess2')}}</p>
-        <q-btn color="red-10" @click="$emit('setSentState', 'none'); resetFields(); $emit('newJobInit')" :label="$t('addJob.btnAddOneMore')"/>
+        <q-btn color="red-10" class="headerBtns1 headerBtnRed" @click="$emit('setSentState', 'none'); resetFields(); $emit('newJobInit')" :label="$t('addJob.btnAddOneMore')"/>
       </div>
       <div v-else-if="sent == 'goodEdited'" :key="2" class="jobpage__wrapper">
         <p>{{$t('addJob.sendJobSuccess1x')}}<a :href="'/jobpage?id=' + returned.job_id" target="_blank">{{returned.title}}</a>{{$t('addJob.sendJobSuccess2x')}}</p>
-        <q-btn color="red-10" @click="$emit('setSentState', 'none'); resetFields(); $emit('newJobInit')" :label="$t('addJob.btnAddOneMore')"/>
+        <q-btn color="red-10" class="headerBtns1 headerBtnRed" @click="$emit('setSentState', 'none'); resetFields(); $emit('newJobInit')" :label="$t('addJob.btnAddOneMore')"/>
       </div>
       <div v-else-if="sent == 'fail'" :key="3" class="jobpage__wrapper">
         <p>{{$t('addJob.sendJobError1')}}</p>
-        <q-btn color="red-10" @click="$emit('setSentState', 'none'); resetFields(); $emit('newJobInit')" :label="$t('addJob.btnAddOneMore')"/>
+        <q-btn color="red-10" class="headerBtns1 headerBtnRed" @click="$emit('setSentState', 'none'); resetFields(); $emit('newJobInit')" :label="$t('addJob.btnAddOneMore')"/>
       </div>
       <div v-else-if="role == 'guestUnau' | role == 'guest'" :key="4" class="jobpage__wrapper">
         {{$t('addJob.unauthorized')}}
