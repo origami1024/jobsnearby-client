@@ -7,7 +7,7 @@
         square
         dense
         outlined
-        bg-color="white" color="cyan-10" :placeholder="$t('fb.topic')"
+        bg-color="white" color="deep-purple-10" :placeholder="$t('fb.topic')"
         counter
         maxlength="25"
       />
@@ -17,13 +17,13 @@
         dense
         counter
         maxlength="25"    
-        bg-color="white" color="cyan-10" v-model="fbData.name" outlined
+        bg-color="white" color="deep-purple-10" v-model="fbData.name" outlined
         :placeholder="$t('fb.yourname')"/>
       <br>
       <q-input
         square
         dense
-        bg-color="white" color="cyan-10" v-model="fbData.mail" outlined
+        bg-color="white" color="deep-purple-10" v-model="fbData.mail" outlined
         :placeholder="$t('fb.hyphenMail')"
         counter
         maxlength="70"
@@ -39,12 +39,12 @@
         square
         dense
         outlined
-        bg-color="white" color="cyan-10"
+        bg-color="white" color="deep-purple-10"
         v-model="fbData.body"
         type="textarea"
         :placeholder="$t('fb.textLabel')"
       />
-      <q-btn color="red-10" :label="$t('fb.btnSend')" @click="sendFB" />
+      <q-btn class="headerBtns1 headerBtnRed" color="red-10" :label="$t('fb.btnSend')" @click="sendFB" />
       <!-- unelevated -->
     </div>
     <div v-else class="fb_inner">
@@ -53,8 +53,8 @@
           ? $t('fb.messageSuccess')
           : $t('fb.messageError')}}</p>
       <div style="width: 100%;">
-        <q-btn style="margin-right: 10px" color="red-10" :label="$t('fb.btnSendMore')" @click="state='ready'" />
-        <q-btn color="red-10" :label="$t('fb.toMain')" @click="fbDataFlush(); state='ready'; $router.push('/')" />
+        <q-btn class="headerBtns1 headerBtnRed" style="margin-right: 10px" color="red-10" :label="$t('fb.btnSendMore')" @click="state='ready'" />
+        <q-btn class="headerBtns1 headerBtnRed" color="red-10" :label="$t('fb.toMain')" @click="fbDataFlush(); state='ready'; $router.push('/')" />
       </div>
     </div>
   </div>

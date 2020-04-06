@@ -213,7 +213,7 @@ async function closeJobByIdAdmin(req, res) {
       //по айди
       //если есть в базе и автор сам удаляющий
       //удалить
-      let que2nd = `UPDATE jobs SET (is_closed, time_updated, closed_why) = (TRUE, NOW(), $1) WHERE job_id = $2`
+      let que2nd = `UPDATE jobs SET (is_published, is_closed, time_updated, closed_why) = (FALSE, TRUE, NOW(), $1) WHERE job_id = $2`
       //console.log(que2nd)
       let params2nd = [closed_why, jid]
       pool.query(que2nd, params2nd, (error2, results2) => {
@@ -261,7 +261,7 @@ async function approveJobByIdAdmin(req, res) {
       //если есть в базе и автор сам удаляющий
       //удалить
       
-      let que2nd = `UPDATE jobs SET (is_published, time_updated) = (TRUE, NOW()) WHERE job_id = $1`
+      let que2nd = `UPDATE jobs SET (is_published, time_updated, closed_why) = (TRUE, NOW(), '') WHERE job_id = $1`
       let params2nd = [jid]
       pool.query(que2nd, params2nd, (error2, results2) => {
         if (error2) {

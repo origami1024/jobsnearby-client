@@ -391,9 +391,9 @@ const loc = {
     },
     jobsStats: {
       title: 'Название',
-      views: 'Всего просмотров',
-      uniqViews: 'Уникальных просмотров',
-      published: 'Опубликована',
+      views: 'Просм',
+      uniqViews: 'Уник',
+      published: 'Опублик',
       change: 'Изменить',
       close: 'Закрыть',
       delete: 'Удалить',
@@ -402,6 +402,14 @@ const loc = {
       publishedHint: 'Публикуется после проверки модератором',
       yes: 'Да',
       no: 'Нет',
+      status: 'Статус',
+      published: 'Опубликована',
+      notpublished: 'Не опубликована',
+      editHint: 'Редактировать',
+      reopenHint: 'Открыть',
+      resendHint: 'На проверку модератору для открытия',
+      closeHint: 'Закрыть',
+      deleteHint: 'Удалить',
     }
   },
   tm: {

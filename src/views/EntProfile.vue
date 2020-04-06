@@ -41,13 +41,11 @@
               
               <ul style="list-style-type:none; padding: 0 15px;">
                 <li style="display: flex; padding-left: 10px;" v-for="hit in respsJreformat[item].cvhits" :key="hit" :style="{backgroundColor: resps.find(val=>val.cvhit_id == hit).date_checked == null ? 'var(--color-graypink)' : 'rgba(1,1,1,0.03)'}">
-                  <!-- <q-item clickable> -->
                   <a style="width: 35%" class="responseLinkLvl2" @click="viewHit(hit)" :href="'https://docs.google.com/viewerng/viewer?url=' + resps.find(val=>val.cvhit_id == hit).cv_url" target="_blank">
                     {{
                       resps.find(val=>val.cvhit_id == hit).name + ' ' + 
                       resps.find(val=>val.cvhit_id == hit).surname
                     }}
-                    <!-- :href="resps.find(val=>val.cvhit_id == hit).cv_url" -->
                   </a>
                   <div style="width: 30%">
                     {{

@@ -176,6 +176,7 @@
         <!-- color="accent" -->
       </header>
     </div>
+    <!--  mode="out-in" -->
     <keep-alive>
     <router-view
       :salMin="salMin" :salAvg="salAvg" :salMax="salMax"
@@ -1191,6 +1192,7 @@ body
 //   color white !important//var(--main-borders-color) !important
 // .q-uploader__subtitle//in entprofile - q-uploader component related
 //   display none
-    
+
+
 
 </style>

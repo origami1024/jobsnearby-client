@@ -4,26 +4,37 @@
       <table>
         <thead>
           <tr>
-            <td style="width: 30%; min-width: 30%; max-width: 30%; text-align: left">{{$t('jobsStats.title')}}</td>
-            <td style="width: 15%; min-width: 15%; max-width: 15%;">{{$t('jobsStats.views')}}</td>
-            <td style="width: 15%; min-width: 15%; max-width: 15%;">{{$t('jobsStats.uniqViews')}}</td>
+            <td style="width: 22%; min-width: 22%; max-width: 22%; text-align: left">{{$t('jobsStats.title')}}</td>
+            <td style="width: 6%; min-width: 6%; max-width: 6%;">{{$t('jobsStats.views')}}</td>
+            <td style="width: 6%; min-width: 6%; max-width: 6%;">{{$t('jobsStats.uniqViews')}}</td>
             <!-- <td style="width: 15%; min-width: 15%; max-width: 15%;">Подали резюме</td> -->
-            <td style="width: 10%; min-width: 10%; max-width: 10%;">
-              {{$t('jobsStats.published')}}
-              <q-tooltip>
-                <p style="font-size: 15px;margin: 0">{{$t('jobsStats.publishedHint')}}</p>
-              </q-tooltip>
+            <td style="width: 42%; min-width: 42%; max-width: 42%;">
+              {{$t('jobsStats.status')}}
             </td>
-            <td style="width: 10%; min-width: 10%; max-width: 10%;">{{$t('jobsStats.change')}}</td>
-            <td style="width: 10%; min-width: 10%; max-width: 10%;">{{$t('jobsStats.close')}}</td>
-            <td style="width: 10%; min-width: 10%; max-width: 10%;">{{$t('jobsStats.delete')}}</td>
+            <!-- <td style="width: 33%; min-width: 33%; max-width: 33%;">{{$t('jobsStats.status')}}</td> -->
+            <td style="width: 8%; min-width: 8%; max-width: 8%;">{{$t('jobsStats.change')}}</td>
+            <td style="width: 8%; min-width: 8%; max-width: 8%;">{{$t('jobsStats.close')}}</td>
+            <td style="width: 8%; min-width: 8%; max-width: 8%;">{{$t('jobsStats.delete')}}</td>
           </tr>
         </thead>
         <tr class="jobstat" v-for="item in jobslist" :key="item.job_id">
           <td style="text-align: left"><a class="link1" target="_blank" :href="'/jobpage?id=' + item.job_id">{{item.title}}</a></td>
           <td>{{Number(item.hits_all)}}</td>
           <td>{{item.hits_uniq}}</td>
-          <td>{{item.is_published === true ? $t('jobsStats.yes') : $t('jobsStats.no')}}</td>
+          <!-- <td>{{item.is_published === true ? $t('jobsStats.published') : $t('jobsStats.notpublished')}}</td> -->
+          <td>
+            {{
+              (item.is_published === true && item.is_closed === false)
+                ? $t('jobsStats.published')
+                : (item.is_published === true && item.is_closed === true)
+                  ? 'Закрыта пользователем' 
+                  : (item.is_published === false && item.is_closed === false)
+                    ? 'Ожидает проверки модератора' 
+                    : (item.closed_why !== null && item.closed_why.length > 0)
+                      ? 'Закрыта модератором: "' +  item.closed_why + '"'
+                      : 'Закрыта модератором'
+            }}
+          </td>
           <td>
             <q-btn
               v-if="!item.is_closed"
@@ -32,15 +43,35 @@
               color="green"
               glossy
               @click="$emit('editJob', item.job_id)"
-            />
+            >
+              <q-tooltip>
+                <p style="font-size: 15px;margin: 0">{{$t('jobsStats.editHint')}}</p>
+              </q-tooltip>
+            </q-btn>
             <q-btn
-              v-else
+              v-else-if="item.is_published == true && item.is_closed == true"
               icon="work"
               size="sm"
               color="blue"
               glossy
               @click="$emit('reopenJob', item.job_id)"
-            />
+            >
+              <q-tooltip>
+                <p style="font-size: 15px;margin: 0">{{$t('jobsStats.reopenHint')}}</p>
+              </q-tooltip>
+            </q-btn>
+            <q-btn
+              v-else-if="item.is_published == false && item.is_closed == true"
+              icon="build"
+              size="sm"
+              color="purple"
+              glossy
+              @click="$emit('reopenJob', item.job_id)"
+            >
+              <q-tooltip>
+                <p style="font-size: 15px;margin: 0">{{$t('jobsStats.resendHint')}}</p>
+              </q-tooltip>
+            </q-btn>
           </td>
           <td>
             <q-btn
@@ -50,7 +81,11 @@
               color="orange"
               glossy
               @click="closeThis(item.job_id)"
-            />
+            >
+              <q-tooltip>
+                <p style="font-size: 15px;margin: 0">{{$t('jobsStats.closeHint')}}</p>
+              </q-tooltip>
+            </q-btn>
             <span v-else>
               {{$t('jobsStats.closed')}}
             </span>
@@ -62,7 +97,11 @@
               color="red"
               glossy
               @click="delThis(item.job_id)"
-            />
+            >
+              <q-tooltip>
+                <p style="font-size: 15px;margin: 0">{{$t('jobsStats.deleteHint')}}</p>
+              </q-tooltip>
+            </q-btn>
           </td>
         </tr>
       </table>
@@ -108,12 +147,13 @@ export default {
     border-spacing 0
   thead td
     border-bottom 15px solid transparent
-    font-size 16px
+    font-size 14px
   td
     padding 3px
-    font-size 12px
+    // font-size 12px
     max-width 85px
     font-size 16px
+    line-height 20px
   .line
     display flex
     align-items center
