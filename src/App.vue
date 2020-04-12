@@ -171,7 +171,6 @@
           position="bottom"
           color="red"
           size="10px"
-          
         />
         <!-- color="accent" -->
       </header>
@@ -201,7 +200,6 @@
     
     </keep-alive>
     <footer class="main__footer">
-      <!-- <q-btn push style="color:white;backgroundColor: var(--main-borders-color)" :label="$t('App.fbBtnLabel')" to="/Feedback"/> -->
       <ul class="footer__ul-top">
         <li>
           <h3>О нас</h3>
@@ -238,15 +236,10 @@
         </li>
       </ul>
     </footer>
-    <!-- <LoginModal @authed="authIt" @loginclosed="modalShown = 'none'" :isShown="modalShown === 'login'"></LoginModal> -->
-    <!-- <RegisterModal @regclosed="modalShown = 'none'" :isShown="modalShown === 'reg'"></RegisterModal> -->  
   </div>
 </template>
 
 <script>
-// import LoginModal from './components/organisms/LoginModal'
-// import RegisterModal from './components/organisms/RegisterModal'
-
 import { scroll } from 'quasar'
 const { getScrollTarget, setScrollPosition } = scroll
 
@@ -390,7 +383,7 @@ export default {
         for (let index = 0; index < 6; index++) {
           let tmp = response.data.find(stat=>stat.statname == 'top' + (index + 1))
           this.tops[index][0] = tmp.statlabel
-          this.tops[index][1] = tmp.statvalue + tmp.statcurrency 
+          this.tops[index][1] = tmp.statvalue + tmp.statcurrency
           this.tops[index][2] = tmp.statlink
         }
       })
@@ -436,9 +429,6 @@ export default {
       if (event.key === "insearch") {
         this.insearch = Boolean(event.newValue);
       } else
-      // if (event.key === "likedJobs") {
-      //   this.likedJobs = Array(event.newValue);
-      // } else
       if (event.key === "ownCVs") {
         this.ownCVs = Array(event.newValue);
       }
@@ -816,14 +806,7 @@ export default {
       } else
       if (to.name === 'addjob') {
         this.newJobSentState = 'none'
-      } else
-      if (to.name === 'registration') {
-        //regState='login'
-        
-        //this.getOwnJobs()
-        
       }
-
     },
     user(newName) {
       localStorage.user = newName
@@ -1180,19 +1163,5 @@ body
 .nav-icon-logout
   @media screen and (max-width 550px)
     font-size 26px !important
-// .q-item__label
-//   color var(--main-borders-color)
-// .q-manual-focusable--focused
-//   background-color var(--main-borders-color)
-// .q-manual-focusable--focused .q-item__label
-//   color var(--main-bg-color) !important
-//   &:hover
-//     color white !important
-// .q-item--active
-//   color white !important//var(--main-borders-color) !important
-// .q-uploader__subtitle//in entprofile - q-uploader component related
-//   display none
-
-
 
 </style>

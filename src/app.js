@@ -1,3 +1,5 @@
+///
+
 const pageParts = require('./pageParts')
 const db = require('./pgqueries')
 //
@@ -9,39 +11,32 @@ const cookieParser = require('cookie-parser')
 
 
 const path = require('path')
-//const url = require('url');
-//const querystring = require('querystring');
 
-var cors = require('cors');
+
+var cors = require('cors')
 app.use(cors({
   origin: process.argv.includes('-dev') ? 'http://127.0.0.1:8080' : 'https://herokuapp.com',
   credentials: true,
-  exposedHeaders: ['session','user']
+  //exposedHeaders: ['session','user']
 }))
 
+
 app.use(cookieParser())
-const bodyParser = require('body-parser');
+const bodyParser = require('body-parser')
 app.use(bodyParser.json())
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.urlencoded({ extended: true }))
 
 var history = require('connect-history-api-fallback')
 app.use(history({}))
 
-const serveStatic = require("serve-static")
-app.use(serveStatic(path.join(__dirname, './../dist')));
+// const serveStatic = require("serve-static")
+// app.use(serveStatic(path.join(__dirname, './../dist')));
+app.use(express.static(path.join(__dirname, './../dist')))
 
 
-
-app.listen(port, () => console.log(`Example app listening on port ${port}!`))
+app.listen(port, () => console.log(`App listening on port ${port}!`))
 if (process.argv.includes('-dev')) console.log('development mode on')
 
-
-
-let pages = {}
-let navlinks = [{href: '/', title: 'Главная'}, {href: '/jobs', title: 'Вакансии'}, {href: '/about', title: 'О сайте'}]
-pages.main = pageParts.head + pageParts.navbar(navlinks) + pageParts.demo + pageParts.foot
-pages.about      = pageParts.head + pageParts.navbar(navlinks) + 'Работай!' + pageParts.foot
-pages.jobListing = pageParts.head + pageParts.navbar(navlinks) + pageParts.demo + pageParts.foot
 
 
 app.post('/auth', auth)//auth by cookie
@@ -128,9 +123,7 @@ function params1(request, response) {
 //   serveStatic(path.join(__dirname, './../dist'))
 // })
 
-// async function redirect1(req, res) {
-//   res.send('<html><body><script>window.location.replace("http://www.w3schools.com")</script></body></html>')
-// }
+
 
 async function forgottenx2(req, res) {
   console.log('fx2: ', req.query.n)
@@ -1459,6 +1452,7 @@ async function getJobByIdJSON(req, res) {
 }
 
 async function getJobById(req, res) {
+  //DEPRECATED!!!
   console.log('get job by id first func. ip: ', req.headers['x-forwarded-for'] || req.connection.remoteAddress)
   const id = parseInt(req.query.id)
   if (isNaN(id) || id < 0 || String(id).length > 10) {

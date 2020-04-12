@@ -1,8 +1,4 @@
 module.exports = {
-  "transpileDependencies": [
-    "vuetify"
-  ],
-
   pluginOptions: {
     quasar: {
       importStrategy: 'manual',
@@ -11,7 +7,6 @@ module.exports = {
   },
 
   transpileDependencies: [
-    'vuetify',
     'quasar'
   ]
 }
